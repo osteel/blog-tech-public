@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/01/25/vagrant.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>How to use Vagrant for local web development &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="vagrant" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="webdevelopment" />
+    <meta name="tags" contents="environment" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      How to use Vagrant for local web development
+    </h1>
+    <span class="post-date">2015/01/25</span>
+
+    <p><a href="https://www.vagrantup.com/" title="Vagrant website"><img alt="&quot;Vagrant logo&quot;" src="/images/2015/01/25/vagrant.png" title="Vagrant logo" /></a></p>
+<p>This article shows how to quickly get up and running with Vagrant, to create and use local Virtual Machines as development environments, all with a single command. This is indeed written from a web developer's standing point, and I will not spend too much time describing how things work under the hood (not that I am an expert anyway).</p>
+<p>The point of Vagrant is precisely not to have to worry too much about it.</p>
+<p><strong>The final result of this tutorial is available as a <a href="https://github.com/OSteEL/vagrant-blog-tutorial" title="vagrant-blog-tutorial repo">Github repository</a>.</strong> In case of trouble, don't hesitate to refer to it.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><a href="#vagrant">Vagrant?</a></li>
+<li><a href="#basic-installation">Basic installation</a></li>
+<li><a href="#picking-a-box">Picking a box</a></li>
+<li><a href="#vagrantfile">Vagrantfile</a><ul>
+<li><a href="#port-forwarding">Port-forwarding</a></li>
+<li><a href="#private-ip">Private IP</a></li>
+</ul>
+</li>
+<li><a href="#provisioning">Provisioning</a><ul>
+<li><a href="#shell-scripts">Shell scripts</a></li>
+<li><a href="#server-config">Server config</a></li>
+</ul>
+</li>
+<li><a href="#matching-the-private-ip">Matching the private IP</a></li>
+<li><a href="#tips">Tips</a><ul>
+<li><a href="#gitignore">.gitignore</a></li>
+<li><a href="#handle-port-collisions">Handle port collisions</a></li>
+<li><a href="#copy-host-git-config">Copy host git config</a></li>
+<li><a href="#gui-console">GUI console</a></li>
+<li><a href="#access-the-host-machine-when-using–a-private-network">Access the host machine when using a private network</a></li>
+</ul>
+</li>
+<li><a href="#what-now">What now?</a><ul>
+<li><a href="#provisioning-tools">Provisioning tools</a></li>
+<li><a href="#vagrant-share">Vagrant Share</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="vagrant">Vagrant?</h2>
+<p>Vagrant greatly simplifies the use of Virtual Machines to spawn development environments in no time (well, it's probably more like no <em>effort</em> than time).</p>
+<p>To understand what a Virtual Machine (VM) is, think of an emulator: you install it on your computer so you can then run software that <em>believe</em> they are running in the environment they were designed for. All inside your own machine (which is then called the host).</p>
+<p>That is essentially what a VM is.</p>
+<p>Vagrant is a VM <em>manager</em>, in the sense that it reduces the management and the configuration of VMs to a handful of commands.</p>
+<p>It relies on a VM <em>provider</em>, that deals with virtualization itself. As its support is shipped with Vagrant, we will use VirtualBox, but <a href="http://docs.vagrantup.com/v2/providers/" title="Vagrant doc - providers">others exist</a>.</p>
+<p>So what is actually the point? The main argument is the consistency of the environments among developers working on the same project, and more importantly that these environments reflect the production ones. Ship a Vagrant configuration with each project, and every developer will work on the same environment locally.<br />
+No surprises when pushing the code live, no more <em>"it works on my machine"</em>.</p>
+<p>The other advantages I see is the fact that one can still use their editor of choice, as Vagrant folders are shared with the host by default. It also permits not to clutter up your computer with tons of different libraries and software that aren't used by every project.<br />
+If something goes wrong, you don't screw your machine: you destroy your VM instance and recreate it instead.</p>
+<p>Easy. And safe.</p>
+<h2 id="basic-installation">Basic installation</h2>
+<p>First, download VirtualBox at <a href="https://www.virtualbox.org/wiki/Downloads" title="VirtualBox - Downloads">https://www.virtualbox.org/wiki/Downloads</a> (<em>"platform packages"</em>) and install it.<br />
+Then, download Vagrant at <a href="https://www.vagrantup.com/downloads.html" title="Vagrant - Downloads">https://www.vagrantup.com/downloads.html</a> (v1.7.2 at the time of writing), install.</p>
+<p>Open up a terminal and type:</p>
+<pre><code>vagrant version
+</code></pre>
+<p>The version should be displayed. If not, log out your session, log back in and try again.</p>
+<h2 id="picking-a-box">Picking a box</h2>
+<p><a href="https://docs.vagrantup.com/v2/getting-started/index.html" title="Vagrant doc - get started">Vagrant's documentation</a> uses a <em>Ubuntu 12.04 LTS 32-bit</em> server box. Now let's say you want <em>Ubuntu 14.0 LTS 32-bit</em>: go to the <a href="https://atlas.hashicorp.com/boxes/search">catalog of Vagrant boxes</a> and type <em>"Ubuntu 14.04"</em> in the search field.<br />
+Spot the Ubuntu one in the list: <em>"ubuntu/trusty32"</em>.</p>
+<p>Now get back to your terminal, browse to the directory you want your project to reside in, and type this:</p>
+<pre><code>vagrant init ubuntu/trusty32
+</code></pre>
+<p>The terminal should display something like:</p>
+<pre><code>A `Vagrantfile` has been placed in this directory. You are now ready to `vagrant up` your first virtual environment! Please read the comments in the Vagrantfile as well as documentation on `vagrantup.com` for more information about using Vagrant.
+</code></pre>
+<p>Good. Now type:</p>
+<pre><code>vagrant up
+</code></pre>
+<p>This is how you start your Virtual Machine. As you picked <em>Ubuntu 14.04</em>, Vagrant will try to install it: as it won't find a corresponding box on your computer, it will fetch it directly from the catalog (this can take a while according to your connection speed), and boot it once the download is over.</p>
+<p>All you have to do now is:</p>
+<pre><code>vagrant ssh
+</code></pre>
+<p>BOOM! You are now in your <em>Ubuntu 14.04</em> server.</p>
+<p><em>Note for Windows users:</em> the <code>vagrant ssh</code> command might not work for you if SSH is not in your PATH variable. I invite you to take a look at <a href="/posts/2015/01/25/how-to-use-vagrant-on-windows.html" title="How to use Vagrant on Windows">this separate article</a> and come back.</p>
+<p>What exactly happened here? <code>vagrant init</code> created a <code>Vagrantfile</code> file in the directory. This file contains the various settings Vagrant needs to spawn a VM. You can have a look at it now, it is basically full of commented examples (don't freak out, it is not as bad as it looks).</p>
+<p>You will find one uncommented line tho:</p>
+<pre><code>config.vm.box = "ubuntu/trusty32"
+</code></pre>
+<p>Yeah, you got it: as we invoked <code>vagrant init</code> followed by the box we wanted to use, Vagrant created its config file with the corresponding setting.</p>
+<p>While you are connected to your box, type this:</p>
+<pre><code>ls /vagrant
+</code></pre>
+<p>The Vagrantfile should be listed. This is the same Vagrantfile you have just updated: <code>/vagrant</code> is the folder that is shared between the host machine and the VM.</p>
+<p>You can simply leave your box typing <code>ctrl</code> + <code>d</code>. I won't explain how to shutdown it; just take a couple of minutes to read about the different available options in <a href="https://docs.vagrantup.com/v2/getting-started/teardown.html" title="Vagrant doc - Teardown">the doc</a>, they are well explained.<br />
+Just know that even if you destroy your box, files under <code>/vagrant</code> remain untouched.</p>
+<h2 id="vagrantfile">Vagrantfile</h2>
+<p>I am not going to go through all the options here, only those I most often use.</p>
+<p>The Vagrantfiles are written in Ruby, but no Ruby background is required (I don't know much about Ruby myself).</p>
+<p>Let's look into accessing your VM from the host. Using your host machine's editor to update files on your VM via shared folders is nice, but at some point you will want to admire your work in a browser, which implies for it to have access to your Vagrant box somehow.</p>
+<p>The easiest way to achieve this is probably using port-forwarding.</p>
+<h3 id="port-forwarding">Port-forwarding</h3>
+<p>First let's run a quick test. Open a terminal on your host machine and type the following command:</p>
+<pre><code>telnet localhost 8080
+</code></pre>
+<p>Unless the port 8080 is already in use by something else (in which case change 8080 for whatever port you know is available), you should get something like:</p>
+<pre><code>Trying 127.0.0.1...
+telnet: connect to address 127.0.0.1: Connection refused
+Trying ::1...
+telnet: connect to address ::1: Connection refused
+telnet: Unable to connect to remote host
+</code></pre>
+<p>Edit your Vagrantfile and add the following:</p>
+<pre><code>config.vm.network :forwarded_port, guest: 80, host: 8080
+</code></pre>
+<p>Now reload your VM:</p>
+<pre><code>vagrant reload
+</code></pre>
+<p>or <code>vagrant up</code> if you had shut it down. Once it is booted, try the <code>telnet</code> command above again in the other terminal window. This is what you should read:</p>
+<pre><code>Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+</code></pre>
+<p>Port 8080 is now being listened to, and connections to it are forwarded to port 80 of the Vagrant box. This comes in handy when you use something like <a href="https://github.com/gruntjs/grunt-contrib-connect#usage-examples" title="Project's Github page"><code>grunt-contrib-connect</code></a> to quickly spawn a static HTTP server on a specific port. In our case, using port 80 in the Grunt config and accessing <code>http://localhost:8080</code> from our host machine would display the website contained in the folder set with the <code>base</code> parameter.</p>
+<p>This is nice for quick prototyping for example, as no further server configuration is required. In most cases however, as we want to replicate a production environment as accurately as possible, we will want to use a proper server config.</p>
+<p>To do so, we are going to assign a private IP to our box.</p>
+<h3 id="private-ip">Private IP</h3>
+<p>First, go back to the terminal and try:</p>
+<pre><code>ping 192.168.68.8
+</code></pre>
+<p>You should get <code>request timeout</code> responses. Edit the Vagrantfile again and add:</p>
+<pre><code>config.vm.network :private_network, ip: "192.168.68.8"
+</code></pre>
+<p>Reload your VM and try again: you should now get responses.</p>
+<p>This is it for the options I mainly use; I rarely need the rest. Be curious and scan through the <a href="https://docs.vagrantup.com/v2/" title="Vagrant doc">official documentation</a>, it is well written and I am sure you will find something useful to you.</p>
+<p>On a side note, and to emphasize the usefulness of Vagrantfiles, I think their beauty resides in the fact that all it takes to make the environment available to other developers is to version them with your projects. Whenever you clone a project containing a Vagrantfile to a machine with Vagrant installed on it, you are at a <code>vagrant up</code> away from having it running locally.</p>
+<p>The rest of the process to get your website displayed using the private IP is covered in the next section.</p>
+<h2 id="provisioning">Provisioning</h2>
+<p>Alright, so you've got your VM running, you can edit files from outside of it, and access it from the host machine using its private IP.</p>
+<p>How to properly display your work in a browser now?</p>
+<p>Let's cut to the chase here: it implies setting a server on your VM and matching its IP to the domain name you chose in the host machine's <code>hosts</code> file.</p>
+<p>As our Vagrant box is almost empty at this point, we need to install a HTTP server on it. We will go for Nginx here, but instead of installing it and setting up the server from the VM itself, we are going to use provisioning.</p>
+<h3 id="shell-scripts">Shell scripts</h3>
+<p>Provisioning is achieved from the Vagrantfile as well and, if different means are available to do so, I will only cover the most basic one for now, i.e. using shell scripts (I will mention the other ways later on).</p>
+<p>Open the Vagrantfile in your editor, and add this:</p>
+<pre><code>config.vm.provision :shell, :path =&gt; ".provision/bootstrap.sh"
+</code></pre>
+<p>Basically what we tell Vagrant is <em>"Use the shell script that you will find in <code>.provision/bootstrap.sh</code> to provision the box"</em>.</p>
+<p>Don't reload your box just yet, as we need to create this file first. Add a new folder named <em>".provision"</em> in your project (same level as the Vagranfile), and create a <code>bootstrap.sh</code> file in it. Here is the full content of this file:</p>
+<pre><code>#!/usr/bin/env bash
+
+# nginx
+sudo apt-get -y install nginx
+sudo service nginx start
+
+# set up nginx server
+sudo cp /vagrant/.provision/nginx/nginx.conf /etc/nginx/sites-available/site.conf
+sudo chmod 644 /etc/nginx/sites-available/site.conf
+sudo ln -s /etc/nginx/sites-available/site.conf /etc/nginx/sites-enabled/site.conf
+sudo service nginx restart
+
+# clean /var/www
+sudo rm -Rf /var/www
+
+# symlink /var/www =&gt; /vagrant
+ln -s /vagrant /var/www
+</code></pre>
+<p>Now, let's describe it step by step:</p>
+<pre><code>#!/usr/bin/env bash
+</code></pre>
+<p>We are basically telling where to look for the <code>bash</code> program.</p>
+<pre><code># nginx
+sudo apt-get -y install nginx
+sudo service nginx start
+</code></pre>
+<p>Install Nginx and start it. The <code>-y</code> option allows to automatically answer <em>"yes"</em> where user input is normally required.</p>
+<pre><code># set up nginx server
+sudo cp /vagrant/.provision/nginx/nginx.conf /etc/nginx/sites-available/site.conf
+sudo chmod 644 /etc/nginx/sites-available/site.conf
+sudo ln -s /etc/nginx/sites-available/site.conf /etc/nginx/sites-enabled/site.conf
+sudo service nginx restart
+</code></pre>
+<p>We copy the server configuration from <code>.provision/nginx/nginx.conf</code> (yet to be written at this point, we're getting there) to Nginx's <code>sites-available</code> folder, ensure the permissions are right, then create the symlink from <code>sites-enabled/site.conf</code> to <code>sites-available/site.conf</code>, and restart Nginx to take this new config into account.</p>
+<p>Finally, we create a symbolic link from <code>/var/www</code> to <code>/vagrant</code>, after having removed the default files Nginx creates at installation:</p>
+<pre><code># clean /var/www
+sudo rm -Rf /var/www
+
+# symlink /var/www =&gt; /vagrant
+ln -s /vagrant /var/www
+</code></pre>
+<p><code>/var/www</code> is often where the code goes on a server (even though <code>/srv/www/</code> might be more relevant, but that's <a href="http://unix.stackexchange.com/questions/47436/why-is-the-root-directory-on-a-web-server-put-by-default-in-var-www" title="Why is the root directory on a web server put by default in \&quot;/var/www\&quot;?">another debate</a>). As mentioned earlier, on a Vagrant VM the shared folder is <code>/vagrant</code>. Using such a symlink allows to match your production server's settings (or staging or whatevs).<br />
+This is completely optional tho.</p>
+<h3 id="server-config">Server config</h3>
+<p>Almost there! If you are attentive, you know that we now need the Nginx server config. Under the <code>.provision</code> folder, create a new folder named <em>"nginx"</em> and open a new <code>nginx.conf</code> file in it. Here is its content:</p>
+<pre><code>server {
+  listen 80;
+
+  server_name vagrant-test.local.com;
+  access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
+  root   /var/www;
+
+  location / {
+  }
+}
+</code></pre>
+<p>Nothing too esoteric here, this is a very basic Nginx server config. Just note that our server name will be <em>"vagrant-test.local.com"</em>. Save your file, and reload the box using this command:</p>
+<pre><code>vagrant reload --provision
+</code></pre>
+<p>Normally, the provisioning is done only at the first boot of the VM. By specifying the <code>--provision</code> option, we force Vagrant to perform the provisioning again.</p>
+<p>The start up will take slightly longer than previously, and you should see quite a lot more instructions on the screen: the packages listed in the <code>bootstrap.sh</code> file are being installed.</p>
+<h2 id="matching-the-private-ip">Matching the private IP</h2>
+<p>We only need two little extra steps now: adding the private IP and the server name to the host machine's <code>hosts</code> file and creating a simple <code>index.html</code> file in our box to be displayed in the browser later on. On Mac OS, edit the <code>hosts</code> file with the following command:</p>
+<pre><code>sudo vim /etc/hosts
+</code></pre>
+<p>On Windows, you will find it under <code>Windows/System32/Drivers/etc/</code> (you will have to edit it in <code>admin</code> mode).</p>
+<p>Add the following line:</p>
+<pre><code>192.168.68.8    vagrant-test.local.com
+</code></pre>
+<p>Save and quit.</p>
+<p>Now add a little <code>index.html</code> file at your project's root:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;Vagrant test&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;Oh hi!&lt;/h1&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Alright ladies and gentlemen, drumroll please: open your favorite browser and navigate to <code>http://vagrant-test.local.com</code>. You should see the HTML page you have just created ＼(^o^)／</p>
+<p>Phew! That was a rocky ride, eh!</p>
+<p>Well, yeah. But think about it this way: save this basic config somewhere (craft it to your needs, adding PHP or whatever floats your boat), and use it anytime you start a new project. You can now get up and running with a simple <code>vagrant up</code> command and a new line in the <code>hosts</code> file.</p>
+<p>I don't know about you, but it sounds quite nice to me.</p>
+<h2 id="tips">Tips</h2>
+<h3 id="gitignore">.gitignore</h3>
+<p>If you use Git, add ".vagrant/" to your <code>.gitignore</code> file. Vagrant creates this folder when booting the VM: it contains auto-generated stuff you don't want to version.</p>
+<h3 id="handle-port-collisions">Handle port collisions</h3>
+<p>When using port-forwarding, it can happen that a Vagrant box uses a port that is not available. It will tell you about it anyway, but if the host machine's port doesn't really matter to you, amend the corresponding line in the Vagrantfile this way:</p>
+<pre><code>config.vm.network :forwarded_port, guest: 8080, host: 80, auto_correct: true
+</code></pre>
+<p>The <code>auto_correct</code> parameter will allow Vagrant to automatically assign another port of the host machine in case of unavailability (and tell you about it, of course).</p>
+<h3 id="copy-host-git-config">Copy host git config</h3>
+<p>I usually try to avoid having too many terminal windows open at the same time. That's why I like to install Git on my VMs so I don't need another terminal window only to perform the versioning operations. This implies having your Git config inside the Vagrant box, which is actually quite easy to do automatically. In your Vagrantfile, add this:</p>
+<pre><code>config.vm.provision "file", source: "~/.gitconfig", destination: "~/.gitconfig"
+</code></pre>
+<p>At the first boot of the VM, your Git config file will be copied over.</p>
+<h3 id="gui-console">GUI console</h3>
+<p>Occasionaly, you may have some trouble booting your VM. This can notably happen when your box wasn't properly shut down the last time you used it. The boot process might just hang there, and the reason may not be obvious. In that case, add the following lines to your Vagrantfile:</p>
+<pre><code>config.vm.provider :virtualbox do |vb|
+  vb.gui = true
+end
+</code></pre>
+<p>and try to boot again. What this does is it will open VirtualBox's GUI console, which displays what is happening behind the scenes, and thus should help you troubleshoot the issue.</p>
+<h3 id="access-the-host-machine-when-using-a-private-network">Access the host machine when using a private network</h3>
+<p>Sometimes, you may need to access the host machine from the guest one. How to do so?</p>
+<p>When you set up a private network, <em>192.168.68.8</em> in our case, the host machine automatically takes <em>192.168.68.1</em> as its private IP address.</p>
+<h2 id="what-now">What now?</h2>
+<p>Well, that is quite a lot to digest already. And yet this is just the beginning, there are many more features to explore.</p>
+<p>Just to mention a couple of them tho:</p>
+<h3 id="provisioning-tools">Provisioning tools</h3>
+<p>In this tutorial, we used simple shell scripts. But it turns out Vagrant (supposedly) plays nicely with more advanced solutions such as <a href="https://www.chef.io/" title="Official website">Chef</a> or <a href="http://puppetlabs.com/" title="Official website">Puppet</a>.</p>
+<p>Admitedly tho, I tried to use Puppet something like a year ago, and completely failed to get it working with Vagrant. I am yet to give Chef a try.</p>
+<h3 id="vagrant-share">Vagrant Share</h3>
+<p>Local development is good, but soon you will be confronted with the need to expose your work to the world, whether it is to show some progress to a client or to allow an API to reach your application. This is achievable with nice tools such as <a href="https://ngrok.com/" title="Official website">ngrok</a> (hopefully I will soon publish a tutorial about it), but Vagrant unveiled a new service a few months ago, called <a href="https://docs.vagrantup.com/v2/share/index.html" title="Vagrant doc - Vagrant Share">"Vagrant Share"</a>, that does just that.</p>
+<p>I am yet to try it out (a tutorial would probably follow), but it definitely looks promising.</p>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2015-01-25T00:00:00+00:00" pubdate>2015/01/25</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/vagrant.html">vagrant</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/webdevelopment.html">webdevelopment</a>
+          <a href="https://tech.osteel.me/tag/environment.html">environment</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html";
+              var disqus_url = "https://tech.osteel.me/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html";
+              var disqus_title = "How to use Vagrant for local web development";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>

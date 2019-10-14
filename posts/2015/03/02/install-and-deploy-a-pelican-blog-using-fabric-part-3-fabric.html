@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/02/24/pelican-main.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Install and deploy a Pelican blog using Fabric - Part 3: Fabric &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="vagrant" />
+    <meta name="tags" contents="fabric" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="python" />
+    <meta name="tags" contents="blog" />
+    <meta name="tags" contents="pelican" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Install and deploy a Pelican blog using Fabric - Part 3: Fabric
+    </h1>
+    <span class="post-date">2015/03/02</span>
+
+    <p>In <a href="/posts/2015/02/26/install-and-deploy-a-pelican-blog-using-fabric-part-2-installation-and-configuration.html" title="Install and deploy a Pelican blog using Fabric - Part 2: installation and configuration">part 2</a>, we covered the installation and configuration of Pelican in our local environment. It is now time to provision our server and publish content using Fabric.</p>
+<p>But first, let's version our blog.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li><a href="/posts/2015/02/24/install-and-deploy-a-pelican-blog-using-fabric-part-1-local-environment.html" title="Install and deploy a Pelican blog using Fabric - Part 1: local environment">Part 1: local environment</a></li>
+<li><a href="/posts/2015/02/26/install-and-deploy-a-pelican-blog-using-fabric-part-2-installation-and-configuration.html" title="Install and deploy a Pelican blog using Fabric - Part 2: installation and configuration">Part 2: installation and configuration</a></li>
+<li>Part 3: Fabric<ul>
+<li><a href="#versioning">Versioning</a></li>
+<li><a href="#deployment-with-fabric">Deployment with Fabric</a><ul>
+<li><a href="#fabfilepy">fabfile.py</a></li>
+<li><a href="#provision">Provision</a></li>
+<li><a href="#publish">Publish</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/posts/2015/03/04/install-and-deploy-a-pelican-blog-using-fabric-part-4-workflow-extras-and-conclusion.html" title="Install and deploy a Pelican blog using Fabric - Part 4: workflow, extras and conclusion">Part 4: workflow, extras and conclusion</a></li>
+</ul>
+<h2 id="versioning">Versioning</h2>
+<p>The next stop in our journey is versioning. What we want to do is to be able to push our content to some repository so it can be pulled on the server later on (and it is always good to have a backup that we can clone and start working on locally in no time).</p>
+<p>Create a new repo on your favorite host (like <a href="https://github.com/">GitHub</a> or <a href="https://bitbucket.org/">Bitbucket</a>) and set up your local one:</p>
+<pre><code>git init
+git remote add origin your-repo-address
+</code></pre>
+<p>Create a <em>".gitignore"</em> file (<em>".vagrant/"</em> is not required if you don't use Vagrant):</p>
+<pre><code>output/*
+*.py[cod]
+cache/
+.vagrant/
+</code></pre>
+<p>We exclude the content of <em>"output/"</em> as the content will be generated directly on the live server, with its own settings.</p>
+<p>Make your first commit and push your code:</p>
+<pre><code>git add -A
+git commit -m 'First commit'
+git push
+</code></pre>
+<p>That's it!</p>
+<h2 id="deployment-with-fabric">Deployment with Fabric</h2>
+<p><a href="http://www.fabfile.org/" title="Fabric website">Fabric</a> is a command-line tool written in Python allowing to perform remote operations over SSH. It is often used for server provisioning and deployment.</p>
+<p>We installed it earlier with pip (<code>pip install Fabric</code>) and started using it already to build and serve our blog locally, using the <code>fab build</code> and <code>fab serve</code> commands among others. These commands are contained in a file named <em>"fabfile.py"</em>, at the root of your blog. We are now going to have a look at it and explain it a little bit.</p>
+<h3 id="fabfilepy">fabfile.py</h3>
+<p>Let's open the file in and editor and dissect it section by section:</p>
+<pre><code>from fabric.api import *
+import fabric.contrib.project as project
+import os
+import sys
+import SimpleHTTPServer
+import SocketServer
+</code></pre>
+<p>Basically the imports of all the necessary libraries. <em>SimpleHTTPServer</em> is the one used by <code>fab serve</code>, for example.</p>
+<pre><code># Local path configuration (can be absolute or relative to fabfile)
+env.deploy_path = 'output'
+DEPLOY_PATH = env.deploy_path
+
+# Remote server configuration
+production = 'root@localhost:22'
+dest_path = '/var/www'
+
+# Rackspace Cloud Files configuration settings
+env.cloudfiles_username = 'my_rackspace_username'
+env.cloudfiles_api_key = 'my_rackspace_api_key'
+env.cloudfiles_container = 'my_cloudfiles_container'
+</code></pre>
+<p>This section is about configuration. We will update the <em>"Remote server configuration"</em> bit soon. We are not using <em>Rackspace</em> in this tutorial so we can just ignore this part.</p>
+<p>The following function definitions (e.g. <em>"def clean()"</em>) are all the commands you can run from the terminal (using <em>"fab command_name"</em> as you already know). You are already familiar with a few of them (<code>build</code>, <code>serve</code>, <code>reserve</code>) and I encourage you to take a look at the others and try them out (you might find that you are more comfortable with some of them for your workflow). The code for most of these commands is quite self-explanatory.</p>
+<p>Now let's have a look at the last one, <em>"publish"</em>:</p>
+<pre><code>@hosts(production)
+def publish():
+    local('pelican -s publishconf.py')
+    project.rsync_project(
+        remote_dir=dest_path,
+        exclude=".DS_Store",
+        local_dir=DEPLOY_PATH.rstrip('/') + '/',
+        delete=True,
+        extra_opts='-c',
+    )
+</code></pre>
+<p>What's happenning here? First, we indicate that we want to <em>ssh</em> the host whose configuration is contained in the <em>"production"</em> variable mentioned above. Then, in the body of the function itself, we first generate the HTML <em>locally</em> using the live config (<em>"publishconf.py"</em>), and we synchronize the output with the remote server's destination directory defined by the <em>"dest_path"</em> variable and the <em>"DEPLOY_PATH"</em> environment variable.</p>
+<p>The synchronization is performed using <a href="http://docs.fabfile.org/en/latest/api/contrib/project.html" title="Documentation"><code>project.rsync_project</code></a>, which is a wrapper for the <code>rsync</code> command, allowing to upload newly modified files only.</p>
+<p>Basically, everything is there already for you to update a remote server with new content with a single command executed locally. And honestly that might be just enough for your needs. </p>
+<p>But it implies that the remote server already exists and is properly set up. And we'd rather see the new content being pulled from our Git repository instead.</p>
+<p>Now, you could just stop here for today. I won't be mad, promised.</p>
+<p>But if you are interested in seeing how to update the <em>fabfile</em> to both provision our server and publish our versionned content, stick with me.</p>
+<h3 id="provision">Provision</h3>
+<p>Still there? Good.</p>
+<p>In our context, what's behind the word <em>"provisioning"</em> is the act of installing all the required software, packages, dependencies, etc for a project to work on a server. </p>
+<p>But before that, we are going to create the different error pages.</p>
+<p>By default, when trying to access a page that doesn't exist for example, the default HTTP server's 404 page will be displayed.</p>
+<p>And it's ugly.</p>
+<p>And even if we all agree that the true beauty comes from the inside, we don't want it to be ugly.</p>
+<p>Under <em>"content/pages/"</em>, create a new folder named <em>"errors/"</em> and the files <em>"403.md"</em>, <em>"404.md"</em> and <em>"50x.md"</em> in it (adapt the extensions to the format you chose).</p>
+<p>Here is the content of my <em>404</em> page as an example:</p>
+<pre><code>Title: Hmm...
+Slug: 404
+Status: hidden
+
+Nope. Don't know what you're talking about, pal.
+
+[Go home](/ "Back to home").
+</code></pre>
+<p>Not much new here, except for the <em>"hidden"</em> status, whose effect is to prevent it from being displayed along with the other pages (<em>"about"</em> etc).</p>
+<p>Follow the same format for the two other pages.</p>
+<p>When you are done, create a new file called <em>"blog.conf"</em> under the <em>".provision/"</em> directory, with this content:</p>
+<pre><code>server {
+    listen 80; ## listen for ipv4; this line is default and implied
+    listen [::]:80 default ipv6only=on; ## listen for ipv6
+
+    # Make site accessible from http://my-blog.local.com
+    server_name my-blog.local.com;
+    root /var/www/blog;
+
+    location = / {
+        # Instead of handling the index, just
+        # rewrite / to /index.html
+        rewrite ^ /index.html;
+    }
+
+    location / {
+        try_files $uri.htm $uri.html $uri =404;
+    }
+
+    access_log /var/log/blog/access.log;
+    error_log /var/log/blog/error.log;
+
+    # Redirect server error pages
+    error_page 500 502 503 504 /pages/50x.html;
+    error_page 404 /pages/404.html;
+    error_page 403 /pages/403.html;
+}
+</code></pre>
+<p>You may have recognized the nginx format: it is indeed the HTTP server I am going to use (feel free to adapt this to your favorite one).</p>
+<p>This is a rather basic config: the website will be accessible at <em>http://my-blog.local.com</em>, its root will be <em>"/var/www/blog/"</em> on the remote server, the logs will be written under <em>"/var/log/blog/"</em>, and the errors will be redirected to the different pages you have just created.</p>
+<p>Now, open back <em>"fabfile.py"</em> and, before the <em>"publish"</em> function, add a <em>"provision"</em> one (it could be after as well, but the provisioning is supposed to come <em>before</em> the publication, right? But maybe that is just my OCD speaking):</p>
+<pre><code>@hosts(production)
+def provision():
+    if run('nginx -v', warn_only=True).failed:
+        sudo('apt-get -y install nginx')
+        sudo('rm /etc/nginx/sites-available/default')
+        sudo('service nginx start')
+    put('./.provision/blog.conf', '/etc/nginx/sites-available/blog.conf', use_sudo=True)
+    sudo('rm -f /etc/nginx/sites-enabled/blog.conf')
+    sudo('ln -s /etc/nginx/sites-available/blog.conf /etc/nginx/sites-enabled/blog.conf')
+
+    if run('test -d %s/%s' % (log_path, sitename), warn_only=True).failed:
+        sudo('mkdir %s/%s' % (log_path, sitename))
+
+    if run('test -d %s' % root_path, warn_only=True).failed:
+        sudo('mkdir %s' % root_path)
+
+    if run('git -v', warn_only=True).failed:
+        sudo('apt-get install -y git-core')
+
+    if run('pip --version', warn_only=True).failed:
+        run('wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py -P /tmp/')
+        sudo('python /tmp/get-pip.py')
+        run('rm /tmp/get-pip.py')
+
+    if run('fab --version', warn_only=True).failed:
+        sudo('pip install Fabric')
+
+    if run('virtualenv --version', warn_only=True).failed:
+        sudo('pip install virtualenv')
+        sudo('pip install virtualenvwrapper')
+        run('echo "export WORKON_HOME=$HOME/.virtualenvs" &gt;&gt; /home/vagrant/.bashrc')
+        run('echo "source /usr/local/bin/virtualenvwrapper.sh" &gt;&gt; /home/vagrant/.bashrc')
+        with prefix('WORKON_HOME=$HOME/.virtualenvs'):
+            with prefix('source /usr/local/bin/virtualenvwrapper.sh'):
+                run('mkvirtualenv %s' % sitename)
+
+    sudo('service nginx restart')
+</code></pre>
+<p>Quite a few things here but, if you look closely, you will realize these are basically all the steps you have taken at the beginning of the tutorial.</p>
+<p>The pattern is almost always the same:</p>
+<ul>
+<li>test if the package is installed (<code>if run('package --version', warn_only=True).failed:</code>)</li>
+<li>install it if it is not</li>
+</ul>
+<p>The <em>"warn_only=True"</em> parameter allows Fabric not to exit in case of a command failure: this is exactly what we want, i.e. knowing if the command fails so we can install the missing package.</p>
+<p><em>"with prefix"</em> allows to execute the subsequent commands in the context of the current one. If your version of Python is prior to 2.6, you will need to add <code>from __future__ import with_statement</code> at the top of the file.</p>
+<p>We will <em>ssh</em> the <em>"server"</em> box as the <em>"vagrant"</em> user, meaning the <em>"run"</em> commands will be executed with its permissions, and the <em>"sudo"</em> ones with the root permissions, just like we did throughout this tutorial.</p>
+<p>Back to the actual script: we first install nginx if necessary (and remove the default config), start it, copy the server config file we created earlier to the right location, and recreate the symlink.</p>
+<p>Then we ensure the destination directories for the logs and the blog's generated HTML exist, that Git is installed, then pip, Fabric, virtualenv and virtualenvwrapper, we create the <em>"blog"</em> virtual environment and, finally, we restart nginx.<br />
+Again, if you followed this tutorial from the start, this should feel familiar.</p>
+<p>Now as I am using <em>Ubuntu 14.04.1 LTS</em> boxes, I <em>know</em> my <em>"remote"</em> server comes with Python preinstalled. If yours doesn't, well you will have to add the steps to install it :)</p>
+<p>Shall we test this now? Sure thing, but we need to do something first. Remember the configuration section of <em>"fabfile.py"</em> mentioned earlier? It is time to set up the details of our remote server. This is where the use of Vagrant comes in handy as, if you used the Vagrant config I gave you at the beginning of this post, then the <em>"remote server"</em> box is already there, reporting for duty.</p>
+<p>Open a new terminal on your host machine, go to the blog's root, and type this:</p>
+<pre><code>vagrant up server
+</code></pre>
+<p>Now update <em>"fabfile.py"</em>, changing the server configuration for this one:</p>
+<pre><code># Remote server configuration
+production = 'vagrant@192.168.72.3:22'
+env.key_filename = '/home/vagrant/.ssh/insecure_private_key'
+root_path = '/var/www'
+log_path = '/var/log'
+dest_path = '~/dev'
+sitename = 'blog'
+symlink_folder = 'output'
+</code></pre>
+<p>The IP address is the one that was specified in the Vagrant config, and the private SSH key is the Vagrant one, copied over from the host machine, via this line of the config:</p>
+<pre><code># Copy the default Vagrant ssh private key over
+local.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "~/.ssh/insecure_private_key"
+</code></pre>
+<p>As mentioned earlier, we will <em>ssh</em> the box as the <em>"vagrant"</em> user. The rest of the variables are path/folder names used in both the <em>"provision"</em> and <em>"publish"</em> functions (next section). </p>
+<p>Now, from the <em>"local"</em> Vagrant machine:</p>
+<pre><code>fab provision
+</code></pre>
+<p>If everything is set up properly, you should see a series of text lines scrolling off the screen: your <em>"server"</em> box is being provisionned :)</p>
+<p>When it is done, you can <em>ssh</em> your <em>"server"</em> VM and play around to observe that everything was properly installed:</p>
+<pre><code>vagrant ssh server
+</code></pre>
+<h3 id="publish">Publish</h3>
+<p>We are now able to provision a server with everything required to run our blog, and all it takes is to update a few lines of configuration in <em>"fabfile.py"</em> and running one command.</p>
+<p>Pretty cool, eh?</p>
+<p>Anyway, we are yet to update the <em>"publish"</em> function to automate the publication of new content, pulling it from our Git repository.</p>
+<p>Here is what it looks like:</p>
+<pre><code>@hosts(production)
+def publish():
+    if run('cat ~/.ssh/id_rsa.pub', warn_only=True).failed:
+        run('ssh-keygen -N "" -f ~/.ssh/id_rsa')
+        key = run('cat ~/.ssh/id_rsa.pub')
+        prompt("Add this key to your Git repository and then hit return:\n\n%s\n\n" % key)
+
+    if run('test -d %s' % dest_path, warn_only=True).failed:
+        run('mkdir %s' % dest_path)
+
+    with cd(dest_path):
+        if run('test -d %s' % sitename, warn_only=True).failed:
+            run('mkdir %s' % sitename)
+            with cd(sitename):
+                run('git clone %s .' % git_repository)
+                if run('test -d %s' % symlink_folder, warn_only=True).failed:
+                    run('mkdir %s' % symlink_folder)
+                sudo('ln -s %s/%s/%s %s/%s' % (dest_path, sitename, symlink_folder, root_path, sitename))
+
+        with cd(sitename):
+            run('git reset --hard HEAD')
+            run('git pull origin master')
+            with prefix('WORKON_HOME=$HOME/.virtualenvs'):
+                with prefix('source /usr/local/bin/virtualenvwrapper.sh'):
+                    run('workon %s' % sitename)
+                    run('pip install -r requirements.txt')
+                    run('fab preview')
+</code></pre>
+<p>First, we check if there is an existing SSH private key for the <em>"vagrant"</em> user (or whatever user you set up): we are going to pull the content from a Git repository over SSH, so we need one. If none is found, the script will generate one for us and display it so we can add it to our repo. Once this is done, just hit <em>return</em> to continue the execution.</p>
+<p>The destination path is then created if necessary: in our case, the repository is cloned and updated in <em>"~/dev/blog"</em>. From there, a symlink is created between <em>"~/dev/blog/output"</em> and <em>"/var/www/blog"</em>, so the generated HTML files alone are in <em>"/var/www/blog"</em>.</p>
+<p>Finally, the Virtual Environment is activated, the pip dependencies installed, and the content generated with the live config.</p>
+<p>Let's test our new function:</p>
+<pre><code>fab publish
+</code></pre>
+<p>Once the execution is over, you should be able to see your blog at the private IP address <a href="http://192.168.72.3">192.168.72.3</a>.</p>
+<p>There is one last little step to take to access it from the server name as defined in the nginx config. Open the <em>"hosts"</em> file of your host machine and add the following line (change the domain for the one you chose, if different):</p>
+<pre><code>192.168.72.3    my-blog.local.com
+</code></pre>
+<p>You can now access <a href="http://my-blog.local.com">http://my-blog.local.com</a>.</p>
+<p>That's it! You now know how to provision a server and publish your content using Fabric.</p>
+<p>In the <a href="/posts/2015/03/04/install-and-deploy-a-pelican-blog-using-fabric-part-4-workflow-extras-and-conclusion.html" title="Install and deploy a Pelican blog using Fabric - Part 4: workflow, extras and conclusion">next part</a>, we will review a complete workflow, implement a few extra things and conclude this tutorial with a few openings on what to do to go further.</p>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2015-03-02T00:00:00+00:00" pubdate>2015/03/02</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/vagrant.html">vagrant</a>
+          <a href="https://tech.osteel.me/tag/fabric.html">fabric</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/python.html">python</a>
+          <a href="https://tech.osteel.me/tag/blog.html">blog</a>
+          <a href="https://tech.osteel.me/tag/pelican.html">pelican</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/2015/03/02/install-and-deploy-a-pelican-blog-using-fabric-part-3-fabric.html";
+              var disqus_url = "https://tech.osteel.me/posts/2015/03/02/install-and-deploy-a-pelican-blog-using-fabric-part-3-fabric.html";
+              var disqus_title = "Install and deploy a Pelican blog using Fabric - Part 3: Fabric";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>

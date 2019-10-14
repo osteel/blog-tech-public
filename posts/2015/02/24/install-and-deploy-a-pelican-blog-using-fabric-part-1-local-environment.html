@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/02/24/pelican-main.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Install and deploy a Pelican blog using Fabric - Part 1: local environment &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="vagrant" />
+    <meta name="tags" contents="fabric" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="python" />
+    <meta name="tags" contents="blog" />
+    <meta name="tags" contents="pelican" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Install and deploy a Pelican blog using Fabric - Part 1: local environment
+    </h1>
+    <span class="post-date">2015/02/24</span>
+
+    <p><img alt="&quot;Pelican tutorial&quot;" src="/images/2015/02/24/pelican-main.png" title="Pelican tutorial" /></p>
+<p>This series of articles will walk you through the different steps to install, setup and deploy your first <a href="http://docs.getpelican.com/en/latest/index.html" title="Pelican documentation">Pelican</a> blog (just like this one).</p>
+<p>If its aim is to be accessible to most people, there are a couple of pre-requisites that would definitely facilitate your progression:</p>
+<ul>
+<li>Being comfortable with your OS's CLI</li>
+<li>Being comfortable with Git</li>
+</ul>
+<p>A developer background is preferable overall, even though there is no need to be familiar with Python. I knew nothing about this language when I started using Pelican.</p>
+<p>If you are not technical at all however, this is probably not for you.</p>
+<p>Pelican is a static website generator, meaning that it does not require any server logic (typically, a database), making it lightweight and easy to host. The script spits out HTML files which are then served to the client.</p>
+<p>Wanna play straight away? Head to the <a href="https://github.com/osteel/pelican-blog-tutorial" title="Pelican blog tutorial">GitHub repository</a> now and follow the instructions.</p>
+<p>If you are stuck at any point during this tutorial, don't hesitate to refer to it as well.</p>
+<p>In this first part, we are just going to set up our local environment to be able to install Pelican later on.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Part 1: local environment<ul>
+<li><a href="#the-vagrant-way">The Vagrant way</a></li>
+<li><a href="#python-pip-and-virtualenv">Python, pip and virtualenv</a><ul>
+<li><a href="#python">Python</a></li>
+<li><a href="#pip">pip</a></li>
+<li><a href="#virtualenv">virtualenv</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/posts/2015/02/26/install-and-deploy-a-pelican-blog-using-fabric-part-2-installation-and-configuration.html" title="Install and deploy a Pelican blog using Fabric - Part 2: installation and configuration">Part 2: installation and configuration</a></li>
+<li><a href="/posts/2015/03/02/install-and-deploy-a-pelican-blog-using-fabric-part-3-fabric.html" title="Install and deploy a Pelican blog using Fabric - Part 3: Fabric">Part 3: Fabric</a></li>
+<li><a href="/posts/2015/03/04/install-and-deploy-a-pelican-blog-using-fabric-part-4-workflow-extras-and-conclusion.html" title="Install and deploy a Pelican blog using Fabric - Part 4: workflow, extras and conclusion">Part 4: workflow, extras and conclusion</a></li>
+</ul>
+<h2 id="the-vagrant-way">The Vagrant way</h2>
+<p>I am quite a fan of <a href="https://www.vagrantup.com/" title="Official website">Vagrant</a>, and I would advise to use an empty Vagrant box to play around safely.
+If you are not familiar with Vagrant and wish to learn more about it, take a look at <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html">this tutorial</a>.</p>
+<p>This is completely optional tho, especially if you are on Mac OS. For Windows users however, this is strongly recommended (there is a <a href="/posts/2015/01/25/how-to-use-vagrant-on-windows.html">dedicated tutorial here</a> about how to use Vagrant on Windows), even though the team behind Pelican seems to have ensured the compatibility for this platform.</p>
+<p>Specific steps for Windows are not covered in this series of articles.</p>
+<p>The following tutorial was made using <em>Ubuntu 14.04.1 LTS</em> boxes, and the part that will cover the deployment with Fabric relies on one of Vagrant's features (<a href="https://docs.vagrantup.com/v2/multi-machine/index.html" title="Vagrant doc - Multi-Machine"><em>"Multi-Machine"</em></a>).</p>
+<p>If you choose not to use Vagrant, you will still learn how to deploy your blog using Fabric, but you won't be able to test it right away.</p>
+<p>If you choose to take the Vagrant way however, use this Vagrantfile:</p>
+<pre><code># -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+  # Used box
+  config.vm.box = "ubuntu/trusty32"
+
+  config.vm.define "local" do |local|
+    # Accessing "localhost:8000" will access port 8000 on the guest machine
+    local.vm.network :forwarded_port, guest: 8000, host: 8000, auto_correct: true
+
+    # Copy the default Vagrant ssh private key over
+    local.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "~/.ssh/insecure_private_key"
+  end
+
+  config.vm.define "server" do |server|
+    # Private IP
+    server.vm.network :private_network, ip: "192.168.72.3"
+  end
+
+end
+</code></pre>
+<p>Don't worry too much if you don't understand everything at first, I will explain a bit more in due time. Just know that this config will allow you to run two different machines: one will be your local one (conveniently named <em>"local"</em>) and the other one (named <em>"server"</em>) will be used to simulate a remote server.</p>
+<p>For now, begin your journey with:</p>
+<pre><code>vagrant up local
+vagrant ssh local
+</code></pre>
+<p>Unless stated otherwise, all the steps covered in this part and the next ones need to happen on the <em>"local"</em> machine.</p>
+<h2 id="python-pip-and-virtualenv">Python, pip and virtualenv</h2>
+<h3 id="python">Python</h3>
+<p>Pelican is written in Python and is installed via <em>pip</em>, the language's <a href="https://pypi.python.org/pypi" title="The Python Package Index">recommended tool</a> to install packages (it is basically what <em>npm</em> is to JavaScript).
+Pelican works with Python 2.7.x, and chances are it is already available on your OS. To make sure of this, open a terminal and type:</p>
+<pre><code>python --version
+</code></pre>
+<p>If the command fails, please head to the <a href="https://wiki.python.org/moin/BeginnersGuide/Download" title="Beginners Guide">installation guide</a> and follow instructions for your platform.</p>
+<p>Pelican <em>should</em> just work with Python 3.3+ as well, but as our intent is to use Fabric for deployment, we will stick to 2.7.x in this tutorial.</p>
+<h3 id="pip">pip</h3>
+<p>If the version of Python you have is 2.7.9+, you are in luck because pip is already included. If not, install it this way:</p>
+<pre><code>wget https://bootstrap.pypa.io/get-pip.py -P /tmp/
+sudo python /tmp/get-pip.py
+rm /tmp/get-pip.py
+</code></pre>
+<p>The <code>-P</code> option allows to prefix the downloaded file with the destination folder (<em>"/tmp/"</em> in our case).</p>
+<p>Let's take this opportunity of having pip handy to install <a href="http://www.fabfile.org/" title="Official website"><em>Fabric</em></a> straight away:</p>
+<pre><code>sudo pip install Fabric
+</code></pre>
+<p>We are going to use it soon enough.</p>
+<p>We could now install Pelican right away using pip, but we are going to take an extra step before that.</p>
+<h3 id="virtualenv">virtualenv</h3>
+<p>If you are a developer, you may have come across situations where different projects need different versions of the same language to run, or different versions of other dependencies. Python is no exception to this, and it came up with a solution to address it: the use of Virtual Environments.</p>
+<p>A Virtual Environment (VE) isolates a set of dependencies for a project. We are going to use <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/" title="Documentation"><em>virtualenv</em></a> along with its buddy <a href="http://virtualenvwrapper.readthedocs.org/en/latest/index.html" title="Documentation"><em>virtualenvwrapper</em></a> to that purpose.</p>
+<p>First, we need to install them using pip:</p>
+<pre><code>sudo pip install virtualenv
+sudo pip install virtualenvwrapper
+</code></pre>
+<p>By default, virtualenv will create a folder named after the environment's directly inside the project's folder, and will do so for each project. virtualenvwrapper adds a set of functionalities on top of virtualenv to make its use easier, and placing all the VEs in the same folder is one of them (much cleaner IMHO and prevents us from having to add the folders in each project's <em>.gitignore</em> file).</p>
+<p>Let's define where virtualenwrapper should gather all the folders:</p>
+<pre><code>echo 'export WORKON_HOME=$HOME/.virtualenvs' &gt;&gt; /home/vagrant/.bashrc
+echo 'source /usr/local/bin/virtualenvwrapper.sh' &gt;&gt; /home/vagrant/.bashrc
+</code></pre>
+<p>Remember that I am using a Vagrant box here, hence <em>"vagrant"</em> as the username. Change this for the right value if necessary.</p>
+<p>I place these commands at the end of my <em>.bashrc</em> file so that <em>WORKON_HOME</em> is correctly initialized any time I start a new shell.</p>
+<p>Let's <code>source</code> our <em>.bashrc</em> file so the shell is updated with the new values:</p>
+<pre><code>source ~/.bashrc
+</code></pre>
+<p>It is now time to create our first VE. As we are setting up a blog, let's call it <em>"blog"</em>:</p>
+<pre><code>mkvirtualenv blog
+</code></pre>
+<p>Your prompt should now look like this:</p>
+<pre><code>(blog)vagrant@vagrant-ubuntu-trusty-32:/vagrant$
+</code></pre>
+<p>Mind the <em>"(blog)"</em> bit at the beginning: it indicates that you are currently using the <em>blog</em> VE. <code>mkvirtualenv</code> not only creates it, but activates it as well.</p>
+<p>This is how you leave it:</p>
+<pre><code>deactivate
+</code></pre>
+<p>Now let's check that the VE's folder was added to the right location:</p>
+<pre><code>ls $WORKON_HOME
+ls ~/.virtualenvs
+</code></pre>
+<p>Both commands should give the same list, and the <em>"blog"</em> folder should be among them (only if you set <em>".virtualenvs"</em> as the destination folder earlier, of course).</p>
+<p>To activate your VE, use the following command:</p>
+<pre><code>workon blog
+</code></pre>
+<p>Here you are, ready to move on to the installation of Pelican itself.</p>
+<p>Note that all the steps above is how you would prepare an environment for a Python project in general.</p>
+<p>Just sayin' :)</p>
+<p>In the <a href="/posts/2015/02/26/install-and-deploy-a-pelican-blog-using-fabric-part-2-installation-and-configuration.html" title="Install and deploy a Pelican blog using Fabric - Part 2: installation and configuration">next part</a>, we will see how to install and configure Pelican in our shiny new environment.</p>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2015-02-24T00:00:00+00:00" pubdate>2015/02/24</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/vagrant.html">vagrant</a>
+          <a href="https://tech.osteel.me/tag/fabric.html">fabric</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/python.html">python</a>
+          <a href="https://tech.osteel.me/tag/blog.html">blog</a>
+          <a href="https://tech.osteel.me/tag/pelican.html">pelican</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/2015/02/24/install-and-deploy-a-pelican-blog-using-fabric-part-1-local-environment.html";
+              var disqus_url = "https://tech.osteel.me/posts/2015/02/24/install-and-deploy-a-pelican-blog-using-fabric-part-1-local-environment.html";
+              var disqus_title = "Install and deploy a Pelican blog using Fabric - Part 1: local environment";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>

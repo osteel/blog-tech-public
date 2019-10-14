@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/01/25/vagrant-windows6.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>How to use Vagrant on Windows &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="vagrant" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="windows" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      How to use Vagrant on Windows
+    </h1>
+    <span class="post-date">2015/01/25</span>
+
+    <p><a href="https://www.vagrantup.com/" title="Vagrant website"><img alt="&quot;Vagrant logo&quot;" src="/images/2015/01/25/vagrant.png" title="Vagrant logo" /></a></p>
+<p>This article shows how to deal with Windows' specificities while trying to work with Vagrant. If you are not familiar at all with the latter, I suggest you go through this <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html" title="How to use Vagrant for local web development">Vagrant tutorial</a> first.</p>
+<p><strong>Note:</strong> the following was tested on Windows 8, but the steps described below shouldn't change too much between the different versions.</p>
+<h2 id="vagrant-ssh">Vagrant ssh</h2>
+<p>The first issue I came across was that <code>vagrant ssh</code> doesn't work out of the box. I was greeted with a constructive message:</p>
+<pre><code>`ssh` executable not found in any directories in the %PATH% variable. Is an SSH client installed? Try installing Cygwin, MinGW or Git, all of witch contain an SSH client. Or use your favorite SSH client with the following authentication information shown below:
+
+Host: 127.0.0.1
+Port: 2222
+Username: vagrant
+Private key: C:/path/to/project/.vagrant/machines/default/virtualbox/private_key
+</code></pre>
+<p>Fine. Let's <a href="http://git-scm.com/downloads" title="Git - Downloads">install Git</a>, then (considering it is not already the case).</p>
+<h3 id="git-install">Git install</h3>
+<p>The key is when the <em>"Adjusting your PATH environment"</em> screen pops up:</p>
+<p><img alt="&quot;Adjusting your PATH environment screen&quot;" src="/images/2015/01/25/vagrant-windows1.png" title="Adjusting your PATH environment screen" /></p>
+<p>You want to select <em>"Use Git and optional Unix tools from the Windows Command Prompt"</em>.</p>
+<p>Now I know the message in red looks quite scary, but honestly, unless you are a hardcore user of the Windows console, there is not much to worry about. Basically it will override some of the commands and add a few others.<br />
+Personally, it never caused me any trouble.</p>
+<p>If you are still a bit worried tho, be reassured: none of this is irreversible. All you would need to do is uninstall Git, or update the PATH variable removing the incriminated part.</p>
+<p>More on that in a minute.</p>
+<p>Try to <code>vagrant ssh</code> your VM again, this time it should do it (you might need to open a new terminal for the update to take effect, tho).</p>
+<h3 id="what-if-git-is-installed-already">What if Git is installed already?</h3>
+<p>Well, it was the case for me as well.</p>
+<p>You could always remove it and install it again, but there is another way.</p>
+<p>You will have to do manually what the installation of Git could have done for you, but fortunately it is quite trivial:</p>
+<ul>
+<li>Open the <em>Control Panel</em></li>
+<li>Go to <em>System and Security</em></li>
+<li>Click on <em>System</em>, then on the <em>Change Settings</em> button</li>
+<li>Display the <em>Advanced</em> tab and click on <em>Environment Variables...</em></li>
+<li>Look for the <em>Path</em> variable in the <em>System variables</em> list, select it then <em>Edit...</em></li>
+</ul>
+<p>At the end of the string, add the path to Git's bin (something like <em>"C:\Program Files\Git\bin"</em>) (don't forget to add a semicolon first to separate it from the previous path):</p>
+<p><img alt="&quot;Edit the PATH variable&quot;" src="/images/2015/01/25/vagrant-windows2.png" title="Edit the PATH variable" /></p>
+<p>Validate and close the different menus. Try to <code>vagrant ssh</code> your box again, it should work (again, you might need to open a new terminal first).</p>
+<p>You probably guessed it already, but if you don't want Git's commands to override the Windows ones anymore, all you need to do is to remove that bit.</p>
+<p>You will need to find another way for <code>ssh</code> to work though!</p>
+<p>Ah, but wait. There <em>is</em> another way.</p>
+<h2 id="putty">PuTTY</h2>
+<p>Remember that error message we initially got trying to <code>ssh</code> the box? Let's have a look at the second part of it:</p>
+<pre><code>Or use your favorite SSH client with the following authentication information shown below:
+
+Host: 127.0.0.1
+Port: 2222
+Username: vagrant
+Private key: C:/path/to/project/.vagrant/machines/default/virtualbox/private_key
+</code></pre>
+<p>I wasn't joking when I said it was constructive, because it really tells you what to do.</p>
+<p>The Windows console works ok but let's be honest, in the long run it is a real pain to use. It does the trick for a quick <code>vagrant ssh</code> but when the time comes to actually do some work on an Ubuntu server for example, a better shell is desirable.</p>
+<h3 id="enter-putty">Enter PuTTY</h3>
+<p>PuTTY is a very lightweight tool that allows to do a lot of cool stuff. Some of you are probably familiar with it already, and using it jointly with Vagrant is quite nice.</p>
+<p>We will use it to <code>ssh</code> our boxes, and rely on the info given by the message above to that purpose.</p>
+<p>First, <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" title="PuTTY - Downloads">download it</a> if that is not the case already (the first <em>putty.exe</em> link will do).</p>
+<p>Download <em>puttygen.exe</em> as well, we are going to need it.</p>
+<p>PuTTY and PuTTYGen are stand-alone applications (no need to install them), so just double click on the <em>.exe</em> files.</p>
+<p>Let's open PuTTYGen first: PuTTY uses its own key format, and we need to convert Vagrant's one first. Click on <em>File</em> then <em>Load private key</em>, select the file indicated by the error message earlier (e.g. <em>"C:/path/to/project/.vagrant/machines/default/virtualbox/private_key"</em>).</p>
+<p>Once selected, PuTTY is kind enough to tell us what to do with it:</p>
+<p><img alt="&quot;PuttyGen&quot;" src="/images/2015/01/25/vagrant-windows3.png" title="PuttyGen" /></p>
+<p>Ensure <em>SSH-2 RSA</em> is selected, and that the number in <em>Number of bits in a generated key</em> is 2048. Then click on <em>Save private key</em> (don't set a passphrase) and save it under your own user directory's <em>.ssh</em> folder, as <em>"vagrant_private_key"</em>. From now on, we will use this key for all the Vagrant boxes.</p>
+<p>Close PuTTYGen and open PuTTY. In the <em>Hostname</em> field, type <code>127.0.0.1</code>. In the <em>Port</em> one, <code>2222</code>. Ensure <em>SSH</em> is selected and, in the <em>Saved Sessions</em> field, type <code>vagrant</code> and click <em>Save</em>:</p>
+<p><img alt="&quot;Putty SSH connection configuration 1&quot;" src="/images/2015/01/25/vagrant-windows4.png" title="Putty SSH connection configuration 1" /></p>
+<p>Go to <em>Connection</em> then <em>Data</em>, and in the <em>Auto-login username</em> field, enter <em>"vagrant"</em>:</p>
+<p><img alt="&quot;Putty SSH connection configuration 2&quot;" src="/images/2015/01/25/vagrant-windows5.png" title="Putty SSH connection configuration 2" /></p>
+<p>Next, still  under <em>Connection</em>, go to <em>SSH</em> then <em>Auth</em>. Browse for the key you generated earlier in the <em>Private key file for authentication</em> field. Now head back to the <em>Session</em> menu, save again the <em>"vagrant"</em> one.</p>
+<p>Now click on <em>Open</em>: if everything went alright, you should now be in your Vagrant box ＼(^o^)／</p>
+<h3 id="using-multiple-vagrant-boxes-simultaneously">Using multiple Vagrant boxes simultaneously</h3>
+<p>Now let's say you already have a box running, and you need to start a second one. You <code>vagrant up</code> it, the Virtual Machine boots and you want to <code>SSH</code> it. But all the boxes cannot use the same SSH port!</p>
+<p>It all happens when the box is being booted:</p>
+<p><img alt="&quot;Windows console&quot;" src="/images/2015/01/25/vagrant-windows6.png" title="Windows console" /></p>
+<p>See the highlighted line? Seeing port 2222 was busy already, Vagrant picked the port 2200 instead.</p>
+<p>Now to <code>SSH</code> it using PuTTY, open it, load the <em>"vagrant"</em> session, and in the <em>Port</em> field, replace <em>"2222"</em> with <em>"2200"</em>. Click <em>Open</em>: there you are, connected to the second box.</p>
+<h2 id="known-limitations">Known limitations</h2>
+<h3 id="shared-folders-and-symlinks">Shared folders and symlinks</h3>
+<p>One of the fairly known limitations of using Vagrant on Windows with VirtualBox is that the latter won't let you create symlinks on the shared folders for security reasons. This quickly becomes problematic when dealing with npm packages, for example.</p>
+<p>One of the workarounds is to use the <em>"no bin link"</em> parameter (e.g. <code>npm install --no-bin-link</code>), but this is not always enough.</p>
+<p>Fortunately, there is a way to bypass this restriction. In your Vagrantfile, add the following piece of config:</p>
+<pre><code>config.vm.provider "virtualbox" do |v|
+  v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
+end
+</code></pre>
+<p>As Windows won't let standard users create symlinks, you now need to start your Vagrant box in administrator mode (open a Windows terminal in admin mode before running <code>vagrant up</code>, for example). Make sure no other box is already running though, as it won't start if VirtualBox is already running in standard mode.</p>
+<h3 id="maximum-path-length">Maximum path length</h3>
+<p>Another recurring problem comes from the fact that Windows' maximum length for a path is 255 characters. Again, this is quickly an issue when dealing with npm packages, especially when they have dependencies, themselves having dependencies, etc.</p>
+<p>The solution in that case is to create a symbolic link between the <em>"node_modules"</em> directory and another directory outside of the shared folders.</p>
+<p>Which brings us to our practical example.</p>
+<h3 id="practical-example-npm-packages">Practical example: npm packages</h3>
+<p>So you have this project relying on npm packages. You tried to install them using <code>--no-bin-link</code> but no luck, looks like some of the paths are too long.</p>
+<p>Fear not, Macless: update your Vagrant config as shown above to allow the creation of symlinks, boot your VM in admin mode, create a destination directory for your npm packages somewhere outside of the shared folder and create a symlink between it and the <em>"node_modules"</em> one:</p>
+<pre><code>mkdir ~/node_modules
+ln -s /home/vagrant/node_modules /vagrant/node_modules
+cd /vagrant
+npm install
+</code></pre>
+<p>Et voilà.</p>
+<p><strong>Note:</strong> this implies preventing the <em>"node_modules"</em> directory from being versionned.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Here you go, now using Vagrant on Windows in decent conditions.</p>
+<p>The process can look a bit convoluted, and really it is. It took me quite a while to put everything together, and if today I am rather satisfied, I am still a bit bugged about the multiple Vagrant boxes part. Having to check the SSH port and update it in the PuTTY session everytime is a bit annoying, even though dealing with several instances at the same time might be an edge case.</p>
+<p>Anyways, if you have any suggestions about that, don't hesitate to leave a comment.</p>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2015-01-25T00:00:00+00:00" pubdate>2015/01/25</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/vagrant.html">vagrant</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/windows.html">windows</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/2015/01/25/how-to-use-vagrant-on-windows.html";
+              var disqus_url = "https://tech.osteel.me/posts/2015/01/25/how-to-use-vagrant-on-windows.html";
+              var disqus_title = "How to use Vagrant on Windows";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
