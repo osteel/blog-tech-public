@@ -7,11 +7,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/2019/05/28/laravel_montreal.jpeg" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/08/10/composer-fork.jpg" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
-    <title>Talking about Collections at Laravel Montreal &mdash; osteel's blog</title>
+    <title>How to use the fork of a repository with Composer &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -27,10 +27,11 @@
   
 
 
-    <meta name="tags" contents="laravel" />
-    <meta name="tags" contents="collections" />
-    <meta name="tags" contents="laravelmontreal" />
-    <meta name="tags" contents="presentation" />
+    <meta name="tags" contents="composer" />
+    <meta name="tags" contents="github" />
+    <meta name="tags" contents="fork" />
+    <meta name="tags" contents="repository" />
+    <meta name="tags" contents="php" />
 
   </head>
 
@@ -52,7 +53,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <section>
     <ul class="sidebar-nav">
-        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
     </ul>
   </section>
 
@@ -122,27 +123,43 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      Talking about Collections at Laravel Montreal
+      How to use the fork of a repository with Composer
     </h1>
-    <span class="post-date">2019/05/28</span>
+    <span class="post-date">2015/08/10</span>
 
-    <p><img alt="Laravel Montreal" src="/images/2019/05/28/laravel_montreal.jpeg" title="Laravel Montreal" /></p>
-<p>I have been a bit busy since I moved to Montreal back in February last year and one of the things I've been doing is regularly attending <a href="https://www.meetup.com/Laravel-Montreal/">Laravel Montreal</a> meetups.</p>
-<p>It is a small but active community that gathers every month or so around various subjects gravitating around the framework, and after sitting in the audience for a few months I in turn decided to stand before it and share a bit of my experience.</p>
-<p>I'll be talking about Laravel Collections <a href="https://www.meetup.com/Laravel-Montreal/events/260904784/">tomorrow night</a> (Weds May 29) at <a href="https://ctrlweb.ca/en/">ctrlweb</a>'s office from 6:30pm.</p>
-<p>If you live in Montreal don't hesitate to join, either tomorrow or at a <a href="https://www.meetup.com/Laravel-Montreal/">future meetup</a> - presentations are in French but you can ask questions in English.</p>
-<p>I have also put together a <a href="https://github.com/osteel/php-collections-presentation">GitHub repository</a> with a demo application containing all of the examples I'll be showing, as well as the presentation's <a href="https://github.com/osteel/php-collections-presentation/blob/master/presentation.pdf">slides</a> (also in French, but there are a lot of code samples and with the demo app it should be fairly easy to follow).</p>
-<p>Happy coding!</p>
+    <p><img alt="Composer and GitHub" src="/images/2015/08/10/composer-fork.jpg" title="Composer and GitHub" /></p>
+<p>When using packages maintained by other developers, you often find yourself waiting for a fix, an update or the merge of a PR that will come with the next release but you need it now. A workaround is to fork the corresponding repository (which you may have done already if you are the author of the PR), make the updates you need and then use your fork in your project instead of the original package.</p>
+<p>If I wanted to use a fork of <a href="https://github.com/guzzle/guzzle">Guzzle</a> for example, I would edit <code>composer.json</code> like so (<a href="https://github.com/osteel"><code>osteel</code></a> is my GitHub username):</p>
+<pre><code>{  
+    "name": "osteel/myproject",  
+    "description": "My project.",  
+    "license": "MIT",  
+    "type": "project",  
+    "repositories": [  
+        {  
+            "type": "vcs",  
+            "url": "https://github.com/osteel/guzzle"  
+        }  
+    ],  
+    "require": {  
+        "laravel/lumen-framework": "5.1.*",  
+        "guzzlehttp/guzzle": "dev-master"  
+    }  
+}
+</code></pre>
+<p>This would use the master branch of my fork (replace <em>master</em> with whichever branch name you want to use).</p>
+<p>Don't forget to watch the original repository to be aware of new releases, or use <a href="http://gh-release-watch.com">http://gh-release-watch.com</a> if you don't want to get notifications for all the issues, conversations, etc (while GitHub is considering the possibility of <a href="https://github.com/isaacs/github/issues/410">watching for releases only</a>).</p>
 
     <p class="meta">
       <small>
         Posted by osteel on the
-        <time datetime="2019-05-28T00:00:00+01:00" pubdate>2019/05/28</time>
+        <time datetime="2015-08-10T00:00:00+01:00" pubdate>2015/08/10</time>
           :: [
-          <a href="https://tech.osteel.me/tag/laravel.html">laravel</a>
-          <a href="https://tech.osteel.me/tag/collections.html">collections</a>
-          <a href="https://tech.osteel.me/tag/laravelmontreal.html">laravelmontreal</a>
-          <a href="https://tech.osteel.me/tag/presentation.html">presentation</a>
+          <a href="https://tech.osteel.me/tag/composer.html">composer</a>
+          <a href="https://tech.osteel.me/tag/github.html">github</a>
+          <a href="https://tech.osteel.me/tag/fork.html">fork</a>
+          <a href="https://tech.osteel.me/tag/repository.html">repository</a>
+          <a href="https://tech.osteel.me/tag/php.html">php</a>
           ]
       </small>
     </p>
@@ -191,9 +208,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/posts/2019/05/28/talking-about-collections-at-laravel-montreal.html";
-              var disqus_url = "https://tech.osteel.me/posts/2019/05/28/talking-about-collections-at-laravel-montreal.html";
-              var disqus_title = "Talking about Collections at Laravel Montreal";
+              var disqus_identifier = "/posts/how-to-use-the-fork-of-a-repository-with-composer";
+              var disqus_url = "https://tech.osteel.me/posts/how-to-use-the-fork-of-a-repository-with-composer";
+              var disqus_title = "How to use the fork of a repository with Composer";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
