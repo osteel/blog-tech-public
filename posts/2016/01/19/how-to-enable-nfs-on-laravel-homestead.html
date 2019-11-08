@@ -7,11 +7,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2016/01/19/laravel.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
-    <title>Talking about Collections at PHP Quebec &mdash; osteel's blog</title>
+    <title>How to enable NFS on Laravel Homestead &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -27,10 +27,12 @@
   
 
 
-    <meta name="tags" contents="php" />
-    <meta name="tags" contents="collections" />
-    <meta name="tags" contents="phpquebec" />
-    <meta name="tags" contents="presentation" />
+    <meta name="tags" contents="laravel" />
+    <meta name="tags" contents="homestead" />
+    <meta name="tags" contents="nfs" />
+    <meta name="tags" contents="sharedfolder" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="virtualbox" />
 
   </head>
 
@@ -52,7 +54,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <section>
     <ul class="sidebar-nav">
-        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about.html">About</a></li>
     </ul>
   </section>
 
@@ -122,25 +124,49 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      Talking about Collections at PHP Quebec
+      How to enable NFS on Laravel Homestead
     </h1>
-    <span class="post-date">2019/06/29</span>
+    <span class="post-date">2016/01/19</span>
 
-    <p>Who knew Collections were so popular?</p>
-<p>After Laravel Montreal <a href="/posts/2019/05/28/talking-about-collections-at-laravel-montreal.html" title="Talking about Collections at Laravel Montreal">last month</a>, I will be speaking about Collections again at PHP Quebec on <a href="https://www.meetup.com/PHPQuebec/events/262624525/">July 4</a>.</p>
-<p>This talk will be less Laravel-centric, instead highlighting <a href="https://github.com/tightenco/collect">Tighten Co.'s standalone package</a>, which extracted the Collection class from the web artisans' framework to make it available to any PHP project.</p>
-<p>So let's grab a beer and have a chat at <a href="https://www.gorillagroup.com/">Gorilla's office</a> next Thursday!</p>
-<p>(If you can't make it but wish to know more about Collections nevertheless, I have put together a <a href="https://github.com/osteel/php-collections-presentation">GitHub repository</a> with a demo application containing all of the examples I will be showing, as well as the presentation's <a href="https://github.com/osteel/php-collections-presentation/blob/master/presentation.pdf">slides</a>.)</p>
+    <p><img alt="Laravel logo" src="/images/2016/01/19/laravel.png" title="Laravel logo" /></p>
+<p>I currently work on a Laravel project composed of multiple microservices that I run locally using <a href="https://laravel.com/docs/master/homestead">Homestead</a> (box v0.4.0 at the time of writing). As I started tinkering around I noticed that requesting the different APIs was super slow - up to 20s per request, which was really unexpected (and annoying to say the least).</p>
+<p>Googling around it appeared that most fingers were pointing to the same suspect: VirtualBox’s shared folders system. Most people were also advising to use <a href="https://en.wikipedia.org/wiki/Network_File_System">NFS</a> instead, and as a matter of fact there is a whole <a href="https://docs.vagrantup.com/v2/synced-folders/nfs.html">section of Vagrant’s documentation on the subject</a>.</p>
+<p>I tried different things found on various forums over the Internet (such as <a href="https://laracasts.com/discuss/channels/requests/nfs-on-homestead-20">this topic on Laracast</a>) and, once I got it set up, the time per request dropped to around 1s.</p>
+<p>This, you will agree, was quite an improvement.</p>
+<p>If it originally required a few tweaks in Homestead's configuration, it turns out that with the recent versions of the box, almost all the work is already done.</p>
+<p>The following is of course assuming that you are already using Homestead locally.</p>
+<hr />
+<p><strong>Note for Windows users:</strong> You may have noticed that the Vagrant documentation states that NFS is not available on Windows. If you are a PC user, you might want to have a look at <a href="https://github.com/winnfsd/vagrant-winnfsd">Vagrant WinNFSd</a> whose promise is to add support for NFS on Windows (I didn’t try it myself).</p>
+<hr />
+<hr />
+<p><strong>Note for Ubuntu users:</strong> You might need to install the NFS server:</p>
+<pre><code>apt-get install nfs-kernel-server
+</code></pre>
+<hr />
+<p>In <code>~/.homestead/Homestead.yaml</code>, under the <code>folders</code> section, add a <code>type</code> option under the folders you wish to map using NFS, as such:</p>
+<pre><code>folders:
+    - map: ~/Work/www/homestead
+      to: /home/vagrant/projects
+      type: "nfs"
+</code></pre>
+<p>Now, stop Homestead if it was running (<code>vagrant halt</code> from <code>~/Homestead</code> or however you usually do it) and start it again, forcing the provisioning step, e.g.:</p>
+<pre><code>vagrant up —-provision
+</code></pre>
+<p>You will be asked to enter your Mac OS user password before Vagrant mounts the folder(s).</p>
+<p>That's it!</p>
+<p>You may wonder why isn't NFS activated by default, then: the reason is because it won't work out of the box on all operating systems, as seen in the notes above.</p>
 
     <p class="meta">
       <small>
         Posted by osteel on the
-        <time datetime="2019-06-29T00:00:00+01:00" pubdate>2019/06/29</time>
+        <time datetime="2016-01-19T00:00:00+00:00" pubdate>2016/01/19</time>
           :: [
-          <a href="https://tech.osteel.me/tag/php.html">php</a>
-          <a href="https://tech.osteel.me/tag/collections.html">collections</a>
-          <a href="https://tech.osteel.me/tag/phpquebec.html">phpquebec</a>
-          <a href="https://tech.osteel.me/tag/presentation.html">presentation</a>
+          <a href="https://tech.osteel.me/tag/laravel.html">laravel</a>
+          <a href="https://tech.osteel.me/tag/homestead.html">homestead</a>
+          <a href="https://tech.osteel.me/tag/nfs.html">nfs</a>
+          <a href="https://tech.osteel.me/tag/sharedfolder.html">sharedfolder</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/virtualbox.html">virtualbox</a>
           ]
       </small>
     </p>
@@ -189,9 +215,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/posts/talking-about-collections-at-php-quebec";
-              var disqus_url = "https://tech.osteel.me/posts/talking-about-collections-at-php-quebec";
-              var disqus_title = "Talking about Collections at PHP Quebec";
+              var disqus_identifier = "/posts/2016/01/19/how-to-enable-nfs-on-laravel-homestead.html";
+              var disqus_url = "https://tech.osteel.me/posts/2016/01/19/how-to-enable-nfs-on-laravel-homestead.html";
+              var disqus_title = "How to enable NFS on Laravel Homestead";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
