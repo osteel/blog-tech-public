@@ -4,22 +4,25 @@
       <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
     <meta property="og:image" content="https://tech.osteel.me/images/2015/04/23/laravel-welcome.png" />
 
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
     <title>How to start a new Laravel 5 project with Homestead - quick reference &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
-    <link href="https://tech.osteel.me/feeds/laravel.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Categories Atom Feed" />
-    <link rel="stylesheet" href="../theme/css/poole.css"/>
-    <link rel="stylesheet" href="../theme/css/syntax.css"/>
-    <link rel="stylesheet" href="../theme/css/lanyon.css"/>
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
-    <link rel="stylesheet" href="../theme/css/styles.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
 
   
 
@@ -37,7 +40,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-item">
     <div class="profile">
-      <img src="../theme/img/profile.jpg"/>
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
     </div>
   </div>
 
@@ -47,13 +50,13 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <section>
     <ul class="sidebar-nav">
-        <li><a class="sidebar-nav-item" href="../pages/about.html">About</a></li>
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
     </ul>
   </section>
 
   <section>
     <h2>Search</h2>
-    <form class="sidebar-nav-item sidebar-nav" action="../search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
         <input class="form-input" type="text" name="q" placeholder="Search" />
     </form>
   </section>
@@ -61,13 +64,13 @@ styles, `#sidebar-checkbox` for behavior. -->
   <section>
     <h2>Categories</h2>
     <nav class="sidebar-nav">
-        <a class="sidebar-nav-item" href="../category/blog.html">Blog</a>
-        <a class="sidebar-nav-item" href="../category/contracting.html">Contracting</a>
-        <a class="sidebar-nav-item" href="../category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="../category/local-environment.html">Local environment</a>
-        <a class="sidebar-nav-item" href="../category/misc.html">Misc</a>
-        <a class="sidebar-nav-item" href="../category/nginx.html">Nginx</a>
-        <a class="sidebar-nav-item" href="../category/php.html">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
 
     </nav>
   </section>
@@ -87,41 +90,11 @@ styles, `#sidebar-checkbox` for behavior. -->
   <section>
     <h2>Feeds</h2>
     <ul class="sidebar-nav">
-        <li class="sidebar-nav-item">Blog&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/blog.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">Contracting&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/contracting.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">Laravel&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/laravel.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">Local environment&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/local environment.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">Misc&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/misc.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">Nginx&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/nginx.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
-        <li class="sidebar-nav-item">PHP&nbsp;
-          [&nbsp;
- <a href="https://tech.osteel.me/feeds/php.atom.xml" rel="subscribe-atom">Atom</a>          &nbsp;
-          &nbsp;]
-        </li>
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
     </ul>
   </section>
 
@@ -137,7 +110,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       <div class="masthead">
         <div class="container">
           <h3 class="masthead-title">
-            <a href="../" title="Home">osteel's blog</a>
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
             <small>Web development resources</small>
           </h3>
         </div>
@@ -233,12 +206,16 @@ DB_PASSWORD=password
         Posted by osteel on the
         <time datetime="2015-04-23T00:00:00+01:00" pubdate>2015/04/23</time>
           :: [
-          <a href="../tag/laravel.html">laravel</a>
-          <a href="../tag/homestead.html">homestead</a>
+          <a href="https://tech.osteel.me/tag/laravel.html">laravel</a>
+          <a href="https://tech.osteel.me/tag/homestead.html">homestead</a>
           ]
       </small>
     </p>
 
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
   </div>
 </div>
       </div>
@@ -281,7 +258,7 @@ DB_PASSWORD=password
         var disqus_shortname = "osteel";
               var disqus_identifier = "/posts/how-to-start-a-new-laravel5-project-with-homestead-quick-reference";
               var disqus_url = "https://tech.osteel.me/posts/how-to-start-a-new-laravel5-project-with-homestead-quick-reference";
-              var disqus_title = "Talking about Collections at PHP Quebec";
+              var disqus_title = "How to start a new Laravel 5 project with Homestead - quick reference";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
@@ -307,7 +284,6 @@ DB_PASSWORD=password
     ga('create', 'UA-53994673-2');
     ga('send', 'pageview');
 </script>
-
 
      </div>
   </body>
