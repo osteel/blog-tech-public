@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2015/12/18/docker-tutorial0.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>From Vagrant to Docker: How to use Docker for local web development &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="php" />
+    <meta name="tags" contents="mysql" />
+    <meta name="tags" contents="phpmyadmin" />
+    <meta name="tags" contents="nginx" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="webdevelopment" />
+    <meta name="tags" contents="environment" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      From Vagrant to Docker: How to use Docker for local web development
+    </h1>
+    <span class="post-date">2015/12/18</span>
+
+    <hr />
+<p><strong>[UPDATE 2017/01/14]:</strong> This article is slightly outdated and an up to date version is now available. If you are new to Docker, keep reading as most of the content is still valid and will get you familiar with how Docker works, but then make sure to head <a href="/posts/2017/01/15/how-to-use-docker-for-local-web-development-an-update.html">over here</a> to get the most of Docker and Docker Compose's latest versions.</p>
+<p>There are other ways to install Docker on your machine than the one mentioned here - <a href="/posts/2017/01/15/how-to-use-docker-for-local-web-development-an-update.html">learn about them in the new post as well</a>.</p>
+<hr />
+<p><img alt="Docker logo" src="/images/2015/12/18/docker-tutorial1.jpg" title="Docker logo" /></p>
+<p>If you are somewhat following what's happening in the tech world, you must have heard of Docker.</p>
+<p>If you haven't, first, get out of your cave, and then, here is a short description of the thing, borrowed from <a href="https://en.wikipedia.org/wiki/Docker_%28software%29">Wikipedia</a>:</p>
+<blockquote>
+<p>Docker is an open-source project that automates the deployment of applications inside software containers, by providing an additional layer of abstraction and automation of operating-system-level virtualization on Linux.</p>
+</blockquote>
+<p><em>"Wow, cool. What the hell does that mean tho?"</em> I hear you say. Hang on! It goes on, saying that:</p>
+<blockquote>
+<p>[it allows] independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines.</p>
+</blockquote>
+<p>Hmm ok. It starts to sound familiar and vaguely useful.</p>
+<p>I don't know about you, but working on a Mac (and previously on a Windows machine) (shush), I set up a Vagrant box for almost every single project I work on (if you have no clue what Vagrant is, please take a look at <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html">this post</a> first, especially this <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html#vagrant">short bit</a>).<br />
+Whenever I need to work on any of these projects, I run a quick <code>vagrant up</code> and get it running in its own isolated virtual machine (VM) in a matter of minutes. Pretty handy.</p>
+<p>But that's still a few minutes to get up and running, and having a VM for each project quickly ends up taking a shitload of resources and space on the disk.<br />
+You could take Laravel's initial approach with <a href="http://laravel.com/docs/master/homestead">Homestead</a> and run several projects on the same VM, but it kinda defeats the purpose of having isolated environments.</p>
+<p>So what does Docker have to do with this?</p>
+<p>Well, the promise behind it is to provide isolated environments running on a same virtual machine (with <a href="https://github.com/boot2docker/boot2docker">Boot2Docker</a>) that starts in about five seconds.</p>
+<p><em>"So... I could replace all my Vagrant boxes with a single super-fast VM running Docker?"</em></p>
+<p>Exactamundo.</p>
+<p>And that's what we are going to do today, step by step.</p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#installation">Installation</a></li>
+<li><a href="#setup">Setup</a><ul>
+<li><a href="#nginx">Nginx</a></li>
+<li><a href="#php">PHP</a></li>
+<li><a href="#data">Data</a><ul>
+<li><a href="#volumes-and-data-containers">Volumes and data containers</a></li>
+<li><a href="#mysql">MySQL</a></li>
+</ul>
+</li>
+<li><a href="#phpmyadmin">phpMyAdmin</a></li>
+</ul>
+</li>
+<li><a href="#handling-multiple-projects">Handling multiple projects</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#sources">Sources</a></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<p>As mentioned earlier, I'm working on a Mac, so this tutorial will be written from a Mac user point of view. That being said, in practice, once the installation is done, the way Docker is used shouldn't differ much (if at all). So, whether you're on a Mac or a PC, just head <a href="https://docs.docker.com/toolbox/overview/">over here</a>, download and install Docker Toolbox and follow the instructions for your platform (<a href="https://docs.docker.com/toolbox/toolbox_install_mac/">Mac OS</a>, <a href="https://docs.docker.com/toolbox/toolbox_install_windows/">Windows</a>) (or, if you're a Linux user, go straight to the specific <a href="http://docs.docker.com/linux/started/">installation guide</a> - no need to get Docker Toolbox).</p>
+<p>As stated on the website, Docker Toolbox will install all the stuff you need to get started.</p>
+<p>Follow the steps of the <a href="https://docs.docker.com/engine/getstarted/">Get Started with Docker guide</a> all the way down to the <em>Tag, push, and pull your image</em> section: it's all very clear and well written and will even help you get your bearings with the terminal if you're not familiar with it.</p>
+<p>I'll take it from there.</p>
+<p>In the meantime, here is a dancing Tyrion:</p>
+<p><img alt="Dancing Tyrion" src="/images/2015/12/18/docker-tutorial3.gif" title="Dancing Tyrion" /></p>
+<hr />
+<p><strong>Note:</strong> You might get this kind of error when trying to complete the first step:</p>
+<pre><code>Network timed out while trying to connect to https://index.docker.io/v1/repositories/library/hello-world/images. You may want to check your internet connection or if you are behind a proxy.
+</code></pre>
+<p>In that case, simply run <code>docker-machine restart default</code> and try again.</p>
+<hr />
+<p>All good? Well done.</p>
+<p>By now, you should have a virtual machine running with <a href="https://www.virtualbox.org/">VirtualBox</a> (the virtualisation software used by default under the hood) and know how to find, run, build, push and pull images, and have a better idea of what Docker is and how it works.</p>
+<p>That's pretty cool already, but not exactly concrete. How do you get to the point where you open your browser and display the website you are currently building and interact with a database and everything?</p>
+<p>Stick with me.</p>
+<h2 id="setup">Setup</h2>
+<p>Everything we'll do under this section is available as a <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a> you can refer to if you get stuck at any time (you can also directly use it as is if you want).</p>
+<p>Also, as you may have noticed I already started to use the terms <em>virtual machine</em> and <em>VM</em> to refer to the same thing. I will sometimes mention a <em>Docker machine</em> as well. Don't get confused: they are all the same.</p>
+<p>Now that this is clear, let's decide on the technologies. I usually work with the <a href="https://lemp.io/">LEMP stack</a>, and I would like to get my hands on PHP7, so let's go for a Linux/PHP7/Nginx/MySQL stack (we'll see how to throw a framework into the mix in another post).</p>
+<p>As we want to have the different parts of the stack to run in separate containers, we need a way to orchestrate them: that's when <a href="https://docs.docker.com/compose/">Docker Compose</a> comes in.</p>
+<p>A lot of tutorials will teach you how to set up a single container first, or a couple of and how to link them together using Docker commands, but in real life it is very unlikely that only one or two containers are going to be needed, and using simple Docker commands to link more containers to each other can quickly become a pain in the bottom.</p>
+<p>Docker Compose allows you to describe your stack specifying the different containers that will compose it through a YAML config file. As the recommended practice is to have one process per container, we will separate things as follows:</p>
+<ul>
+<li>a container for Nginx</li>
+<li>a container for PHP-FPM</li>
+<li>a container for MySQL</li>
+<li>a container for phpMyAdmin</li>
+<li>a container to make MySQL data persistent</li>
+<li>a container for the application code</li>
+</ul>
+<p>Another common thing among the tutorials and articles I came through is that their authors often use their own images, which I find somewhat confusing for the newcomers, especially as they rarely explain why they do so.</p>
+<p>Here, we'll use the official images and extra Dockerfiles to extend them.</p>
+<h3 id="nginx">Nginx</h3>
+<p>But first, let's start with an extremely basic configuration to make sure everything is working properly and that we're all on the same page (this will also allow you to familiarise with a few commands in the process).</p>
+<p>Create a folder for your project (I named mine <em>docker-tutorial</em>) and add a <code>docker-compose.yml</code> file into it, with this content:</p>
+<pre><code>nginx:
+    image: nginx:latest
+    ports:
+        - 80:80
+</code></pre>
+<p>Save it and, from that same folder in your terminal, run:</p>
+<pre><code>$ docker-compose up -d
+</code></pre>
+<p>It might take a little while as the Nginx image needs to be pulled first. When it is done, run:</p>
+<pre><code>$ docker-machine ip default
+</code></pre>
+<p>Copy the IP address that displays and paste it in the address bar of your favourite browser. You should see Nginx's welcome page:</p>
+<p><img alt="Nginx welcome page" src="/images/2015/12/18/docker-tutorial4.png" title="Nginx welcome page" /></p>
+<p>Nice! So what did we do here?</p>
+<p>First we told Docker Compose that we wanted a container named <code>nginx</code> to use the <a href="https://hub.docker.com/_/nginx/">latest official Nginx image</a> and publish its port 80 (the standard port used by HTTP) on the port 80 of our host machine (that's my Mac in my case).</p>
+<p>Then we asked Docker Compose to build and start the containers described in <code>docker-compose.yml</code> (just one so far) with <code>docker-compose up</code>. Option <code>-d</code> allows to have the containers running in the background and gives the terminal back.</p>
+<p>Finally, we displayed the private IP address of the virtual machine created by Docker and named <code>default</code> (you can check this running <code>docker-machine ls</code>, which will give you the list of running machines).</p>
+<p>As we published the port 80 of this virtual machine, we can access it from our host machine.</p>
+<p>One last thing to observe before we move on: in your terminal, type <code>docker ps</code>. You should see something like that:</p>
+<p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial5.png" title="List of containers" /></p>
+<p>That's the list of all the running containers and the images they use. For now we only have one container, using the official Nginx image. Here its name is <em>dockertutorial_nginx_1</em>: Docker Compose came up with it using the name of the current directory and the image's and appended a digit to prevent name collisions.</p>
+<h3 id="php">PHP</h3>
+<p>Still following? Good. Now let's try and add PHP and a custom <code>index.php</code> file to be displayed when accessing the machine's private IP.</p>
+<p>Replace the content of <code>docker-compose.yml</code> with this one:</p>
+<pre><code>nginx:
+    build: ./nginx/
+    ports:
+        - 80:80
+    links:
+        - php
+    volumes:
+        - ./www/html:/var/www/html
+
+php:
+    image: php:7.0-fpm
+    expose:
+        - 9000
+    volumes:
+        - ./www/html:/var/www/html
+</code></pre>
+<p>A few things here: we added a new container named <code>php</code>, which will use the official PHP image, and more specifically the <code>7.0-fpm</code> tag. As this image doesn't expose the port 9000 by default, we specify it ourselves.</p>
+<p>At this point you might be wondering what is the difference between <code>expose</code> and <code>ports</code>: the former allows to expose some ports to the <em>other containers only</em>, and the latter makes them accessible to the <em>host machine</em>.</p>
+<p>We also added a <code>volumes</code> key. What we're saying here is that the directory <code>./www/html</code> must be mounted inside the container as its <code>/var/www/html</code> directory. To simplify, it means that the content of <code>./www/html</code> on our host machine will be <em>in sync</em> with the container's <code>/var/www/html</code> directory. It also means that this content will be <em>persistent</em> even if we destroy the container.<br />
+More on that later.</p>
+<hr />
+<p><strong>Note:</strong> If you have trouble mounting a local folder inside a container, please have a look at the corresponding <a href="https://docs.docker.com/engine/tutorials/dockervolumes/#/mount-a-host-directory-as-a-data-volume">documentation</a>.</p>
+<hr />
+<p>The <code>nginx</code> container's config has been slightly modified as well: it got the same <code>volumes</code> key as the <code>php</code> one (as the Nginx container needs an access to the content to be able to serve it), and a new <code>links</code> key appeared. We are telling Docker Compose that the <code>nginx</code> container needs a link to the <code>php</code> one (don't worry if you are confused, this will make sense soon).</p>
+<p>Finally, we replaced the <code>image</code> key for a <code>build</code> one, pointing to a <code>nginx/</code> directory inside the current folder. Here, we tell Docker Compose not to use an existing image but to use the <code>Dockerfile</code> from <code>nginx/</code> to build a new image.</p>
+<p>If you followed the <em>get started</em> guide, you should already have an idea of what a Dockerfile is. Basically, it is a file allowing to describe what must be installed on the image, what commands should be run on it, etc.</p>
+<p>Here is what ours looks like (create a <code>Dockerfile</code> file with this content under a new <code>nginx/</code> directory):</p>
+<pre><code>FROM nginx:latest
+
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+</code></pre>
+<p>Not much to see, eh!</p>
+<p>We start from the official Nginx image we have already used earlier and we replace the default configuration it contains with our own (might be worth noting that by default the official Nginx image will only take files named following the pattern <code>*.conf</code> and under <code>conf.d/</code> into account - a mere detail but it drove me crazy for almost three hours at the time).</p>
+<p>Let's add this <code>default.conf</code> file into <code>nginx/</code>:</p>
+<pre><code>server {
+    listen 80 default_server;
+    root /var/www/html;
+    index index.html index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    access_log off;
+    error_log  /var/log/nginx/error.log error;
+
+    sendfile off;
+
+    client_max_body_size 100m;
+
+    location ~ \.php$ {
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        fastcgi_pass php:9000;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_intercept_errors off;
+        fastcgi_buffer_size 16k;
+        fastcgi_buffers 4 16k;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+</code></pre>
+<p>It is a very basic Nginx server config.</p>
+<p>What is interesting to note here however is this line:</p>
+<pre><code>fastcgi_pass php:9000;
+</code></pre>
+<p>We are asking Nginx to proxy the requests to the port 9000 of our <code>php</code> container: that's what the <code>links</code> key from the config for the <code>nginx</code> container in the <code>docker-compose.yml</code> file was for!</p>
+<p>We just need one more file - <code>index.php</code>, inside <code>www/html</code> under the current directory:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;Hello World!&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;img src="https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif" alt="Hello World!" /&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>Yes, it only contains HTML but we just want to make sure that PHP files are correctly served.</p>
+<p>Here is what your tree should look like by now:</p>
+<p><img alt="Tree" src="/images/2015/12/18/docker-tutorial6.png" title="Tree" /></p>
+<p>Go back to your terminal and run <code>docker-compose up -d</code> again. Docker Compose will detect the configuration changes and build and start the containers again (it will also pull the PHP image):</p>
+<p><img alt="docker-compose up" src="/images/2015/12/18/docker-tutorial7.png" title="docker-compose up" /></p>
+<p>Browse the virtual machine's private IP again (<code>docker-machine ip default</code> if you closed the tab): you should be greeted by a famous Doctor.</p>
+<p>Now type <code>docker ps</code> in your terminal to display the list of running containers again:</p>
+<p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial8.png" title="List of containers" /></p>
+<p>We can see a new one appeared, using the official PHP image, and the Nginx one looks a bit different from the previous one: Docker Compose used the Dockerfile to automatically build a new image from the official Nginx one, and used it for the container.</p>
+<p>Now if you remember, I said earlier that the current directory is in sync with the containers' (because of the <code>volumes</code> key in <code>docker-compose.yml</code>). Let's check if I'm not a liar: open <code>index.php</code> and change the page title for <em>"Hello Universe!"</em>, for example. Save and reload the page.</p>
+<p>See the change? Sweet.</p>
+<p>Now we have got two containers for Nginx and PHP, talking to each other and serving files we can update from our host machine and see the result instantly.</p>
+<p>Time to add some database madness!</p>
+<h3 id="data">Data</h3>
+<h4 id="volumes-and-data-containers">Volumes and data containers</h4>
+<p>Before we actually dive into the configuration of MySQL, let's have a closer look at this <code>volumes</code> thing. Both the <code>nginx</code> and <code>php</code> containers have the same directory mounted inside, and it's common practice to use what is called a <em>data container</em> to hold this kind of data.<br />
+In other words, it's a way to <em>factorise</em> the access to this data by other containers.</p>
+<p>Change the content of <code>docker-compose.yml</code> for the following:</p>
+<pre><code>nginx:
+    build: ./nginx/
+    ports:
+        - 80:80
+    links:
+        - php
+    volumes_from:
+        - app
+
+php:
+    image: php:7.0-fpm
+    expose:
+        - 9000
+    volumes_from:
+        - app
+
+app:
+    image: php:7.0-fpm
+    volumes:
+        - ./www/html:/var/www/html
+    command: "true"
+</code></pre>
+<p>Several things happened: first, we added a new container named <code>app</code>, using the same <code>volumes</code> parameter as the <code>nginx</code> and <code>php</code> ones. The purpose of this container is solely to hold the application code: when Docker Compose will create it, it is going to be stopped at once as it doesn't do anything apart from executing the command <em>"true"</em>. This is not a problem as for the volume to be accessible, the container needs to exist but doesn't need to be running, also preventing the pointless use of extra resources.<br />
+Besides, you'll notice that we're using the same PHP image as the <code>php</code> container's: this is a good practice as this image already exists and reusing it doesn't take any extra space (as opposed to using a <em>data-only</em> image such as <em>busybox</em>, as you may see in other tutorials out there).</p>
+<p>The other change we made is <code>volumes</code> was replaced with <code>volumes_from</code> in <code>nginx</code> and <code>php</code>'s configurations and both are pointing to this new <code>app</code> container. This is quite self-explanatory, but basically we are telling Docker Compose to mount the volumes from <code>app</code> in both these containers.</p>
+<p>Run <code>docker-compose up -d</code> again and make sure you can still access the virtual machine's private IP properly.<br />
+Running <code>docker ps</code> now should display this:</p>
+<p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial9.png" title="List of containers" /></p>
+<p><em>"Wait a minute. Where's the <code>app</code> container?"</em></p>
+<p>I'm glad you asked. If you recall I've just said that the container was stopped right after its creation, and <code>docker ps</code> only displays the <em>running</em> containers.<br />
+Now run <code>docker ps -a</code>:</p>
+<p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial10.png" title="List of containers" /></p>
+<p>There it is!</p>
+<p>If you're interested in reading more about data containers and volumes (and I encourage you to do so), I'd suggest <a href="http://container-solutions.com/understanding-volumes-docker/" title="Understanding Volumes in Docker">this article by Adrian Mouat</a> which gives a good overview (you will also find all the sources I used at the end of this article).</p>
+<h4 id="mysql">MySQL</h4>
+<p>Alright! Enough digression, back to MySQL. </p>
+<p>Open <code>docker-compose.yml</code> again and add this at the end:</p>
+<pre><code>mysql:
+    image: mysql:latest
+    volumes_from:
+        - data
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: project
+        MYSQL_USER: project
+        MYSQL_PASSWORD: project
+
+data:
+    image: mysql:latest
+    volumes:
+        - /var/lib/mysql
+    command: "true"
+</code></pre>
+<p>And update the config for the <code>php</code> container to add a link to the <code>mysql</code> one and use a Dockerfile to build the image:</p>
+<pre><code>php:
+    build: ./php/
+    expose:
+        - 9000
+    links:
+        - mysql
+    volumes_from:
+        - app
+</code></pre>
+<p>You already know what the purpose of the <code>links</code> parameter is, so let's have a look at the new Dockerfile:</p>
+<pre><code>FROM php:7.0-fpm
+
+RUN docker-php-ext-install pdo_mysql
+</code></pre>
+<p>Again, not much in there: we simply install the <em>pdo_mysql</em> extension so we can connect to the database (see <em>How to install more PHP extensions</em> from the <a href="https://hub.docker.com/_/php/">image's doc</a>). Put this file in a new <code>php/</code> directory.</p>
+<p>Moving on to the MySQL configuration: we start from the <a href="https://hub.docker.com/_/mysql/">official MySQL image</a>, and as you can see there is a new <code>environment</code> key we haven't met so far: it allows to declare some environment variables that will be accessible in the container. More specifically here, we set the root password for MySQL, and a name (<code>project</code>), a user and a password for a database to be created (all the available variables are listed in the <a href="https://hub.docker.com/_/mysql/">image's documentation</a>).</p>
+<p>Following the same principle as exposed earlier, we also declare a <code>data</code> container whose aim is only to hold the MySQL data present in <code>/var/lib/mysql</code> on the container (and reusing the same MySQL image to save disk space). You might have noticed that, unlike what we were doing so far, we do not declare a specific directory on the host machine to be mounted into <code>/var/lib/mysql</code> (normally specified before the colon): we don't need to know where this directory is, we just want its content to persist, so we let Docker Compose handle this part.<br />
+Although that does not mean we have no idea where this folder sits - but we'll have a look at this later.</p>
+<p>One thing worth noting right now tho, is that if this volume already contains MySQL data, the <code>MYSQL_ROOT_PASSWORD</code> variable will be ignored and if the <code>MYSQL_DATABASE</code> already exists, it will remain untouched.</p>
+<p>In order to be able to test the connection to the database straight away, let's update the <code>index.php</code> file a bit:</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="utf-8"&gt;
+        &lt;title&gt;Hello World!&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;img src="https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif" alt="Hello World!" /&gt;
+        &lt;?php
+        $database   = $user = $password = "project";
+        $host       = "mysql";
+        $connection = new PDO("mysql:host={$host};dbname={$database};charset=utf8", $user, $password);
+        $query      = $connection-&gt;query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE='BASE TABLE'");
+        $tables     = $query-&gt;fetchAll(PDO::FETCH_COLUMN);
+
+        if (empty($tables)) {
+            echo "&lt;p&gt;There are no tables in database \"{$database}\".&lt;/p&gt;";
+        } else {
+            echo "&lt;p&gt;Database \"{$database}\" has the following tables:&lt;/p&gt;";
+            echo "&lt;ul&gt;";
+            foreach ($tables as $table) {
+                echo "&lt;li&gt;{$table}&lt;/li&gt;";
+            }
+            echo "&lt;/ul&gt;";
+        }
+        ?&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>This script will try to connect to the database and list the tables it contains.</p>
+<p>We're all set! Run <code>docker-compose up -d</code> in your terminal again, followed by <code>docker ps -a</code> (again, it might take a little while as the MySQL image needs to be pulled). You should see five containers, two of which are exited:</p>
+<p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial11.png" title="List of containers" /></p>
+<p>Now refresh the browser tab: <em>"There are no tables in database 'project'"</em> should appear.</p>
+<p>Event though the next point is about phpMyAdmin and you will be able to use it to edit your databases, I am now going to show you how to access the running MySQL container and use the MySQL command line interface.</p>
+<p>From the result of the previous command, copy the <em>running</em> MySQL container ID (<code>5207587d116b</code> in our case) and run:</p>
+<pre><code>$ docker exec -it 5207587d116b /bin/bash
+</code></pre>
+<p>You are now running an interactive shell in this container (you can also use its name instead of its ID).</p>
+<p><a href="https://docs.docker.com/engine/reference/commandline/exec/"><code>docker exec</code></a> allows to execute a command in a running container, <code>-t</code> attaches a terminal and <code>-i</code> makes it interactive. Finally, <code>/bin/bash</code> is the command that is run and creates a <code>bash</code> instance inside the container.</p>
+<p>Of course, you can use the same command for other containers too.</p>
+<p>From there, all you need to do is run <code>mysql -uroot -psecret</code> to enter the MySQL CLI. List the databases running <code>show databases;</code>:</p>
+<p><img alt="List of databases" src="/images/2015/12/18/docker-tutorial12.png" title="List of databases" /></p>
+<p>Change the current database for <code>project</code> and create a new table:</p>
+<pre><code>$ mysql&gt; use project
+$ mysql&gt; CREATE TABLE users (id int);
+</code></pre>
+<p>Refresh the project page: the table <code>users</code> should now be listed.</p>
+<p>You can exit the MySQL CLI entering <code>\q</code> and the container with <code>ctrl</code> + <code>d</code>.</p>
+<p>There is one question about the MySQL data we haven't answered yet: where does it sit on the host machine?</p>
+<p>Earlier we set up the <code>data</code> container in <code>docker-compose.yml</code> as follows:</p>
+<pre><code>data:
+    image: mysql:latest
+    volumes:
+        - /var/lib/mysql
+    command: "true"
+</code></pre>
+<p>That means we let Docker Compose mount a directory of its choice from the host machine into <code>/var/lib/mysql</code>. So where is it?</p>
+<p>Run <code>docker ps -a</code> again, copy the ID of the <em>exited</em> MySQL container this time (<code>7970b851b07a</code> in our case) , and run :</p>
+<pre><code>$ docker inspect 7970b851b07a
+</code></pre>
+<p>Some JSON data should appear on your screen. Look for the <code>Mounts</code> section:</p>
+<pre><code>...,
+"Mounts": [
+    {
+        "Name": "0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f",
+        "Source": "/mnt/sda1/var/lib/docker/volumes/0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f/_data",
+        "Destination": "/var/lib/mysql",
+        "Driver": "local",
+        "Mode": "",
+        "RW": true
+    }
+],
+...
+</code></pre>
+<p>The data contained in the volume sits in the <code>"Source"</code> directory.</p>
+<p><em>"Hmm I see.</em></p>
+<p><em>But… what happens to the volumes if we remove the containers that hold them?"</em></p>
+<p>Excellent question!</p>
+<p>Well, they actually stay around, taking disk space for nothing.</p>
+<p>Two solutions for this. First, we can make sure to remove the volumes along with the container using the <code>-v</code> option:</p>
+<pre><code>$ docker rm -v containerid
+</code></pre>
+<p>Or, if some containers were removed without the <code>-v</code> option, resulting in dangling volumes:</p>
+<pre><code>$ docker volume rm $(docker volume ls -qf dangling=true)
+</code></pre>
+<p>This command uses the <code>docker volume ls</code> command with the <code>q</code> and <code>f</code> options to respectively list the volumes' names only and keep the dangling ones (<code>dangling=true</code>).</p>
+<p>Check the <a href="https://docs.docker.com/engine/reference/commandline/cli/">Docker command line documentation</a> for more info.</p>
+<h3 id="phpmyadmin">phpMyAdmin</h3>
+<p>Being able to access a container and deal with MySQL using the command line interface is a good thing, but sometimes it is convenient to have a more friendly user interface. PHPMyAdmin is arguably the <em>de facto</em> choice when it comes to MySQL, so let's set it up using Docker!</p>
+<p>Open <code>docker-compose.yml</code> again and add the following:</p>
+<pre><code>phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - 8080:80
+    links:
+        - mysql
+    environment:
+        PMA_HOST: mysql
+</code></pre>
+<p>Once again, we start from the <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin/">official phpMyAdmin image</a>. We publish its port 80 to the virtual machine's port 8080, we link it to the <code>mysql</code> container (obviously) and we set it as the host using the <code>PMA_HOST</code> environment variable.</p>
+<p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded and, once everything is up, visit the project page again, appending <code>:8080</code> to the private IP (that's how we access the VM's port 8080):</p>
+<p><img alt="phpMyAdmin" src="/images/2015/12/18/docker-tutorial13.png" title="phpMyAdmin" /></p>
+<p>Enter <code>root</code> / <code>secret</code> as credentials and you're in (<code>project</code> / <code>project</code> will work too, giving access to the <code>project</code> database only, as defined in the <code>mysql</code> container configuration).</p>
+<p>That one was easy, right?</p>
+<p>That's actually it for the setup!</p>
+<p>This is a lot to digest already, so taking a break might be a good idea. Don't forget to read on eventually though, as the next couple of sections will most likely clarify a few points.</p>
+<p>Again, the setup is also available as a <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a>. Feel free to clone it and play around.</p>
+<h2 id="handling-multiple-projects">Handling multiple projects</h2>
+<p>One big advantage of using Docker rather than say, multiple Vagrant boxes, is if several containers use the same base images, the disk space usage will only increase by the read-write layer of each container, which is usually only a few megabytes.<br />
+To put it differently, if you use the same stack for most of your projects, each new project will basically only take a few extra megabytes to run (not taking into account the size of the codebase here, obviously).</p>
+<p>Say you want to use the same stack except you need PostgreSQL instead of MySQL. All you need to do is change the database container image for your new project, and all the other containers will reuse the images you already have locally.</p>
+<p>Pretty neat.</p>
+<p>But how do you concretely deal with several projects using the same virtual machine?</p>
+<p>First thing to consider is a Docker machine has only one private IP address, so unless you decide to use a different port per project (which should be absolutely fine), you won't be able to have multiple web projects running on the port 80 at the same time.</p>
+<p>That's not really an issue as you can easily stop containers.</p>
+<p>You might have noticed that we used <code>docker</code> and <code>docker-compose</code> commands in turn, which might be a tad confusing. To simplify, let's say <code>docker-compose</code> allows to run the same commands as <code>docker</code>, but on all the containers defined in the <code>docker-compose.yml</code> file at once, or for these containers only.</p>
+<p>Let's take a couple of examples:</p>
+<pre><code>docker ps -a
+</code></pre>
+<p>You already know this command: it displays all the containers of the Docker machine, be they running or not. <em>All</em> of them.</p>
+<p>However:</p>
+<pre><code>docker-compose ps
+</code></pre>
+<p>will do the same, but for the containers defined in the <code>docker-compose.yml</code> file of the current directory only (you will notice that <code>-a</code> is not necessary and that the order of the displayed info is slightly different).</p>
+<p>It comes in handy when you begin to have a lot of containers managed by the same VM.<br />
+But there is more:</p>
+<pre><code>docker-compose stop
+</code></pre>
+<p>will stop all the containers described in the current <code>docker-compose.yml</code> file. Basically when you are done with a project, run this command to stop all its related containers. To connect the dots with what I said above, that will also free the port 80 for another project if need be.</p>
+<p>Start them again using the now familiar <code>docker-compose up -d</code>.</p>
+<p>You can also delete all the <em>stopped</em> containers of the current project running:</p>
+<pre><code>docker-compose rm
+</code></pre>
+<p>Just like its equivalent <code>docker rm</code>, you can add the option <code>-v</code> if you want to remove the corresponding volumes as well (if you don't, you might end up with dangling volumes as already mentioned earlier).</p>
+<p>Check the <a href="https://docs.docker.com/engine/reference/commandline/cli/"><code>docker</code></a> and <a href="https://docs.docker.com/compose/reference/"><code>docker-compose</code></a> references for more details.</p>
+<h2 id="troubleshooting">Troubleshooting</h2>
+<p>Obviously, not everything is always going to work at once. Docker Compose might refuse to build an image or start a container and what is displayed in the console is not always very helpful.</p>
+<p>When something goes wrong, run:</p>
+<pre><code>docker-compose logs
+</code></pre>
+<p>This will display the logs for the containers of the current <code>docker-compose.yml</code> file. You can also run <code>docker-compose ps</code> and check the <code>State</code> column: if there is an exit code different than <code>0</code>, there was a problem with the container.</p>
+<p>Display the logs specific to a container with:</p>
+<pre><code>docker logs containerid
+</code></pre>
+<p>The container's name will work too.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Docker is an amazing technology and of course there is much more to it (I'm not even started with deployment and how to use it into production and believe me, it is very promising).</p>
+<p>Here we used Docker Toolbox and Boot2Docker for simplicity, because it sets up a lot of things for us automatically, but we could have used a Vagrant box just the same and install Docker on it. There is no obligation whatsoever.</p>
+<p>Putting all this together was no trivial exercise, especially as I knew very little about Docker before I started to write this article. It actually took me a couple of days of tinkering around before I started to make any sense of it.</p>
+<p>Docker is evolving super quickly and there are many resources out there from which it's not always easy to separate the wheat from the chaff.</p>
+<p>I believe I only kept the wheat, but then again I'm still a humble beginner so if you spot some chaff, you are very welcome to let me know about it in the comments.</p>
+<p><img alt="Docks" src="/images/2015/12/18/docker-tutorial14.gif" title="Docks" /></p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://discoveringdocker.com/" title="Discovering Docker (e-book)">Discovering Docker (e-book)</a></li>
+<li><a href="https://www.jverdeyen.be/docker/how-php-symfony-coreos-docker/" title="How I develop in PHP with CoreOS and Docker">How I develop in PHP with CoreOS and Docker</a></li>
+<li><a href="http://www.newmediacampaigns.com/blog/docker-for-php-developers" title="Docker for PHP Developers">Docker for PHP Developers</a></li>
+<li><a href="http://container-solutions.com/understanding-volumes-docker/" title="Understanding Volumes in Docker">Understanding Volumes in Docker</a></li>
+<li><a href="https://docs.docker.com/engine/userguide/dockervolumes/" title="Manage data in containers">Manage data in containers</a></li>
+<li><a href="https://blog.docker.com/2015/04/tips-for-deploying-nginx-official-image-with-docker/" title="Tips for Deploying NGINX (Official Image) with Docker">Tips for Deploying NGINX (Official Image) with Docker</a></li>
+<li><a href="https://docs.docker.com/engine/reference/commandline/cli/" title="Use the Docker command line">Use the Docker command line</a></li>
+<li><a href="https://docs.docker.com/compose/reference/" title="Compose CLI reference">Compose CLI reference</a></li>
+<li><a href="https://docs.docker.com/engine/reference/builder/" title="Dockerfile reference">Dockerfile reference</a></li>
+</ul>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2015-12-18T00:00:00+00:00" pubdate>2015/12/18</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/docker.html">docker</a>
+          <a href="https://tech.osteel.me/tag/php.html">php</a>
+          <a href="https://tech.osteel.me/tag/mysql.html">mysql</a>
+          <a href="https://tech.osteel.me/tag/phpmyadmin.html">phpmyadmin</a>
+          <a href="https://tech.osteel.me/tag/nginx.html">nginx</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/webdevelopment.html">webdevelopment</a>
+          <a href="https://tech.osteel.me/tag/environment.html">environment</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development";
+              var disqus_url = "https://tech.osteel.me/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development";
+              var disqus_title = "From Vagrant to Docker: How to use Docker for local web development";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>

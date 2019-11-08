@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2017/01/15/docker-tutorial-00.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>How to use Docker for local web development: an update &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+  
+
+
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="php" />
+    <meta name="tags" contents="mysql" />
+    <meta name="tags" contents="phpmyadmin" />
+    <meta name="tags" contents="nginx" />
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="webdevelopment" />
+    <meta name="tags" contents="environment" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      How to use Docker for local web development: an update
+    </h1>
+    <span class="post-date">2017/01/15</span>
+
+    <p><img alt="Docker logo" src="/images/2017/01/15/docker-tutorial-01.jpg" title="Docker logo" /></p>
+<p>A year or so ago I published a post titled <a href="/posts/2015/12/18/from-vagrant-to-docker-how-to-use-docker-for-local-web-development.html"><em>From Vagrant to Docker: How to use Docker for local web development</em></a>, which got quite some traction at the time and continues to get comments on a regular basis, even today.</p>
+<p>Thing is, Docker (and its ecosystem) is a fast-paced project that gets updated very often, and things changed quite a bit since that article was first published.</p>
+<p>Today's objective is to bring the concepts it exposed up to speed, and to provide an updated <a href="https://github.com/osteel/docker-tutorial-2">companion repository</a>, which I will then use as a starting point for further Docker tutorials.</p>
+<p>If you are new to Docker, I invite you to read <a href="/posts/2015/12/18/from-vagrant-to-docker-how-to-use-docker-for-local-web-development.html">the previous post</a> nevertheless, as it will show you how to use Docker, and most of the knowledge it contains remains valid anyway.</p>
+<h2 id="table-of-contents">Table of contents</h2>
+<ul>
+<li><a href="#docker-toolbox-or-native-app">Docker Toolbox or native app?</a></li>
+<li><a href="#from-docker-19x-to-113x">From Docker 1.9.x to 1.13.x</a></li>
+<li><a href="#migrating-our-project">Migrating our project</a><ul>
+<li><a href="#current-state">Current state</a></li>
+<li><a href="#step-1-add-the-version-and-the-services-key">Step 1 - add the version and the <code>services</code> key</a></li>
+<li><a href="#step-2-remove-all-links-keys">Step 2 - remove all <code>links</code> keys</a></li>
+<li><a href="#step-3-depends_on">Step 3 - <code>depends_on</code></a></li>
+<li><a href="#step-4-named-volumes">Step 4 - named volumes</a></li>
+<li><a href="#step-5-networks">Step 5 - networks</a></li>
+<li><a href="#step-6-env-file">Step 6 - <code>.env</code> file</a></li>
+<li><a href="#wrapping-up">Wrapping up</a></li>
+</ul>
+</li>
+<li><a href="#cleaning-up">Cleaning up</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#sources">Sources</a></li>
+</ul>
+<h2 id="docker-toolbox-or-native-app">Docker Toolbox or native app?</h2>
+<p>Whether you are coming from <a href="/posts/2015/12/18/from-vagrant-to-docker-how-to-use-docker-for-local-web-development.html"><em>From Vagrant to Docker: How to use Docker for local web development</em></a> or not, you might be using <a href="https://www.docker.com/products/docker-toolbox">Docker Toolbox</a> and Docker Machine as part of your current developing environment.</p>
+<p>A few months after I published that article, Docker released native applications for both Mac and Windows, essentially abstracting away the management of the Virtual Machine and using the virtualization toolkit provided with the operating system.<br />
+If you have no idea what I am talking about or if you do and that sounds appealing, I would recommend to install the native app for your OS instead of Docker Toolbox (even though they can coexist).</p>
+<p>But before you do so, make sure you read the <em>What to know before you install</em> section of each guide (<a href="https://docs.docker.com/docker-for-mac/#/what-to-know-before-you-install">Mac</a>, <a href="https://docs.docker.com/docker-for-windows/#/what-to-know-before-you-install">PC</a>), especially to make sure your system meets the requirements.</p>
+<p>If it doesn't, then stick to Docker Toolbox.</p>
+<p>The installation guides are pretty straightforward, so I'll leave you to it:</p>
+<ul>
+<li><a href="https://docs.docker.com/docker-for-mac/">Docker for Mac</a></li>
+<li><a href="https://docs.docker.com/docker-for-windows/">Docker for Windows</a></li>
+<li><a href="https://www.docker.com/products/docker-toolbox">Docker Toolbox</a></li>
+</ul>
+<h2 id="from-docker-19x-to-113x">From Docker 1.9.x to 1.13.x</h2>
+<p>Docker has known a lot of improvements with the recent releases, among which enhanced security and networking, new versions for Docker Compose and its file format, and some significant progress with container orchestration as well as its swarm mode.</p>
+<p>The focus has also been put on bringing together an industry standard, which has materialised in the <a href="https://www.opencontainers.org/">Open Container Initiative</a> in June 2015, providing specifications and promoting interoperability between the different actors of the container industry.</p>
+<p><img alt="OCI logo" src="/images/2017/01/15/docker-tutorial-02.jpg" title="OCI logo" /></p>
+<p><a href="https://runc.io/">runC</a> is notably born out of it, following the <a href="https://github.com/opencontainers/runtime-spec">Runtime Specification</a> (essentially describing how containers should be spawned and run), and Docker also focused on breaking down its engine into different components (such as <a href="https://containerd.io/">containerd</a>), allowing for more control and flexibility (you can read more about it in this <a href="https://medium.com/@tiffanyfayj/docker-1-11-et-plus-engine-is-now-built-on-runc-and-containerd-a6d06d7e80ef#.4frlmpqgb">Medium post</a>). </p>
+<p>To be honest though, the above has little impact on what we are trying to achieve here, and our main concern is essentially the updates brought to Compose and its file format.</p>
+<h2 id="migrating-our-project">Migrating our project</h2>
+<p>As aforementioned, Docker Compose and its file format were also updated, from version 1.5.x to 1.9.0 for the former, and from 1.0 to 2.1 for the latter.</p>
+<p>These releases upgraded networks and volumes to first-class citizens among other things, placing them at the same level as services in the <code>docker-compose.yml</code> file.<br />
+The Docker documentation provides a <a href="https://docs.docker.com/compose/compose-file/#upgrading">convenient guide</a> which is a good starting point to upgrade our file, but there is also a few extra steps to take.</p>
+<h3 id="current-state">Current state</h3>
+<p>Let's start with a quick reminder of what is currently contained (see what I did there?) in our project:</p>
+<ul>
+<li>a container for Nginx</li>
+<li>a container for PHP-FPM</li>
+<li>a container for MySQL</li>
+<li>a container for phpMyAdmin</li>
+<li>a data-only container to make MySQL data persistent</li>
+<li>a data-only container for the application code</li>
+</ul>
+<h3 id="step-1-add-the-version-and-the-services-key">Step 1 - add the version and the <code>services</code> key</h3>
+<p>We're starting off with the <code>docker-compose.yml</code> file as we left it at the end of the previous tutorial (you can clone <a href="https://github.com/osteel/docker-tutorial">its repository</a> and go from there):</p>
+<pre><code>nginx:
+    build: ./nginx/
+    ports:
+        - 80:80
+    links:
+        - php
+    volumes_from:
+        - app
+
+php:
+    build: ./php/
+    expose:
+        - 9000
+    links:
+        - mysql
+    volumes_from:
+        - app
+
+app:
+    image: php:7.0-fpm
+    volumes:
+        - ./www/html:/var/www/html
+    command: "true"
+
+mysql:
+    image: mysql:latest
+    volumes_from:
+        - data
+    environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: project
+        MYSQL_USER: project
+        MYSQL_PASSWORD: project
+    command: --default-authentication-plugin=mysql_native_password
+
+data:
+    image: mysql:latest
+    volumes:
+        - /var/lib/mysql
+    command: "true"
+
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - 8080:80
+    links:
+        - mysql
+    environment:
+        PMA_HOST: mysql
+</code></pre>
+<p>The only thing I added is this line under the <code>mysql</code> service:</p>
+<p><code>command: --default-authentication-plugin=mysql_native_password</code></p>
+<p>The reason for this is MySQL 8.0 <a href="https://github.com/docker-library/mysql/issues/454">introduced a new authentication mechanism by default</a>. The fix simply changes that back to the previous behaviour by running the command at the container's start-up.</p>
+<p>We also need to specify the format version at the top, and to place the rest of the file under a new <code>services</code> key:</p>
+<pre><code>version: "2.1"
+
+services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        links:
+            - php
+        volumes_from:
+            - app
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        links:
+            - mysql
+        volumes_from:
+            - app
+
+    app:
+        image: php:7.0-fpm
+        volumes:
+            - ./www/html:/var/www/html
+        command: "true"
+
+    mysql:
+        image: mysql:latest
+        volumes_from:
+            - data
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        command: --default-authentication-plugin=mysql_native_password
+
+    data:
+        image: mysql:latest
+        volumes:
+            - /var/lib/mysql
+        command: "true"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        links:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+</code></pre>
+<p>Even though we won't need the new <code>2.1</code> features for now, that's the latest version so let's specify this one.</p>
+<p>Open the project's folder in a new terminal window, and run:</p>
+<pre><code>$ docker-compose up -d
+</code></pre>
+<p>You should observe something similar to this:</p>
+<p><img alt="Step 1" src="/images/2017/01/15/docker-tutorial-03.jpg" title="Step 1" /></p>
+<p>We can observe that the first line is mentioning a network being created - we'll get to that in a minute.</p>
+<p>Now access <code>http://localhost</code> in your browser (if using Docker for Mac or Windows), and this is what you should see:</p>
+<p><img alt="Step 1 result" src="/images/2017/01/15/docker-tutorial-04.jpg" title="Step 1 result" /></p>
+<p>Now stop and remove the containers and their volumes running the following command:</p>
+<pre><code>$ docker-compose down -v
+</code></pre>
+<p>This is a shortcut command that was introduced with Compose 1.6.0 (combining <code>docker-compose stop</code> and <code>docker-composer rm -v</code>).</p>
+<h3 id="step-2-remove-all-links-keys">Step 2 - remove all <code>links</code> keys</h3>
+<p>Starting from version 1.6.0, Docker Compose automatically creates a network which is accessible by each container of each defined service, and on which they are all discoverable by default.</p>
+<p>You guessed it, that's what the line describing the creation of a network we noticed in the previous step is about.</p>
+<p>There is therefore no need for explicitly declaring links anymore (unless you need <a href="https://docs.docker.com/compose/networking/#/links">extra aliases</a>), so you can remove them all.</p>
+<h3 id="step-3-depends_on">Step 3 - <a href="https://docs.docker.com/compose/compose-file/#/dependson"><code>depends_on</code></a></h3>
+<p>Also introduced with Docker Compose 1.6.0, this option allows to express dependency between services, making Docker Compose start the different services in dependency order.<br />
+Note that it won't wait for a service to be <em>ready</em>, but only for it to be <em>started</em>.</p>
+<p>This is what the content of your file should now look like, with the <code>depends_on</code> options and without the <code>links</code> ones:</p>
+<pre><code>version: "2.1"
+
+services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        volumes_from:
+            - app
+        depends_on:
+            - php
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        volumes_from:
+            - app
+        depends_on:
+            - mysql
+
+    app:
+        image: php:7.0-fpm
+        volumes:
+            - ./www/html:/var/www/html
+        command: "true"
+
+    mysql:
+        image: mysql:latest
+        volumes_from:
+            - data
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        command: --default-authentication-plugin=mysql_native_password
+
+    data:
+        image: mysql:latest
+        volumes:
+            - /var/lib/mysql
+        command: "true"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+</code></pre>
+<p>When running <code>docker-compose up -d</code> again, we can see how this is affecting the order in which services are being started:</p>
+<p><img alt="Step 3 before" src="/images/2017/01/15/docker-tutorial-03.jpg" title="Step 3 before" />
+<em>^ before</em></p>
+<p><img alt="Step 3 after" src="/images/2017/01/15/docker-tutorial-05.jpg" title="Step 3 after" />
+<em>^ after</em></p>
+<h2 id="step-4-named-volumes">Step 4 - named volumes</h2>
+<p>We are now broaching one of the main additions of Compose 1.6.0.</p>
+<p>As explained earlier, volumes and networks are now first-class citizens, and volumes can be declared at the same level as services.</p>
+<p>In the case of MySQL, this means that we don't need the data-only container <code>data</code> anymore, and we are going to make it a named volume instead:</p>
+<pre><code>version: "2.1"
+
+services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        volumes_from:
+            - app
+        depends_on:
+            - php
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        volumes_from:
+            - app
+        depends_on:
+            - mysql
+
+    app:
+        image: php:7.0-fpm
+        volumes:
+            - ./www/html:/var/www/html
+        command: "true"
+
+    mysql:
+        image: mysql:latest
+        volumes:
+            - data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        command: --default-authentication-plugin=mysql_native_password
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+
+volumes:
+    data:
+</code></pre>
+<p>We removed the <code>data</code> block under <code>services</code>, and added a <code>volumes</code> block at the end of the file. We simply declared a new <code>data</code> volume in there, with no other options (it uses the local driver by default). Then, we replaced the <code>volume_from</code> option from the <code>mysql</code> block with a <code>volumes</code> key, pointing <code>/var/lib/mysql</code> to the <code>data</code> volume.</p>
+<p>Here, we are essentially asking Docker to copy whatever is inside <code>/var/lib/mysql</code> in the <code>mysql</code> container to the <code>data</code> volume when it is first initialised. Any update to that directory is now persisted, since the volume won't be destroyed along with the container (unless the <code>-v</code> option is used), and the volume and its data will be picked up next time a volume with the same name is invoked by a service.</p>
+<p>Running <code>docker-compose up -d</code> again, we can see the volume being created on the second line:</p>
+<p><img alt="Step 4" src="/images/2017/01/15/docker-tutorial-06.jpg" title="Step 4" /></p>
+<p>Good. But how about the <code>app</code> data-only container then?</p>
+<p>Well, that's where it gets a bit tricky: for some reason, syncing a local directory with a named volume is not supported out of the box.</p>
+<p>I am not the first one to <a href="https://github.com/docker/docker/issues/19990">wonder about it</a>, and someone actually created <a href="https://github.com/CWSpear/local-persist">a plugin</a> for that. But, looking at the installation guide, I honestly wonder if it is worth the hassle (when you are using Docker for Mac like me, it basically requires the plugin to run in its own container while maintaining its state in a JSON file).</p>
+<p>Somewhere in the issue's comments, someone suggests <a href="https://github.com/docker/docker/issues/19990#issuecomment-248955005">using the driver's specific options</a>: this is not a viable solution either, since they are not <a href="https://docs.docker.com/engine/reference/commandline/volume_create/#/driver-specific-options">cross-platform compatible</a> (e.g. the <code>local</code> driver on Windows doesn't support any options, hence mounting a local directory wouldn't work).</p>
+<p>We could still use a data-only container, but <a href="https://github.com/docker/docker/issues/17798">this is not a recommended practice anymore</a> (the documentation <a href="https://docs.docker.com/engine/tutorials/dockervolumes/#/creating-and-mounting-a-data-volume-container">states otherwise</a> but is currently <a href="https://github.com/docker/docker/issues/20465">out of date</a>).<br />
+Moreover, and as the <code>local-persist</code> plugin's author rightly points out in the <a href="https://github.com/CWSpear/local-persist#benefits">documentation</a>, using a data-only container implies mounting the local directory into the same path in all the containers that use it.</p>
+<p>There is simply currently no easy way to sync a local folder with a named volume, so I decided to settle for basic bind-mounting for now, until a better solution comes up (if you know one, feel free to share it in the comments):</p>
+<pre><code>version: "2.1"
+
+services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        volumes:
+            - ./www/html:/var/www/html:ro
+        depends_on:
+            - php
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        volumes:
+            - ./www/html:/var/www/html
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql:latest
+        volumes:
+            - data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        command: --default-authentication-plugin=mysql_native_password
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+
+volumes:
+    data:
+</code></pre>
+<p>This leads to some configuration repetition, but as we'll see later there is a way to somewhat mitigate this.</p>
+<p>In the above code, you might have noticed the presence of the <code>:ro</code> option at the end of the <code>volumes</code> declaration of the <code>nginx</code> service: since this service doesn't need the write permission for this directory, this option gives it a read-only access instead.</p>
+<h3 id="step-5-networks">Step 5 - networks</h3>
+<p>We already saw that from Compose 1.6.0, a default network to which all services have access is created. We could leave it like that, or we can choose to fine-tune that a bit and define a <em>private</em> networks for the relevant services instead.</p>
+<p>Let's declare two of those - <code>database</code> and <code>server</code>, at the end of <code>docker-compose.yml</code>, right after the <code>volumes</code> section:</p>
+<pre><code>volumes:
+    data:
+
+networks:
+    database:
+    server:
+</code></pre>
+<p>The former will be used for services that need access to the database, and the latter for services dealing with HTTP requests.</p>
+<p>Now change the definition of the services like so:</p>
+<pre><code>services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        volumes:
+            - ./www/html:/var/www/html:ro
+        networks:
+            - server
+        depends_on:
+            - php
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        volumes:
+            - ./www/html:/var/www/html
+        networks:
+            - database
+            - server
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql:latest
+        volumes:
+            - data:/var/lib/mysql
+        networks:
+            - database
+        environment:
+            MYSQL_ROOT_PASSWORD: secret
+            MYSQL_DATABASE: project
+            MYSQL_USER: project
+            MYSQL_PASSWORD: project
+        command: --default-authentication-plugin=mysql_native_password
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        networks:
+            - database
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+</code></pre>
+<p>The <code>mysql</code>, <code>php</code> and <code>phpmyadmin</code> services are on the <code>database</code> network, and the <code>nginx</code> and <code>php</code> services are on the <code>server</code> one (meaning for instance that the <code>nginx</code> and <code>mysql</code> services are isolated from each other).</p>
+<p>Now run <code>docker-compose up -d</code> again. You should get:</p>
+<p><img alt="Step 5" src="/images/2017/01/15/docker-tutorial-07.jpg" title="Step 5" /></p>
+<p>We can observe that the default network is no longer created (another way to make sure of this is to run the ad hoc command <code>docker network ls</code>).</p>
+<p>Then again, this step is rather optional, especially for a local development environment, but it shows how to add more security and isolation between the different services.</p>
+<hr />
+<p><strong>Note:</strong> if you are wondering why <code>phpmyadmin</code> doesn't need access to the <code>server</code> network, the reason is because the <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin/">phpMyAdmin image</a> we use is already shipping with its own versions of PHP and nginx.</p>
+<hr />
+<h3 id="step-6-env-file">Step 6 - <code>.env</code> file</h3>
+<p>Starting from version 1.7.0, Docker Compose will look for a <a href="https://docs.docker.com/compose/environment-variables/#/the-env-file"><code>.env</code> file</a> in the directory where it's run from and, if it finds one, will read the environment variables it contains to replace some placeholders with the corresponding values.</p>
+<p>Let's create such a file at the same level as <code>docker-compose.yml</code>, with this content:</p>
+<pre><code>PROJECT_ROOT=./www/html
+
+DB_ROOT_PASSWORD=secret
+DB_NAME=project
+DB_USERNAME=project
+DB_PASSWORD=project
+</code></pre>
+<p>And update the definition of the services, one more time:</p>
+<pre><code>services:
+    nginx:
+        build: ./nginx/
+        ports:
+            - 80:80
+        volumes:
+            - "${PROJECT_ROOT}:/var/www/html:ro"
+        networks:
+            - server
+        depends_on:
+            - php
+
+    php:
+        build: ./php/
+        expose:
+            - 9000
+        volumes:
+            - "${PROJECT_ROOT}:/var/www/html"
+        networks:
+            - database
+            - server
+        depends_on:
+            - mysql
+
+    mysql:
+        image: mysql:latest
+        volumes:
+            - data:/var/lib/mysql
+        networks:
+            - database
+        environment:
+            MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+            MYSQL_DATABASE: "${DB_NAME}"
+            MYSQL_USER: "${DB_USERNAME}"
+            MYSQL_PASSWORD: "${DB_PASSWORD}"
+        command: --default-authentication-plugin=mysql_native_password
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 8080:80
+        networks:
+            - database
+        depends_on:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+</code></pre>
+<p>We basically defined five environment variables: <code>PROJECT_ROOT</code>, <code>DB_ROOT_PASSWORD</code>, <code>DB_NAME</code>, <code>DB_USERNAME</code>, and <code>DB_PASSWORD</code>. We then added the corresponding placeholders in the Compose file, following the <code>"${PLACEHOLDER}"</code> format.</p>
+<p>The choice was made based on the <em>variability</em> of these properties, in relation to the fact their values could change from one environment to another.</p>
+<p>This allows to make the <code>docker-compose.yml</code> file more portable and shareable, say across a development team. You could commit a <code>.env.example</code> file containing placeholders for the different variables, for others to copy and rename into a <code>.env</code> file and change the values at will.<br />
+This way, if a developer needs a different configuration for some reason, they can do so without touching the Compose file (this is basically part of the <a href="https://12factor.net/config">Twelve-Factor App methodology</a>).</p>
+<p>In our case, it also permits to avoid repeating the configuration value for our project root, which we introduced in step 4.</p>
+<p>See <a href="https://docs.docker.com/compose/compose-file/#variable-substitution">the documentation</a> for more info about variable substitution in general.</p>
+<h3 id="wrapping-up">Wrapping up</h3>
+<p>In 6 steps, we upgraded our <code>docker-compose.yml</code> file to the latest versions of Docker and Docker Compose, making our project simpler and better structured.</p>
+<p>For the complete version of the file or if you had any issues while following this tutorial, please refer to the <a href="https://github.com/osteel/docker-tutorial-2">companion repository</a>.</p>
+<h2 id="cleaning-up">Cleaning up</h2>
+<p>Another nice addition of Docker 1.13.0 worth mentioning in the context of this post are clean-up commands:</p>
+<pre><code>$ docker system df
+$ docker system prune
+</code></pre>
+<p><img alt="Clean-up" src="/images/2017/01/15/docker-tutorial-08.jpg" title="Clean-up" /></p>
+<p>They allow to know exactly what resources Docker is using and greatly simplify freeing them, when removing dangling volumes used to require the rather esoteric <code>docker volume rm $(docker volume ls -qf dangling=true)</code>, for instance.</p>
+<p>It is also possible to <code>prune</code> a specific type of resource, e.g. for volumes:</p>
+<pre><code>$ docker volume prune
+</code></pre>
+<h2 id="conclusion">Conclusion</h2>
+<p>A year can be a long time when it comes to the tech industry, and Docker's evolution certainly is on a fast track. The direction it has taken is quite comforting, focussing on promoting industry standards which is essential to a technology's adoption and long term survival.</p>
+<p>New features and ameliorations were not forgotten along the way, and using Docker and Docker Compose now feels simpler and more standardised.</p>
+<p>While there is still room for improvement, Docker is not the obscure technology it used to be, and it is being ever more widely adopted by the industry.</p>
+<p>It is safe to say that Docker is definitely a string to consider adding to your bow.</p>
+<h2 id="sources">Sources</h2>
+<ul>
+<li><a href="https://docs.docker.com/compose/compose-file/">Compose file reference</a></li>
+<li><a href="https://docs.docker.com/engine/tutorials/dockervolumes/">Manage data in containers</a></li>
+<li><a href="https://www.linux.com/learn/docker-volumes-and-networks-compose">Docker Volumes and Networks with Compose</a></li>
+<li><a href="https://docs.docker.com/engine/userguide/networking/">Docker container networking</a></li>
+<li><a href="https://docs.docker.com/compose/networking/">Networking in Compose</a></li>
+<li><a href="https://blog.nimbleci.com/2016/11/17/whats-coming-in-docker-1-13/">Top 10 New Features And Improvements Coming In Docker 1.13</a></li>
+<li><a href="https://github.com/docker/docker/blob/master/CHANGELOG.md">Docker Changelog</a></li>
+<li><a href="https://docs.docker.com/compose/environment-variables/">Docker Compose Changelog</a></li>
+<li><a href="http://collabnix.com/archives/2073">What’s new upcoming in Docker Compose v1.9.0?</a></li>
+<li><a href="https://medium.com/@tiffanyfayj/docker-1-11-et-plus-engine-is-now-built-on-runc-and-containerd-a6d06d7e80ef#.4frlmpqgb">Docker 1.11 et plus: Engine is now built on runC and containerd</a></li>
+<li><a href="https://blog.docker.com/2017/01/whats-new-in-docker-1-13/">Introducing Docker 1.13</a></li>
+</ul>
+
+    <p class="meta">
+      <small>
+        Posted by osteel on the
+        <time datetime="2017-01-15T00:00:00+00:00" pubdate>2017/01/15</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/docker.html">docker</a>
+          <a href="https://tech.osteel.me/tag/php.html">php</a>
+          <a href="https://tech.osteel.me/tag/mysql.html">mysql</a>
+          <a href="https://tech.osteel.me/tag/phpmyadmin.html">phpmyadmin</a>
+          <a href="https://tech.osteel.me/tag/nginx.html">nginx</a>
+          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
+          <a href="https://tech.osteel.me/tag/webdevelopment.html">webdevelopment</a>
+          <a href="https://tech.osteel.me/tag/environment.html">environment</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/how-to-use-docker-for-local-web-development-an-update";
+              var disqus_url = "https://tech.osteel.me/posts/how-to-use-docker-for-local-web-development-an-update";
+              var disqus_title = "How to use Docker for local web development: an update";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
