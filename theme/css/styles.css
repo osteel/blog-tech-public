@@ -77,12 +77,8 @@ td img {
 }
 
 /*
- * Search
+ * Forms
  */
-
-#search-form {
-  margin-bottom: 2rem;
-}
 
 .form-button {
   height: 34px;
@@ -100,6 +96,14 @@ td img {
 
 .form-button:hover {
   color: #FFF;
+}
+
+/*
+ * Search
+ */
+
+#search-form {
+  margin-bottom: 2rem;
 }
 
 #search-form > .form-input {
@@ -147,4 +151,17 @@ td img {
 #tipue_search_foot_boxes li {
   display: inline-block;
   margin-right: 0.75em;
+}
+
+/*
+ * Email subscription
+ */
+
+#subscribe-form > .form-input {
+  width: 70%;
+}
+
+#subscribe-form > input, #subscribe-form > label {
+  display: inline-block;
+  margin-bottom: 0.75rem;
 }
