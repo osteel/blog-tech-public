@@ -23,6 +23,11 @@
     <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
     <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
 
 
 
@@ -67,11 +72,12 @@ styles, `#sidebar-checkbox` for behavior. -->
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/local-environment.html">Local environment</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
 
     </nav>
   </section>
@@ -101,7 +107,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <div class="sidebar-item">
     <p>
-    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2019
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
     </p>
     <p class="tiny-note">
       Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
@@ -125,11 +131,13 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       Last updated:
-        2015/02/17
+        2020/03/05
         <small>:: [ <a href="https://github.com/osteel/blog-tech-public/blame/master/posts/how-to-use-vagrant-on-windows.html">changelog</a> ]</small>
     </span>
 
-    <p><a href="https://www.vagrantup.com/" title="Vagrant website"><img alt="&quot;Vagrant logo&quot;" src="/images/2015/01/25/vagrant.png" title="Vagrant logo" /></a></p>
+    <p><strong>[UPDATE 2020/03/05]:</strong> While Vagrant served me well for years, I do not recommend using it for local development anymore and advise to use Docker instead, for which I wrote an entire <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">tutorial series</a> which I invite you to read.</p>
+<hr />
+<p><a href="https://www.vagrantup.com/" title="Vagrant website"><img alt="&quot;Vagrant logo&quot;" src="/images/2015/01/25/vagrant.png" title="Vagrant logo" /></a></p>
 <p>This article shows how to deal with Windows' specificities while trying to work with Vagrant. If you are not familiar at all with the latter, I suggest you go through this <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html" title="How to use Vagrant for local web development">Vagrant tutorial</a> first.</p>
 <p><strong>Note:</strong> the following was tested on Windows 8, but the steps described below shouldn't change too much between the different versions.</p>
 <h2 id="vagrant-ssh">Vagrant ssh</h2>
@@ -233,14 +241,16 @@ npm install
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2015-02-17T00:00:00+00:00" pubdate>2015/02/17</time>
+          <time datetime="2020-03-05T00:00:00+00:00" pubdate>2020/03/05</time>
           :: [
-          <a href="https://tech.osteel.me/tag/vagrant.html">vagrant</a>
-          <a href="https://tech.osteel.me/tag/tutorial.html">tutorial</a>
-          <a href="https://tech.osteel.me/tag/windows.html">windows</a>
+          <a href="https://tech.osteel.me/tag/vagrant">vagrant</a>
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/windows">windows</a>
           ]
       </small>
     </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
 
     <section>
       <h2>Like this?</h2>

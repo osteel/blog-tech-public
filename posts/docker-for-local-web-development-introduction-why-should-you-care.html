@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/03/04/docker-introduction-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, introduction: why should you care? &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog.html">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx.html">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php.html">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, introduction: why should you care?
+    </h1>
+    <span class="post-date">
+      Last updated:
+        04/03/2020
+        <small>:: [ <a href="https://github.com/osteel/blog-tech-public/blame/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">changelog</a> ]</small>
+    </span>
+
+    <p><img alt="Docker logo" src="/images/2020/03/04/docker-introduction-01.jpg" title="Docker logo" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li>Introduction: why should you care? <strong>⬅️ you are here</strong></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li>Part 2: put your images on a diet <em>(coming soon)</em></li>
+<li>Part 3: a three-tier architecture with frameworks <em>(coming soon)</em></li>
+<li>Part 4: smoothing things out with Bash <em>(coming soon)</em></li>
+<li>Part 5.1: HTTPS all the things with a self-signed certificate <em>(coming soon)</em></li>
+<li>Part 5.2: HTTPS all the things with a trusted Certificate Authority <em>(coming soon)</em></li>
+<li>Part 6: expose a local container to the Internet <em>(coming soon)</em></li>
+<li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#who-this-series-is-for">Who this series is for</a></li>
+<li><a href="#why-should-i-listen-to-you">"Why should I listen to you?"</a></li>
+<li><a href="#i-am-already-using-vagranthomestead">"I am already using Vagrant/Homestead"</a></li>
+<li><a href="#how-about-laradock">"How about Laradock?"</a></li>
+<li><a href="#serverless-is-the-way-to-go">"Serverless is the way to go"</a></li>
+<li><a href="#im-on-windows">"I'm on Windows"</a></li>
+<li><a href="#it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</a></li>
+</ul>
+</div>
+<h2 id="who-this-series-is-for">Who this series is for</h2>
+<p>The first version of Docker was released in 2013 and, since then, it has worked its way up to eventually becoming the industry standard for containers. Among developers, exposure to Docker ranges from having vaguely heard of the technology to using it on a daily basis, the latter category singing its praises while the former is sometimes still struggling with the sheer concept of containers.</p>
+<p>Wherever you are on your journey, as a developer there are many reasons why you might want to delve into this technology, including, but not limited to:</p>
+<blockquote>
+<p>"I've read quite a bit about Docker and I am now looking for something more hands-on";</p>
+<p>"I use a Vagrant-based solution like Homestead and it starts to feel like it's getting in the way";</p>
+<p>"I already use a pre-configured Docker environment like Laradock and I want a deeper understanding of how things work under the hood";</p>
+<p>"I want greater control over my development environment";</p>
+<p>"I want to better understand application architecture";</p>
+<p>"The project I am working on uses microservices";</p>
+<p>"I am supposed to migrate a Wordpress website and I need a distraction".</p>
+</blockquote>
+<p>Whatever your motive is, you might notice the emergence of a theme, revolving around <em>understanding</em> and <em>being in control</em>: in my opinion, Docker is about empowering the developer, from providing a safe environment to try out technologies easily, without messing up your local environment (yes, even <a href="https://hub.docker.com/_/wordpress">Wordpress</a>), to opening the gates to the world of Ops.</p>
+<p>The aim of this tutorial series is to demystify a technology that can feel daunting at times, all the while providing most of the tools a developer might need to build a web project locally with Docker. <strong>It strictly focuses on the development environment and does not cover deploying Docker applications whatsoever</strong>, even though the end result can be used as part of a deployment process.</p>
+<p>No prior knowledge of Docker is required, but being comfortable around a terminal will help.</p>
+<p>We will start our journey with a very basic LEMP stack and gradually increase the environment's complexity as we work our way through the different parts of the series, covering more and more use cases along the way. While the focus is mostly put on PHP on the server side, the overall architecture can be adapted for any language.</p>
+<p>You might find yourself stopping at a certain point because all of your needs have been addressed already, only to come back later when you need more. Wherever that is, each part of the series comes with its own branch from <a href="https://github.com/osteel/docker-tutorial">this repository</a>, which you can fork or download and use as a starting point for your own projects.</p>
+<p>That's it for the elevator pitch. Convinced already? Great, let's move on to the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> (or head over <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">here</a> if you intend to run Docker on Windows). If not, let's try to address some of the doubts you might still have, starting with a little background check.</p>
+<h2 id="why-should-i-listen-to-you">"Why should I listen to you?"</h2>
+<p>I am a backend developer with more than a decade of experience, having worked with various types of companies in three different countries. I witnessed the evolution of the development environment landscape over time, from the early days of using <a href="http://www.wampserver.com">WAMP</a> and <a href="https://notepad-plus-plus.org">Notepad++</a> to migrating to full-fledged IDEs and custom virtual machines, before moving on to <a href="https://www.vagrantup.com">Vagrant</a> and eventually, <a href="https://laravel.com/docs/homestead">Homestead</a>.</p>
+<p>Back in 2015, I explored the possibility of using Docker locally as a development environment and <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development">wrote about it</a> in a couple of articles that were picked up by the official <a href="https://www.docker.com/newsletter-subscription">Docker newsletter</a>, but eventually dropped the idea, mainly because of performance issues.</p>
+<p>A the beginning of 2018, however, I was forced to revisit that thought because of Vagrant's shortcomings vis à vis the growing complexity of the project I was working on at the time (more on that in the next section), and realised progress had been made both in terms of performance and adoption.</p>
+<p>After tinkering about for a few days and successive iterations, I ended up with a decent development environment running on Docker, capable of meeting the application's new scope and greatly simplifying the onboarding of new developers.</p>
+<p>Since then, I successfully implemented and improved upon a similar setup in another company.</p>
+<p>While the approach taken in this series is certainly not the only one and is most likely perfectible, it has proven to be reliable and a significant improvement compared to previous Vagrant-based setups.</p>
+<h2 id="i-am-already-using-vagranthomestead">"I am already using Vagrant/Homestead"</h2>
+<p>Homestead is great. I used <a href="https://laravel.com">Laravel</a>'s pre-packaged Vagrant virtual machine (VM) for years, both for personal and clients' projects (if you have no clue what Vagrant is, please take a quick look at <a href="/posts/how-to-use-vagrant-for-local-web-development.html" title="How to use Vagrant for local web development">this post</a> first, especially <a href="/posts/how-to-use-vagrant-for-local-web-development#vagrant">this short section</a>). Homestead features pretty much everything you need for a PHP application, and allows you to spin up new websites very quickly. So why did I make the switch?</p>
+<p>The short answer is <em>microservices</em>.</p>
+<p>Back at the beginning of 2018, I was tasked with exposing an API from a legacy monolith to serve a new SPA, and to progressively phase out the monolith by extracting all of its business logic into microservices.</p>
+<p>All of a sudden, I had to manage some legacy code running on PHP 5.x on the one hand, and some microservices running on PHP 7.x on the other. I initially got both versions of the language running on the same VM but it involved some dirty workarounds that made the overall user experience terrible. Besides, I would eventually end up with multiple microservices with different stacks, and managing them all on the same VM wasn't a realistic long-term solution.</p>
+<p>I briefly tried to give each microservice its own Vagrant box, but running everything together was far too heavy for my machine and managing things like intra-VM communication felt very cumbersome.</p>
+<p>I needed something else, and that something else was Docker. But how does it help the situation?</p>
+<p>One of the promises made by Docker is to provide isolated environments (<em>containers</em>) running on a single virtual machine, which starts in about five seconds. In my case, that meant replacing all of my heavy, Vagrant-based virtual machines with a single, super-fast virtual machine featuring Docker, and run all of my microservices on top of it, each in its own isolated container.</p>
+<p>Using Docker's very own logo in an attempt to illustrate this, it would be the equivalent of having a single whale per container instead of the same whale carrying all of the containers. If you replace "whale" with "virtual machine" and "container" with "microservice" in the previous sentence, you should get the idea.</p>
+<p><img alt="Docker logo 2" src="/images/2020/03/04/docker-introduction-02.png" title="Docker logo 2" />
+<p class="caption">Imagine if every single container in the logo needed its own whale: beyond the ridiculous amount of plankton that would require, would it look efficient?</p></p>
+<p>While being an overly simplistic explanation, this right there is actually what made it click for me: as a developer, this use case made perfect sense as it related to the work I do every day, way more than trying to understand how virtualisation or shared operating systems work.</p>
+<p>Does that mean you should only use Docker locally if your application involves microservices?</p>
+<p>The answer is yes and no. The more complex the application, the more moving parts it is composed of, the more likely you will need a solution like Docker. But even if your application is rather simple, starting and stopping some containers is way faster than booting and halting a virtual machine, and in the eventuality of your application evolving in some unexpected ways (like they always do), adopting Docker from the get go gives you the confidence your setup is future-proof.</p>
+<p>Besides, instead of using a pre-packaged virtual machine like Homestead, featuring way more tools than any given application has any use for, using Docker the way I suggest ensures that you only ever install what you actually need, in a proactive way. You regain control of your environment.</p>
+<h2 id="how-about-laradock">"How about Laradock?"</h2>
+<p><a href="https://laradock.io/">Laradock</a> is to Docker what Homestead is to Vagrant: a pre-packaged environment for PHP applications. While I don't personally use it, I have heard a lot of good things and it might just be enough for your needs. Their motto is <em>Use Docker First - Then Learn About It Later</em>, which is an excellent approach in my opinion.</p>
+<p>That being said, the purpose of this tutorial series is precisely to get a deeper understanding of how to make Docker work for you. If all you are interested in for the moment is using a Docker-based environment without the hassle of setting it up by yourself, by all means give Laradock a try, and feel free to come back whenever you want to create your own, tailored environment.</p>
+<h2 id="serverless-is-the-way-to-go">"Serverless is the way to go"</h2>
+<p><a href="https://en.wikipedia.org/wiki/Serverless_computing" title="Serverless computing">Serverless computing</a> is on the rise and the word on the street is that <a href="https://read.acloud.guru/serverless-is-eating-the-stack-and-people-are-freaking-out-and-they-should-be-431a9e0db482" title="Serverless is eating the stack and people are freaking out — as they should be">it's coming for Docker</a>.</p>
+<p>Meanwhile, <a href="https://hackernoon.com/will-serverless-computing-kill-docker-containers-222671bffdc4" title="Will Serverless Computing Kill Docker Containers?">others argue</a> that the comparison is moot because the two technologies serve completely different purposes.</p>
+<p>I don't know what the future is made of. When it comes to technology, I like to consider myself a pragmatist: being a developer requires an awful lot of effort to stay up to date, and while I would love to explore the many technologies that arise pretty much on a daily basis, I simply don't have the time to do so. While the serverless movement has certainly been getting momentum, it is also still very much in its infancy, and I would like to see it mature further before I consider taking the plunge.</p>
+<p>If serverless somehow ends up "eating the stack" and that is where all the jobs go, fine, I will make the switch. But I don't see such a market shift happening for another few years (if ever), and for the time being I'd rather focus on what is likely to make my CV attractive <em>today</em>.</p>
+<p>Companies are already <a href="https://containerjournal.com/topics/container-ecosystems/4-reasons-container-adoption-remains-slowish/">slow to migrate to containers</a> despite high interest, and the industry only recently rallied behind Kubernetes, which is poised to become the standard of container orchestration. Serverless represents an even greater paradigm shift that is nowhere near such consolidation: thinking it will flip the market at the snap of a finger is foolish in my opinion.</p>
+<p>That doesn't mean I won't use a Lambda function where it seems relevant, or that serverless shouldn't be on your watchlist. On that note, if you wish to explore the subject further, I found this <a href="https://www.zdnet.com/article/what-serverless-computing-really-means-and-everything-else-you-need-to-know/" title="What serverless computing really means, and everything else you need to know">article by ZDNet</a> to be informative.</p>
+<h2 id="im-on-windows">"I'm on Windows"</h2>
+<p>Ah mate, I feel you. You work on Microsoft's operating system, and you read somewhere that running Docker on it is a bit of a pain? Well, the bad news is, this is still largely true. The good news, however, is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
+<p>Nevertheless, running Docker on Microsoft's OS is tricky enough that I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> to help you get started. I recommend you read it after this introduction and before proceeding further, even though I regularly refer to it throughout the articles.</p>
+<p>A caveat: I work on a Mac and don't have a regular access to a Windows machine, so if any Microsoft-related trickery seems to be at play I'm afraid I won't be of much assistance (this is also valid for Linux distributions, although from experience these don't tend to cause any trouble).</p>
+<p>I would also like to make a full disclosure: while it is true that everything covered in this series will also work on Windows, the overall experience is still likely to feel a bit brittle, especially from the moment Bash is involved. There is always a way to mitigate those frictions, but it generally takes a little extra TLC.</p>
+<h2 id="it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</h2>
+<p>Finally, some developers simply dismiss Docker as not being their problem. This is a fair argument, as Docker sits somewhere beyond the realm of pure application development. If anything, a sysadmin or DevOps engineer should set it up for you, right?</p>
+<p>Well, yes, you are entitled to feel that way. But if DevOps can refer to individuals with an interest for both system administration and coding, effectively acting as bridges between the two, it can also be interpreted as people from both sides meeting halfway.</p>
+<p>In all fairness, you don't <em>need</em> to know Docker to be a good developer. My point is simply that by ignoring it, you are missing out on an opportunity to get better. It won't improve your syntax nor teach you new design patterns, but it will help you to understand how the code you are writing fits into the bigger picture. It is a bit like playing an instrument without learning to read sheet music: you might sound good, but you are unlikely to write a symphony. Taking a step back to reflect on the application's architecture to understand how the different pieces fit together will give you invaluable perspective that will influence the technical choices you make for your application.</p>
+<p>Whatever your specialty – backend, frontend or fullstack – and to whatever extent you feel concerned with the DevOps movement, I promise that learning about the cogs that make your applications tick is worth your time, and that you will be a better developer for it.</p>
+<p>Now. Shall we <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">get started</a>?</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-03-04T00:00:00+00:00" pubdate>04/03/2020</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/docker-for-local-web-development-introduction-why-should-you-care";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-introduction-why-should-you-care";
+              var disqus_title = "Docker for local web development, introduction: why should you care?";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
