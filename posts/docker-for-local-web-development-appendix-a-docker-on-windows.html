@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       Last updated:
-        2020/03/04
+        2020/03/07
         <small>:: [ <a href="https://github.com/osteel/blog-tech-public/blame/master/posts/docker-for-local-web-development-appendix-a-docker-on-windows.html">changelog</a> ]</small>
     </span>
 
@@ -178,8 +178,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Having said this, you may not have to choose between the two: what you need VirtualBox for may also be compatible with Hyper-V (like <a href="https://laravel.com/docs/homestead#installation-and-setup">Homestead</a>, for instance).</p>
 <p>If you are interested in the subject, you can read more about <a href="https://docs.microsoft.com/en-us/virtualization/#pivot=main&amp;panel=windows">virtualisation on Windows</a>, and about the <a href="https://superuser.com/a/1208857">conflicts between Hyper-V and VirtualBox</a>.</p>
 <h2 id="terminal">Terminal</h2>
-<p>The people at Docker seem to be focusing on Docker Desktop's UI at the moment, and I wouldn't be surprised if everything we currently do in a terminal ends up being available on the dashboard. For the time being however, using a terminal is still (and will always be, in my opinion) the easiest way to use Docker.</p>
-<p>To be able to follow this tutorial series in optimal conditions, you will need a command line interface featuring Bash, for which I recommend using <a href="https://gitforwindows.org/">Git Bash</a>, whose name is rather indicative of what it ships with. You will then be able to run regular Docker commands and some Bash scripts when we get to that.</p>
+<p>The people at Docker seem to be focusing on Docker Desktop's UI at the moment, and I wouldn't be surprised if everything we currently do in a terminal ends up being available on the dashboard. For the time being, however, using a terminal is still (and will most likely always be, in my opinion) the easiest way to use Docker.</p>
+<p>To be able to follow this tutorial series in optimal conditions, you will need a command line interface featuring Bash, for which I recommend using <a href="https://gitforwindows.org/">Git Bash</a>, whose name is rather indicative of what it ships with. You will then be able to run regular Docker commands and execute some Bash scripts when we get to that.</p>
+<p><strong>Make sure to select "Use Windows' default console window" during the installation process</strong>; if you don't, you will have to prepend any Docker command with <code>winpty</code>. This is a <a href="https://github.com/docker/for-win/issues/1588">long standing issue</a> that makes using the albeit nicer MinTTY a pain, although it seems Windows' console has improved with Windows 10 (<a href="https://willi.am/blog/2016/08/08/docker-for-windows-interactive-sessions-in-mintty-git-bash/" title="Docker for Windows: Interactive Sessions in MinTTY Git Bash">source</a>).</p>
 <p>If you also intend to clone the <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a> coming with the series, you can run Git commands from the same terminal, provided a SSH key is set up. If you already use a GIT GUI like <a href="https://www.gitkraken.com">GitKraken</a>, you can skip this part; otherwise, open Git Bash and run the following command:</p>
 <p><code>$ ls -l ~/.ssh</code></p>
 <p>If you don't see a couple of files named <code>id_rsa</code> and <code>id_rsa.pub</code> or if the folder doesn't exist, run the following command and hit <em>return</em> at every prompt:</p>
@@ -207,14 +208,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="https://github.com/docker/for-win/issues/3171">Unable to bind ports</a>.</li>
 </ul>
 <h2 id="something-missing">Something missing?</h2>
-<p>This guide should be enough to get you going with this tutorial series; that being said, I work on a Mac and don't have a regular access to a Windows machine, so if anything seemingly Microsoft-related happens I won't be of much assistance.</p>
+<p>This guide should be enough to get you going with this tutorial series; that being said, I work on a Mac and don't have regular access to a Windows machine, so if anything seemingly Microsoft-related happens I won't be of much assistance.</p>
 <p>If you come across an issue and find a way to solve it, please let me know in the comments and I will consider completing this guide. <a href="https://github.com/osteel/docker-tutorial">Pull requests are also always welcome</a>.</p>
 <p>All set? You can now proceed with the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> of this series.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-04T00:00:00+00:00" pubdate>2020/03/04</time>
+          <time datetime="2020-03-07T00:00:00+00:00" pubdate>2020/03/07</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
