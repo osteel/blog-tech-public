@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
     <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
     <script
       type="text/javascript"
       src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
@@ -85,7 +86,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <section>
         <h2>Find me</h2>
         <ul class="sidebar-nav">
-            <li><a class="sidebar-nav-item" href="http://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
             <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
@@ -132,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <span class="post-date">
       Last updated:
         2020/03/04
-        <small>:: [ <a href="https://github.com/osteel/blog-tech-public/blame/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">changelog</a> ]</small>
+        <small>:: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">changelog</a> ]</small>
     </span>
 
     <p><img alt="LEMP stack on Docker" src="/images/2020/03/04/docker-part-1-01.jpg" title="LEMP stack on Docker" /></p>
@@ -167,7 +168,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </li>
 <li><a href="#domain-name">Domain name</a></li>
 <li><a href="#environment-variables">Environment variables</a></li>
-<li><a href="#commands-summary-and-cleaning-up-your-environment">Commands summary and cleaning-up your environment</a></li>
+<li><a href="#commands-summary-and-cleaning-up-your-environment">Commands summary and cleaning up your environment</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
 </div>
@@ -178,29 +179,29 @@ styles, `#sidebar-checkbox` for behavior. -->
 <hr />
 <p><strong>To Windows users:</strong> if you haven't already, I strongly recommend you read this <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">appendix</a> before proceeding any further. It will show you which terminal to use, among other things.</p>
 <hr />
-<p>Once both requirements are covered, you can either get the final result from the <a href="https://github.com/osteel/docker-tutorial/tree/part-1">repository</a> and then follow the tutorial along, or start fresh and compare your code to the repository's whenever you feel stuck. The latter is my recommended approach for Docker beginners, as the various concepts are more likely to stick if you write the code yourself.</p>
-<p>Note that this post is quite dense because of the large amount of notions being introduced. I assume no prior knowledge of Docker and I try not to leave any detail unexplained. If you are a complete beginner, make sure you have some time ahead of you and grab yourself a hot drink: we are taking the scenic route.</p>
+<p>Once both requirements are covered, you can either get the final result from the <a href="https://github.com/osteel/docker-tutorial/tree/part-1">repository</a> and follow this tutorial, or start from scratch and compare your code to the repository's whenever you get stuck. The latter is my recommended approach for Docker beginners, as the various concepts are more likely to stick if you write the code yourself.</p>
+<p>Note that this post is quite dense because of the large number of notions being introduced. I assume no prior knowledge of Docker and I try not to leave any detail unexplained. If you are a complete beginner, make sure you have some time ahead of you and grab yourself a hot drink: we're taking the scenic route.</p>
 <h2 id="identifying-the-necessary-containers">Identifying the necessary containers</h2>
-<p>Docker recommends to run only one process per container, which roughly means that each container should be running a single piece of software. Let's remind ourselves what the programs underlying the LEMP stack are:</p>
+<p>Docker recommends running only one process per container, which roughly means that each container should be running a single piece of software. Let's remind ourselves what the programs underlying the LEMP stack are:</p>
 <ul>
 <li><em>L</em> is for Linux;</li>
 <li><em>E</em> is for Nginx;</li>
 <li><em>M</em> is for MySQL;</li>
 <li><em>P</em> is for PHP.</li>
 </ul>
-<p>Linux is already the operating system Docker is running on, so that leaves us with Nginx, MySQL and PHP. For convenience, we will also add phpMyAdmin into the mix. As a result, we now need the following containers:</p>
+<p>Linux is the operating system Docker runs on, so that leaves us with Nginx, MySQL and PHP. For convenience, we will also add phpMyAdmin into the mix. As a result, we now need the following containers:</p>
 <ul>
-<li>One container for Nginx;</li>
-<li>One container for PHP (PHP-FPM);</li>
-<li>One container for MySQL;</li>
-<li>One container for phpMyAdmin.</li>
+<li>one container for Nginx;</li>
+<li>one container for PHP (PHP-FPM);</li>
+<li>one container for MySQL;</li>
+<li>one container for phpMyAdmin.</li>
 </ul>
 <p>This is fairly straightforward, but how do we get from here to setting up these containers, and how will they interact with each other?</p>
 <h2 id="docker-compose">Docker Compose</h2>
-<p><a href="https://docs.docker.com/compose/">Docker Compose</a> is a tool coming with Docker Desktop allowing to define and run multi-container Docker applications.</p>
-<p>Docker Compose isn't absolutely necessary to manage multiple containers, as doing so can be achieved with Docker alone, but in practice it is very inconvenient to do so (it would be similar to doing long divisions while there is a calculator on the desk: while it is certainly not a bad skill to have, it is also a tremendous waste of time).</p>
+<p>Docker Desktop comes with a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a> that allows you to define and run multi-container Docker applications.</p>
+<p>Docker Compose isn't absolutely necessary to manage multiple containers, as doing so can be achieved with Docker alone, but in practice it is very inconvenient to do so (it would be similar to doing long division while there is a calculator on the desk: while it is certainly not a bad skill to have, it is also a tremendous waste of time).</p>
 <p>The containers are described in a YAML configuration file and Docker Compose will take care of building the images and starting the containers, as well as some other useful things like automatically connecting the containers to an internal network.</p>
-<p>Don't worry if you feel a little confused: by the end of this post it will all make sense.</p>
+<p>Don't worry if you feel a little confused; by the end of this post it will all make sense.</p>
 <h3 id="nginx">Nginx</h3>
 <p>The YAML configuration file will actually be our starting point: open your favourite text editor and add a new <code>docker-compose.yml</code> file to a directory of your choice on your local machine (your computer), with the following content:</p>
 <pre><code>version: '3.7'
@@ -217,13 +218,13 @@ services:
 <p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.7 is the latest version at the time of writing).</p>
 <p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.17 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
 <hr />
-<p><strong>Why not use the <em>latest</em> tag?</strong> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future - it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
+<p><strong>Why not use the <em>latest</em> tag?</strong> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future – it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
 <hr />
 <p>Much like a Github repository, image descriptions on Docker Hub usually do a good job at explaining how to use it and what the available versions are. Here, we are looking at Nginx's official image: it is provided for and maintained by Nginx. Docker has become so popular most companies provide their own official image, which I always use whenever possible. They are easily recognisable: their page mentions <em>Docker Official Images</em> at the top, and Docker Hub separates them clearly from the community images when doing a search:</p>
 <p><img alt="Docker Hub" src="/images/2020/03/04/docker-part-1-02.png" title="Docker Hub" />
 <p class="caption">Note the "Verified Content" at the top</p></p>
 <p>Back to <code>docker-compose.yml</code>: under <code>ports</code>, <code>80:80</code> indicates that we want to map our local machine's port 80 (used by HTTP) to the container's. In other words, when we will access port 80 on our local machine (i.e. your computer), we will be forwarded to the port 80 of the Nginx container.</p>
-<p>Let's make a test. Save the <code>docker-compose.yml</code> file, open a terminal and change the current directory to your project's before running the following command:</p>
+<p>Let's test this out. Save the <code>docker-compose.yml</code> file, open a terminal and change the current directory to your project's before running the following command:</p>
 <pre><code>$ docker-compose up -d
 </code></pre>
 <p>It might take a little while as the Nginx image will first be downloaded from Docker Hub. When it is done, open <a href="http://localhost">localhost</a> in your browser, which should display Nginx's welcome page:</p>
@@ -271,7 +272,7 @@ services:
     volumes:
       - ./src:/var/www/php
 </code></pre>
-<p>A few things going on here: let's forget about the Nginx service for a moment, and focus on the new PHP service instead. We start from the <code>php:7.4-fpm</code> image, corresponding to the tag <code>7.4-fpm</code> of <a href="https://hub.docker.com/_/php">PHP's official image</a>, featuring version 7.4 and PHP-FPM. Let's skip <code>working_dir</code> for now, and have a look at <code>volumes</code>. This section allows to define <em>volumes</em> (basically, directories or single files) that we want to mount onto the container. This essentially means we can map local directories and files to directories and files on the container; in our case, we want Docker Compose to mount the <code>src</code> folder as the container's <code>/var/www/php</code> folder.</p>
+<p>A few things going on here: let's forget about the Nginx service for a moment, and focus on the new PHP service instead. We start from the <code>php:7.4-fpm</code> image, corresponding to the tag <code>7.4-fpm</code> of <a href="https://hub.docker.com/_/php">PHP's official image</a>, featuring version 7.4 and PHP-FPM. Let's skip <code>working_dir</code> for now, and have a look at <code>volumes</code>. This section allows us to define <em>volumes</em> (basically, directories or single files) that we want to mount onto the container. This essentially means we can map local directories and files to directories and files on the container; in our case, we want Docker Compose to mount the <code>src</code> folder as the container's <code>/var/www/php</code> folder.</p>
 <p>What's in the <code>src/</code> folder? Nothing yet, but that's where we are going to place our application code. Once it is mounted onto the container, any change we make to our code will be immediately available, without the need to restart the container.</p>
 <p>Create the <code>src</code> directory (at the same lvel as <code>docker-compose.yml</code>) and add the following <code>index.php</code> file to it:</p>
 <pre><code>&lt;!DOCTYPE html&gt;
@@ -324,7 +325,7 @@ services:
 <p>It tells Nginx to forward requests for PHP files to the PHP container's port 9000, which is the default port PHP-FPM listens on. Internally, Docker Compose will automatically resolve the <code>php</code> keyword to whatever private IP address it assigned to the PHP container.</p>
 <p>This is another great feature of Docker Compose: at start-up, it will automatically set up an internal network on which each container is discoverable via its service's name.</p>
 <hr />
-<p><strong>Note on networks:</strong> Docker Compose sets up a network with the <em>bridge</em> driver by default, but you can also explicitly declare the networks to use. I personally never used any other network than the default one, but you can read about other options <a href="https://docs.docker.com/compose/networking/">here</a>.</p>
+<p><strong>Note on networks:</strong> Docker Compose sets up a network with the <em>bridge</em> driver by default, but you can also specify the networks. I've personally never used any other network than the default one, but you can read about other options <a href="https://docs.docker.com/compose/networking/">here</a>.</p>
 <hr />
 <p>Finally, let's have a look at the last configuration section of the Nginx service:</p>
 <pre><code>depends_on:
@@ -365,7 +366,7 @@ nginx_1 exited with code 1
 <p>This command aggregates the logs of every container, which is extremely useful for debugging: if anything goes wrong, your first reflex should always be to look at the logs. It is also possible to display the information of a specific container simply by appending the name of the service (e.g. <code>docker-compose logs -f nginx</code>).</p>
 <p>Hit <code>ctrl+c</code> to get your terminal back.</p>
 <h3 id="mysql">MySQL</h3>
-<p>The last key ingredient to our LEMP recipe is MySQL. Let's update <code>docker-compose.yml</code> again:</p>
+<p>The last key component of our LEMP stack is MySQL. Let's update <code>docker-compose.yml</code> again:</p>
 <pre><code>version: '3.7'
 
 # Services
@@ -406,7 +407,7 @@ volumes:
 
   mysqldata:
 </code></pre>
-<p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started ahead of PHP. But before we dive into its configuration, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
+<p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started before PHP. But before we dive into its configuration, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
 <p>A Dockerfile is like the recipe to build an image: every image has one, even official ones (see for instance <a href="https://github.com/nginxinc/docker-nginx/blob/5971de30c487356d5d2a2e1a79e02b2612f9a72f/mainline/buster/Dockerfile">Nginx's</a>).</p>
 <p>Create the <code>.docker/php</code> folder and add the following <code>Dockerfile</code> file to it:</p>
 <pre><code>FROM php:7.4-fpm
@@ -456,7 +457,7 @@ RUN docker-php-ext-install pdo_mysql
     &lt;/body&gt;
 &lt;/html&gt;
 </code></pre>
-<p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet. Let's now have a look at the MySQL service in <code>docker-compose.yml</code>: the <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow to set the root password and create a default database respectively.</p>
+<p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet. Let's now have a look at the MySQL service in <code>docker-compose.yml</code>: the <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
 <p>In other words, a <code>demo</code> database will automatically be created for us when the container starts.</p>
 <p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file (in <em>read only</em> mode) we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
 <p>Create the <code>.docker/mysql</code> folder and add the following <code>my.cnf</code> file to it:</p>
@@ -479,8 +480,8 @@ volumes:
 <p>Go back to your terminal and run <code>docker-compose up -d</code> again. Once it is done downloading the MySQL image and all of the containers are up and running, refresh <a href="http://localhost">localhost</a>. You should see this:</p>
 <p><img alt="Hello there" src="/images/2020/03/04/docker-part-1-07.png" title="Hello there" /></p>
 <hr />
-<p><strong>Note:</strong> you might initially get the following error: <code>Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused</code>. The reason is MySQL hasn't built the <code>demo</code> database just yet, even though we specifically instructed the MySQL container to be started before the PHP one. The problem is the MySQL container is started first indeed, but only then does it proceed with creating the database, meaning the PHP container might be ready before the database actually is.<br />
-Keep refreshing for a few seconds, the error will eventually disappear.</p>
+<p><strong>Note:</strong> you might initially get the following error: <code>Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused</code>. The reason is that MySQL hasn't built the <code>demo</code> database just yet, even though we specifically instructed the MySQL container to be started before the PHP one. The problem is the MySQL container is indeed started first, but only then does it proceed with creating the database, which means the PHP container might be ready before the database is.</p>
+<p>Keep refreshing for a few seconds; the error will eventually disappear.</p>
 <hr />
 <p>We now have Nginx serving PHP files that can connect to a MySQL database, meaning our LEMP stack is pretty much complete. The next steps are about improving our setup, starting with seeing how we can interact with the database in a user-friendly way.</p>
 <h3 id="phpmyadmin">phpMyAdmin</h3>
@@ -506,14 +507,14 @@ If you choose to do the above, you can skip this section altogether and move on 
     depends_on:
       - mysql
 </code></pre>
-<p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate the MySQL container should be started first with <code>depends_on</code>, and we set the host phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned the container).</p>
-<p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded and, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
+<p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate the MySQL container should be started first with <code>depends_on</code>, and set the host that phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned to the container).</p>
+<p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded, then, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
 <p><img alt="phpMyAdmin" src="/images/2020/03/04/docker-part-1-08.png" title="phpMyAdmin" /></p>
-<p>Enter <code>root</code> / <code>root</code> as username and password; create a couple of tables under the <code>demo</code> database, and refresh <a href="http://localhost">localhost</a> to confirm they are correctly listed.</p>
+<p>Enter <code>root</code> / <code>root</code> as username and password, create a couple of tables under the <code>demo</code> database and refresh <a href="http://localhost">localhost</a> to confirm they are correctly listed.</p>
 <p>And that's it! That one was easy, right?</p>
 <p>Let's move on to setting up a proper domain name for our application.</p>
 <h2 id="domain-name">Domain name</h2>
-<p>We have come a long way already and all that's left for today mostly boils down to polishing up our setup. While accessing <a href="http://localhost">localhost</a> is functional, it is not particularly user-friendly.</p>
+<p>We have come a long way already and all that's left for today mostly boils down to polishing up our setup. While accessing <a href="http://localhost">localhost</a> is functional, it is not particularly user friendly.</p>
 <p>Replace the content of <code>.docker/nginx/conf.d/php.conf</code> with this one:</p>
 <pre><code>server {
     listen      80;
@@ -549,7 +550,7 @@ If you choose to do the above, you can skip this section altogether and move on 
 </code></pre>
 <p>Notice how each container is prefixed by the name of your project directory (which would be <code>docker-tutorial</code> if you cloned the <a href="https://github.com/osteel/docker-tutorial/tree/part-1">repository</a>):</p>
 <p><img alt="docker-compose ps with prefix" src="/images/2020/03/04/docker-part-1-09.png" title="docker-compose ps with prefix" /></p>
-<p>Now before we proceed further, let's destroy our containers and volumes so we can start fresh:</p>
+<p>Now, before we proceed further, let's destroy our containers and volumes so we can start afresh:</p>
 <pre><code>$ docker-compose down -v
 </code></pre>
 <p>Create a <code>.env</code> file alongside <code>'docker-compose.yml</code>, with the following content:</p>
@@ -557,7 +558,7 @@ If you choose to do the above, you can skip this section altogether and move on 
 </code></pre>
 <p>Save the file and run <code>docker-compose up -d</code> again, followed by <code>docker-compose ps</code>: each container is now prefixed with <code>demo_</code>.</p>
 <p>Why is this important? By assigning a unique name to your project, you ensure that no name collision will happen with other ones. If there are multiple Docker-based projects on your system that share the same name or directory name, and more than one use a service called <code>nginx</code>, Docker may complain that another container named <code>xxx_nginx</code> already exists when you bring up a Docker environment.</p>
-<p>While this might not seem essential, it is an easy way to avoid potential pains in the future, and provides some consistence across the team. Speaking of which: if you dealt with <code>.env</code> files before, you probably know that they are not supposed to be versioned and pushed to a code repository. Assuming you are using Git, you should add <code>.env</code> to a <code>.gitignore</code> file, and create a <code>.env.example</code> file that will be shared with your coworkers.</p>
+<p>While this might not seem essential, it is an easy way to avoid potential hassle in the future, and provides some consistency across the team. Speaking of which: if you've dealt with <code>.env</code> files before, you probably know that they are not supposed to be versioned and pushed to a code repository. Assuming you are using Git, you should add <code>.env</code> to a <code>.gitignore</code> file, and create a <code>.env.example</code> file that will be shared with your coworkers.</p>
 <p>Here is what the final directory and file structure should look like:</p>
 <pre><code>docker-tutorial/
 ├── .docker/
@@ -575,14 +576,14 @@ If you choose to do the above, you can skip this section altogether and move on 
 ├── .gitignore
 └── docker-compose.yml
 </code></pre>
-<p>That's it for environment variables for the scope of this article, but you can read more about them <a href="https://docs.docker.com/compose/environment-variables/">over here</a>.</p>
-<h2 id="commands-summary-and-cleaning-up-your-environment">Commands summary and cleaning-up your environment</h2>
-<p>Before we wrap up, I'd like to summarise all of the commands we have been using so far, and throw a few more in so you can clean-up your environment if you wish to. This can be used as a reference you can easily come back to if need be, which might be the case especially in the beginning.</p>
+<p>That is the extent to which we need environment variables for this article, but you can read more about them <a href="https://docs.docker.com/compose/environment-variables/">over here</a>.</p>
+<h2 id="commands-summary-and-cleaning-up-your-environment">Commands summary and cleaning up your environment</h2>
+<p>Before we wrap up, I'd like to summarise all of the commands we have been using so far, and throw a few more in so you can clean up your environment if you wish to. This can be used as a reference you can easily come back to if need be, especially in the beginning.</p>
 <p>Remember that they need to be run from your project's directory.</p>
 <p><em>Start and run the containers in the background</em></p>
 <pre><code>$ docker-compose up -d
 </code></pre>
-<p>If you update <code>docker-compose.yml</code>, an image or a Dockerfile, running this command again will pick-up the changes automatically.</p>
+<p>If you update <code>docker-compose.yml</code>, an image or a Dockerfile, running this command again will pick up the changes automatically.</p>
 <p><em>Restart the containers</em></p>
 <pre><code>$ docker-compose restart
 </code></pre>
@@ -609,22 +610,22 @@ If you choose to do the above, you can skip this section altogether and move on 
 <h2 id="conclusion">Conclusion</h2>
 <p>Here is a summary of what we have covered today:</p>
 <ul>
-<li>What Docker Compose is;</li>
-<li>What the difference between a service, an image and a container is;</li>
-<li>How to search for images on Docker Hub;</li>
-<li>What running a single process per container means;</li>
-<li>How to split our application into different containers accordingly;</li>
-<li>How to describe services in a <code>docker-compose.yml</code> file;</li>
-<li>What a <code>Dockerfile</code> is;</li>
-<li>How to declare and use volumes;</li>
-<li>How Docker Compose makes containers discoverable on an internal network;</li>
-<li>How to assign a domain name to our application;</li>
-<li>How to set environment variables;</li>
-<li>A bunch of useful commands.</li>
+<li>what Docker Compose is;</li>
+<li>what the difference between a service, an image and a container is;</li>
+<li>how to search for images on Docker Hub;</li>
+<li>what running a single process per container means;</li>
+<li>how to split our application into different containers accordingly;</li>
+<li>how to describe services in a <code>docker-compose.yml</code> file;</li>
+<li>what a <code>Dockerfile</code> is;</li>
+<li>how to declare and use volumes;</li>
+<li>how Docker Compose makes containers discoverable on an internal network;</li>
+<li>how to assign a domain name to our application;</li>
+<li>how to set environment variables;</li>
+<li>a bunch of useful commands.</li>
 </ul>
-<p>That is an awful lot to digest. Congratulations if you made it this far, that must have been a real effort. The good news is the next posts should be way lighter, and that the result of this one can already be used as a decent starting point to any web project.</p>
-<p>Don't worry if you feel a little bit confused or overwhelmed, that is perfectly normal. Docker is a strong case for <em>practice makes perfect</em>: it is only by using it regularly its concepts eventually click.</p>
-<p>In the next part of this series, we will see how to choose and shrink the size of our images. Subscribe to email alerts below so you won't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+<p>That is an awful lot to digest. Congratulations if you made it this far, that must have been a real effort. The good news is that the next posts will be lighter, and the result of this one can already be used as a decent starting point for any web project.</p>
+<p>Don't worry if you feel a little bit confused or overwhelmed, that is perfectly normal. Docker is a strong case for <em>practice makes perfect</em>: it is only by using it regularly that its concepts eventually click.</p>
+<p>In the next part of this series, we will see how to choose and shrink the size of our images. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
