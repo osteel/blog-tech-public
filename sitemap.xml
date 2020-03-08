@@ -2,17 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>https://tech.osteel.me/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://tech.osteel.me/posts/docker-for-local-web-development-appendix-a-docker-on-windows</loc>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://tech.osteel.me/posts/docker-for-local-web-development-introduction-why-should-you-care</loc>
-    <priority>0.8</priority>
-  </url>
-
-  <url>
-    <loc>https://tech.osteel.me/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack</loc>
     <priority>0.8</priority>
   </url>
 
