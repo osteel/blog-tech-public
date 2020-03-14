@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/03/16/docker-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, part 2: put your images on a diet &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="alpine" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, part 2: put your images on a diet
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-03-16 ::
+        Published: 2020-03-16
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Docker Alpine" src="/images/2020/03/16/docker-01.jpg" title="Docker Alpine" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li>Part 2: put your images on a diet <strong>⬅️ you are here</strong></li>
+<li>Part 3: a three-tier architecture with frameworks <em>(coming soon)</em></li>
+<li>Part 4: smoothing things out with Bash <em>(coming soon)</em></li>
+<li>Part 5.1: HTTPS all the things with a self-signed certificate <em>(coming soon)</em></li>
+<li>Part 5.2: HTTPS all the things with a trusted Certificate Authority <em>(coming soon)</em></li>
+<li>Part 6: expose a local container to the Internet <em>(coming soon)</em></li>
+<li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#getting-started">Getting started</a></li>
+<li><a href="#im-not-fat-im-big-boned">"I'm not fat, I'm big boned"</a></li>
+<li><a href="#alpine-linux">Alpine Linux</a></li>
+<li><a href="#when-not-to-use-alpine">When not to use Alpine</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h2 id="getting-started">Getting started</h2>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-1"><em>part-1</em> branch</a>.</p>
+<p>If you prefer, you can also directly checkout the <a href="https://github.com/osteel/docker-tutorial/tree/part-2"><em>part-2</em> branch</a>, which is the final result of today's article.</p>
+<h2 id="im-not-fat-im-big-boned">"I'm not fat, I'm big boned"</h2>
+<p>In <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">part 1</a> of this series, we went through the steps of creating a simple but functional LEMP stack running on Docker and orchestrated by Docker Compose, resulting in four containers running simultaneously.</p>
+<p>These containers are based on images that were downloaded from <a href="https://hub.docker.com/">Docker Hub</a>, each of them with a different weight. How much space are they actually taking on the disk?</p>
+<p>Let's find out with this simple command to be run from the root of our project:</p>
+<pre><code>$ docker-compose images
+</code></pre>
+<p>It will display a list of the images used by the project, along with their size whose total should roughly amount to 1.5 GB:</p>
+<p><img alt="Docker regular images" src="/images/2020/03/16/docker-02.png" title="Docker regular images" /></p>
+<p>That is not small. Why is that?</p>
+<p>Most Linux distributions come with many services that are expected to cover common use cases; they offer a great amount of programs, intended to address a broad audience whose needs may evolve over time. On the other hand, Docker containers are supposed to run a single process, meaning what they need to perform their job usually doesn't amount to much, and is unlikely to change over time.</p>
+<p>By using standard Linux distributions, we embark a lot of tools and services we don't actually need in our images, unnecessarily increasing their size in the process, which has an impact on performance, security and, sometimes, the cost of deployment.</p>
+<p>That is not ideal. Is there anything we can do about it?</p>
+<h2 id="alpine-linux">Alpine Linux</h2>
+<p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the default bare minimum and lets you install what you actually need. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
+<p>Before we modify our setup, let's get rid of the current one:</p>
+<pre><code>$ docker-compose down -v --rmi all
+</code></pre>
+<p>This command will stop and/or destroy the containers, as well as remove the volumes and images, allowing us to start afresh.</p>
+<p>Replace the content of <code>docker-compose.yml</code> with this one (changes have been highlighted in bold):</p>
+<pre>
+version: '3.7'
+
+# Services
+services:
+
+  # Nginx Service
+  nginx:
+    <strong>image: nginx:1.17-alpine</strong>
+    ports:
+      - 80:80
+    volumes:
+      - ./src:/var/www/php:ro
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+      <strong>- phpmyadmindata:/usr/src/phpmyadmin</strong>
+    depends_on:
+      - php
+      <strong>- phpmyadmin</strong>
+
+  # PHP Service
+  php:
+    build: ./.docker/php
+    working_dir: /var/www/php
+    volumes:
+      - ./src:/var/www/php
+    depends_on:
+      - mysql
+
+  # MySQL Service
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: demo
+    volumes:
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
+      - mysqldata:/var/lib/mysql
+
+  # PhpMyAdmin Service
+  phpmyadmin:
+    <strong>image: phpmyadmin/phpmyadmin:5-fpm-alpine</strong>
+    environment:
+      PMA_HOST: mysql
+    <strong>volumes:</strong>
+      <strong>- phpmyadmindata:/usr/src/phpmyadmin</strong>
+    depends_on:
+      - mysql
+
+# Volumes
+volumes:
+
+  mysqldata:
+
+  <strong>phpmyadmindata:</strong>
+</pre>
+
+<p>On the Nginx side, we simply appended <code>-alpine</code> to the image's tag, to pull the Alpine-based version (remember that the available versions of an image are usually listed on Docker Hub). We also mounted a new named volume <code>phpmyadmindata</code>, declared at the bottom of the file, and indicated that the phpMyAdmin container should be started first, with <code>depends_on</code>.</p>
+<p>The reason is that Nginx will now be serving phpMyAdmin as well as our PHP application, where previously the phpMyAdmin image featured its own HTTP server (Apache). As the name suggests, the <code>5-fpm-alpine</code> tag is the Alpine-based version of the image, featuring PHP-FPM and expecting PHP files to be handled by an external HTTP server.</p>
+<hr />
+<p><strong>Where to find help?</strong> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have had your problem before you did. I also find it helpful to have a look at image Dockerfiles, to understand how they are built and thus how to use them.</p>
+<hr />
+<p>We therefore need an Nginx configuration for phpMyAdmin, for which we will create a new <code>phpmyadmin.conf</code> file alongside <code>php.conf</code> in <code>.docker/nginx/conf.d</code>:</p>
+<pre><code>server {
+    listen      80;
+    listen      [::]:80;
+    server_name phpmyadmin.test;
+    root        /usr/src/phpmyadmin;
+    index       index.php;
+
+    location ~* \.php$ {
+        fastcgi_pass   phpmyadmin:9000;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
+    }
+}
+</code></pre>
+<p>Again, a pretty standard server configuration that looks a lot like <code>php.conf</code>, except that it points to port 9000 of the phpMyAdmin service.</p>
+<p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose mount a local folder onto both the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
+<p>Finally, we also got rid of the mapping of port 8080, since we are now using Nginx's port 80 directly.</p>
+<p>How about PHP? If you followed the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, you already know that we use the Dockerfile located in <code>.docker/php</code> to describe and build our image.</p>
+<p>Replace its content with this one:</p>
+<pre><code>FROM php:7.4-fpm-alpine
+
+RUN docker-php-ext-install pdo_mysql
+</code></pre>
+<p>Just like Nginx, the only difference is we appended <code>-alpine</code> at the end of the image's tag to get the Alpine-based version.</p>
+<p>That leaves us with the MySQL service, which hasn't changed at all. The reason is that at the time of writing, there is simply no available Alpine version for the MySQL image, for reasons laid out in this <a href="https://github.com/docker-library/mysql/issues/179">GitHub issue</a>.</p>
+<p>We are now ready to test out our new setup. Run the now familiar <code>docker-compose up -d</code> again, followed by <code>docker-compose images</code>:</p>
+<p><img alt="Docker Alpine images" src="/images/2020/03/16/docker-03.png" title="Docker Alpine images" /></p>
+<p>The total size of our images is now around 700 MB, less than half the initial weight.</p>
+<p>And as a bonus, you can now access phpMyAdmin at <a href="http://phpmyadmin.test">phpmyadmin.test</a> instead of <em>localhost:8080</em>.</p>
+<p><img alt="Not bad" src="/images/2020/03/16/docker-04.gif" title="Not bad" /></p>
+<h2 id="when-not-to-use-alpine">When not to use Alpine</h2>
+<p>As often, however, there is no silver bullet. Alpine is great as long as what you need is available from the official <a href="https://pkgs.alpinelinux.org/packages">package repository</a> (which is well-stocked, to be fair), but whenever something is missing you might be in for <a href="https://dev.to/asyazwan/moving-away-from-alpine-30n4">some fun</a> in order to add it manually. Unless you are well versed in system administration, you probably don't want to go there.</p>
+<p>So how to pick the right version of an image? A good approach would be to start with the most minimal available version and move up the footprint ladder in case of dependency deficiency only. Although nothing is set in stone and you can always change the base image later, the more complex a Dockerfile, the more painful it can get to port it to a different Linux distribution.</p>
+<p>This is why I'm introducing Alpine so early on: instead of going for the first available image without giving it some thought, consider your options and identify what seems like the best compromise. It will most likely save you some hassle down the line.</p>
+<p>Also remember that beyond sheer size considerations, the smaller the image, the smaller the potential <a href="https://en.wikipedia.org/wiki/Attack_surface">attack surface</a>.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>We now have a better idea of how to pick a base image for our containers, which resulted in an optimised version of our LEMP stack. This is a good place from which to upgrade our setup to a more complex <a href="https://www.techopedia.com/definition/24649/three-tier-architecture">three-tier architecture</a> and introduce application frameworks, which we will cover in the next part.</p>
+<p>You can subscribe to email alerts below to make sure you don't miss it, or you can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-03-16" pubdate>2020-03-16</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/alpine">alpine</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
+              var disqus_url = "https://tech.osteel.me/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
+              var disqus_title = "Docker for local web development, part 2: put your images on a diet";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>

@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-07 ::
+          Last updated: 2020-03-13 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -200,7 +200,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 <p>This is fairly straightforward, but how do we get from here to setting up these containers, and how will they interact with each other?</p>
 <h2 id="docker-compose">Docker Compose</h2>
-<p>Docker Desktop comes with a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a> that allows you to define and run multi-container Docker applications.</p>
+<p>Docker Desktop comes with a tool called <a href="https://docs.docker.com/compose/">Docker Compose</a> that allows you to define and run multi-container Docker applications (if your system runs on Linux, you will need to install it <a href="https://docs.docker.com/compose/install/">separately</a>).</p>
 <p>Docker Compose isn't absolutely necessary to manage multiple containers, as doing so can be achieved with Docker alone, but in practice it is very inconvenient to do so (it would be similar to doing long division while there is a calculator on the desk: while it is certainly not a bad skill to have, it is also a tremendous waste of time).</p>
 <p>The containers are described in a YAML configuration file and Docker Compose will take care of building the images and starting the containers, as well as some other useful things like automatically connecting the containers to an internal network.</p>
 <p>Don't worry if you feel a little confused; by the end of this post it will all make sense.</p>
@@ -411,7 +411,7 @@ volumes:
 </code></pre>
 <p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started before PHP. But before we dive into its configuration, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
 <p>A Dockerfile is like the recipe to build an image: every image has one, even official ones (see for instance <a href="https://github.com/nginxinc/docker-nginx/blob/5971de30c487356d5d2a2e1a79e02b2612f9a72f/mainline/buster/Dockerfile">Nginx's</a>).</p>
-<p>Create the <code>.docker/php</code> folder and add the following <code>Dockerfile</code> file to it:</p>
+<p>Create the <code>.docker/php</code> folder and add a file named <code>Dockerfile</code> to it, with the following content:</p>
 <pre><code>FROM php:7.4-fpm
 
 RUN docker-php-ext-install pdo_mysql
@@ -632,7 +632,7 @@ If you choose to do the above, you can skip this section altogether and move on 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-07" pubdate>2020-03-07</time>
+          <time datetime="2020-03-13" pubdate>2020-03-13</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
