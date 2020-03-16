@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       <small>
           Last updated: 2020-03-16 ::
         Published: 2020-03-16
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
       </small>
     </span>
 
@@ -166,22 +166,22 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="getting-started">Getting started</h2>
-<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-1"><em>part-1</em> branch</a>.</p>
-<p>If you prefer, you can also directly checkout the <a href="https://github.com/osteel/docker-tutorial/tree/part-2"><em>part-2</em> branch</a>, which is the final result of today's article.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, corresponding to the <a href="https://github.com/osteel/docker-tutorial/tree/part-1"><em>part-1</em></a> branch of the repository.</p>
+<p>If you prefer, you can also directly checkout <a href="https://github.com/osteel/docker-tutorial/tree/part-2"><em>part-2</em></a>, which is the final result of today's article.</p>
 <h2 id="im-not-fat-im-big-boned">"I'm not fat, I'm big boned"</h2>
 <p>In <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">part 1</a> of this series, we went through the steps of creating a simple but functional LEMP stack running on Docker and orchestrated by Docker Compose, resulting in four containers running simultaneously.</p>
-<p>These containers are based on images that were downloaded from <a href="https://hub.docker.com/">Docker Hub</a>, each of them with a different weight. How much space are they actually taking on the disk?</p>
-<p>Let's find out with this simple command to be run from the root of our project:</p>
+<p>These containers are based on images that were downloaded from <a href="https://hub.docker.com/">Docker Hub</a>, each of these images having a different weight. But how much space are we talking about?</p>
+<p>Let's find out with this simple command, to be run from the root of our project:</p>
 <pre><code>$ docker-compose images
 </code></pre>
-<p>It will display a list of the images used by the project, along with their size whose total should roughly amount to 1.5 GB:</p>
+<p>It will display a table containing the images used by the application and some information about them, including their weight:</p>
 <p><img alt="Docker regular images" src="/images/2020/03/16/docker-02.png" title="Docker regular images" /></p>
-<p>That is not small. Why is that?</p>
-<p>Most Linux distributions come with many services that are expected to cover common use cases; they offer a great amount of programs, intended to address a broad audience whose needs may evolve over time. On the other hand, Docker containers are supposed to run a single process, meaning what they need to perform their job usually doesn't amount to much, and is unlikely to change over time.</p>
-<p>By using standard Linux distributions, we embark a lot of tools and services we don't actually need in our images, unnecessarily increasing their size in the process, which has an impact on performance, security and, sometimes, the cost of deployment.</p>
-<p>That is not ideal. Is there anything we can do about it?</p>
+<p>The total amounts to roughly 1.5 GB, which is not light. Why is that?</p>
+<p>Most Linux distributions come with many services that are expected to cover common use cases; they offer a large amount of programs, intended to address a broad audience whose needs may evolve over time. On the other hand, Docker containers are supposed to run a single process, meaning what they need to perform their jobs usually doesn't amount to much, and is unlikely to change over time.</p>
+<p>By using standard Linux distributions, we embark a lot of tools and services we don't always need, unnecessarily increasing the size of the images in the process. In turn, this has an impact on performance, security and, sometimes, the cost of deployment.</p>
+<p>Is there anything we can do about it?</p>
 <h2 id="alpine-linux">Alpine Linux</h2>
-<p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the default bare minimum and lets you install what you actually need. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
+<p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the bare minimum by default and lets you install what you actually need for your application. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
 <p>Before we modify our setup, let's get rid of the current one:</p>
 <pre><code>$ docker-compose down -v --rmi all
 </code></pre>
@@ -243,12 +243,12 @@ volumes:
   <strong>phpmyadmindata:</strong>
 </pre>
 
-<p>On the Nginx side, we simply appended <code>-alpine</code> to the image's tag, to pull the Alpine-based version (remember that the available versions of an image are usually listed on Docker Hub). We also mounted a new named volume <code>phpmyadmindata</code>, declared at the bottom of the file, and indicated that the phpMyAdmin container should be started first, with <code>depends_on</code>.</p>
-<p>The reason is that Nginx will now be serving phpMyAdmin as well as our PHP application, where previously the phpMyAdmin image featured its own HTTP server (Apache). As the name suggests, the <code>5-fpm-alpine</code> tag is the Alpine-based version of the image, featuring PHP-FPM and expecting PHP files to be handled by an external HTTP server.</p>
+<p>Let's break this down. On the Nginx side, we simply appended <code>-alpine</code> to the image tag, to pull the Alpine-based version (remember that the available versions of an image are listed on <a href="https://hub.docker.com/_/nginx">Docker Hub</a>). We also mounted a new named volume <code>phpmyadmindata</code> (declared at the bottom of the file) and used <code>depends_on</code> to indicate that the phpMyAdmin container should be started first.</p>
+<p>The reason is that Nginx will now be serving phpMyAdmin as well as our PHP application, where previously the phpMyAdmin image featured its own HTTP server (Apache). As its name suggests, the <code>5-fpm-alpine</code> tag is the Alpine-based version of the image, whose container runs PHP-FPM as a process and expects PHP files to be handled by an external HTTP server.</p>
 <hr />
-<p><strong>Where to find help?</strong> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have had your problem before you did. I also find it helpful to have a look at image Dockerfiles, to understand how they are built and thus how to use them.</p>
+<p><strong>Where to find help?</strong> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have stumbled upon the same problem before. I also sometimes find it helpful to have a look at the image's Dockerfile, as it is easier to use an image once we understand how it is built.</p>
 <hr />
-<p>We therefore need an Nginx configuration for phpMyAdmin, for which we will create a new <code>phpmyadmin.conf</code> file alongside <code>php.conf</code> in <code>.docker/nginx/conf.d</code>:</p>
+<p>As a result, we need an Nginx configuration for phpMyAdmin. Let's create a new <code>phpmyadmin.conf</code> file in <code>.docker/nginx/conf.d</code>, alongside <code>php.conf</code>:</p>
 <pre><code>server {
     listen      80;
     listen      [::]:80;
@@ -265,28 +265,28 @@ volumes:
 }
 </code></pre>
 <p>Again, a pretty standard server configuration that looks a lot like <code>php.conf</code>, except that it points to port 9000 of the phpMyAdmin service.</p>
-<p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose mount a local folder onto both the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
-<p>Finally, we also got rid of the mapping of port 8080, since we are now using Nginx's port 80 directly.</p>
-<p>How about PHP? If you followed the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, you already know that we use the Dockerfile located in <code>.docker/php</code> to describe and build our image.</p>
+<p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose pick a local folder to mount both onto the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
+<p>Finally, we also got rid of the mapping of port 8080, since we will now be using Nginx's port 80 directly.</p>
+<p>Next in line is PHP. If you followed the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, you already know that we use a <code>Dockerfile</code> located in <code>.docker/php</code> to describe and build our image.</p>
 <p>Replace its content with this one:</p>
 <pre><code>FROM php:7.4-fpm-alpine
 
 RUN docker-php-ext-install pdo_mysql
 </code></pre>
-<p>Just like Nginx, the only difference is we appended <code>-alpine</code> at the end of the image's tag to get the Alpine-based version.</p>
+<p>Just like Nginx, the only difference is we appended <code>-alpine</code> at the end of the image tag to get the Alpine-based version instead.</p>
 <p>That leaves us with the MySQL service, which hasn't changed at all. The reason is that at the time of writing, there is simply no available Alpine version for the MySQL image, for reasons laid out in this <a href="https://github.com/docker-library/mysql/issues/179">GitHub issue</a>.</p>
 <p>We are now ready to test out our new setup. Run the now familiar <code>docker-compose up -d</code> again, followed by <code>docker-compose images</code>:</p>
 <p><img alt="Docker Alpine images" src="/images/2020/03/16/docker-03.png" title="Docker Alpine images" /></p>
-<p>The total size of our images is now around 700 MB, less than half the initial weight.</p>
-<p>And as a bonus, you can now access phpMyAdmin at <a href="http://phpmyadmin.test">phpmyadmin.test</a> instead of <em>localhost:8080</em>.</p>
+<p>The total size of our images now amounts to around 700 MB, which is less than half the initial weight.</p>
+<p>And, as a bonus, you can now access phpMyAdmin at <a href="http://phpmyadmin.test">phpmyadmin.test</a>, instead of <em>localhost:8080</em>.</p>
 <p><img alt="Not bad" src="/images/2020/03/16/docker-04.gif" title="Not bad" /></p>
 <h2 id="when-not-to-use-alpine">When not to use Alpine</h2>
-<p>As often, however, there is no silver bullet. Alpine is great as long as what you need is available from the official <a href="https://pkgs.alpinelinux.org/packages">package repository</a> (which is well-stocked, to be fair), but whenever something is missing you might be in for <a href="https://dev.to/asyazwan/moving-away-from-alpine-30n4">some fun</a> in order to add it manually. Unless you are well versed in system administration, you probably don't want to go there.</p>
-<p>So how to pick the right version of an image? A good approach would be to start with the most minimal available version and move up the footprint ladder in case of dependency deficiency only. Although nothing is set in stone and you can always change the base image later, the more complex a Dockerfile, the more painful it can get to port it to a different Linux distribution.</p>
-<p>This is why I'm introducing Alpine so early on: instead of going for the first available image without giving it some thought, consider your options and identify what seems like the best compromise. It will most likely save you some hassle down the line.</p>
-<p>Also remember that beyond sheer size considerations, the smaller the image, the smaller the potential <a href="https://en.wikipedia.org/wiki/Attack_surface">attack surface</a>.</p>
+<p>As often, however, there is no silver bullet. Alpine is great as long as what you need is available from the official <a href="https://pkgs.alpinelinux.org/packages">package repository</a> (which is well-stocked, to be fair, unlike bathroom hygiene aisles at the moment), but if something is missing you might be in for <a href="https://dev.to/asyazwan/moving-away-from-alpine-30n4">some fun</a> in order to add it manually. Unless you are well versed in system administration, you probably don't want to go there.</p>
+<p>So how to pick the right version of an image? A good approach would be to start with the most minimal available version and move up the footprint ladder in case of lack of dependency support only. Although nothing is ever set in stone and you can always change the base image later, the more complex a Dockerfile, the more painful it can get to port it to a different Linux distribution.</p>
+<p>This is why I'm introducing Alpine so early on: instead of going for the first available image without a second thought, consider your options and identify what seems to be the best compromise – it will most likely save you some headaches down the line.</p>
+<p>Also remember that, beyond sheer size considerations, the smaller the image, the smaller the potential <a href="https://en.wikipedia.org/wiki/Attack_surface">attack surface</a>.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>We now have a better idea of how to pick a base image for our containers, which resulted in an optimised version of our LEMP stack. This is a good place from which to upgrade our setup to a more complex <a href="https://www.techopedia.com/definition/24649/three-tier-architecture">three-tier architecture</a> and introduce application frameworks, which we will cover in the next part.</p>
+<p>We now have a better idea of how to pick a base image for our containers, and we optimised our LEMP stack as a result. This is a good place to upgrade our setup to a more complex <a href="https://www.techopedia.com/definition/24649/three-tier-architecture">three-tier architecture</a> and to introduce application frameworks, which we will cover in the next part.</p>
 <p>You can subscribe to email alerts below to make sure you don't miss it, or you can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
@@ -303,7 +303,23 @@ RUN docker-php-ext-install pdo_mysql
 
     <div class="sharethis-inline-share-buttons"></div>
 
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
 
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
   </div>
 </div>
       </div>
@@ -344,8 +360,8 @@ RUN docker-php-ext-install pdo_mysql
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
-              var disqus_url = "https://tech.osteel.me/drafts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet";
               var disqus_title = "Docker for local web development, part 2: put your images on a diet";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
