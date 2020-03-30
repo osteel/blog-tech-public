@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-22 ::
+          Last updated: 2020-03-28 ::
         Published: 2020-03-16
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
       </small>
@@ -144,7 +144,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
 <li>Part 2: put your images on a diet <strong>⬅️ you are here</strong></li>
-<li>Part 3: a three-tier architecture with frameworks <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
 <li>Part 4: smoothing things out with Bash <em>(coming soon)</em></li>
 <li>Part 5.1: HTTPS all the things with a self-signed certificate <em>(coming soon)</em></li>
 <li>Part 5.2: HTTPS all the things with a trusted Certificate Authority <em>(coming soon)</em></li>
@@ -245,9 +245,8 @@ volumes:
 
 <p>Let's break this down. On the Nginx side, we simply appended <code>-alpine</code> to the image tag, to pull the Alpine-based version (remember that the available versions of an image are listed on <a href="https://hub.docker.com/_/nginx">Docker Hub</a>). We also mounted a new named volume <code>phpmyadmindata</code> (declared at the bottom of the file) and used <code>depends_on</code> to indicate that the phpMyAdmin container should be started first.</p>
 <p>The reason is that Nginx will now be serving phpMyAdmin as well as our PHP application, where previously the phpMyAdmin image featured its own HTTP server (Apache). As its name suggests, the <code>5-fpm-alpine</code> tag is the Alpine-based version of the image, whose container runs PHP-FPM as a process and expects PHP files to be handled by an external HTTP server.</p>
-<hr />
-<p><strong>Where to find help?</strong> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have stumbled upon the same problem before. I also sometimes find it helpful to have a look at the image's Dockerfile, as it is easier to use an image once we understand how it is built.</p>
-<hr />
+<p class="info"><span class="title">Where to find help?</span> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have stumbled upon the same problem before. I also sometimes find it helpful to have a look at the image's Dockerfile, as it is easier to use an image once we understand how it is built.</p>
+
 <p>As a result, we need an Nginx configuration for phpMyAdmin. Let's create a new <code>phpmyadmin.conf</code> file in <code>.docker/nginx/conf.d</code>, alongside <code>php.conf</code>:</p>
 <pre><code>server {
     listen      80;
@@ -265,7 +264,7 @@ volumes:
 }
 </code></pre>
 <p>Again, a pretty standard server configuration that looks a lot like <code>php.conf</code>, except that it points to port 9000 of the phpMyAdmin service.</p>
-<p>You also need to update your local <code>hosts</code> file to add the new domain name (have a look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you forgot how to do that):</p>
+<p>You also need to update your local <code>hosts</code> file to add the new domain name (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you forgot how to do that):</p>
 <pre><code>127.0.0.1 php.test phpmyadmin.test
 </code></pre>
 <p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose pick a local folder to mount both onto the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
@@ -289,13 +288,13 @@ RUN docker-php-ext-install pdo_mysql
 <p>This is why I'm introducing Alpine so early on: instead of going for the first available image without a second thought, consider your options and identify what seems to be the best compromise – it will most likely save you some headaches down the line.</p>
 <p>Also remember that, beyond sheer size considerations, the smaller the image, the smaller the potential <a href="https://en.wikipedia.org/wiki/Attack_surface">attack surface</a>.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>We now have a better idea of how to pick a base image for our containers, and we optimised our LEMP stack as a result. This is a good place to upgrade our setup to a more complex <a href="https://www.techopedia.com/definition/24649/three-tier-architecture">three-tier architecture</a> and to introduce application frameworks, which we will cover in the next part.</p>
+<p>We now have a better idea of how to pick a base image for our containers, and we optimised our LEMP stack as a result. This is a good place to upgrade our setup to a more complex three-tier architecture and to introduce application frameworks, which we will cover in the <a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">next part</a>.</p>
 <p>You can subscribe to email alerts below to make sure you don't miss it, or you can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-22" pubdate>2020-03-22</time>
+          <time datetime="2020-03-28" pubdate>2020-03-28</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

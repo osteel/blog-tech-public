@@ -55,7 +55,7 @@ p img, video, .flash-video, .media-embed  {
   -webkit-border-radius: 0.3em !important;
   display: block !important;
   border: #fff 0.5em solid !important;
-  margin: 0 auto 1.5em !important;
+  margin: .5em auto 1.5em !important;
 }
 
 .post .caption {
@@ -63,6 +63,31 @@ p img, video, .flash-video, .media-embed  {
   margin-top: -0.7em;
   font-style: italic;
   font-size: 18px;
+}
+
+.info {
+  /*background-color: #f9f9f9;*/
+  background-color: #f0f5ff;
+  /*border: #eee 1px solid;*/
+  border: #d8e7fc 1px solid;
+  border-radius: 0.3em;
+  padding: 20px;
+  margin-top: 0;
+  margin-bottom: 1rem;
+}
+
+.info p:last-child, .info pre:last-child {
+  margin-bottom: 0;
+}
+
+.info .title {
+  display: block;
+  font-weight: bold;
+  margin-bottom: .5rem;
+}
+
+.info .title:before {
+  content: "💡 ";
 }
 
 .form-input {
