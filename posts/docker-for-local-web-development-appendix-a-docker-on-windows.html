@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-07 ::
+          Last updated: 2020-03-30 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-appendix-a-docker-on-windows.html">history</a> ]
       </small>
@@ -161,6 +161,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#in-this-post">In this post</a></li>
 <li><a href="#why-this-appendix">Why this appendix?</a></li>
 <li><a href="#minimum-requirements">Minimum requirements</a></li>
+<li><a href="#docker-desktop">Docker Desktop</a></li>
 <li><a href="#virtualisation-hyper-v-and-virtualbox">Virtualisation, Hyper-V and VirtualBox</a></li>
 <li><a href="#terminal">Terminal</a></li>
 <li><a href="#local-folder-and-disk-sharing">Local folder and disk sharing</a></li>
@@ -170,11 +171,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="why-this-appendix">Why this appendix?</h2>
-<p>You might have heard some rumours claiming Docker is a bit of a pain to run on Windows. The bad new is these rumours are mostly true. All is not lost however: most hurdles come with little tricks that, once known and applied, make the experience of Docker on Windows almost the same as a Unix-based system.</p>
+<p>You might have heard some rumours claiming Docker is a bit of a pain to run on Windows. The bad new is these rumours are mostly true. All is not lost, however: most hurdles come with little tricks that, once known and applied, make the experience of Docker on Windows almost the same as a Unix-based system.</p>
 <p>This appendix is about those little tricks, which should allow you to complete the entirety of this tutorial series and run the final result smoothly on Microsoft's OS.</p>
 <p>Note that this appendix is <strong>not</strong> about Windows-based containers.</p>
 <h2 id="minimum-requirements">Minimum requirements</h2>
 <p>Docker cannot run on any version of Windows. The minimum requirements are listed in the <a href="https://docs.docker.com/docker-for-windows/install/#what-to-know-before-you-install">Docker documentation</a> and, at the time of writing, they indicate your system should run <strong>at least Windows 10 64-bit  Pro, Enterprise, or Education</strong>, because of Docker's virtualisation needs.</p>
+<h2 id="docker-desktop">Docker Desktop</h2>
+<p>If you haven't already, download and install <a href="https://www.docker.com/products/docker-desktop">Docker Desktop</a>, which is essentially a virtual machine running Docker and Docker Compose.</p>
+<p>Make sure <strong>not to</strong> tick <em>Use Windows containers instead of Linux containers</em> during installation.</p>
 <h2 id="virtualisation-hyper-v-and-virtualbox">Virtualisation, Hyper-V and VirtualBox</h2>
 <p>Docker requires hardware virtualisation capabilities to function properly, which on Windows are provided for by Hyper-V. If your system satisfies the aforementioned requirements, Hyper-V is probably already enabled; if Docker seems to think otherwise, head <a href="https://docs.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/enable-hyper-v">over here</a> for instructions about how to activate it.</p>
 <p>Once Hyper-V is running, you might notice that VirtualBox doesn't work anymore: it is essentially because Hyper-V transforms Windows into a virtual machine on which VirtualBox cannot run. As a result, <strong>you can't use Docker and VirtualBox at the same time</strong>, and you will need a system restart to switch from one to the other (this also applies to other level 2 hypervisors like VMware).</p>
@@ -183,7 +187,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="terminal">Terminal</h2>
 <p>The people at Docker seem to be focusing on Docker Desktop's UI at the moment, and I wouldn't be surprised if everything we currently do in a terminal ends up being available on the dashboard. For the time being, however, using a terminal is still (and will most likely always be, in my opinion) the easiest way to use Docker.</p>
 <p>To be able to follow this tutorial series in optimal conditions, you will need a command line interface featuring Bash, for which I recommend using <a href="https://gitforwindows.org/">Git Bash</a>, whose name is rather indicative of what it ships with. You will then be able to run regular Docker commands and execute some Bash scripts when we get to that.</p>
-<p><strong>Make sure to select "Use Windows' default console window" during the installation process</strong>; if you don't, you will have to prepend any Docker command with <code>winpty</code>. This is a <a href="https://github.com/docker/for-win/issues/1588">long standing issue</a> that makes using the albeit nicer MinTTY a pain, although it seems Windows' console has improved with Windows 10 (<a href="https://willi.am/blog/2016/08/08/docker-for-windows-interactive-sessions-in-mintty-git-bash/" title="Docker for Windows: Interactive Sessions in MinTTY Git Bash">source</a>).</p>
+<p>You need to pay attention to a couple of options while installing the software. The first one is about line endings, for which you should select <em>Checkout as-is</em>:</p>
+<p><img alt="Git line endings" src="/images/2020/03/04/docker-appendix-a-02.png" title="Git line endings" /></p>
+<p>If you don't, you will run into trouble when we get to using Bash scripts.</p>
+<p>The other one is the terminal emulator:</p>
+<p><img alt="Git console window" src="/images/2020/03/04/docker-appendix-a-03.png" title="Git console window" /></p>
+<p>Make sure to select <em>Use Windows' default console window</em>; if you don't, you will have to prepend any Docker command with <code>winpty</code>. This is a <a href="https://github.com/docker/for-win/issues/1588">long standing issue</a> that makes using the albeit nicer MinTTY a pain, although it seems Windows' console has improved with Windows 10 (<a href="https://willi.am/blog/2016/08/08/docker-for-windows-interactive-sessions-in-mintty-git-bash/" title="Docker for Windows: Interactive Sessions in MinTTY Git Bash">source</a>).</p>
 <p>If you also intend to clone the <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a> coming with the series, you can run Git commands from the same terminal, provided an SSH key is set up. If you already use a GIT GUI like <a href="https://www.gitkraken.com">GitKraken</a>, you can skip this part; otherwise, open Git Bash and run the following command:</p>
 <p><code>$ ls -l ~/.ssh</code></p>
 <p>If you don't see a couple of files named <code>id_rsa</code> and <code>id_rsa.pub</code> or if the folder doesn't exist, run the following command and hit <em>return</em> at every prompt:</p>
@@ -219,7 +228,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-07" pubdate>2020-03-07</time>
+          <time datetime="2020-03-30" pubdate>2020-03-30</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
