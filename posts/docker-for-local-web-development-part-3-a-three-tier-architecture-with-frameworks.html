@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-30 ::
+          Last updated: 2020-04-04 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -263,11 +263,12 @@ volumes:
 <p>In a development context, it is more important that our local changes are passed on to the container as soon as possible. Changes made on the host machine should therefore be prioritised, hence the <code>delegated</code> option is generally more appropriate.</p>
 <p>This superficial explanation is enough for the scope of this article, but more details are available on the <a href="https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/">Docker blog</a> if you are interested.</p>
 <p>Note that on systems other than macOS, these options will simply be ignored, and <code>consistent</code> will be used instead.</p>
-<p class="info">
-<span class="title">Pump up that RAM!</span> If the response time still feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
+<div class="info">
+<p><span class="title">Pump up that RAM!</span> If the response time still feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
 <img alt="Docker memory settings" src="/images/2020/03/30/docker-04.png" title="Docker memory settings">
-The default value is 2 GB; I personally doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).
-</p>
+The default value is 2 GB; I personally doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
+<p>If you wish to explore further possibilities (especially for macOS), more tips are laid out in <a href="https://engageinteractive.co.uk/blog/making-docker-faster-on-mac" title="Speeding up Docker on MacOS">this article</a>.</p>
+</div>
 
 <p>The rest of the changes brought to <code>docker-compose.yml</code> mostly consist of the <code>delegated</code> option being added where relevant.</p>
 <p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/7.x/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
@@ -450,7 +451,17 @@ $ docker-compose run --rm backend composer
 </code></pre>
 <h2 id="the-frontend-application">The frontend application</h2>
 <p>The third tier of our architecture is the frontend application, for which we will use the ever more popular <a href="https://vuejs.org">Vue.js</a>.</p>
-<p>The steps to set ip up are actually quite similar to the backend's; first, let's create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
+<p>The steps to set it up are actually quite similar to the backend's; first, let's add the corresponding service to <code>docker-compose.yml</code>, right after the backend one:</p>
+<pre><code># Frontend Service
+frontend:
+  build: ./src/frontend
+  working_dir: /var/www/frontend
+  volumes:
+    - ./src/frontend:/var/www/frontend:delegated
+  depends_on:
+    - backend
+</code></pre>
+<p>Nothing that we haven't seen before here. Then, create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
 <pre><code>FROM node:13.10-alpine
 </code></pre>
 <p>We simply pull the Alpine version of <a href="https://hub.docker.com/_/node">Node.js' official image</a> for now, which ships with both <a href="https://yarnpkg.com/">Yarn</a> and <a href="https://www.npmjs.com/">npm</a> (which are package managers like Composer, but for JavaScript). I will be using Yarn, as I am told this is what the cool kids use nowadays.</p>
@@ -590,6 +601,11 @@ p {
 <p>And if it's not running:</p>
 <pre><code>$ docker-compose run --rm frontend yarn
 </code></pre>
+<div class="info">
+<p><span class="title">Using separate repositories</span> As I mentioned at the beginning of this article, in a real-life situation the frontend and backend applications are likely to be in their own repositories, and the Docker environment in a third one. How to articulate the three of them?</p>
+<p>The way I do it is I add the <code>src</code> folder to the <code>.gitignore</code> file at the root, and I checkout both the frontend and backend applications in it, in separate directories. And that's about it! Since <code>src</code> is <em>git-ignored</em>, you can safely checkout other codebases in it, without conflicts. Theoretically, you could also use <a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">Git submodules</a> to achieve this, but in practice it adds little to no value, especially when applying what we'll cover in the next part.</p>
+</div>
+
 <h2 id="conclusion">Conclusion</h2>
 <p>That was another long one, well done if you made it this far!</p>
 <p>This article once again underscores the fact that, when it comes to building such an environment, a lot is left to the maintainer's discretion. There is seldom any clear way of doing things with Docker, which is both a strength and a weakness – a somewhat overwhelming flexibility. These little detours contribute to making these articles dense, but I think it is important for you to know that you are allowed to question the way things are done.</p>
@@ -599,7 +615,7 @@ p {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-30" pubdate>2020-03-30</time>
+          <time datetime="2020-04-04" pubdate>2020-04-04</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
