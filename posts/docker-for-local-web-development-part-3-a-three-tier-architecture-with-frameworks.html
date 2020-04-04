@@ -168,11 +168,11 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="foreword">Foreword</h2>
-<p>In all honesty, what we've covered so far is pretty standard. Articles about LEMP stacks on Docker are legion, and while I hope to bring some value through a beginner-friendly approach and a certain level of details, there isn't much new here (after all, I was already writing about this <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development" title="From Vagrant to Docker: How to use Docker for local web development">back in 2015</a>).</p>
+<p>In all honesty, what we've covered so far is pretty standard. Articles about LEMP stacks on Docker are legion, and while I hope to add some value through a beginner-friendly approach and a certain level of detail, there was hardly anything new (after all, I was already writing about this <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development" title="From Vagrant to Docker: How to use Docker for local web development">back in 2015</a>).</p>
 <p>I believe this is about to change with today's article. There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all.</p>
 <p>In that sense, today's article is probably where things will start to get concrete for some of you. That is not to say the previous ones are negligible – they constitute a necessary introduction contributing to making this series comprehensive – but this is where the theory meets the practical complexity of modern web applications.</p>
 <p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-2"><em>part-2</em> branch</a>.</p>
-<p>If you prefer, you can also directly checkout the <a href="https://github.com/osteel/docker-tutorial/tree/part-3"><em>part-3</em> branch</a>, which is the final result of today's article.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-3"><em>part-3</em> branch</a>, which is the final result of today's article.</p>
 <p>Again, this is by no means the one and only approach, just one that has been successful for me and the companies I set it up for.</p>
 <h2 id="a-three-tier-architecture">A three-tier architecture?</h2>
 <p>After <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">setting up a LEMP stack on Docker</a> and <a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">shrinking down the size of the images</a>, we are about to complement our MySQL database with a frontend application based on <a href="https://vuejs.org/">Vue.js</a> and a backend application based on <a href="https://laravel.com/">Laravel</a>, in order to form what we call a <em>three-tier architecture</em>.</p>
@@ -254,11 +254,11 @@ volumes:
 </pre>
 
 <p>The biggest update is the removal of the PHP service in favour of the backend service, although they are very similar. The new service looks for a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is mounted as a volume on the container. The only real difference is the appearance of <code>:delegated</code> at the end of the volume declaration.</p>
-<p>This option improves <a href="https://docs.docker.com/docker-for-mac/osxfs-caching/">performance on macOS</a> by caching the content of the folder for a faster read access, which becomes necessary as the number of files grow (which is typically the case when a framework is involved). Three options are available: <code>consistent</code>, <code>cached</code> and <code>delegated</code>. I find the official documentation somewhat confusing on this, so here is another attempt at explaining them:</p>
+<p>This option improves <a href="https://docs.docker.com/docker-for-mac/osxfs-caching/">performance on macOS</a> by caching the content of the folder for a faster read access, which becomes necessary as the number of files grows (which is typically the case when a framework is involved). Three options are available: <code>consistent</code>, <code>cached</code> and <code>delegated</code>. I find the official documentation somewhat confusing on this, so here is another attempt at explaining them:</p>
 <ul>
 <li><code>consistent</code> is the option by default: it basically ensures perfect file synchronisation between the host (your local machine) and the container. This option performs poorly on macOS;</li>
-<li><code>cached</code> indicates that what's on the container is more important; in other words, changes occurring on the host might not be reflected immediately on the container;</li>
-<li><code>delegated</code> is the opposite of <code>cached</code>, in that the host takes precedence: changes on the container might not be reflected immediately on the host.</li>
+<li><code>cached</code> indicates that what's in the container is more important; in other words, changes occurring on the host might not be reflected immediately in the container;</li>
+<li><code>delegated</code> is the opposite of <code>cached</code>, in that the host takes precedence: changes in the container might not be reflected immediately on the host.</li>
 </ul>
 <p>In a development context, it is more important that our local changes are passed on to the container as soon as possible. Changes made on the host machine should therefore be prioritised, hence the <code>delegated</code> option is generally more appropriate.</p>
 <p>This superficial explanation is enough for the scope of this article, but more details are available on the <a href="https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/">Docker blog</a> if you are interested.</p>
@@ -266,7 +266,7 @@ volumes:
 <div class="info">
 <p><span class="title">Pump up that RAM!</span> If the response time still feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
 <img alt="Docker memory settings" src="/images/2020/03/30/docker-04.png" title="Docker memory settings">
-The default value is 2 GB; I personally doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
+The default value is 2 GB; I doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
 <p>If you wish to explore further possibilities (especially for macOS), more tips are laid out in <a href="https://engageinteractive.co.uk/blog/making-docker-faster-on-mac" title="Speeding up Docker on MacOS">this article</a>.</p>
 </div>
 
@@ -308,7 +308,7 @@ The default value is 2 GB; I personally doubled that and it made a world of diff
 }
 </code></pre>
 <p>Mind the values for <code>server_name</code> and <code>fastcgi_pass</code> (now pointing to port 9000 of the backend container).</p>
-<p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you forgot how to do that):</p>
+<p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
 <pre><code>127.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.test
 </code></pre>
 <p>Note that we've also added the frontend's domain to save us a trip later.</p>
@@ -335,7 +335,7 @@ The default value is 2 GB; I personally doubled that and it made a world of diff
 <pre><code>$ docker-compose run --rm backend php -m
 </code></pre>
 <p>Now if you remember, in the first part of this series we used <code>exec</code> to run Bash on a container, whereas this time we are using <code>run</code> to execute the command we need. What's the difference?</p>
-<p><code>exec</code> simply allows us to execute a command on an <em>already running</em> container, whereas <code>run</code> does so on a <em>new</em> container which is immediately stopped after the command is over. It does not delete the container by default, however; we need to specify <code>--rm</code> after <code>run</code> to that effect.</p>
+<p><code>exec</code> simply allows us to execute a command on an <em>already running</em> container, whereas <code>run</code> does so on a <em>new</em> container which is immediately stopped after the command is over. It does not delete the container by default, however; we need to specify <code>--rm</code> after <code>run</code> for it to happen.</p>
 <p>The command essentially runs <code>php -m</code> on the backend container, and gives the following result:</p>
 <pre><code>[PHP Modules]
 Core
@@ -374,7 +374,7 @@ zlib
 
 [Zend Modules]
 </code></pre>
-<p>That is quite a lot of extensions, which might come as a surprise after reading the <a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">previous part</a> praising Alpine images for featuring the bare minimum by default. The reason is also hinted in the previous article: since it is not always simple to install things on an Alpine distribution, the PHP image's maintainers chose to make their users' life easier by preinstalling a bunch of extensions.</p>
+<p>That is quite a lot of extensions, which might come as a surprise after reading the <a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">previous part</a> praising Alpine images for featuring the bare minimum by default. The reason is also hinted at in the previous article: since it is not always simple to install things on an Alpine distribution, the PHP image's maintainers chose to make their users' lives easier by preinstalling a bunch of extensions.</p>
 <p>The final result is around 80 MB, which is still very small.</p>
 <p>Now that we know which extensions are missing, we can complete the Dockerfile to install them, along with <a href="https://getcomposer.org/">Composer</a> which is needed for Laravel:</p>
 <pre><code>FROM php:7.4-fpm-alpine
@@ -507,7 +507,7 @@ frontend:
     },
 };
 </code></pre>
-<p>This will ensure the <em>hot-reload</em> feature is functional. I won't go into details about each option here, as the point is not so much about configuring Vue.js than seeing how to articulate a frontend and a backend application with Docker, regardless of the chosen frameworks. You are welcome to <a href="https://cli.vuejs.org/config/">look them up</a> though!</p>
+<p>This will ensure the <em>hot-reload</em> feature is functional. I won't go into details about each option here, as the point is not so much about configuring Vue.js as seeing how to articulate a frontend and a backend application with Docker, regardless of the chosen frameworks. You are welcome to <a href="https://cli.vuejs.org/config/">look them up</a> though!</p>
 <p>Let's complete our Dockerfile by adding the command that will start the development server:</p>
 <pre><code>FROM node:13.10-alpine
 
@@ -603,7 +603,7 @@ p {
 </code></pre>
 <div class="info">
 <p><span class="title">Using separate repositories</span> As I mentioned at the beginning of this article, in a real-life situation the frontend and backend applications are likely to be in their own repositories, and the Docker environment in a third one. How to articulate the three of them?</p>
-<p>The way I do it is I add the <code>src</code> folder to the <code>.gitignore</code> file at the root, and I checkout both the frontend and backend applications in it, in separate directories. And that's about it! Since <code>src</code> is <em>git-ignored</em>, you can safely checkout other codebases in it, without conflicts. Theoretically, you could also use <a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">Git submodules</a> to achieve this, but in practice it adds little to no value, especially when applying what we'll cover in the next part.</p>
+<p>The way I do it is by adding the <code>src</code> folder to the <code>.gitignore</code> file at the root, and I <em>checkout</em> both the frontend and backend applications in it, in separate directories. And that's about it! Since <code>src</code> is <em>git-ignored</em>, you can safely <em>checkout</em> other codebases in it, without conflicts. Theoretically, you could also use <a href="https://git-scm.com/book/en/v2/Git-Tools-Submodules">Git submodules</a> to achieve this, but in practice it adds little to no value, especially when applying what we'll cover in the next part.</p>
 </div>
 
 <h2 id="conclusion">Conclusion</h2>

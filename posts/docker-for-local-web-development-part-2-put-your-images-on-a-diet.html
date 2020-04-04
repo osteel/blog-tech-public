@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-28 ::
+          Last updated: 2020-04-04 ::
         Published: 2020-03-16
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
       </small>
@@ -264,7 +264,7 @@ volumes:
 }
 </code></pre>
 <p>Again, a pretty standard server configuration that looks a lot like <code>php.conf</code>, except that it points to port 9000 of the phpMyAdmin service.</p>
-<p>You also need to update your local <code>hosts</code> file to add the new domain name (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you forgot how to do that):</p>
+<p>You also need to update your local <code>hosts</code> file to add the new domain name (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
 <pre><code>127.0.0.1 php.test phpmyadmin.test
 </code></pre>
 <p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose pick a local folder to mount both onto the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
@@ -294,7 +294,7 @@ RUN docker-php-ext-install pdo_mysql
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-28" pubdate>2020-03-28</time>
+          <time datetime="2020-04-04" pubdate>2020-04-04</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
