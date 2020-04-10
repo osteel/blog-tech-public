@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-03-30 ::
+          Last updated: 2020-04-10 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-appendix-a-docker-on-windows.html">history</a> ]
       </small>
@@ -194,21 +194,27 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><img alt="Git console window" src="/images/2020/03/04/docker-appendix-a-03.png" title="Git console window" /></p>
 <p>Make sure to select <em>Use Windows' default console window</em>; if you don't, you will have to prepend any Docker command with <code>winpty</code>. This is a <a href="https://github.com/docker/for-win/issues/1588">long standing issue</a> that makes using the albeit nicer MinTTY a pain, although it seems Windows' console has improved with Windows 10 (<a href="https://willi.am/blog/2016/08/08/docker-for-windows-interactive-sessions-in-mintty-git-bash/" title="Docker for Windows: Interactive Sessions in MinTTY Git Bash">source</a>).</p>
 <p>If you also intend to clone the <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a> coming with the series, you can run Git commands from the same terminal, provided an SSH key is set up. If you already use a GIT GUI like <a href="https://www.gitkraken.com">GitKraken</a>, you can skip this part; otherwise, open Git Bash and run the following command:</p>
-<p><code>$ ls -l ~/.ssh</code></p>
+<pre><code>$ ls -l ~/.ssh
+</code></pre>
 <p>If you don't see a couple of files named <code>id_rsa</code> and <code>id_rsa.pub</code> or if the folder doesn't exist, run the following command and hit <em>return</em> at every prompt:</p>
-<p><code>$ ssh-keygen -o</code></p>
+<pre><code>$ ssh-keygen -o
+</code></pre>
 <p>This will basically generate a public/private RSA key pair so Git Bash can interact with GitHub via SSH.</p>
 <p>Run the following command to display your public key and copy the result:</p>
-<p><code>$ cat ~/.ssh/id_rsa.pub</code></p>
+<pre><code>$ cat ~/.ssh/id_rsa.pub
+</code></pre>
 <p>Paste it as a new SSH key in your <a href="https://github.com/settings/keys">GitHub settings</a>.</p>
 <p>Your Git Bash is now set!</p>
+<p class="info"><span class="title">"Ok, but terminal XYZ is better"</span> I know there are other terminals for Windows out there (you can even <a href="https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/" title="How to Install and Use the Linux Bash Shell on Windows 10">run a proper Linux distribution on Windows 10</a>, apparently), and if you are already using one that you are satisfied with, by all means keep using it. This guide is mostly intended for people who are not sure where to start, and to whom I suggest a fairly simple solution that I know works.</p>
+
 <h2 id="local-folder-and-disk-sharing">Local folder and disk sharing</h2>
 <p>You will need to share the local drive containing your Docker projects with Docker, which you can do in the <a href="https://docs.docker.com/docker-for-windows/troubleshoot/#shared-drives">application's settings</a>.</p>
 <p>Note that based on your Docker Desktop version, you might get prompted for your account's password and an empty string won't be accepted. Meaning if you don't have a password for your account, you will probably have to set one first.</p>
 <h2 id="ports">Ports</h2>
 <p>The local setup needs port 80 to be available, but it might already be in use (which will most likely prevent the Nginx container from starting properly).</p>
 <p>A quick way to free up the port is to run the following command as admin (from Command Prompt, not from Git Bash):</p>
-<p><code>$ net stop http /y</code></p>
+<pre><code>$ net stop http /y
+</code></pre>
 <p>If you still have issues, have a look at <a href="http://www.devside.net/wamp-server/opening-up-port-80-for-apache-to-use-on-windows">this article</a>.</p>
 <p>Based on the way you intend to access the database, you might also need to free up port 3306 (unless you plan on using phpMyAdmin).</p>
 <h2 id="other-resources-and-fixes">Other resources and fixes</h2>
@@ -228,7 +234,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-03-30" pubdate>2020-03-30</time>
+          <time datetime="2020-04-10" pubdate>2020-04-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
