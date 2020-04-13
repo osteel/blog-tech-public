@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/04/13/docker-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, part 4: smoothing things out with Bash &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="bash" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, part 4: smoothing things out with Bash
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-04-13 ::
+        Published: 2020-04-13
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Docker and Bash" src="/images/2020/04/13/docker-01.jpg" title="Docker and Bash" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
+<li>Part 4: smoothing things out with Bash  <strong>⬅️ you are here</strong></li>
+<li>Part 5.1: HTTPS all the things with a self-signed certificate <em>(coming soon)</em></li>
+<li>Part 5.2: HTTPS all the things with a trusted Certificate Authority <em>(coming soon)</em></li>
+<li>Part 6: expose a local container to the Internet <em>(coming soon)</em></li>
+<li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#bash">Bash?</a></li>
+<li><a href="#the-application-menu">The application menu</a></li>
+<li><a href="#basic-commands">Basic commands</a></li>
+<li><a href="#initialising-and-updating-the-project">Initialising and updating the project</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>As our development environment is taking shape, the number of commands we need to remember starts to build up. Here are a few of them, as a reminder:</p>
+<ul>
+<li><code>docker-compose up -d</code> to start the containers;</li>
+<li><code>docker-compose logs -f nginx</code> to watch the logs of Nginx;</li>
+<li><code>docker-compose exec backend php artisan</code> to run Artisan commands (or with <code>run --rm</code> if the container isn't running);</li>
+<li><code>docker-compose exec frontend yarn</code> to run Yarn commands (ditto);</li>
+<li>etc.</li>
+</ul>
+<p>Clearly, none of the examples above is impossible to remember and, with some practice, anyone would eventually know them by heart. Yet that is a lot of text to type, repeatedly, and if you haven't used a specific command for a while, looking for the right syntax can end up taking a significant amount of time.</p>
+<p>Moreover, the scope of this tutorial series is rather limited; in practice, you're likely to deal with projects much more complex than this, requiring many more commands.</p>
+<p>There is little point in implementing an environment that ends up increasing the developer's mental load. Thankfully, there is a great tool out there that can help us mitigate this issue, one you've probably at least heard of and that is present pretty much everywhere: Bash. With little effort, Bash will allow us to add a layer on top of Docker to abstract away most of the complexity, and introduce a standardised, user-friendly interface instead.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-3"><em>part-3</em> branch</a>.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-4"><em>part-4</em> branch</a>, which is the final result of today's article.</p>
+<h2 id="bash">Bash?</h2>
+<p><a href="https://www.gnu.org/software/bash/">Bash</a> has been around <a href="https://en.wikipedia.org/wiki/Bash_(Unix_shell)">since 1989</a>, meaning it's pretty much as old as the Internet as we know it. It is essentially a command processor (a <em>shell</em>), executing commands either typed in a terminal or read from a file (a <em>shell script</em>).</p>
+<p>Bash allows its users to automate and perform a great variety of tasks, which I am not even going to try and list. What's important to know in the context of this series, is that it can run pretty much everything a human usually types in a terminal, that it is natively present on Unix systems (Linux and macOS), and can <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows#terminal" title="Docker for local web development, appendix A: Docker on Windows">easily be installed on Windows</a> (that's your cue to click the link if you are unsure how to run Bash on it 😉).</p>
+<p>Its flexibility and portability makes it an ideal candidate for what we want to achieve today. Let's dig in!</p>
+<h2 id="the-application-menu">The application menu</h2>
+<p>For starters, let's create a file named <code>demo</code> at the root of our project (alongside <code>docker-compose.yml</code>) and give it execution permissions:</p>
+<pre><code>$ touch demo
+$ chmod +x demo
+</code></pre>
+<p>This file will contain the Bash script allowing us to interact with the application.</p>
+<p>Open it and add the following line at the very top:</p>
+<pre><code>#!/bin/bash
+</code></pre>
+<p>This is just to indicate that Bash shall be the interpreter of our script, and where to find it (<code>/bin/bash</code> is the standard location on just about every Unix system, and also on Windows' Git Bash).</p>
+<p>The first thing we want to do is to create a menu for our interface, listing the available commands and how to use them.</p>
+<p>Update the content of the file with the following:</p>
+<pre><code>#!/bin/bash
+
+case "$1" in
+    *)
+        cat &lt;&lt; EOF
+
+Command line interface for the Docker-based web development environment demo.
+
+Usage:
+    demo &lt;command&gt; [options] [arguments]
+
+Available commands:
+    artisan ................................... Run an Artisan command
+    build [image] ............................. Build all of the images or the specified one
+    composer .................................. Run a Composer command
+    destroy ................................... Remove the entire Docker environment
+    down [-v] ................................. Stop and destroy all containers
+                                                Options:
+                                                    -v .................... Destroy the volumes as well
+    init ...................................... Initialise the Docker environment and the application
+    logs [container] .......................... Display and tail the logs of all containers or the specified one's
+    restart [container] ....................... Restart all containers or the specified one
+    start ..................................... Start the containers
+    stop ...................................... Stop the containers
+    update .................................... Update the Docker environment
+    yarn ...................................... Run a Yarn command
+
+EOF
+        exit 1
+        ;;
+esac
+</code></pre>
+<p><code>case</code> is a basic control structure allowing us to do different things based on the value of <code>$1</code> (referred to as a <em>switch</em> in some programming languages), <code>$1</code> being the first parameter passed on to the <code>demo</code> script.</p>
+<p>For example, with the following command, <code>$1</code> would contain the string <code>unicorn</code>:</p>
+<pre><code> $ demo unicorn
+</code></pre>
+<p>For now, we only address the <em>default</em> case, which is represented by <code>*</code>. In other words, if we call our script without any parameter, or one whose value is not a specific case of the switch, the menu will be displayed.</p>
+<p>We now need to make this script available from anywhere in a terminal. To do so, add the following function to your local <code>.bashrc</code> file (or <code>.zshrc</code>, or anything else according to your configuration):</p>
+<pre><code>function demo {
+    cd /PATH/TO/YOUR/PROJECT &amp;&amp; bash demo $*
+        cd -
+}
+</code></pre>
+<div class="info">
+<p><span class="title">"Wait. What?"</span> Each time you open a new terminal window, Bash will try and read the content of some files, if it can find them. These files contain commands and instructions you basically want Bash to run at start-up, such as updating the <code>$PATH</code> variable, running a script somewhere or, in our case, make a function available globally. Different files can be used, but to keep it simple we'll stick to updating or creating the <code>.bashrc</code> file in your home folder, and add the <code>demo</code> function above to it:</p>
+<pre><code>$ vi ~/.bashrc</code></pre>
+<p>From then on, everytime you open a terminal window, this file will be read and the <code>demo</code> function made available globally. This will work whatever your operating system is (including Windows, as long as you do this from Git Bash, or from your terminal of choice).</p>
+</div>
+
+<p>Make sure to replace <code>/PATH/TO/YOUR/PROJECT</code> with the absolute path of the project's root (if you are unsure what that is, run <code>pwd</code> from the folder where the <code>docker-compose.yml</code> file sits and copy and paste the result). The function essentially changes the current directory for the project's root (<code>cd /PATH/TO/YOUR/PROJECT</code>) and executes the <code>demo</code> script using Bash (<code>bash demo</code>), passing on all of the command parameters to it (<code>$*</code>), which are basically all of the characters found after <code>demo</code>.</p>
+<p>For example, if you'd type:</p>
+<pre><code>$ demo I am a teapot
+</code></pre>
+<p>This is what the function would do behind the scenes:</p>
+<pre><code>$ cd /PATH/TO/YOUR/PROJECT &amp;&amp; bash demo I am a teapot
+</code></pre>
+<p>The last instruction of the function (<code>cd -</code>) simply changes the current directory back to the previous one. In other words, you can run <code>demo</code> from anywhere – you will always be taken back to the directory the command was initially run from.</p>
+<p>Save the changes and open a new console window or <code>source</code> the file for them to take effect:</p>
+<pre><code>$ source ~/.bashrc
+</code></pre>
+<p><code>source</code> will essentially load the content of the <em>sourced</em> file into the current shell, without having to restart it entirely.</p>
+<p>Let's display our menu:</p>
+<pre><code>$ demo
+</code></pre>
+<p>If all went well, you should see something similar to this:</p>
+<p><img alt="Menu" src="/images/2020/04/13/docker-02.png" title="Menu" /></p>
+<p>Looks fancy, doesn't it? Yet, so far none of these commands is doing anything. Let's fix this!</p>
+<h2 id="basic-commands">Basic commands</h2>
+<p>We will start with a simple command, to give you a taste. Update the switch in the <code>demo</code> file so it looks like this:</p>
+<pre><code>case "$1" in
+    start)
+        start
+        ;;
+    *)
+        cat &lt;&lt; EOF
+...
+</code></pre>
+<p>We've added the <code>start</code> case, in which we call the <code>start</code> function without any parameters. That function doesn't exist yet – at the top of the file, under <code>#!/bin/bash</code>, add the following code:</p>
+<pre><code># Create and start the containers and volumes
+start () {
+    docker-compose up -d
+}
+</code></pre>
+<p>This short function simply runs the now familiar <code>docker-compose up -d</code>, which starts the containers in the background. Notice that we don't need to change the current directory, as when we invoke the <code>demo</code> function, we are automatically taken to the folder where the <code>demo</code> file is, which is also where <code>docker-compose.yml</code> resides.</p>
+<p>Save the file and try out the new command (it doesn't matter whether the containers are already running):</p>
+<pre><code>$ demo start
+</code></pre>
+<p>That's it! You can now start your project from anywhere in a console using the command above, which is much simpler to type and remember than <code>docker-compose up -d</code>.</p>
+<p>Let's give this another go, this time to display the logs. Add another case to the structure:</p>
+<pre><code>case "$1" in
+    logs)
+        logs
+        ;;
+    start)
+        start
+        ;;
+    *)
+        cat &lt;&lt; EOF
+...
+</code></pre>
+<p>And the corresponding function:</p>
+<pre><code># Display and tail the logs
+logs () {
+    docker-compose logs -f
+}
+</code></pre>
+<p>Try it out:</p>
+<pre><code>$ demo logs
+</code></pre>
+<p>You now have a shortcut command to access the containers' logs easily. That's nice, but how about displaying the logs of a specific container?</p>
+<p>Let's modify the case slightly:</p>
+<pre><code>case "$1" in
+    logs)
+        logs "${@:2}"
+        ;;
+    start)
+        start
+        ;;
+    *)
+        cat &lt;&lt; EOF
+...
+</code></pre>
+<p>Instead of directly calling the <code>logs</code> function, we are now also passing on the script's parameters to it, starting from the second one, if any (that's the <code>"${@:2}"</code> bit). The reason is that when we type <code>demo logs nginx</code>, the first parameter of the script is <code>logs</code>, and we only want to pass on <code>nginx</code> to the <code>start</code> function.</p>
+<p>Update the <code>logs</code> function accordingly:</p>
+<pre><code># Display and tail the logs
+logs () {
+    docker-compose logs -f "${@:1}"
+}
+</code></pre>
+<p>Using the same syntax, we append the function's parameters to the command if any, starting from the first one (<code>"${@:1}"</code>) .</p>
+<p>Save the file again and give it a try:</p>
+<pre><code>$ demo logs nginx
+</code></pre>
+<p><img alt="Logs" src="/images/2020/04/13/docker-03.png" title="Logs" /></p>
+<p>Now that you get the principle, and as most of the other functions work in a similar fashion, here is the rest of the file, with some block comments to make it more readable:</p>
+<pre><code>#!/bin/bash
+
+
+#######################################
+# FUNCTIONS
+#######################################
+
+# Run an Artisan command
+artisan () {
+    docker-compose run --rm backend php artisan "${@:1}"
+}
+
+# Build all of the images or the specified one
+build () {
+    docker-compose build "${@:1}"
+}
+
+# Run a Composer command
+composer () {
+    docker-compose run --rm backend composer "${@:1}"
+}
+
+# Remove the entire Docker environment
+destroy () {
+    read -p "This will delete containers, volumes and images. Are you sure? [y/N]: " -r
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then exit; fi
+    docker-compose down -v --rmi all
+}
+
+# Stop and destroy all containers
+down () {
+    docker-compose down "${@:1}"
+}
+
+# Display and tail the logs of all containers or the specified one's
+logs () {
+    docker-compose logs -f "${@:1}"
+}
+
+# Restart all containers or the specified one
+restart () {
+    docker-compose restart "${@:1}"
+}
+
+# Start the containers
+start () {
+    docker-compose up -d
+}
+
+# Stop the containers
+stop () {
+    docker-compose stop
+}
+
+# Run a Yarn command
+yarn () {
+    docker-compose run --rm frontend yarn "${@:1}"
+}
+
+
+#######################################
+# MENU
+#######################################
+
+case "$1" in
+    artisan)
+        artisan "${@:2}"
+        ;;
+    build)
+        build "${@:2}"
+        ;;
+    composer)
+        composer "${@:2}"
+        ;;
+    destroy)
+        destroy
+        ;;
+    down)
+        down "${@:2}"
+        ;;
+    logs)
+        logs "${@:2}"
+        ;;
+    restart)
+        restart "${@:2}"
+        ;;
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    yarn)
+        yarn "${@:2}"
+        ;;
+    *)
+        cat &lt;&lt; EOF
+
+Command line interface for the Docker-based web development environment demo.
+
+Usage:
+    demo &lt;command&gt; [options] [arguments]
+
+Available commands:
+    artisan ................................... Run an Artisan command
+    build [image] ............................. Build all of the images or the specified one
+    composer .................................. Run a Composer command
+    destroy ................................... Remove the entire Docker environment
+    down [-v] ................................. Stop and destroy all containers
+                                                Options:
+                                                    -v .................... Destroy the volumes as well
+    init ...................................... Initialise the Docker environment and the application
+    logs [container] .......................... Display and tail the logs of all containers or the specified one's
+    restart [container] ....................... Restart all containers or the specified one
+    start ..................................... Start the containers
+    stop ...................................... Stop the containers
+    update .................................... Update the Docker environment
+    yarn ...................................... Run a Yarn command
+
+EOF
+        exit
+        ;;
+esac
+</code></pre>
+<p>Mind the fact that <code>run --rm</code> is used to execute Artisan, Composer and Yarn commands on the backend and frontend containers respectively, basically allowing us to do so whether the containers are running or not.</p>
+<p>Also, as the <code>destroy</code> function's job is to delete all of the containers, volumes and images, it would be quite a pain to run it by mistake, so I made it failsafe by adding a confirmation prompt.</p>
+<p>Most of the commands are now covered, but you might have noticed that a couple of them are still missing: <code>init</code> and <code>update</code>. These are a bit special, so the next section is dedicated to them.</p>
+<h2 id="initialising-and-updating-the-project">Initialising and updating the project</h2>
+<p>Let's take a step back for a minute. Imagine you've been given access to the project's repository in order to install it on your machine. The first thing you'd do is to clone it locally, and to add the <code>demo</code> function to <code>.bashrc</code> so you can interact with the application.</p>
+<p>From there, you would still need to perform the following actions:</p>
+<ul>
+<li>Copy <code>.env.example</code> to <code>.env</code> and complete the latter at the root of the project;</li>
+<li>Do the same in <code>src/backend</code>;</li>
+<li>Download and build the images;</li>
+<li>Install the frontend's dependencies;</li>
+<li>Install the backend's dependencies;</li>
+<li>Run the backend's database migrations;</li>
+<li>Generate the backend's application key;</li>
+<li>Start the containers.</li>
+</ul>
+<p>While the Bash layer facilitates going through that list, that's still quite some work to do  in order to obtain a functional setup, and it would be easy to miss a step. What if you need to reset the environment? Or to install it on another developer's machine? Or guide a client through the process?</p>
+<p>Thankfully, now that we've introduced Bash to the mix, automating the tasks above is fairly simple.</p>
+<p>First, add the two missing cases to <code>demo</code>:</p>
+<pre><code>init)
+    init
+    ;;
+update)
+    update
+    ;;
+</code></pre>
+<p>And the corresponding functions (if your file is getting messy, you can also take a look at the final result <a href="https://github.com/osteel/docker-tutorial/blob/part-4/demo">here</a>):</p>
+<pre><code># Create .env from .env.example
+env () {
+    if [ ! -f .env ]; then
+        cp .env.example .env
+    fi
+}
+
+# Initialise the Docker environment and the application
+init () {
+    env \
+        &amp;&amp; down -v \
+        &amp;&amp; build \
+        &amp;&amp; docker-compose run --rm --entrypoint="//opt/files/init" backend \
+        &amp;&amp; yarn install \
+        &amp;&amp; start
+}
+
+# Update the Docker environment
+update () {
+    git pull \
+        &amp;&amp; build \
+        &amp;&amp; composer install \
+        &amp;&amp; artisan migrate \
+        &amp;&amp; yarn install \
+        &amp;&amp; start
+}
+</code></pre>
+<p>Let's have a look at <code>init</code> first, whose job is to initialise the whole project. The first thing the function does is to call another function, <code>env</code>, which we defined right above it, and which is responsible for creating the <code>.env</code> file as a copy of <code>.env.example</code> if it doesn't exist. Next thing <code>init</code> does is ensuring the containers and volumes are destroyed, as the aim is to be able to both initialise the project from scratch and reset it. It then builds the images (which will also be downloaded if necessary), and goes on with running some sort of script on the backend container. Finally, it installs the frontend's dependencies and starts the containers.</p>
+<p>You will probably recognise most of the items from the list at the beginning of this section, but what are this <code>init</code> file and that <code>entrypoint</code> we are referring to?</p>
+<p>Since the backend requires a bit more work, we can isolate the corresponding steps into a single script that we will mount on the container in order to run it there. This means we need to make a small addition to the backend service in <code>docker-compose.yml</code>:</p>
+<pre>
+# Backend Service
+backend:
+  build: ./src/backend
+  working_dir: /var/www/backend
+  volumes:
+    - ./src/backend:/var/www/backend:delegated
+    <strong>- ./.docker/backend/init:/opt/files/init:delegated,ro</strong>
+  depends_on:
+    - mysql
+</pre>
+
+<p>Since the script will be run on the container, we need Bash to be installed on it, which is not the case by default on Alpine. We need to update the backend's Dockerfile accordingly (in <code>src/backend</code>):</p>
+<pre>
+FROM php:7.4-fpm-alpine
+
+# Install extensions
+RUN docker-php-ext-install pdo_mysql bcmath
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+<strong># Install extra packages
+RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev</strong>
+</pre>
+
+<p>We've also added the <code>mysql-client</code> and <code>mariadb-connector-c-dev</code> packages as we're going to need them (more on that in a minute).</p>
+<p>Build the image:</p>
+<pre><code>$ demo build backend
+</code></pre>
+<p>Finally, let's create the <code>init</code> file, in the <code>.docker/backend</code> folder:</p>
+<pre><code>#!/bin/bash
+
+# Install Composer dependencies
+composer install -d "/var/www/backend"
+
+# Deal with the .env file if necessary
+if [ ! -f "/var/www/backend/.env" ]; then
+    # Create .env file
+    cat &gt; "/var/www/backend/.env" &lt;&lt; EOF
+APP_NAME=demo
+APP_ENV=local
+APP_KEY=
+APP_DEBUG=true
+APP_URL=http://backend.demo.test
+
+LOG_CHANNEL=single
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=demo
+DB_USERNAME=root
+DB_PASSWORD=root
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+EOF
+
+    # Generate application key
+    php "/var/www/backend/artisan" key:generate --ansi
+fi
+
+# Make sure the MySQL database is available
+echo 'Waiting for MySQL to be available'
+count=1
+while [ $count -le 10 ] &amp;&amp; ! mysql -uroot -proot -hmysql -P3306 -e 'exit' ; do
+    sleep 5
+    ((count++))
+done
+if [ "$count" -ge 10 ]; then
+    echo &gt;&amp;2 'error: failed to connect to MySQL after 10 attempts'
+    exit 1
+fi
+echo 'MySQL connection successful!'
+
+# Database
+php "/var/www/backend/artisan" migrate
+</code></pre>
+<p>Let's break this down a bit. First, we install the Composer dependencies, specifying the folder to run <code>composer install</code> from with the <code>-d</code> option. We then check whether there's already a <code>.env</code> file, and if there isn't, we create one with some pre-configured settings matching our Docker setup. Notice that we leave the <code>APP_KEY</code> environment variable empty; that is why we run the command to generate the Laravel application key right after creating the <code>.env</code> file. We then move on to setting up the database.</p>
+<p>At the very beginning of the project's initialisation, there is no database. Even though we specified in <code>docker-compose.yml</code> that the MySQL container should be started before the backend container, being up and running doesn't mean it had the chance to create the <code>demo</code> database yet. In most situations, the corresponding delay isn't a problem, but in our case the <code>init</code> script will be executed almost immediately, meaning there may be a few seconds during which it won't be able to reach the database. For the script not to exit with an error, we periodically test the connection, using a loop trying to establish a connection every few seconds, using the MySQL CLI: this is what we installed the <code>mysql-client</code> package for. On top of that, we also need the <code>mariadb-connector-c-dev</code> package to make the <code>caching_sha2_password</code> authentication plugin available to the MySQL CLI.</p>
+<p>I don't want to linger on this too much, but if you're curious about this the info box below is there for you.</p>
+<div class="info">
+<p><span class="title">MySQL authentication plugin</span> With MySQL 8, the default authentication plugin changed for <code>caching_sha2_password</code>, and in some instances systems started to fail connecting to MySQL databases after the upgrade, since that plugin isn't available everywhere by default.</p>
+<p>A quick solution is to revert to the previous plugin, which one can do by setting <code>default-authentication-plugin</code> to <code>mysql_native_password</code> in  the MySQL configuration. The change was made for <a href="https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password">security reasons</a>, however, so using the new plugin is recommended whenever possible.</p>
+<p>On Alpine, the client-side plugin is <a href="https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html#caching-sha2-pluggable-authentication-installation">built into the <code>libmysqlclient</code> library</a>, which comes with the <a href="https://pkgs.alpinelinux.org/contents?file=libmysqlclient.so&path=&name=&branch=edge"><code>mariadb-connector-c-dev</code> package</a>, hence we installed it along with <code>mysql-client</code>. This is actually a good example of the kind of research effort it sometimes takes to make something work.</p>
+</div>
+
+<p>Just like the <code>demo</code> file at the beginning of this article, we need to make the <code>init</code> file executable:</p>
+<pre><code>$ chmod +x .docker/backend/init
+</code></pre>
+<p>By setting it as the <code>entrypoint</code> for the container we invoke, it will be the first and only script to be run before the container is destroyed.</p>
+<p>You can try the command out straight away, regardless of the current state of your project:</p>
+<pre><code>$ demo init
+</code></pre>
+<p>At this point though, you've probably taken care of most of the steps covered by the script already (e.g. generating the <code>.env</code> files or installing the dependencies). If you wish to test the complete process, you can run <code>demo destroy</code>, and either delete the entire project and/or start afresh by cloning your own repository or <a href="https://github.com/osteel/docker-tutorial">this one</a> (in the latter case, <em>checkout</em> the <code>part-4</code> branch), without forgetting to update the function in <code>.bashrc</code> if the path has changed. Then run <code>demo init</code> again.</p>
+<p>I personally find the experience of seeing the whole project setting itself up incredibly satisfactory, but maybe that's just me.</p>
+<p><img alt="Mind-blown" src="/images/2020/04/13/docker-04.gif" title="Mind-blown" /></p>
+<div class="info">
+<p><span class="title">Why the double slash?</span> You might have noticed that, in the <code>init</code> function, the path to the <code>init</code> file is preceded with a double slash:</p>
+<pre>...
+docker-compose run --rm --entrypoint="<strong>//opt/files/init</strong>" backend
+...</pre>
+<p>This is not a typo. For some reason, when there's only one slash Windows will prepend the current local path to the script's, consequently complaining that the file cannot be found (duh). Adding another slash prevents that behaviour, while being ignored on other platforms.</p>
+</div>
+
+<p>That leaves us with the <code>update</code> function, whose job is to make sure our environment is up to date:</p>
+<pre><code># Update the Docker environment
+update () {
+    git pull \
+        &amp;&amp; build \
+        &amp;&amp; composer install \
+        &amp;&amp; artisan migrate \
+        &amp;&amp; yarn install \
+        &amp;&amp; start
+}
+</code></pre>
+<p>This is a convenience method that will <em>pull</em> the repository, build the images in case the Dockerfiles have changed, make sure any change of dependency is applied and new migrations are run, and restart the containers that need it (i.e. whose image has changed).</p>
+<div class="info">
+<p><span class="title">Managing separate repositories</span> As I mentioned before, in a regular setup you are more likely to have the Docker environment, the backend application and the frontend application in separate repositories. Bash can also help in this situation: assuming the <code>src</code> folder is <em>git-ignored</em> and the code is hosted on GitHub, a function pulling the applications' repositories could look like this:</p>
+<pre># Clone or update the repositories
+repositories () {
+    repos=(frontend backend)
+    cd src
+    for repo in "${repos[@]}";
+    do
+        git clone "git@github.com:username/${repo}.git" "$repo" || (cd "$repo" ; git pull ; cd ..) || true
+    done
+    cd ..
+}</pre>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>The aim of this series is to build a flexible environment that makes our lives easier. That means the user experience must be as slick as possible, and having to remember dozens of complicated commands doesn't quite fit the bill.</p>
+<p>Bash is a simple yet powerful tool that, when combined with Docker, makes for a great developer experience. After today's article, it is much simpler to interact with our environment, and if you happen to forget a command, a refresher is now just one <code>demo</code> away.</p>
+<p>I kept things as simple as possible to avoid cluttering the post, but there is obviously much more you can get out of this duo. Many more commands can be simplified – just tailor the layer to your needs.</p>
+<p>In the next part of this series, we will see how to generate a self-signed SSL/TLS certificate in order to bring HTTPS to our environment. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-04-13" pubdate>2020-04-13</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/bash">bash</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash";
+              var disqus_title = "Docker for local web development, part 4: smoothing things out with Bash";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
