@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-04-13 ::
+          Last updated: 2020-04-14 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -598,7 +598,7 @@ php "/var/www/backend/artisan" migrate
 <p>At the very beginning of the project's initialisation, there is no database. Even though we specified in <code>docker-compose.yml</code> that the MySQL container should be started before the backend container, being up and running doesn't mean it had the chance to create the <code>demo</code> database yet. In most situations, the corresponding delay isn't a problem, but in our case the <code>init</code> script will be executed almost immediately, meaning there may be a few seconds during which it won't be able to reach the database. For the script not to exit with an error, we periodically test the connection, using a loop trying to establish a connection every few seconds, using the MySQL CLI: this is what we installed the <code>mysql-client</code> package for. On top of that, we also need the <code>mariadb-connector-c-dev</code> package to make the <code>caching_sha2_password</code> authentication plugin available to the MySQL CLI.</p>
 <p>I don't want to linger on this too much, but if you're curious about this the info box below is there for you.</p>
 <div class="info">
-<p><span class="title">MySQL authentication plugin</span> With MySQL 8, the default authentication plugin changed for <code>caching_sha2_password</code>, and in some instances systems started to fail connecting to MySQL databases after the upgrade, since that plugin isn't available everywhere by default.</p>
+<p><span class="title">MySQL authentication plugin</span> With MySQL 8, the default authentication plugin changed for <code>caching_sha2_password</code>, and in some instances systems started to fail to connect to MySQL databases after the upgrade, since that plugin isn't available everywhere by default.</p>
 <p>A quick solution is to revert to the previous plugin, which one can do by setting <code>default-authentication-plugin</code> to <code>mysql_native_password</code> in  the MySQL configuration. The change was made for <a href="https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password">security reasons</a>, however, so using the new plugin is recommended whenever possible.</p>
 <p>On Alpine, the client-side plugin is <a href="https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html#caching-sha2-pluggable-authentication-installation">built into the <code>libmysqlclient</code> library</a>, which comes with the <a href="https://pkgs.alpinelinux.org/contents?file=libmysqlclient.so&path=&name=&branch=edge"><code>mariadb-connector-c-dev</code> package</a>, hence we installed it along with <code>mysql-client</code>. This is actually a good example of the kind of research effort it sometimes takes to make something work.</p>
 </div>
@@ -649,14 +649,14 @@ repositories () {
 
 <h2 id="conclusion">Conclusion</h2>
 <p>The aim of this series is to build a flexible environment that makes our lives easier. That means the user experience must be as slick as possible, and having to remember dozens of complicated commands doesn't quite fit the bill.</p>
-<p>Bash is a simple yet powerful tool that, when combined with Docker, makes for a great developer experience. After today's article, it is much simpler to interact with our environment, and if you happen to forget a command, a refresher is now just one <code>demo</code> away.</p>
+<p>Bash is a simple yet powerful tool that, when combined with Docker, makes for a great developer experience. After today's article, it will be much simpler to interact with our environment, and if you happen to forget a command, a refresher is now just one <code>demo</code> away.</p>
 <p>I kept things as simple as possible to avoid cluttering the post, but there is obviously much more you can get out of this duo. Many more commands can be simplified – just tailor the layer to your needs.</p>
 <p>In the next part of this series, we will see how to generate a self-signed SSL/TLS certificate in order to bring HTTPS to our environment. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-04-13" pubdate>2020-04-13</time>
+          <time datetime="2020-04-14" pubdate>2020-04-14</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
