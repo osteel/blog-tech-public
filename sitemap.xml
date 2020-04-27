@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>https://tech.osteel.me/posts/docker-for-local-web-development-part-5-https-all-the-things</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://tech.osteel.me/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash</loc>
     <priority>0.8</priority>
   </url>

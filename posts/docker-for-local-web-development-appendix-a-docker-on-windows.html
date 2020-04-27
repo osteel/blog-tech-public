@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-04-18 ::
+          Last updated: 2020-04-27 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-appendix-a-docker-on-windows.html">history</a> ]
       </small>
@@ -146,7 +146,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
 <li><a href="docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
-<li>Part 5: HTTPS all the things <em>(coming soon)</em></li>
+<li><a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
 <li>Part 6: expose a local container to the Internet <em>(coming soon)</em></li>
 <li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
 <li>Part 8: scheduled tasks <em>(coming soon)</em></li>
@@ -166,6 +166,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#terminal">Terminal</a></li>
 <li><a href="#local-folder-and-disk-sharing">Local folder and disk sharing</a></li>
 <li><a href="#ports">Ports</a></li>
+<li><a href="#ssltls-certificates">SSL/TLS certificates</a></li>
 <li><a href="#other-resources-and-fixes">Other resources and fixes</a></li>
 <li><a href="#something-missing">Something missing?</a></li>
 </ul>
@@ -211,12 +212,15 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>You will need to share the local drive containing your Docker projects with Docker, which you can do in the <a href="https://docs.docker.com/docker-for-windows/troubleshoot/#shared-drives">application's settings</a>.</p>
 <p>Note that based on your Docker Desktop version, you might get prompted for your account's password and an empty string won't be accepted. Meaning if you don't have a password for your account, you will probably have to set one first.</p>
 <h2 id="ports">Ports</h2>
-<p>The local setup needs port 80 to be available, but it might already be in use (which will most likely prevent the Nginx container from starting properly).</p>
+<p>The local setup needs ports 80 and 443 to be available, but the former might already be in use (which will most likely prevent the Nginx container from starting properly).</p>
 <p>A quick way to free up the port is to run the following command as admin (from Command Prompt, not from Git Bash):</p>
 <pre><code>$ net stop http /y
 </code></pre>
 <p>If you still have issues, have a look at <a href="http://www.devside.net/wamp-server/opening-up-port-80-for-apache-to-use-on-windows">this article</a>.</p>
 <p>Based on the way you intend to access the database, you might also need to free up port 3306 (unless you plan on using phpMyAdmin).</p>
+<h2 id="ssltls-certificates">SSL/TLS certificates</h2>
+<p>It is not possible to install self-signed SSL/TLS certificates (used by this series from <a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">part 5</a> via the command line, so Windows users will have to do it manually.</p>
+<p>Thankfully, it is not overly complicated and <a href="https://www.thewindowsclub.com/manage-trusted-root-certificates-windows">this tutorial</a> does a good job at laying out the different steps.</p>
 <h2 id="other-resources-and-fixes">Other resources and fixes</h2>
 <p>If you encounter other issues, some of these resources might help:</p>
 <ul>
@@ -234,7 +238,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-04-18" pubdate>2020-04-18</time>
+          <time datetime="2020-04-27" pubdate>2020-04-27</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

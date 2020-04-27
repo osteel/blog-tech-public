@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/04/27/docker-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, part 5: HTTPS all the things &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, part 5: HTTPS all the things
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-04-27 ::
+        Published: 2020-04-27
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Docker and TLS" src="/images/2020/04/27/docker-01.jpg" title="Docker and TLS" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
+<li><a href="docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
+<li>Part 5: HTTPS all the things <strong>⬅️ you are here</strong></li>
+<li>Part 6: expose a local container to the Internet <em>(coming soon)</em></li>
+<li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
+<li>Part 8: scheduled tasks <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#generating-the-certificate">Generating the certificate</a></li>
+<li><a href="#installing-the-certificate">Installing the certificate</a></li>
+<li><a href="#the-nginx-server-configurations">The Nginx server configurations</a></li>
+<li><a href="#automating-the-process">Automating the process</a></li>
+<li><a href="#container-to-container-traffic">Container to container traffic</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>Since its inception by Netscape Communications back in 1994, Hypertext Transfer Protocol Secure (HTTPS) has been spreading over the Internet at an ever increasing rate, and is now accounting for more than 80% of the global traffic (as of <a href="https://letsencrypt.org/2020/02/27/one-billion-certs.html">February 2020</a>). This growth in coverage has been particularly strong in the past few years, catalysed by entities like the Internet Security Research Group – the one behind the free certificate authority <a href="https://letsencrypt.org/">Let's Encrypt</a> – and companies like Google, whose Chrome browser <a href="https://www.theverge.com/2018/2/8/16991254/chrome-not-secure-marked-http-encryption-ssl">flags HTTP websites as insecure since 2018</a>.</p>
+<p>While it is getting ever cheaper and easier to encrypt the web, somehow this evolution doesn't extend to local environments, where bringing HTTPS is still far from a sinecure.</p>
+<p>This article intends to ease the pain by showing you how to generate a self-signed SSL/TLS certificate and how to use it with our Docker-based setup, thus getting us one step closer to perfectly mimicking a production environment.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-4"><em>part-4</em> branch</a>.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-5"><em>part-5</em> branch</a>, which is the final result of today's article.</p>
+<h2 id="generating-the-certificate">Generating the certificate</h2>
+<p>We will generate the certificate and its key in a new <code>certs</code> folder under <code>.docker/nginx</code> – create that folder and add the following <code>.gitignore</code> file to it:</p>
+<pre><code>*
+!.gitignore
+</code></pre>
+<p>These two lines mean that all of the files contained in that directory except for <code>.gitignore</code> will be ignored by Git (this is a nicer version of the <code>.keep</code> file you may sometimes encounter, aiming at versioning an empty folder in Git).</p>
+<p>Since one of the goals of using Docker is to avoid cluttering the local machine as much as possible, we'll use a container to install OpenSSL and generate the certificate. Nginx's is a logical choice for this – being our proxy, it will be the one receiving the encrypted traffic on port 443, before redirecting it to the right container:</p>
+<p><img alt="Traffic" src="/images/2020/04/27/docker-02.jpg" title="Traffic" /></p>
+<p>We need a Dockerfile for this, which we'll add under <code>.docker/nginx</code>:</p>
+<pre><code>FROM nginx:1.17-alpine
+
+# Install packages
+RUN apk --update --no-cache add openssl
+</code></pre>
+<p>We also need to update <code>docker-compose.yml</code> to reference this Dockerfile and mount the <code>certs</code> folder onto the Nginx container, to make the certificate available to the web server. Also, since the SSL/TLS traffic uses port 443, the local machine's port 443 must be mapped to the container's (as always, changes have been highlighted in bold):</p>
+<pre>
+# Nginx Service
+nginx:
+  <strong>build: ./.docker/nginx</strong>
+  ports:
+    - 80:80
+    <strong>- 443:443</strong>
+  volumes:
+    - ./src/backend:/var/www/backend:ro,delegated
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    - phpmyadmindata:/usr/src/phpmyadmin:delegated
+    <strong>- ./.docker/nginx/certs:/etc/nginx/certs:delegated</strong>
+  depends_on:
+    - backend
+    - frontend
+    - phpmyadmin
+</pre>
+
+<p>Build the new image:</p>
+<pre><code>$ demo build nginx
+</code></pre>
+<p>All of the tools necessary to generate our certificate are now in place – we just need to add the corresponding Bash command and function.</p>
+<p>First, let's update our application menu, at the bottom of the <code>demo</code> file:</p>
+<pre>
+Command line interface for the Docker-based web development environment demo.
+
+Usage:
+    demo <command> [options] [arguments]
+
+Available commands:
+    artisan ................................... Run an Artisan command
+    build [image] ............................. Build all of the images or the specified one
+    <strong>cert ...................................... Certificate management commands
+        generate .............................. Generate a new certificate
+        install ............................... Install the certificate</strong>
+    composer .................................. Run a Composer command
+    destroy ................................... Remove the entire Docker environment
+    down [-v] ................................. Stop and destroy all containers
+                                                Options:
+                                                    -v .................... Destroy the volumes as well
+    init ...................................... Initialise the Docker environment and the application
+    logs [container] .......................... Display and tail the logs of all containers or the specified one's
+    restart [container] ....................... Restart all containers or the specified one
+    start ..................................... Start the containers
+    stop ...................................... Stop the containers
+    update .................................... Update the Docker environment
+    yarn ...................................... Run a Yarn command
+</pre>
+
+<p>To save us a trip later, I've also added the menu for the certificate installation, even if we won't implement it just yet.</p>
+<p>Add the corresponding cases to the switch:</p>
+<pre><code>    cert)
+        case "$2" in
+            generate)
+                cert_generate
+                ;;
+            install)
+                cert_install
+                ;;
+            *)
+                cat &lt;&lt; EOF
+
+Certificate management commands.
+
+Usage:
+    demo cert &lt;command&gt;
+
+Available commands:
+    generate .................................. Generate a new certificate
+    install ................................... Install the certificate
+
+EOF
+                ;;
+        esac
+        ;;
+</code></pre>
+<p>Since there are a couple of subcommands for <code>cert</code>, I've also added a submenu describing them. Save the file and check out the look of the new menus:</p>
+<pre><code>$ demo
+$ demo cert
+</code></pre>
+<p>The second command should display something like this:</p>
+<p><img alt="Submenu" src="/images/2020/04/27/docker-03.png" title="Submenu" /></p>
+<p>Still in the <code>demo</code> file, add the <code>cert_generate</code> function:</p>
+<pre><code># Generate a wildcard certificate
+cert_generate () {
+    rm -Rf .docker/nginx/certs/demo.test.*
+    docker-compose run --rm nginx sh -c "cd /etc/nginx/certs &amp;&amp; touch openssl.cnf &amp;&amp; cat /etc/ssl/openssl.cnf &gt; openssl.cnf &amp;&amp; echo \"\" &gt;&gt; openssl.cnf &amp;&amp; echo \"[ SAN ]\" &gt;&gt; openssl.cnf &amp;&amp; echo \"subjectAltName=DNS.1:demo.test,DNS.2:*.demo.test\" &gt;&gt; openssl.cnf &amp;&amp; openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout demo.test.key -out demo.test.crt -days 3650 -subj \"/CN=*.demo.test\" -config openssl.cnf -extensions SAN &amp;&amp; rm openssl.cnf"
+}
+</code></pre>
+<p>The first line of the function simply gets rid of previously generated certificates and keys that may still be in the <code>certs</code> directory. The second line is quite long and a bit complicated, but essentially it brings up a new, single-use container based on Nginx's image (<code>docker-compose run --rm nginx</code>) and runs a bunch of commands on it (that's the portion between the double quotes, after <code>sh -c</code>).</p>
+<p>I won't go into the details of these, but the gist is they create a wildcard self-signed certificate for <code>*.demo.test</code> as well as the corresponding key. A self-signed certificate is a certificate that is not signed by a certificate authority; in practice, you wouldn't use such a certificate in production, but it is fine for a local setup.</p>
+<p>Try out the command:</p>
+<pre><code>$ demo cert generate
+</code></pre>
+<p>You should see something like this:</p>
+<p><img alt="Certificate generation" src="/images/2020/04/27/docker-04.png" title="Certificate generation" /></p>
+<p>The resulting files are generated in the container's <code>/etc/nginx/certs</code> folder, which, as per <code>docker-compose.yml</code>, corresponds to our local <code>.docker/nginx/certs</code> directory. If you look inside that local directory now, you will see a couple of new files – <code>demo.test.crt</code> and <code>demo.test.key</code>.</p>
+<p>Your overall file structure should now look like this:</p>
+<pre><code>docker-tutorial/
+├── .docker/
+│   ├── backend/
+│   ├── mysql/
+│   └── nginx/
+│       ├── certs/
+│       │   ├── .gitignore
+│       │   ├── demo.test.crt
+│       │   └── demo.test.key
+│       ├── conf.d/
+│       └── Dockerfile
+├── src/
+├── .env
+├── .env.example
+├── .gitignore
+├── demo
+└── docker-compose.yml
+</code></pre>
+<h2 id="installing-the-certificate">Installing the certificate</h2>
+<p>Let's now implement the <code>cert_install</code> function, still in the <code>demo</code> file (after <code>cert_generate</code>):</p>
+<pre><code># Install the certificate
+cert_install () {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain .docker/nginx/certs/demo.test.crt
+    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+        sudo ln -s "$(pwd)/.docker/nginx/certs/demo.test.crt" /usr/local/share/ca-certificates/demo.test.crt
+        sudo update-ca-certificates
+    else
+        echo "Could not install the certificate on the host machine, please do it manually"
+    fi
+}
+</code></pre>
+<p>If you're on macOS or on a Linux distribution, this function will automatically install the self-signed certificate on your machine. Unfortunately, Windows users will have to do it manually, but with the help of this <a href="https://www.thewindowsclub.com/manage-trusted-root-certificates-windows">tutorial</a> the process should be fairly straightforward.</p>
+<p>Let's break the <code>cert_install</code> function down: it first verifies whether the current host system is macOS by checking the content of the pre-defined <code>$OSTYPE</code> environment variable, which will start with <code>darwin</code> if that's the case. It then adds the certificate to the trusted certificates.</p>
+<p>If the current system is Linux, the function will create a symbolic link between the certificate and the <code>/usr/local/share/ca-certificates</code> folder, and run <code>update-ca-certificates</code> so it is taken it into account.</p>
+<p>Since the <code>sudo</code> program is used in both cases, running the command will probably require you to enter your system account password.</p>
+<p>Let's try to install the certificate (you can also run this on Windows, but you'll be invited to install the certificate manually as mentioned earlier):</p>
+<pre><code>$ demo cert install
+</code></pre>
+<p>If all went well, it should now appear in the list of certificates, like in macOS' Keychain Access:</p>
+<p><img alt="Keychain" src="/images/2020/04/27/docker-05.png" title="Keychain" /></p>
+<h2 id="the-nginx-server-configurations">The Nginx server configurations</h2>
+<p>Now that our certificate is ready, we need to update the Nginx server configurations to enable HTTPS support.</p>
+<p>First, update the content of <code>.docker/nginx/conf.d/backend.conf</code>:</p>
+<pre><code>server {
+    listen      443 ssl http2;
+    listen      [::]:443 ssl http2;
+    server_name backend.demo.test;
+    root        /var/www/backend/public;
+
+    ssl_certificate     /etc/nginx/certs/demo.test.crt;
+    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+
+    add_header X-Frame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+
+    index index.html index.htm index.php;
+
+    charset utf-8;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location = /favicon.ico { access_log off; log_not_found off; }
+    location = /robots.txt  { access_log off; log_not_found off; }
+
+    error_page 404 /index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass  backend:9000;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+        include       fastcgi_params;
+    }
+
+    location ~ /\.(?!well-known).* {
+        deny all;
+    }
+}
+
+server {
+    listen      80;
+    listen      [::]:80;
+    server_name backend.demo.test;
+    return      301 https://$server_name$request_uri;
+}
+</code></pre>
+<p>Then, change the content of <code>.docker/nginx/conf.d/frontend.conf</code> for this one:</p>
+<pre><code>server {
+    listen      443 ssl http2;
+    listen      [::]:443 ssl http2;
+    server_name frontend.demo.test;
+
+    ssl_certificate     /etc/nginx/certs/demo.test.crt;
+    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+
+    location / {
+        proxy_pass         http://frontend:8080;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade $http_upgrade;
+        proxy_set_header   Connection 'upgrade';
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header   Host $host;
+    }
+}
+
+server {
+    listen      80;
+    listen      [::]:80;
+    server_name frontend.demo.test;
+    return      301 https://$server_name$request_uri;
+}
+</code></pre>
+<p>Finally, replace the content of <code>.docker/nginx/conf.d/phpmyadmin.conf</code> with the following:</p>
+<pre><code>server {
+    listen      443 ssl http2;
+    listen      [::]:443 ssl http2;
+    server_name phpmyadmin.test;
+    root        /usr/src/phpmyadmin;
+    index       index.php;
+
+    ssl_certificate     /etc/nginx/certs/demo.test.crt;
+    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+
+    location ~* \.php$ {
+        fastcgi_pass   phpmyadmin:9000;
+        include        fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
+    }
+}
+
+server {
+    listen      80;
+    listen      [::]:80;
+    server_name phpmyadmin.test;
+    return      301 https://$server_name$request_uri;
+}
+</code></pre>
+<p>The principle is similar for the three of them: a second <code>server</code> block has been added at the end, listening to traffic on port 80 and redirecting it to port 443, which is handled by the first <code>server</code> block. The latter is pretty much the same as the one it replaces, except for the addition of the <code>ssl_certificate</code> and <code>ssl_certificate_key</code> configuration keys, and the appearance of <code>http2</code>.</p>
+<p>We were unable to use HTTP2 so far because, while encryption is not required by the protocol, in practice <a href="https://http2.github.io/faq/#does-http2-require-encryption">most browsers only support it over an encrypted connection</a>. By introducing HTTPS to our setup, we can now benefit from the <a href="https://www.digitalocean.com/community/tutorials/http-1-1-vs-http-2-what-s-the-difference">improvements of HTTP2</a>.</p>
+<p>We also need to make a quick change to <code>src/frontend/src/App.vue</code>, where the backend endpoint should now use HTTPS instead of HTTP:</p>
+<pre>
+...
+mounted () {
+  axios
+    .get('<strong>https</strong>://backend.demo.test/api/hello-there')
+    .then(response => (this.msg = response.data))
+}
+...
+</pre>
+
+<p>Looks like we're ready to make a test! Restart the containers for the changes to take effect:</p>
+<pre><code>$ demo restart
+</code></pre>
+<p>Access <a href="http://frontend.demo.test">frontend.demo.test</a> (remember that it can take a few seconds for Vue.js' development server to start – you can run <code>demo logs frontend</code> to monitor what's going on): you should automatically be redirected from HTTP to HTTPS, and the website should display correctly.</p>
+<p>We're encrypted!</p>
+<p><img alt="Hackerman" src="/images/2020/04/27/docker-06.gif" title="Hackerman" /></p>
+<div class="info">
+<p><span class="title">Not working in your browser?</span> If Firefox gives you a security warning, just restart it after the certificate was installed – it should be enough to make the warning go away. Safari is proving more difficult, however; on macOS (and maybe on other systems too), even after ignoring the security warning and while the certificate is accepted for regular browser requests, AJAX requests are still failing. I haven't found a solution yet, but I haven't spent much time looking into it either because, if I'm honest, I don't really care whether or not it works on Safari (at least locally). If you find a way though, please let me know about it in the comments.</p>
+<p>Finally, if your browser still doesn't accept the certificate, I can only advise you to search for solutions on how to install a self-signed certificate for your specific setup online. Behaviour can vary based on the system, the browser and the browser's version, and it would be vain to try and list all of the potential issues here. Like I said at the beginning of this article, unfortunately, local HTTPS is not always straightforward.</p>
+</div>
+
+<h2 id="automating-the-process">Automating the process</h2>
+<p>Now that we've got the Bash functions to generate and install the certificate, we can integrate them into the project's initialisation process.</p>
+<p>Open the <code>demo</code> file again and update the <code>init</code> function:</p>
+<pre>
+# Initialise the Docker environment and the application
+init () {
+    env \
+        && down -v \
+        && build \
+        && docker-compose run --rm --entrypoint="//opt/files/init" backend \
+        <strong>&& yarn install
+
+    if [ ! -f .docker/nginx/certs/demo.test.crt ]; then
+        cert_generate
+    fi
+
+    start && cert_install</strong>
+}
+</pre>
+
+<p>The function will now check whether there's a certificate in the <code>.docker/nginx/certs</code> folder already, generate one if there isn't, and then proceed with starting the containers and install the certificate. In other words, all of this will now be taken care of by the initial <code>demo init</code>.</p>
+<h2 id="container-to-container-traffic">Container to container traffic</h2>
+<p>The above setup is suitable for most cases, but there's a situation where it falls short, and that is whenever a container needs to communicate with another one directly, without going through the browser. Let me walk you through this.</p>
+<p>First, bring up the project if it's currently stopped (<code>demo start</code>) and access the backend container:</p>
+<pre><code>$ docker-compose exec backend sh
+</code></pre>
+<p>From there, try and <em>ping</em> the frontend container:</p>
+<pre><code>$ ping frontend
+</code></pre>
+<p>The ping should respond with the frontend container's private IP, which is the expected behaviour. Try pinging the frontend again, this time using the domain name:</p>
+<pre><code>$ ping frontend.demo.test
+</code></pre>
+<p>We also get a response, but from <em>localhost</em>, which is not quite right: we should get the same private IP address instead.</p>
+<p>Let's make a few more tests, still from the backend container, but using cURL commands:</p>
+<pre><code>$ curl frontend
+</code></pre>
+<p>Response:</p>
+<pre><code>curl: (7) Failed to connect to frontend port 80: Connection refused
+</code></pre>
+<p>This is expected because the frontend container is set up to listen on port 8080:</p>
+<pre><code>$ curl frontend:8080
+</code></pre>
+<p>This command correctly returns the frontend's HTML code. Let's try again, but this time using the domain name:</p>
+<pre><code>$ curl frontend.demo.test
+</code></pre>
+<p>Response:</p>
+<pre><code>curl: (7) Failed to connect to frontend.demo.test port 80: Connection refused
+</code></pre>
+<p>Same issue as above – we should be targeting port 8080 instead:</p>
+<pre><code>$ curl frontend.demo.test:8080
+</code></pre>
+<p>Response:</p>
+<pre><code>curl: (7) Failed to connect to frontend.demo.test port 8080: Connection refused
+</code></pre>
+<p>Still not working... what's going on?</p>
+<p>Containers identify each other by name (e.g. <code>frontend</code>, <code>backend</code>, <code>mysql</code>, etc.) on the network created by Docker Compose. The domain names we defined for the frontend and the backend (<code>frontend.demo.test</code> and <code>backend.demo.test</code>) are recognised by our local machine because we updated its <code>hosts</code> file, but they have no meaning in the context of Docker Compose's network. In other words, for these domain names to be recognised on that network, we'd need to update the containers' <code>hosts</code> files as well, and we'd have to do it every time the containers are recreated.</p>
+<p>Thankfully, Docker Compose offers a better solution for this, in the form of <a href="https://docs.docker.com/compose/compose-file/#aliases">network aliases</a>. Aliases are alternative names we can give services and by which their containers will be discoverable on the network, in addition to the service's original name. These aliases can be domain names.</p>
+<p>In order to emulate a production environment as closely as possible, we should assign the frontend's domain name to the Nginx service, rather than to the frontend service directly.</p>
+<p>Things are probably getting a bit confusing, so let's bring back our diagram from earlier:</p>
+<p><img alt="Frontend to browser" src="/images/2020/04/27/docker-07.jpg" title="Frontend to browser" /></p>
+<p>This slightly updated version essentially describes what happens when we initially access <a href="https://frontend.demo.test">frontend.demo.test</a>: the browser asks Nginx for the frontend's content on port 443; Nginx recognises the domain name, and proxies the request to the frontend container on port 8080, which in turn returns the files for the browser to download.</p>
+<p>From then on, a copy of the frontend is running in the browser:</p>
+<p><img alt="Frontend in browser" src="/images/2020/04/27/docker-08.jpg" title="Frontend in browser" /></p>
+<p>As the end user interacts with the frontend, requests are made to the backend:</p>
+<p><img alt="Browser to backend" src="/images/2020/04/27/docker-09.jpg" title="Browser to backend" /></p>
+<p>These requests come to the Nginx container on port 443, where Nginx recognises the backend's domain name and proxies the requests to the backend container, on port 9000.</p>
+<p>What we're trying to achieve here, however, is direct communication between the backend and frontend containers, without involving the browser:</p>
+<p><img alt="Backend to frontend" src="/images/2020/04/27/docker-10.jpg" title="Backend to frontend" /></p>
+<p>The red route (the arrow on the right-hand side) is already functional: as the frontend and backend containers are on the same Docker Compose network, and as they can identify each other by name on it, the backend is able to hit the frontend directly on port 8080. In a production environment, however, the frontend and the backend are unlikely to be on such a network, and more likely to reach each other by domain name (I am voluntarily leaving out non-HTTP protocols here).</p>
+<p>They would basically use a similar route as the browser, through Nginx and via HTTPS – the blue route.</p>
+<p>Therefore, we want the frontend's domain name to resolve to the Nginx container and not to the frontend's directly, meaning the domain name alias should be assigned to the Nginx service.</p>
+<p>Let's add a <code>networks</code> section to it, in <code>docker-compose.yml</code>:</p>
+<pre>
+# Nginx Service
+nginx:
+  build: ./.docker/nginx
+  ports:
+    - 80:80
+    - 443:443
+  <strong>networks:
+    default:
+      aliases:
+        - frontend.demo.test</strong>
+  volumes:
+    - ./src/backend:/var/www/backend:ro,delegated
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    - phpmyadmindata:/usr/src/phpmyadmin:delegated
+    - ./.docker/nginx/certs:/etc/nginx/certs:delegated,ro
+  depends_on:
+    - backend
+    - frontend
+    - phpmyadmin
+</pre>
+
+<p>For the change to take effect, the network has to be recreated:</p>
+<pre><code>$ demo down &amp;&amp; demo start
+</code></pre>
+<p>We can now proceed with the same tests as earlier, starting with the ping:</p>
+<pre><code>$ docker-compose exec backend sh
+$ ping frontend.demo.test
+</code></pre>
+<p>The command now responds with a proper private IP address. Let's try with cURL:</p>
+<pre><code>$ curl frontend.demo.test
+</code></pre>
+<p>We do get a response, but a <code>301 Moved Permanently</code> one, which is expected – if you remember, we added a second <code>server</code> block to each Nginx config, responsible for redirecting HTTP traffic to HTTPS.</p>
+<p>Let's hit the HTTPS URL instead:</p>
+<pre><code>$ curl https://frontend.demo.test
+</code></pre>
+<p>Response:</p>
+<pre><code>curl: (60) SSL certificate problem: self signed certificate
+</code></pre>
+<p>We're now getting to the issue I mentioned at the very beginning of this section. Our browser knows and accepts the self-signed certificate, because we installed it on our local machine; on the other hand, the backend container has no idea where this certificate comes from, and has no reason to trust it.</p>
+<p>The easy way to circumvent this is by ignoring the security checks altogether:</p>
+<pre><code>$ curl -k https://frontend.demo.test
+</code></pre>
+<p>While this solution works, it is not recommended for obvious reasons, and you won't always have the luxury to set the options as you see fit (especially if the call is made by a third-party package).</p>
+<p>What we need to do, really, is to install the certificate on the backend container as well, so it can recognise it and trust it the way our local machine does.</p>
+<p>To do that, we need to mount the directory containing the self-signed certificate onto the backend container. Exit the container (by running <code>exit</code> or by hitting <code>ctrl + d</code>) and update <code>docker-compose.yml</code>:</p>
+<pre>
+# Backend Service
+backend:
+  build: ./src/backend
+  working_dir: /var/www/backend
+  volumes:
+    - ./src/backend:/var/www/backend:delegated
+    - ./.docker/backend/init:/opt/files/init:delegated,ro
+    <strong>- ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro</strong>
+  depends_on:
+    - mysql
+</pre>
+
+<p>Save the file and restart the containers:</p>
+<pre><code>$ demo restart
+</code></pre>
+<p>Access the backend container once again, and install the new certificate (you can ignore the warning):</p>
+<pre><code>$ docker-compose exec backend sh
+$ update-ca-certificates
+</code></pre>
+<p>Try the cURL command one more time:</p>
+<pre><code>$ curl https://frontend.demo.test
+</code></pre>
+<p>You should finally get the frontend's HTML code.</p>
+<p>There's one last thing we need to do before wrapping up. Update the <code>cert_install</code> function in the <code>demo</code> file:</p>
+<pre>
+# Install the certificate
+cert_install () {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+      sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain .docker/nginx/certs/demo.test.crt
+  elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+      sudo ln -s "$(pwd)/.docker/nginx/certs/demo.test.crt" /usr/local/share/ca-certificates/demo.test.crt
+      sudo update-ca-certificates
+  else
+      echo "Could not install the certificate on the host machine, please do it manually"
+  fi
+
+  <strong>docker-compose exec backend update-ca-certificates</strong>
+}
+</pre>
+
+<p>After installing the certificate on the local machine, the function will now also do the same on the backend container.</p>
+<div class="info">
+<p><span class="title">Why is this important?</span> I must confess that the example above isn't the most relevant, as in practice I can't really think of any reason why the backend would need to interact with the frontend in such a way. Container-to-container communication is not a rare feat, however: typical use cases comprise applications querying an authentication server (think OAuth), or microservices communicating through HTTP. I simply didn't want ot make this tutorial any longer by introducing another container.</p>
+<p>That being said, I would recommend installing the certificate on a container only if it's really necessary, as this is an extra step one can easily forget. If you need to recreate the container for some reason, you'd also have to remember to run <code>demo cert install</code>; at the time of writing, there is no such thing as container events – like container creation – to hook on to in order to automate this.</p>
+</div>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>Let's be honest: dealing with HTTPS locally is still a pain in the bottom. Unfortunately, a development environment would not be complete without it, since it's pretty much become a modern Internet requirement.</p>
+<p>There is a silver lining to this, however: now that encryption is out of the way, all that's left of this tutorial series is the fun stuff. Rejoice!</p>
+<p>In the next part, we will see how to expose a local container to the Internet, which comes in handy when testing a third-party service integration. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-04-27" pubdate>2020-04-27</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/"></a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-5-https-all-the-things";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-5-https-all-the-things";
+              var disqus_title = "Docker for local web development, part 5: HTTPS all the things";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
