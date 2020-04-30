@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-04-27 ::
+          Last updated: 2020-04-30 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -169,8 +169,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="introduction">Introduction</h2>
-<p>Since its inception by Netscape Communications back in 1994, Hypertext Transfer Protocol Secure (HTTPS) has been spreading over the Internet at an ever increasing rate, and is now accounting for more than 80% of the global traffic (as of <a href="https://letsencrypt.org/2020/02/27/one-billion-certs.html">February 2020</a>). This growth in coverage has been particularly strong in the past few years, catalysed by entities like the Internet Security Research Group – the one behind the free certificate authority <a href="https://letsencrypt.org/">Let's Encrypt</a> – and companies like Google, whose Chrome browser <a href="https://www.theverge.com/2018/2/8/16991254/chrome-not-secure-marked-http-encryption-ssl">flags HTTP websites as insecure since 2018</a>.</p>
-<p>While it is getting ever cheaper and easier to encrypt the web, somehow this evolution doesn't extend to local environments, where bringing HTTPS is still far from a sinecure.</p>
+<p>Since its inception by Netscape Communications back in 1994, Hypertext Transfer Protocol Secure (HTTPS) has been spreading over the Internet at an ever increasing rate, and now accounts for more than 80% of global traffic (as of <a href="https://letsencrypt.org/2020/02/27/one-billion-certs.html">February 2020</a>). This growth in coverage has been particularly strong in the past few years, catalysed by entities like the Internet Security Research Group – the one behind the free certificate authority <a href="https://letsencrypt.org/">Let's Encrypt</a> – and companies like Google, whose Chrome browser <a href="https://www.theverge.com/2018/2/8/16991254/chrome-not-secure-marked-http-encryption-ssl">has flagged HTTP websites as insecure since 2018</a>.</p>
+<p>While it is getting ever cheaper and easier to encrypt the web, somehow this evolution doesn't extend to local environments, where bringing in HTTPS is still far from a sinecure.</p>
 <p>This article intends to ease the pain by showing you how to generate a self-signed SSL/TLS certificate and how to use it with our Docker-based setup, thus getting us one step closer to perfectly mimicking a production environment.</p>
 <p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-4"><em>part-4</em> branch</a>.</p>
 <p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-5"><em>part-5</em> branch</a>, which is the final result of today's article.</p>
@@ -179,7 +179,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <pre><code>*
 !.gitignore
 </code></pre>
-<p>These two lines mean that all of the files contained in that directory except for <code>.gitignore</code> will be ignored by Git (this is a nicer version of the <code>.keep</code> file you may sometimes encounter, aiming at versioning an empty folder in Git).</p>
+<p>These two lines mean that all of the files contained in that directory except for <code>.gitignore</code> will be ignored by Git (this is a nicer version of the <code>.keep</code> file you may sometimes encounter, which aims to version an empty folder in Git).</p>
 <p>Since one of the goals of using Docker is to avoid cluttering the local machine as much as possible, we'll use a container to install OpenSSL and generate the certificate. Nginx's is a logical choice for this – being our proxy, it will be the one receiving the encrypted traffic on port 443, before redirecting it to the right container:</p>
 <p><img alt="Traffic" src="/images/2020/04/27/docker-02.jpg" title="Traffic" /></p>
 <p>We need a Dockerfile for this, which we'll add under <code>.docker/nginx</code>:</p>
@@ -376,7 +376,7 @@ server {
     return      301 https://$server_name$request_uri;
 }
 </code></pre>
-<p>Then, change the content of <code>.docker/nginx/conf.d/frontend.conf</code> for this one:</p>
+<p>Then, change the content of <code>.docker/nginx/conf.d/frontend.conf</code> to this one:</p>
 <pre><code>server {
     listen      443 ssl http2;
     listen      [::]:443 ssl http2;
@@ -485,7 +485,7 @@ init () {
 <pre><code>$ ping frontend.demo.test
 </code></pre>
 <p>We also get a response, but from <em>localhost</em>, which is not quite right: we should get the same private IP address instead.</p>
-<p>Let's make a few more tests, still from the backend container, but using cURL commands:</p>
+<p>Let's run a few more tests, still from the backend container, but using cURL commands:</p>
 <pre><code>$ curl frontend
 </code></pre>
 <p>Response:</p>
@@ -520,7 +520,7 @@ init () {
 <p>These requests come to the Nginx container on port 443, where Nginx recognises the backend's domain name and proxies the requests to the backend container, on port 9000.</p>
 <p>What we're trying to achieve here, however, is direct communication between the backend and frontend containers, without involving the browser:</p>
 <p><img alt="Backend to frontend" src="/images/2020/04/27/docker-10.jpg" title="Backend to frontend" /></p>
-<p>The red route (the arrow on the right-hand side) is already functional: as the frontend and backend containers are on the same Docker Compose network, and as they can identify each other by name on it, the backend is able to hit the frontend directly on port 8080. In a production environment, however, the frontend and the backend are unlikely to be on such a network, and more likely to reach each other by domain name (I am voluntarily leaving out non-HTTP protocols here).</p>
+<p>The red route (the arrow on the right-hand side) is already functional: as the frontend and backend containers are on the same Docker Compose network, and as they can identify each other by name on it, the backend is able to reach the frontend directly on port 8080. In a production environment, however, the frontend and the backend are unlikely to be on such a network, and more likely to reach each other by domain name (I am voluntarily leaving out non-HTTP protocols here).</p>
 <p>They would basically use a similar route as the browser, through Nginx and via HTTPS – the blue route.</p>
 <p>Therefore, we want the frontend's domain name to resolve to the Nginx container and not to the frontend's directly, meaning the domain name alias should be assigned to the Nginx service.</p>
 <p>Let's add a <code>networks</code> section to it, in <code>docker-compose.yml</code>:</p>
@@ -567,7 +567,7 @@ $ ping frontend.demo.test
 <p>The easy way to circumvent this is by ignoring the security checks altogether:</p>
 <pre><code>$ curl -k https://frontend.demo.test
 </code></pre>
-<p>While this solution works, it is not recommended for obvious reasons, and you won't always have the luxury to set the options as you see fit (especially if the call is made by a third-party package).</p>
+<p>While this solution works, it is not recommended for obvious reasons, and you won't always have the luxury of setting the options as you see fit (especially if the call is made by a third-party package).</p>
 <p>What we need to do, really, is to install the certificate on the backend container as well, so it can recognise it and trust it the way our local machine does.</p>
 <p>To do that, we need to mount the directory containing the self-signed certificate onto the backend container. Exit the container (by running <code>exit</code> or by hitting <code>ctrl + d</code>) and update <code>docker-compose.yml</code>:</p>
 <pre>
@@ -613,19 +613,19 @@ cert_install () {
 
 <p>After installing the certificate on the local machine, the function will now also do the same on the backend container.</p>
 <div class="info">
-<p><span class="title">Why is this important?</span> I must confess that the example above isn't the most relevant, as in practice I can't really think of any reason why the backend would need to interact with the frontend in such a way. Container-to-container communication is not a rare feat, however: typical use cases comprise applications querying an authentication server (think OAuth), or microservices communicating through HTTP. I simply didn't want ot make this tutorial any longer by introducing another container.</p>
+<p><span class="title">Why is this important?</span> I must confess that the example above isn't the most relevant, as in practice I can't really think of any reason why the backend would need to interact with the frontend in such a way. Container-to-container communication is not a rare feat, however: typical use cases comprise applications querying an authentication server (think OAuth), or microservices communicating through HTTP. I simply didn't want to make this tutorial any longer by introducing another container.</p>
 <p>That being said, I would recommend installing the certificate on a container only if it's really necessary, as this is an extra step one can easily forget. If you need to recreate the container for some reason, you'd also have to remember to run <code>demo cert install</code>; at the time of writing, there is no such thing as container events – like container creation – to hook on to in order to automate this.</p>
 </div>
 
 <h2 id="conclusion">Conclusion</h2>
-<p>Let's be honest: dealing with HTTPS locally is still a pain in the bottom. Unfortunately, a development environment would not be complete without it, since it's pretty much become a modern Internet requirement.</p>
+<p>Let's be honest: dealing with HTTPS locally is still a pain in the neck. Unfortunately, a development environment would not be complete without it, since it's pretty much become a modern Internet requirement.</p>
 <p>There is a silver lining to this, however: now that encryption is out of the way, all that's left of this tutorial series is the fun stuff. Rejoice!</p>
-<p>In the next part, we will see how to expose a local container to the Internet, which comes in handy when testing a third-party service integration. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+<p>In the next part, we will see how to expose a local container to the Internet, which comes in handy when testing the integration of a third-party service. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-04-27" pubdate>2020-04-27</time>
+          <time datetime="2020-04-30" pubdate>2020-04-30</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
