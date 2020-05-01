@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-04-30 ::
+          Last updated: 2020-05-01 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -448,7 +448,8 @@ mounted () {
 <p>We're encrypted!</p>
 <p><img alt="Hackerman" src="/images/2020/04/27/docker-06.gif" title="Hackerman" /></p>
 <div class="info">
-<p><span class="title">Not working in your browser?</span> If Firefox gives you a security warning, just restart it after the certificate was installed – it should be enough to make the warning go away. Safari is proving more difficult, however; on macOS (and maybe on other systems too), even after ignoring the security warning and while the certificate is accepted for regular browser requests, AJAX requests are still failing. I haven't found a solution yet, but I haven't spent much time looking into it either because, if I'm honest, I don't really care whether or not it works on Safari (at least locally). If you find a way though, please let me know about it in the comments.</p>
+<p><span class="title">Not working in your browser?</span> While Chrome seems to accept self-signed certificates with no fuss across platforms, Firefox may give you a security warning. If that's the case, you may need to set the <code>security.enterprise_roots.enabled</code> property to <code>true</code> from the <a href="about:config">about:config</a> page – once that's done, restarting the browser is usually enough to make the warning go away (read more about this configuration setting <a href="https://support.mozilla.org/en-US/questions/1175296">here</a>).</p>
+<p>Safari is proving more difficult, however; on macOS (and maybe on other systems too), even after ignoring the security warning and while the certificate is accepted for regular browser requests, AJAX requests are still failing. I haven't found a solution yet, but I haven't spent much time looking into it either because, if I'm honest, I don't really care whether or not it works on Safari (at least locally). If you find a way though, please let me know about it in the comments.</p>
 <p>Finally, if your browser still doesn't accept the certificate, I can only advise you to search for solutions on how to install a self-signed certificate for your specific setup online. Behaviour can vary based on the system, the browser and the browser's version, and it would be vain to try and list all of the potential issues here. Like I said at the beginning of this article, unfortunately, local HTTPS is not always straightforward.</p>
 </div>
 
@@ -625,7 +626,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-04-30" pubdate>2020-04-30</time>
+          <time datetime="2020-05-01" pubdate>2020-05-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
