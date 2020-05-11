@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/05/11/docker-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, part 6: expose a local container to the Internet &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="ngrok" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, part 6: expose a local container to the Internet
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-05-11 ::
+        Published: 2020-05-11
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Local container exposed to the Internet" src="/images/2020/05/11/docker-01.jpg" title="Local container exposed to the Internet" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
+<li><a href="docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
+<li><a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
+<li>Part 6: expose a local container to the Internet <strong>⬅️ you are here</strong></li>
+<li>Part 7: using a multi-stage build to introduce a worker <em>(coming soon)</em></li>
+<li>Part 8: scheduled tasks <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#ngrok">Ngrok</a></li>
+<li><a href="#installing-and-configuring">Installing and configuring</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>While using Docker for local development allows us to replicate a production environment as closely as possible in a self-contained way, in some instances exposure to the outside world is unavoidable.</p>
+<p>Typical use cases include testing a third-party service's webhook (like a transaction confirmation from a payment gateway), or showing a project's advancement to a client. Sure, you could use a staging environment for that, but you might not be in a position to offer one, and in some cases it would feel akin to squashing a fly with a sledgehammer.</p>
+<p>Wouldn't it be more practical if you could make your local environment public instead?</p>
+<p>Thankfully, this isn't a new issue and several services offer to address it. This article focuses on one that's arguably become a reference over time: Ngrok.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-5"><em>part-5</em> branch</a>.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-6"><em>part-6</em> branch</a>, which is the final result of today's article.</p>
+<h2 id="ngrok">Ngrok</h2>
+<p><a href="https://ngrok.com/">Ngrok</a> is an online service that essentially allows developers to create secure tunnels to channel traffic from a public URL to a local address. It offers paid plans but also comes with a generous free version that doesn't even require an account for HTTP tunnels. Since our setup runs on HTTPS, however, we'll need to <a href="https://dashboard.ngrok.com/signup">sign up</a> in order to obtain an authentication token. Don't worry though, it only takes a few seconds and doesn't require credit card details.</p>
+<p>If you <em>really</em> don't want to open an account, there will be an information box towards the end of this tutorial explaining how to use the subscription-free plan instead.</p>
+<h2 id="installing-and-configuring">Installing and configuring</h2>
+<p>There is no official Docker image for Ngrok, but the community stepped up and made a few of them available.</p>
+<p>We'll use <a href="https://hub.docker.com/r/wernight/ngrok/">Werner Beroux's</a> today, for which we need to create a service in <code>docker-compose.yml</code>:</p>
+<pre><code># Ngrok Service
+ngrok:
+  image: wernight/ngrok:latest
+  ports:
+    - 4040:4040
+  environment:
+    NGROK_PROTOCOL: http
+    NGROK_PORT: nginx:443
+    NGROK_AUTH: ${NGROK_AUTH}
+  depends_on:
+    - nginx
+</code></pre>
+<p>Ngrok comes with an interface served on the container's port 4040 which we mapped to localhost's, and since Nginx will once again be our entry point for the traffic, we made sure its container is started before Ngrok's using <code>depends_on</code>.</p>
+<p>That leaves us with a bunch of environment variables:</p>
+<ul>
+<li><code>NGROK_PROTOCOL</code> can either be <code>http</code> or <code>tcp</code> – in our case, we need the former;</li>
+<li><code>NGROK_PORT</code> is a bit misleading, as it's actually not only the port but also the host, which is <code>nginx:443</code> in our case (if no host is specified, localhost is implied);</li>
+<li><code>NGROK_AUTH</code> is the authentication token I mentioned earlier, whose value is another environment variable that we'll set in a minute.</li>
+</ul>
+<p>That's all we need for today, but you might want to have a look at the other environment variables listed in the <a href="https://hub.docker.com/r/wernight/ngrok/">image's documentation</a>.</p>
+<p>We now need to set the authentication token, which you will find in your <a href="https://dashboard.ngrok.com/auth/your-authtoken">dashboard</a>. If you remember, in the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> of this series we created a <code>.env</code> file at the root of the project, alongside <code>docker-compose.yml</code>. So far we've only used it to specify a project name (to avoid container name collisions with other projects), but that's also where we'll set the token.</p>
+<p>Open the file and change its content to this one, replacing the <code>&lt;YOUR TOKEN&gt;</code> placeholder with... your token:</p>
+<pre><code>COMPOSE_PROJECT_NAME=demo
+NGROK_AUTH=&lt;YOUR TOKEN&gt;
+</code></pre>
+<p>For good measure, we should also update <code>.env.example</code>, to make it clear for future users that a value is expected:</p>
+<pre><code>COMPOSE_PROJECT_NAME=demo
+NGROK_AUTH=
+</code></pre>
+<p>This gives you the flexibility to either set a token in <code>.env.example</code> for everyone to use, or to ask each developer to create their own Ngrok account and complete their local <code>.env</code> file accordingly.</p>
+<p>Of course, you could set the token in <code>docker-compose.yml</code> directly, but I wanted to show you another way to use the project's <code>.env</code> file.</p>
+<p>The last thing we need to do is to update the Nginx server configuration in <code>.docker/nginx/conf.d/backend.conf</code>:</p>
+<pre>
+server {
+    listen      443 ssl http2;
+    listen      [::]:443 ssl http2;
+    server_name backend.demo.test <strong>*.ngrok.io</strong>;
+    root        /var/www/backend/public;
+    ...
+</pre>
+
+<p>Only the bit in bold needs to be added, the rest of the file remains as it is. Save it and restart the project in order to create the Ngrok container and to reload the Nginx configuration:</p>
+<pre><code>$ demo restart
+</code></pre>
+<p>Open <a href="http://localhost:4040">localhost:4040</a> in your browser:</p>
+<p><img alt="Ngrok interface" src="/images/2020/05/11/docker-02.png" title="Ngrok interface" /></p>
+<p>Two URLs are available – spot the HTTPS one and open it in a new tab, appending <code>/api/hello-there</code> to the end:</p>
+<p><img alt="Ngrok Hello There" src="/images/2020/05/11/docker-03.png" title="Ngrok Hello There" /></p>
+<p>Our API is now available publicly! Now go back to the other tab – you should see something like this:</p>
+<p><img alt="Ngrok inspection" src="/images/2020/05/11/docker-04.png" title="Ngrok inspection" /></p>
+<p>You can now use that URL with third-party services or distribute it as much as you want, as long as the Ngrok container is running. The corresponding traffic will appear in the interface, where you can inspect it and replay requests at will. Handy!</p>
+<p>There's only one little downside: the URL will expire after 8 hours, and it will change every time the Ngrok container is restarted. That's always been fine by me as I usually need tunnels for quick tests only, but you can always look into the <a href="https://ngrok.com/pricing">paid plans</a> if that's an issue for you – they come with custom and permanent subdomains, among other things.</p>
+<p class="info"><span class="title">Don't want to open an account?</span>If you really don't want to subscribe, you can use the account-free version instead, but you will need to make the backend available on port 80. To do so, change port 443 to port 80 in the Ngrok service in <code>docker-compose.yml</code> and remove the <code>NGROK_AUTH</code> environment variable. Create a <code>server</code> block dedicated to <code>*.nginx.io</code> in the <code>backend.conf</code> Nginx configuration, listening on port 80 instead of port 443. Restart the project, and you should be able to use the HTTP URL provided by Ngrok.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>That's it! That's all it takes to make a local container available to the Internet.</p>
+<p>This article once again demonstrates how easy it can be to leverage a piece of technology in minutes with Docker, with no prior knowledge. There's no need to worry about messing up the installation or cluttering your local setup – as long as there's a Docker image for it (and most popular technologies have one), it doesn't take much to give it a go, quickly and safely.</p>
+<p>This is also a good example of when it is OK to rely on the community, whenever the software issuer or core team hasn't provided an image yet (that is not to say that it is usually a bad idea to trust the community, simply that if there is an official image available, you're probably better off using it instead).</p>
+<p>In the next article, we'll talk about another key Docker concept: multi-stage builds. We'll use it to create a worker for our API, to listen to and consume messages from a queue.</p>
+<p>You can subscribe to email alerts below to make sure you don't miss it, or you can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-05-11" pubdate>2020-05-11</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/ngrok">ngrok</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet";
+              var disqus_title = "Docker for local web development, part 6: expose a local container to the Internet";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
