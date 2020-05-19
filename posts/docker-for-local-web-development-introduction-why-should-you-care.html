@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-04-18 ::
+          Last updated: 2020-05-19 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -163,6 +163,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#i-am-already-using-vagranthomestead">"I am already using Vagrant/Homestead"</a></li>
 <li><a href="#how-about-laradock">"How about Laradock?"</a></li>
 <li><a href="#serverless-is-the-way-to-go">"Serverless is the way to go"</a></li>
+<li><a href="#performance-is-terrible">"Performance is terrible"</a></li>
 <li><a href="#im-on-windows">"I'm on Windows"</a></li>
 <li><a href="#it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</a></li>
 </ul>
@@ -217,6 +218,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>If serverless somehow ends up "eating the stack" and that is where all the jobs go, fine, I will make the switch. But I don't see such a market shift happening for another few years (if ever), and for the time being I'd rather focus on what is likely to make my CV attractive <em>today</em>.</p>
 <p>Companies are already <a href="https://containerjournal.com/topics/container-ecosystems/4-reasons-container-adoption-remains-slowish/">slow to migrate to containers</a> despite high interest, and the industry only recently rallied behind Kubernetes, which is poised to become the standard of container orchestration. Serverless represents an even greater paradigm shift that is nowhere near such consolidation: thinking it will flip the market at the snap of a finger is foolish in my opinion.</p>
 <p>That doesn't mean I won't use a Lambda function where it seems relevant, or that serverless shouldn't be on your watchlist. On that note, if you wish to explore the subject further, I found this <a href="https://www.zdnet.com/article/what-serverless-computing-really-means-and-everything-else-you-need-to-know/" title="What serverless computing really means, and everything else you need to know">article by ZDNet</a> to be informative.</p>
+<h2 id="performance-is-terrible">"Performance is terrible"</h2>
+<p>It used to be terrible. Now it's just not great.</p>
+<p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance. There are ways to make it better, however, which are mentioned throughout the articles.</p>
+<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time, with newer versions of Docker Desktop.</p>
 <h2 id="im-on-windows">"I'm on Windows"</h2>
 <p>Ah mate, I feel you. You work on Microsoft's operating system, and you read somewhere that running Docker on it is a bit of a pain? Well, the bad news is, this is still largely true. The good news, however, is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
 <p>Nevertheless, running Docker on Microsoft's OS is tricky enough that I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> to help you get started. I recommend you read it after this introduction and before proceeding further, even though I regularly refer to it throughout the articles.</p>
@@ -232,7 +237,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-04-18" pubdate>2020-04-18</time>
+          <time datetime="2020-05-19" pubdate>2020-05-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

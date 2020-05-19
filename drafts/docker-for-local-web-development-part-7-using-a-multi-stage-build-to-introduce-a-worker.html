@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/05/25/docker-01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>Docker for local web development, part 7: using a multi-stage build to introduce a worker &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="tutorial" />
+    <meta name="tags" contents="docker" />
+    <meta name="tags" contents="worker" />
+    <meta name="tags" contents="redis" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Docker for local web development, part 7: using a multi-stage build to introduce a worker
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-05-25 ::
+        Published: 2020-05-25
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Worker for Docker" src="/images/2020/05/25/docker-01.jpg" title="Worker for Docker" /></p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">Part 6: expose a local container to the Internet</a></li>
+<li>Part 7: using a multi-stage build to introduce a worker <strong>⬅️ you are here</strong></li>
+<li>Part 8: scheduled tasks <em>(coming soon)</em></li>
+<li>Conclusion: where to go from here <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
+</ul>
+<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installing-redis">Installing Redis</a></li>
+<li><a href="#the-job">The job</a></li>
+<li><a href="#a-proper-worker">A proper worker</a></li>
+<li><a href="#updating-the-initialisation-script">Updating the initialisation script</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>No one likes slow websites.</p>
+<p>Pages with higher response times have higher bounce rates, which translates into a lower conversion rate. When your website relies on an API, you want that API to be fast – you don't want it to feel like it's having a cup of tea with your request, nor that the response is having another butter scone before it's on its way.</p>
+<p>There are many ways to increase an API's responsivity, and one of them is to use <em>queues</em>. Queues are basically lists of tasks to be performed eventually which, unlike flossing, will be completed at a later time. What's important about those tasks – called <em>jobs</em> – is that they don't need to be performed during the lifecycle of the initial request.</p>
+<p>Typical examples include sending a welcome email, or resizing an image, or computing some statistics – whatever that job is, there's no need to make the end user wait for it. Instead, the job is placed in a queue to be dealt with later on, and a response is sent immediately. In other words, the job is made <em>asynchronous</em>, resulting in a much faster response time.</p>
+<p>Queued jobs are processed by what we call <em>workers</em>. Workers monitor queues and pick up jobs as they appear – they're a bit like cashiers at the supermarket, processing the content of trolleys as they come. And just like more cashiers can be called for backup when there's a sudden spike of customers, more workers can be added whenever the queues get filled up more quickly than they're emptied.</p>
+<p>Finally, queues are essentially lists of messages that need to be stored somewhere, in some sort of database that is sometimes referred to as a <em>message broker</em>. <a href="https://redis.io/">Redis</a> is an excellent choice for this, for it's super fast (in-memory storage) and it offers data structures well suited for this kind of thing. It's also really easy to set up with Docker and plays nicely with Laravel, which is why we are going to use it today.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-6"><em>part-6</em> branch</a>.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-7"><em>part-7</em> branch</a>, which is the final result of today's article.</p>
+<h2 id="installing-redis">Installing Redis</h2>
+<p>Now that introducing the boring vocabulary is out of the way, it's time to get our hands dirty.</p>
+<p>The first thing we need to do is to install the Redis extension for PHP, since it is not part of the pre-compiled ones. As this extension is a bit complicated to set up, we'll use the <a href="https://github.com/mlocati/docker-php-extension-installer">convenient script</a> featured in the <a href="https://hub.docker.com/_/php">official PHP images' documentation</a>, and which makes it easy to install PHP extensions across Linux distributions.</p>
+<p>Replace the content of the Dockerfile with this one:</p>
+<pre><code>FROM php:7.4-fpm-alpine
+
+# Import extension installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+# Install extensions
+RUN install-php-extensions bcmath pdo_mysql redis
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install extra packages
+RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
+</code></pre>
+<p>Note that <code>redis</code> was added to the list of extensions.</p>
+<p>Build the image:</p>
+<pre><code>$ demo build backend
+</code></pre>
+<p>Our next task is to run an actual instance of Redis. Following the good practice of having a single process per container, we'll create a dedicated service in <code>docker-compose.yml</code> – since the <a href="https://hub.docker.com/_/redis">official images</a> include an Alpine version, that's what we will use:</p>
+<pre><code># Redis Service
+redis:
+  image: redis:6-alpine
+  command: ["redis-server", "--appendonly", "yes"]
+  volumes:
+    - redisdata:/data
+</code></pre>
+<p>The <a href="https://github.com/docker-library/redis/blob/master/6.0/Dockerfile">default <code>CMD</code> instruction</a> is just <code>redis-server</code> with no option, but <a href="https://hub.docker.com/_/redis">as per the documentation</a>, that doesn't cover data persistence. In order to enable it, we need to set the <code>appendonly</code> option to <code>yes</code>, hence the <code>command</code> configuration setting, overriding the default one (this also shows you how to do this without using a Dockerfile).</p>
+<p>To complete data persistence, we also need a volume, to be added after the other ones:</p>
+<pre>
+# Volumes
+volumes:
+
+  mysqldata:
+
+  phpmyadmindata:
+
+  <strong>redisdata:</strong>
+</pre>
+
+<p>Save the file and start the project to download the image and create the container:</p>
+<pre><code>$ demo start
+</code></pre>
+<p>This will also recreate the backend container so it uses the new image, including the Redis extension.</p>
+<p>To make sure Redis is running properly, take a look at the logs:</p>
+<pre><code>$ demo logs redis
+</code></pre>
+<p>It should display something like this:</p>
+<p><img alt="Redis logs" src="/images/2020/05/25/docker-02.png" title="Redis logs" /></p>
+<p>There's one last thing we need to do: our backend application is currently set up to run the jobs immediately, and we need to tell it to queue them in Redis instead.</p>
+<p>Open <code>src/backend/.env</code>, and spot the following line:</p>
+<pre><code>QUEUE_CONNECTION=sync
+</code></pre>
+<p>Replace it with these two lines:</p>
+<pre><code>QUEUE_CONNECTION=redis
+REDIS_HOST=redis
+</code></pre>
+<p>That's all we need here, because the other parameters' default values are already correct (e.g. the port, which you can find in <code>src/backend/config/database.php</code> along with the other parameters).</p>
+<h2 id="the-job">The job</h2>
+<p>Laravel has built-in scaffolding tools we can use to create a job:</p>
+<pre><code>$ demo artisan make:job Time
+</code></pre>
+<p>This command will create a new <code>Jobs</code> folder in <code>src/backend/app</code>, containing a <code>Time.php</code> file. Open it and change the content of the <code>handle</code> method to this one:</p>
+<pre><code>/**
+ * Execute the job.
+ *
+ * @return void
+ */
+public function handle()
+{
+    \Log::info(sprintf('It is %s', date('g:i a T')));
+}
+</code></pre>
+<p>All the job does is it logs the current time. The class already has all of the necessary traits to make it <em>queueable</em>, so there's no need to worry about that.</p>
+<p>Laravel has a nice <a href="https://laravel.com/docs/7.x/scheduling">command scheduler</a> we can use to define tasks that need to be executed periodically, with <a href="https://laravel.com/docs/7.x/scheduling#scheduling-queued-jobs">built-in helpers</a> to manage queued jobs specifically.</p>
+<p>Open the <code>src/backend/app/Console/Kernel.php</code> file and update the <code>schedule</code> method:</p>
+<pre><code>/**
+ * Define the application's command schedule.
+ *
+ * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+ * @return void
+ */
+protected function schedule(Schedule $schedule)
+{
+    $schedule-&gt;job(new \App\Jobs\Time)-&gt;everyMinute();
+}
+</code></pre>
+<p>We essentially ask the scheduler to dispatch the <code>Time</code> job every minute.</p>
+<p>It won't do that by itself though, and requires to be started via an Artisan command. But before we run it, we'll start a queue worker manually, so we can see the jobs being processed in real time.</p>
+<p>Open a new terminal window and run the following command:</p>
+<pre><code>$ demo artisan queue:work
+</code></pre>
+<p>You can now go back to the first terminal window and run the scheduler:</p>
+<pre><code>$ demo artisan schedule:run
+</code></pre>
+<p>Which should display something like this:</p>
+<p><img alt="schedule:run" src="/images/2020/05/25/docker-03.png" title="schedule:run" /></p>
+<p>If all went well, the other window should now show this:</p>
+<p><img alt="Manual worker" src="/images/2020/05/25/docker-04.png" title="Manual worker" /></p>
+<p>And if you open <code>src/backend/storage/logs/laravel.log</code>, you should see the new line which has been created by the job:</p>
+<p><img alt="Logged time" src="/images/2020/05/25/docker-05.png" title="Logged time" /></p>
+<p>Our queue is operational! You can now close the worker's terminal window, which will also stop it.</p>
+<p>This was just a test, however; obviously, we don't want to manually start the worker in a separate window every time we start our project. We need this to happen automatically.</p>
+<h2 id="a-proper-worker">A proper worker</h2>
+<p>This is where we're finally going to leverage <a href="https://docs.docker.com/develop/develop-images/multistage-build/">multi-stage builds</a>. The idea is basically to split the Dockerfile into different sections containing slightly different configurations, and which can be targeted individually to produce different images. Let's see what that means in practice.</p>
+<p>Replace the content of <code>src/backend/Dockerfile</code> with this one (as usual, changes are highlighted in bold):</p>
+<pre>
+FROM php:7.4-fpm-alpine <strong>as backend</strong>
+
+# Import extension installer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+# Install extensions
+RUN install-php-extensions bcmath pdo_mysql redis
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install extra packages
+RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
+
+
+<strong>FROM backend as worker
+
+# Start worker
+CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
+</pre>
+
+<p>We now have to separate stages: <code>backend</code> and <code>worker</code>. The former is basically the original Dockerfile – we've simply named it <code>backend</code> using the <code>as</code> keyword at the very top:</p>
+<pre><code>FROM php:7.4-fpm-alpine as backend
+</code></pre>
+<p>The latter aims to describe the worker, and is based on the former:</p>
+<pre><code>FROM backend as worker
+
+# Start worker
+CMD ["php", "/var/www/backend/artisan", "queue:work"]&lt;/strong&gt;
+</code></pre>
+<p>All we do here is we reuse the <code>backend</code> stage, but we override its default command (which starts the PHP-FPM process) by defining the <code>queue:work</code> Artisan command instead. In other words, whenever a container is started for the <code>worker</code> stage, its running process will be the queue worker instead of PHP-FPM.</p>
+<p>How do we start such a container? We need to define a dedicated service in <code>docker-compose.yml</code>:</p>
+<pre><code># Worker Service
+worker:
+  build:
+    context: ./src/backend
+    target: worker
+  working_dir: /var/www/backend
+  volumes:
+    - ./src/backend:/var/www/backend:delegated
+  depends_on:
+    - backend
+</code></pre>
+<p>This looks quite familiar, excepted for the <code>build</code> section which now has a couple of properties: <code>context</code> and <code>target</code>. The former points to the folder where the Dockerfile shall be found, and the latter allows us to specify which stage should be used as the base image for the service's containers.</p>
+<p>We're almost done with <code>docker-compose.yml</code> – all that's left is to update the definition of the <code>backend</code> service to tell it to target the <code>backend</code> stage:</p>
+<pre>
+# Backend Service
+backend:
+  <strong>build:
+    context: ./src/backend
+    target: backend</strong>
+  working_dir: /var/www/backend
+  volumes:
+    - ./src/backend:/var/www/backend:delegated
+    - ./.docker/backend/init:/opt/files/init:delegated,ro
+    - ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro
+  depends_on:
+    - mysql
+</pre>
+
+<p>Build the corresponding images:</p>
+<pre><code>$ demo build backend
+$ demo build worker
+</code></pre>
+<p>Start the project for the new images to be picked up:</p>
+<pre><code>$ demo start
+</code></pre>
+<p>Run the scheduler again:</p>
+<pre><code>$ demo artisan schedule:run
+</code></pre>
+<p>If all went well, the job should be scheduled and a new line should appear in <code>src/backend/storage/laravel.log</code>, while the worker's container logs displays a couple of new lines:</p>
+<pre><code>$ demo logs worker
+</code></pre>
+<p><img alt="Worker logs" src="/images/2020/05/25/docker-06.png" title="Worker logs" /></p>
+<p>Your worker is now complete! It runs in the background, ready to process any job you throw at it.</p>
+<h2 id="updating-the-initialisation-script">Updating the initialisation script</h2>
+<p>All that's left is to update the backend's initialisation script so it uses Redis for queues by default.</p>
+<p>The steps are very similar to what we did at the beginning of this article: open <code>.docker/backend/init</code>, and spot the following line:</p>
+<pre><code>QUEUE_CONNECTION=sync
+</code></pre>
+<p>Replace it with these two lines and save the file:</p>
+<pre><code>QUEUE_CONNECTION=redis
+REDIS_HOST=redis
+</code></pre>
+<p>Done!</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>Multi-stage builds are a powerful tool of which this is merely an introduction. Each stage can refer to a different image, basically allowing maintainers to come up with all sorts of pipeline-like builds, where the tools used at each stage are discarded to only keep the final output in the resulting image. Think about that for a minute.</p>
+<p>I also encourage you to check out <a href="https://www.docker.com/blog/intro-guide-to-dockerfile-best-practices/">these best practices</a>, to make sure you're getting the most of your Dockerfiles.</p>
+<p>Redis can also be used in ways that go beyond the simple message broker. You could for example use it as a local cache layer straight away, instead of using Laravel's <code>array</code> or <code>file</code> drivers.</p>
+<p>Today's article raises another question, however: how can we run Laravel's scheduler automatically, like it's intended to?</p>
+<p>In the next part of this series, we will introduce a scheduler to run tasks periodically the Docker way, departing from the usual cron jobs. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-05-25" pubdate>2020-05-25</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/worker">worker</a>
+          <a href="https://tech.osteel.me/tag/redis">redis</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
+              var disqus_url = "https://tech.osteel.me/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
+              var disqus_title = "Docker for local web development, part 7: using a multi-stage build to introduce a worker";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
