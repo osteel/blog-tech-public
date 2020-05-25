@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       <small>
           Last updated: 2020-05-25 ::
         Published: 2020-05-25
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
     </span>
 
@@ -170,17 +170,17 @@ styles, `#sidebar-checkbox` for behavior. -->
 </div>
 <h2 id="introduction">Introduction</h2>
 <p>No one likes slow websites.</p>
-<p>Pages with higher response times have higher bounce rates, which translates into a lower conversion rate. When your website relies on an API, you want that API to be fast – you don't want it to feel like it's having a cup of tea with your request, nor that the response is having another butter scone before it's on its way.</p>
-<p>There are many ways to increase an API's responsivity, and one of them is to use <em>queues</em>. Queues are basically lists of tasks to be performed eventually which, unlike flossing, will be completed at a later time. What's important about those tasks – called <em>jobs</em> – is that they don't need to be performed during the lifecycle of the initial request.</p>
-<p>Typical examples include sending a welcome email, or resizing an image, or computing some statistics – whatever that job is, there's no need to make the end user wait for it. Instead, the job is placed in a queue to be dealt with later on, and a response is sent immediately. In other words, the job is made <em>asynchronous</em>, resulting in a much faster response time.</p>
-<p>Queued jobs are processed by what we call <em>workers</em>. Workers monitor queues and pick up jobs as they appear – they're a bit like cashiers at the supermarket, processing the content of trolleys as they come. And just like more cashiers can be called for backup when there's a sudden spike of customers, more workers can be added whenever the queues get filled up more quickly than they're emptied.</p>
-<p>Finally, queues are essentially lists of messages that need to be stored somewhere, in some sort of database that is sometimes referred to as a <em>message broker</em>. <a href="https://redis.io/">Redis</a> is an excellent choice for this, for it's super fast (in-memory storage) and it offers data structures well suited for this kind of thing. It's also really easy to set up with Docker and plays nicely with Laravel, which is why we are going to use it today.</p>
+<p>Pages with higher response times have higher bounce rates, which translate into lower conversion rates. When your website relies on an API, you want that API to be <em>fast</em> – you don't want to feel like it's having a cup of tea with your request, before insisting that the response has another butter scone prior to sending it your way.</p>
+<p>There are many ways to increase an API's responsivity, and one of them which is also the focus of today's article is the use of <em>queues</em>. Queues are basically to-do lists of tasks which, unlike flossing, will be completed eventually. What's important about those tasks – called <em>jobs</em> – is that they don't need to be performed during the lifecycle of the initial request.</p>
+<p>Typical examples of such jobs include sending a welcome email, resizing an image, or computing some statistics – whatever the task is, there's no need to make the end user wait for it to be completed. Instead, the job is placed in a queue to be dealt with later, and a response is sent immediately to the client. In other words, the job is made <em>asynchronous</em>, resulting in a much faster response time.</p>
+<p>Queued jobs are processed by what we call <em>workers</em>. Workers monitor queues and pick up jobs as they appear – they're a bit like cashiers at the supermarket, processing the content of trolleys as they come. And just like more cashiers can be called for backup when there's a sudden spike in customers, more workers can be added whenever the queues get filled up more quickly than they're emptied.</p>
+<p>Finally, queues are essentially lists of messages that need to be stored in a database, which is sometimes referred to as a <em>message broker</em>. <a href="https://redis.io/">Redis</a> is an excellent choice for this, for it's super fast (in-memory storage) and it offers data structures well suited to this kind of thing. It's also very easy to set up with Docker and plays nicely with Laravel, which is why we are going to use it today.</p>
 <p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-6"><em>part-6</em> branch</a>.</p>
-<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-7"><em>part-7</em> branch</a>, which is the final result of today's article.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-7"><em>part-7</em> branch</a>, which is the final result of this article.</p>
 <h2 id="installing-redis">Installing Redis</h2>
-<p>Now that introducing the boring vocabulary is out of the way, it's time to get our hands dirty.</p>
-<p>The first thing we need to do is to install the Redis extension for PHP, since it is not part of the pre-compiled ones. As this extension is a bit complicated to set up, we'll use the <a href="https://github.com/mlocati/docker-php-extension-installer">convenient script</a> featured in the <a href="https://hub.docker.com/_/php">official PHP images' documentation</a>, and which makes it easy to install PHP extensions across Linux distributions.</p>
-<p>Replace the content of the Dockerfile with this one:</p>
+<p>Now that all of the characters have been introduced, it's time to get into the plot.</p>
+<p>The first thing we need to do is to install the Redis extension for PHP, since it is not part of the pre-compiled ones. As this extension is a bit complicated to set up, we'll use a <a href="https://github.com/mlocati/docker-php-extension-installer">convenient script</a> featured in the <a href="https://hub.docker.com/_/php">official PHP images' documentation</a>, which makes it easy to install PHP extensions across Linux distributions.</p>
+<p>Replace the content of the backend's Dockerfile with this one:</p>
 <pre><code>FROM php:7.4-fpm-alpine
 
 # Import extension installer
@@ -199,7 +199,7 @@ RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
 <p>Build the image:</p>
 <pre><code>$ demo build backend
 </code></pre>
-<p>Our next task is to run an actual instance of Redis. Following the good practice of having a single process per container, we'll create a dedicated service in <code>docker-compose.yml</code> – since the <a href="https://hub.docker.com/_/redis">official images</a> include an Alpine version, that's what we will use:</p>
+<p>Our next task is to run an instance of Redis. In accordance with the principle of running a single process per container, we'll create a dedicated service in <code>docker-compose.yml</code>, and since the <a href="https://hub.docker.com/_/redis">official images</a> include an Alpine version, that's what we are going to use:</p>
 <pre><code># Redis Service
 redis:
   image: redis:6-alpine
@@ -207,8 +207,8 @@ redis:
   volumes:
     - redisdata:/data
 </code></pre>
-<p>The <a href="https://github.com/docker-library/redis/blob/master/6.0/Dockerfile">default <code>CMD</code> instruction</a> is just <code>redis-server</code> with no option, but <a href="https://hub.docker.com/_/redis">as per the documentation</a>, that doesn't cover data persistence. In order to enable it, we need to set the <code>appendonly</code> option to <code>yes</code>, hence the <code>command</code> configuration setting, overriding the default one (this also shows you how to do this without using a Dockerfile).</p>
-<p>To complete data persistence, we also need a volume, to be added after the other ones:</p>
+<p>The image's <a href="https://github.com/docker-library/redis/blob/master/6.0/Dockerfile">default start-up command</a> is <code>redis-server</code> with no option, but <a href="https://hub.docker.com/_/redis">as per the documentation</a>, it doesn't cover data persistence. In order to enable it, we need to set the <code>appendonly</code> option to <code>yes</code>, hence the <code>command</code> configuration setting, overriding the default one (this also shows you how to do this without using a Dockerfile).</p>
+<p>For data persistence to be fully functional, we also need a volume, to be added at the bottom of the file:</p>
 <pre>
 # Volumes
 volumes:
@@ -220,16 +220,16 @@ volumes:
   <strong>redisdata:</strong>
 </pre>
 
-<p>Save the file and start the project to download the image and create the container:</p>
+<p>Save <code>docker-compose.yml</code> and start the project to download the new image and create the corresponding container and volume:</p>
 <pre><code>$ demo start
 </code></pre>
-<p>This will also recreate the backend container so it uses the new image, including the Redis extension.</p>
+<p>This will also recreate the backend container in order to use the updated image we built earlier – the one including the Redis extension.</p>
 <p>To make sure Redis is running properly, take a look at the logs:</p>
 <pre><code>$ demo logs redis
 </code></pre>
-<p>It should display something like this:</p>
+<p>They should display something like this:</p>
 <p><img alt="Redis logs" src="/images/2020/05/25/docker-02.png" title="Redis logs" /></p>
-<p>There's one last thing we need to do: our backend application is currently set up to run the jobs immediately, and we need to tell it to queue them in Redis instead.</p>
+<p>There's one last thing we need to do prior to creating our job: the backend application is currently set up to run the jobs immediately, and we need to tell it to queue them using Redis instead.</p>
 <p>Open <code>src/backend/.env</code>, and spot the following line:</p>
 <pre><code>QUEUE_CONNECTION=sync
 </code></pre>
@@ -237,7 +237,7 @@ volumes:
 <pre><code>QUEUE_CONNECTION=redis
 REDIS_HOST=redis
 </code></pre>
-<p>That's all we need here, because the other parameters' default values are already correct (e.g. the port, which you can find in <code>src/backend/config/database.php</code> along with the other parameters).</p>
+<p>That's all we need here, because the other parameters' default values are already the right ones (you can find them in <code>src/backend/config/database.php</code>).</p>
 <h2 id="the-job">The job</h2>
 <p>Laravel has built-in scaffolding tools we can use to create a job:</p>
 <pre><code>$ demo artisan make:job Time
@@ -253,7 +253,7 @@ public function handle()
     \Log::info(sprintf('It is %s', date('g:i a T')));
 }
 </code></pre>
-<p>All the job does is it logs the current time. The class already has all of the necessary traits to make it <em>queueable</em>, so there's no need to worry about that.</p>
+<p>All the job does is log the current time. The class already has all of the necessary traits to make it <em>queueable</em>, so there's no need to worry about that.</p>
 <p>Laravel has a nice <a href="https://laravel.com/docs/7.x/scheduling">command scheduler</a> we can use to define tasks that need to be executed periodically, with <a href="https://laravel.com/docs/7.x/scheduling#scheduling-queued-jobs">built-in helpers</a> to manage queued jobs specifically.</p>
 <p>Open the <code>src/backend/app/Console/Kernel.php</code> file and update the <code>schedule</code> method:</p>
 <pre><code>/**
@@ -268,7 +268,7 @@ protected function schedule(Schedule $schedule)
 }
 </code></pre>
 <p>We essentially ask the scheduler to dispatch the <code>Time</code> job every minute.</p>
-<p>It won't do that by itself though, and requires to be started via an Artisan command. But before we run it, we'll start a queue worker manually, so we can see the jobs being processed in real time.</p>
+<p>It won't do that by itself though, and needs to be started via an Artisan command. But before we run it, we'll start a queue worker manually, so we can see the jobs being processed in real time.</p>
 <p>Open a new terminal window and run the following command:</p>
 <pre><code>$ demo artisan queue:work
 </code></pre>
@@ -282,10 +282,10 @@ protected function schedule(Schedule $schedule)
 <p>And if you open <code>src/backend/storage/logs/laravel.log</code>, you should see the new line which has been created by the job:</p>
 <p><img alt="Logged time" src="/images/2020/05/25/docker-05.png" title="Logged time" /></p>
 <p>Our queue is operational! You can now close the worker's terminal window, which will also stop it.</p>
-<p>This was just a test, however; obviously, we don't want to manually start the worker in a separate window every time we start our project. We need this to happen automatically.</p>
+<p>This was just a test, however. We don't want to have to manually start the worker in a separate window every time we start our project – we need this to happen automatically.</p>
 <h2 id="a-proper-worker">A proper worker</h2>
 <p>This is where we're finally going to leverage <a href="https://docs.docker.com/develop/develop-images/multistage-build/">multi-stage builds</a>. The idea is basically to split the Dockerfile into different sections containing slightly different configurations, and which can be targeted individually to produce different images. Let's see what that means in practice.</p>
-<p>Replace the content of <code>src/backend/Dockerfile</code> with this one (as usual, changes are highlighted in bold):</p>
+<p>Replace the content of <code>src/backend/Dockerfile</code> with this one (changes highlighted in bold):</p>
 <pre>
 FROM php:7.4-fpm-alpine <strong>as backend</strong>
 
@@ -308,17 +308,17 @@ RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
 CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
 </pre>
 
-<p>We now have to separate stages: <code>backend</code> and <code>worker</code>. The former is basically the original Dockerfile – we've simply named it <code>backend</code> using the <code>as</code> keyword at the very top:</p>
+<p>We now have two separate stages: <code>backend</code> and <code>worker</code>. The former is basically the original Dockerfile – we've simply named it <code>backend</code> using the <code>as</code> keyword at the very top:</p>
 <pre><code>FROM php:7.4-fpm-alpine as backend
 </code></pre>
 <p>The latter aims to describe the worker, and is based on the former:</p>
 <pre><code>FROM backend as worker
 
 # Start worker
-CMD ["php", "/var/www/backend/artisan", "queue:work"]&lt;/strong&gt;
+CMD ["php", "/var/www/backend/artisan", "queue:work"]
 </code></pre>
-<p>All we do here is we reuse the <code>backend</code> stage, but we override its default command (which starts the PHP-FPM process) by defining the <code>queue:work</code> Artisan command instead. In other words, whenever a container is started for the <code>worker</code> stage, its running process will be the queue worker instead of PHP-FPM.</p>
-<p>How do we start such a container? We need to define a dedicated service in <code>docker-compose.yml</code>:</p>
+<p>All we do here is we reuse the <code>backend</code> stage almost as is, only overriding its default command by defining the <code>queue:work</code> Artisan command in its place. In other words, whenever a container is started for the <code>worker</code> stage, its running process will be the queue worker instead of PHP-FPM by default.</p>
+<p>How do we start such a container? We first need to define a separate service in <code>docker-compose.yml</code>:</p>
 <pre><code># Worker Service
 worker:
   build:
@@ -330,8 +330,8 @@ worker:
   depends_on:
     - backend
 </code></pre>
-<p>This looks quite familiar, excepted for the <code>build</code> section which now has a couple of properties: <code>context</code> and <code>target</code>. The former points to the folder where the Dockerfile shall be found, and the latter allows us to specify which stage should be used as the base image for the service's containers.</p>
-<p>We're almost done with <code>docker-compose.yml</code> – all that's left is to update the definition of the <code>backend</code> service to tell it to target the <code>backend</code> stage:</p>
+<p>This all looks familiar already, except for the <code>build</code> section which now has a couple of properties: <code>context</code> and <code>target</code>. The former points to the folder where the Dockerfile shall be found, and the latter allows us to specify which stage should be used as the base image for the service's containers.</p>
+<p>We're almost done with <code>docker-compose.yml</code> – we just need to update the definition of the <code>backend</code> service to tell it to target the <code>backend</code> stage:</p>
 <pre>
 # Backend Service
 backend:
@@ -347,24 +347,24 @@ backend:
     - mysql
 </pre>
 
-<p>Build the corresponding images:</p>
+<p>Save the file and build the corresponding images:</p>
 <pre><code>$ demo build backend
 $ demo build worker
 </code></pre>
 <p>Start the project for the new images to be picked up:</p>
 <pre><code>$ demo start
 </code></pre>
-<p>Run the scheduler again:</p>
+<p>Then run the scheduler again:</p>
 <pre><code>$ demo artisan schedule:run
 </code></pre>
-<p>If all went well, the job should be scheduled and a new line should appear in <code>src/backend/storage/laravel.log</code>, while the worker's container logs displays a couple of new lines:</p>
+<p>If all went well, the job should be scheduled and a new line should appear in <code>src/backend/storage/laravel.log</code>, while the worker's container logs display a couple of new lines:</p>
 <pre><code>$ demo logs worker
 </code></pre>
 <p><img alt="Worker logs" src="/images/2020/05/25/docker-06.png" title="Worker logs" /></p>
-<p>Your worker is now complete! It runs in the background, ready to process any job you throw at it.</p>
+<p>Your worker is now complete! It will run silently in the background every time you start your project, ready to process any job your application throws at it.</p>
 <h2 id="updating-the-initialisation-script">Updating the initialisation script</h2>
-<p>All that's left is to update the backend's initialisation script so it uses Redis for queues by default.</p>
-<p>The steps are very similar to what we did at the beginning of this article: open <code>.docker/backend/init</code>, and spot the following line:</p>
+<p>If you've been with me from the start and are using a Bash layer to manage your setup, all that's left to do is to update the backend's initialisation script so it uses Redis for queues by default.</p>
+<p>The steps are very similar to what we did at the beginning of this article – open <code>.docker/backend/init</code>, and spot the following line:</p>
 <pre><code>QUEUE_CONNECTION=sync
 </code></pre>
 <p>Replace it with these two lines and save the file:</p>
@@ -373,11 +373,11 @@ REDIS_HOST=redis
 </code></pre>
 <p>Done!</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Multi-stage builds are a powerful tool of which this is merely an introduction. Each stage can refer to a different image, basically allowing maintainers to come up with all sorts of pipeline-like builds, where the tools used at each stage are discarded to only keep the final output in the resulting image. Think about that for a minute.</p>
+<p>Multi-stage builds are a powerful tool of which this is a mere introduction. Each stage can refer to a different image, basically allowing maintainers to come up with all sorts of pipeline-like builds, where the tools used at each stage are discarded to only keep the final output in the resulting image. Think about that for a minute.</p>
 <p>I also encourage you to check out <a href="https://www.docker.com/blog/intro-guide-to-dockerfile-best-practices/">these best practices</a>, to make sure you're getting the most of your Dockerfiles.</p>
-<p>Redis can also be used in ways that go beyond the simple message broker. You could for example use it as a local cache layer straight away, instead of using Laravel's <code>array</code> or <code>file</code> drivers.</p>
-<p>Today's article raises another question, however: how can we run Laravel's scheduler automatically, like it's intended to?</p>
-<p>In the next part of this series, we will introduce a scheduler to run tasks periodically the Docker way, departing from the usual cron jobs. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+<p>Redis can also be used in ways that go beyond a simple message broker. You could for example use it as a local cache layer right now, instead of using Laravel's <code>array</code> or <code>file</code> drivers.</p>
+<p>Finally, today's article leaves us with a couple of observations: the first one is that life is too short for flossing; the second is that so far we've been running the Laravel scheduler manually, although the documentation indicates a <a href="https://laravel.com/docs/7.x/scheduling#introduction">cron entry</a> should be used for that. How do we fix this?</p>
+<p>In the next part of this series, we will introduce a scheduler to run tasks periodically the Docker way, without using traditional cron jobs. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
@@ -394,7 +394,23 @@ REDIS_HOST=redis
 
     <div class="sharethis-inline-share-buttons"></div>
 
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
 
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
   </div>
 </div>
       </div>
@@ -435,8 +451,8 @@ REDIS_HOST=redis
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
-              var disqus_url = "https://tech.osteel.me/drafts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker";
               var disqus_title = "Docker for local web development, part 7: using a multi-stage build to introduce a worker";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
