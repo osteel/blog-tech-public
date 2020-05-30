@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-05-25 ::
+          Last updated: 2020-05-30 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -218,6 +218,23 @@ volumes:
   phpmyadmindata:
 
   <strong>redisdata:</strong>
+</pre>
+
+<p>Finally, as Redis is going to be used by the backend service, we need to ensure the former is started before the latter. Update the backend service's configuration:</p>
+<pre>
+# Backend Service
+backend:
+  build:
+    context: ./src/backend
+    target: backend
+  working_dir: /var/www/backend
+  volumes:
+    - ./src/backend:/var/www/backend:delegated
+    - ./.docker/backend/init:/opt/files/init:delegated,ro
+    - ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro
+  depends_on:
+    - mysql
+    <strong>- redis</strong>
 </pre>
 
 <p>Save <code>docker-compose.yml</code> and start the project to download the new image and create the corresponding container and volume:</p>
@@ -382,7 +399,7 @@ REDIS_HOST=redis
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-05-25" pubdate>2020-05-25</time>
+          <time datetime="2020-05-30" pubdate>2020-05-30</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
