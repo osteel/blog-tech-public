@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-05-30 ::
+          Last updated: 2020-06-08 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -150,7 +150,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">Part 6: expose a local container to the Internet</a></li>
 <li>Part 7: using a multi-stage build to introduce a worker <strong>⬅️ you are here</strong></li>
-<li>Part 8: scheduled tasks <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-part-8-scheduled-tasks" title="Docker for local web development, part 8: scheduled tasks">Part 8: scheduled tasks</a></li>
 <li>Conclusion: where to go from here <em>(coming soon)</em></li>
 <li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
 </ul>
@@ -255,6 +255,18 @@ backend:
 REDIS_HOST=redis
 </code></pre>
 <p>That's all we need here, because the other parameters' default values are already the right ones (you can find them in <code>src/backend/config/database.php</code>).</p>
+<div class="info">
+<p><span class="title">Monitoring Redis</span> If you want to use an external tool to access your Redis database, you can simply update the service's configuration in <code>docker-compose.yml</code> and add a <code>ports</code> section mapping your local machine's port 6379 to the container's:</p>
+<pre>
+    ...
+      ports:
+        - 6379:6379
+    ...
+</pre>
+<p>From there, all you need to do is configure a database connection in your software of choice, setting <code>localhost:6379</code> to access the Redis database while the container is running.</p>
+<p>As pointed out by <a href="http://disq.us/p/29sa81j">Utkarsh Vishnoi</a>, you could also set up a new service to run <a href="https://hub.docker.com/r/rediscommander/redis-commander">Redis Commander</a>, a bit like what we've done with phpMyAdmin.</p>
+</div>
+
 <h2 id="the-job">The job</h2>
 <p>Laravel has built-in scaffolding tools we can use to create a job:</p>
 <pre><code>$ demo artisan make:job Time
@@ -394,12 +406,12 @@ REDIS_HOST=redis
 <p>I also encourage you to check out <a href="https://www.docker.com/blog/intro-guide-to-dockerfile-best-practices/">these best practices</a>, to make sure you're getting the most of your Dockerfiles.</p>
 <p>Redis can also be used in ways that go beyond a simple message broker. You could for example use it as a local cache layer right now, instead of using Laravel's <code>array</code> or <code>file</code> drivers.</p>
 <p>Finally, today's article leaves us with a couple of observations: the first one is that life is too short for flossing; the second is that so far we've been running the Laravel scheduler manually, although the documentation indicates a <a href="https://laravel.com/docs/7.x/scheduling#introduction">cron entry</a> should be used for that. How do we fix this?</p>
-<p>In the next part of this series, we will introduce a scheduler to run tasks periodically the Docker way, without using traditional cron jobs. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+<p>In the <a href="/posts/docker-for-local-web-development-part-8-scheduled-tasks" title="Docker for local web development, part 8: scheduled tasks">next part</a> of this series, we will introduce a scheduler to run tasks periodically the Docker way, without using traditional cron jobs. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-05-30" pubdate>2020-05-30</time>
+          <time datetime="2020-06-08" pubdate>2020-06-08</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

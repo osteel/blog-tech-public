@@ -150,7 +150,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">Part 6: expose a local container to the Internet</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">Part 7: using a multi-stage build to introduce a worker</a></li>
-<li>Part 8: scheduled tasks <em>(coming soon)</em></li>
+<li><a href="/posts/docker-for-local-web-development-part-8-scheduled-tasks" title="Docker for local web development, part 8: scheduled tasks">Part 8: scheduled tasks</a></li>
 <li>Conclusion: where to go from here <em>(coming soon)</em></li>
 <li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
 </ul>
@@ -209,7 +209,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./src/backend<strong>/src</strong>:/var/www/backend:ro<strong>,delegated</strong>
+      - ./src/backend:/var/www/backend:ro<strong>,delegated</strong>
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
       - phpmyadmindata:/usr/src/phpmyadmin<strong>:delegated</strong>
     depends_on:
@@ -221,7 +221,7 @@ services:
     build: ./src/backend
     working_dir: /var/www/backend
     volumes:
-      - ./src/backend/src:/var/www/backend:delegated
+      - ./src/backend:/var/www/backend:delegated
     depends_on:
       - mysql</strong>
 

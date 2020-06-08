@@ -7,11 +7,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/2020/05/11/docker-01.jpg" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/06/08/docker-01.jpg" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
-    <title>Docker for local web development, part 6: expose a local container to the Internet &mdash; osteel's blog</title>
+    <title>Docker for local web development, part 8: scheduled tasks &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -35,7 +35,8 @@
 
     <meta name="tags" contents="tutorial" />
     <meta name="tags" contents="docker" />
-    <meta name="tags" contents="ngrok" />
+    <meta name="tags" contents="cron" />
+    <meta name="tags" contents="scheduler" />
 
   </head>
 
@@ -128,125 +129,96 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      Docker for local web development, part 6: expose a local container to the Internet
+      Docker for local web development, part 8: scheduled tasks
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-05-11 ::
-        Published: 2020-05-11
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet.html">history</a> ]
+          Last updated: 2020-06-08 ::
+        Published: 2020-06-08
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-8-scheduled-tasks.html">history</a> ]
       </small>
     </span>
 
-    <p><img alt="Local container exposed to the Internet" src="/images/2020/05/11/docker-01.jpg" title="Local container exposed to the Internet" /></p>
+    <p><img alt="Docker task scheduler" src="/images/2020/06/08/docker-01.jpg" title="Docker task scheduler" /></p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
 <li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Part 1: a basic LEMP stack</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">Part 2: put your images on a diet</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks" title="Docker for local web development, part 3: a three-tier architecture with frameworks">Part 3: a three-tier architecture with frameworks</a></li>
-<li><a href="docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
-<li><a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
-<li>Part 6: expose a local container to the Internet <strong>⬅️ you are here</strong></li>
+<li><a href="/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash" title="Docker for local web development, part 4: smoothing things out with Bash">Part 4: smoothing things out with Bash</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">Part 5: HTTPS all the things</a></li>
+<li><a href="/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet" title="Docker for local web development, part 6: expose a local container to the Internet">Part 6: expose a local container to the Internet</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">Part 7: using a multi-stage build to introduce a worker</a></li>
-<li><a href="/posts/docker-for-local-web-development-part-8-scheduled-tasks" title="Docker for local web development, part 8: scheduled tasks">Part 8: scheduled tasks</a></li>
+<li>Part 8: scheduled tasks <strong>⬅️ you are here</strong></li>
 <li>Conclusion: where to go from here <em>(coming soon)</em></li>
 <li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
 </ul>
-<p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
 <ul>
 <li><a href="#in-this-series">In this series</a></li>
 <li><a href="#in-this-post">In this post</a></li>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#ngrok">Ngrok</a></li>
-<li><a href="#installing-and-configuring">Installing and configuring</a></li>
+<li><a href="#setting-up-the-scheduler">Setting up the scheduler</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
 </div>
 <h2 id="introduction">Introduction</h2>
-<p>While using Docker for local development allows us to replicate a production environment as closely as possible in a self-contained way, in some instances exposure to the outside world is unavoidable.</p>
-<p>Typical use cases include testing a third-party service's webhook (like a transaction confirmation from a payment gateway), or showing a project's advancement to a client. Sure, you could use a staging environment for that, but you might not be in a position to offer one, and in some cases it would feel akin to squashing a fly with a sledgehammer.</p>
-<p>Wouldn't it be more practical if you could make your local environment public instead?</p>
-<p>Thankfully, this isn't a new issue and several services offer to address it. This article focuses on one that's arguably become a reference over time: Ngrok.</p>
-<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="docker-for-local-web-development-part-5-https-all-the-things" title="Docker for local web development, part 5: HTTPS all the things">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-5"><em>part-5</em> branch</a>.</p>
-<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-6"><em>part-6</em> branch</a>, which is the final result of today's article.</p>
-<h2 id="ngrok">Ngrok</h2>
-<p><a href="https://ngrok.com/">Ngrok</a> is an online service that essentially allows developers to create secure tunnels to channel traffic from a public URL to a local address. It offers paid plans but also comes with a generous free version that doesn't even require an account for HTTP tunnels. Since our setup runs on HTTPS, however, we'll need to <a href="https://dashboard.ngrok.com/signup">sign up</a> in order to obtain an authentication token. Don't worry though, it only takes a few seconds and doesn't require credit card details.</p>
-<p>If you <em>really</em> don't want to open an account, there will be an information box towards the end of this tutorial explaining how to use the subscription-free plan instead.</p>
-<h2 id="installing-and-configuring">Installing and configuring</h2>
-<p>There is no official Docker image for Ngrok, but the community stepped up and made a few of them available.</p>
-<p>We'll use <a href="https://hub.docker.com/r/wernight/ngrok/">Werner Beroux's</a> today, for which we need to create a service in <code>docker-compose.yml</code>:</p>
-<pre><code># Ngrok Service
-ngrok:
-  image: wernight/ngrok:latest
-  ports:
-    - 4040:4040
-  environment:
-    NGROK_PROTOCOL: http
-    NGROK_PORT: nginx:443
-    NGROK_AUTH: ${NGROK_AUTH}
+<p>Once we start to get comfortable around Docker and make it a full component of our development environment, inevitably there will come a time when we have to deal with some form of task scheduling.</p>
+<p>The first reflex in that case is usually to try and fit the familiar <a href="https://en.wikipedia.org/wiki/Cron">cron</a> into the picture – and it's often surprisingly painful. In a best case scenario, we end up with a <em>crontab</em> that we import and install in the container via the corresponding image's Dockerfile (something like <a href="https://github.com/Ekito/docker-cron">that</a>); more often than not though, we end up with something much clumsier.</p>
+<p>At the end of the <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">previous part</a>, we were left with the <a href="https://laravel.com/docs/scheduling#introduction">Laravel scheduler</a> to run manually, which we expect to be handled as a cron entry. To address this within our setup, we could use an approach similar to the one described above – it would require a version of the image where the running process is the cron daemon instead of PHP-FPM, which could be achieved with a separate build stage. We would also need a service in <code>docker-compose.yml</code>, targeting the new stage in order to build and use the corresponding image.</p>
+<p>This wouldn't be too bad, and to be honest it would probably be enough in most cases. But it is not scalable, nor is it the <em>Docker way</em>.</p>
+<p>Imagine your application grows in complexity and you decide to add a microservice, maybe to break up a monolith, or to do something completely different using another language. Whatever this microservice does, imagine it needs to run its own tasks periodically. Following the same logic as above, you'd end up with two new services in <code>docker-compose.yml</code>: one to run the microservice in a regular way (e.g. as an API), and another one to manage the scheduled tasks with cron. Now imagine you need yet another microservice, also with its own cron jobs – that's another two new services to add to <code>docker-compose.yml</code>. Rinse and repeat – you see where this is going.</p>
+<p>One of Docker's biggest strengths in my opinion is that it enables us to think at the system level rather than the application level – instead of considering each part of the system separately, we're invited to take a step back and consider it as a whole. As scheduling tasks is a common need for many parts of a system, there must be a way to manage them at the system level, in a unified way, instead of addressing the issue for each individual part separately.</p>
+<p>The solution is to introduce an independent, system-wide scheduler.</p>
+<p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-7"><em>part-7</em> branch</a>.</p>
+<p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-8"><em>part-8</em> branch</a>, which is the final result of this article.</p>
+<h2 id="setting-up-the-scheduler">Setting up the scheduler</h2>
+<p>There are multiple schedulers out there that we can use with Docker; they all more or less work in a similar way, but I settled on <a href="https://hub.docker.com/r/mcuadros/ofelia">Ofelia</a> for its simplicity. Ofelia is written in Go and allows us to quickly define tasks to be run periodically, targeting any of our setup's containers.</p>
+<p>There are various ways to define scheduled tasks with Ofelia, mostly differing in where the tasks' configuration is located. I personally favour the approach involving a <code>config.ini</code> file, for it doesn't require updating the other services, ensuring minimum coupling and easy replacement if necessary (another configuration approach implies changing the targeted services' definition in <code>docker-compose.yml</code>, which I'm less happy with).</p>
+<p>Let's see what this looks like in practice. Create a new <code>scheduler</code> folder under the <code>.docker</code> directory at the root, and add a <code>config.ini</code> file to it, with the following content:</p>
+<pre><code>[job-exec "Laravel Scheduler"]
+schedule = @every 1m
+container = demo_backend_1
+command = php /var/www/backend/artisan schedule:run
+</code></pre>
+<p>Here we've defined a single job – Laravel's <code>schedule:run</code> Artisan command – to be run every minute on the backend's container. <code>job-exec</code> indicates that we'll be using the already running backend container (as you may have guessed, there's also a <code>job-run</code> option to spin up a fresh container instead), whose name we assigned to the <code>container</code> key: <code>demo_backend_1</code>. This is Ofelia's only small defect in my opinion: it won't guess the container's name based on the service's, and requires us to specify the running container's expected name instead.</p>
+<p>It's not really a big deal since we know the container's name is made of the project's name, the service's name and the container's number, but automatic name resolution would definitely be a plus. There are <a href="https://github.com/mcuadros/ofelia/issues/78">discussions</a> about this, but it looks like it won't be implemented just yet.</p>
+<p>In any case, what's interesting to observe here is that instead of being run from inside the container, the command ends up being exposed to and run from the outside. This is how scheduling tasks in Docker should be contemplated: as some sort of internally exposed API for command line operations, centrally managed by a scheduler.</p>
+<p>We now need to define a service for that scheduler, to be added to <code>docker-compose.yml</code>:</p>
+<pre><code># Scheduler Service
+scheduler:
+  image: mcuadros/ofelia:latest
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - ./.docker/scheduler/config.ini:/etc/ofelia/config.ini
   depends_on:
-    - nginx
+    - backend
 </code></pre>
-<p>Ngrok comes with an interface served on the container's port 4040 which we mapped to localhost's, and since Nginx will once again be our entry point for the traffic, we made sure its container is started before Ngrok's using <code>depends_on</code>.</p>
-<p>That leaves us with a bunch of environment variables:</p>
-<ul>
-<li><code>NGROK_PROTOCOL</code> can either be <code>http</code> or <code>tcp</code> – in our case, we need the former;</li>
-<li><code>NGROK_PORT</code> is a bit misleading, as it's actually not only the port but also the host, which is <code>nginx:443</code> in our case (if no host is specified, localhost is implied);</li>
-<li><code>NGROK_AUTH</code> is the authentication token I mentioned earlier, whose value is another environment variable that we'll set in a minute.</li>
-</ul>
-<p>That's all we need for today, but you might want to have a look at the other environment variables listed in the <a href="https://hub.docker.com/r/wernight/ngrok/">image's documentation</a>.</p>
-<p>We now need to set the authentication token, which you will find in your <a href="https://dashboard.ngrok.com/auth/your-authtoken">dashboard</a>. If you remember, in the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> of this series we created a <code>.env</code> file at the root of the project, alongside <code>docker-compose.yml</code>. So far we've only used it to specify a project name (to avoid container name collisions with other projects), but that's also where we'll set the token.</p>
-<p>Open the file and change its content to this one, replacing the <code>&lt;YOUR TOKEN&gt;</code> placeholder with... your token:</p>
-<pre><code>COMPOSE_PROJECT_NAME=demo
-NGROK_AUTH=&lt;YOUR TOKEN&gt;
-</code></pre>
-<p>For good measure, we should also update <code>.env.example</code>, to make it clear for future users that a value is expected:</p>
-<pre><code>COMPOSE_PROJECT_NAME=demo
-NGROK_AUTH=
-</code></pre>
-<p>This gives you the flexibility to either set a token in <code>.env.example</code> for everyone to use, or to ask each developer to create their own Ngrok account and complete their local <code>.env</code> file accordingly.</p>
-<p>Of course, you could set the token in <code>docker-compose.yml</code> directly, but I wanted to show you another way to use the project's <code>.env</code> file.</p>
-<p>The last thing we need to do is to update the Nginx server configuration in <code>.docker/nginx/conf.d/backend.conf</code>:</p>
-<pre>
-server {
-    listen      443 ssl http2;
-    listen      [::]:443 ssl http2;
-    server_name backend.demo.test <strong>*.ngrok.io</strong>;
-    root        /var/www/backend/public;
-    ...
-</pre>
-
-<p>Only the bit in bold needs to be added, the rest of the file remains as it is. Save it and restart the project in order to create the Ngrok container and to reload the Nginx configuration:</p>
-<pre><code>$ demo restart
-</code></pre>
-<p>Open <a href="http://localhost:4040">localhost:4040</a> in your browser:</p>
-<p><img alt="Ngrok interface" src="/images/2020/05/11/docker-02.png" title="Ngrok interface" /></p>
-<p>Two URLs are available – spot the HTTPS one and open it in a new tab, appending <code>/api/hello-there</code> to the end:</p>
-<p><img alt="Ngrok Hello There" src="/images/2020/05/11/docker-03.png" title="Ngrok Hello There" /></p>
-<p>Our API is now available publicly! Now go back to the other tab – you should see something like this:</p>
-<p><img alt="Ngrok inspection" src="/images/2020/05/11/docker-04.png" title="Ngrok inspection" /></p>
-<p>You can now use that URL with third-party services or distribute it as much as you want, as long as the Ngrok container is running. The corresponding traffic will appear in the interface, where you can inspect it and replay requests at will. Handy!</p>
-<p>There's only one little downside: the URL will expire after 8 hours, and it will change every time the Ngrok container is restarted. That's always been fine by me as I usually need tunnels for quick tests only, but you can always look into the <a href="https://ngrok.com/pricing">paid plans</a> if that's an issue for you – they come with custom and permanent subdomains, among other things.</p>
-<p class="info"><span class="title">Don't want to open an account?</span>If you really don't want to subscribe, you can use the account-free version instead, but you will need to make the backend available on port 80. To do so, change port 443 to port 80 in the Ngrok service in <code>docker-compose.yml</code> and remove the <code>NGROK_AUTH</code> environment variable. Create a <code>server</code> block dedicated to <code>*.nginx.io</code> in the <code>backend.conf</code> Nginx configuration, listening on port 80 instead of port 443. Restart the project, and you should be able to use the HTTP URL provided by Ngrok.</p>
-
+<p>Mind the fact that the <code>config.ini</code> file is mounted onto the container, and that the backend container is required to be started first.</p>
+<p>Believe it or not, we're pretty much done. Save the file and run <code>demo start</code> to download Ofelia's image and start the scheduler, before running <code>demo logs scheduler</code> to ensure it is functional:</p>
+<p><img alt="Scheduler logs" src="/images/2020/06/08/docker-02.png" title="Scheduler logs" /></p>
+<p>You should get an output similar to the above after a minute or so, and see the current time being logged in the backend's <code>storage/logs/laravel.log</code> file, which is the result of the execution of the job we defined in the <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">previous part</a>.</p>
+<p>That's it!</p>
+<p>Using this approach, the configuration of scheduled tasks is completely decoupled from the services they target. No need to rebuild your services' images to change the cron entries – just update <code>config.ini</code> and restart Ofelia's container.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>That's it! That's all it takes to make a local container available to the Internet.</p>
-<p>This article once again demonstrates how easy it can be to leverage a piece of technology in minutes with Docker, with no prior knowledge. There's no need to worry about messing up the installation or cluttering your local setup – as long as there's a Docker image for it (and most popular technologies have one), it doesn't take much to give it a go, quickly and safely.</p>
-<p>This is also a good example of when it is OK to rely on the community, whenever the software issuer or core team hasn't provided an image yet (that is not to say that it is usually a bad idea to trust the community, simply that if there is an official image available, you're probably better off using it instead).</p>
-<p>In the <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">next article</a>, we'll talk about another key Docker concept: multi-stage builds. We'll use it to create a worker for our API, to listen to and consume messages from a queue.</p>
-<p>You can subscribe to email alerts below to make sure you don't miss it, or you can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
+<p>Like I said in the introduction, the regular cron approach would probably do the trick in most cases, and running a scheduler like Ofelia instead might feel a bit like overkill. But the effort to implement the former is arguably bigger than the latter, and if you have the possibility to go for a simpler, scalable way from the get go, why would you not?</p>
+<p>Moreover, using a scheduler to run tasks across systems isn't only convenient locally – that's actually how it works in most production environments too (see for example AWS's <a href="https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduled_tasks.html">Scheduled Tasks</a>, or Kubernetes' <a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/">CronJob</a>).</p>
+<p>This is the thing with Docker: it's different. If you haven't really dealt with DevOps stuff before, there is still a lot to learn, but that's all you need to do – learn. On the other hand, people who are used to dealing with VMs (locally or not) are likely to have a tougher time, because they need to <em>unlearn</em> part of what they know first. They will initially try to provision a container like a VM, or try to configure cron jobs like they used to – they will try to force square pegs into round holes, simply because they're used to square holes.</p>
+<p>I went through this as well.</p>
+<p>Docker is a paradigm shift, and the sooner we accept this – the sooner we let go of our old ways and embrace the Docker way – the easier it gets. Don't get me wrong though: there is substantial benefit to this trade, for enabling system-level thinking unlocks a whole new world of virtually endless possibilities.</p>
+<p>Today's article is the last of the series, but I cannot wrap this up without a proper conclusion, which will be the next and final instalment. Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share my posts as soon as they are published.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-05-11" pubdate>2020-05-11</time>
+          <time datetime="2020-06-08" pubdate>2020-06-08</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
-          <a href="https://tech.osteel.me/tag/ngrok">ngrok</a>
+          <a href="https://tech.osteel.me/tag/cron">cron</a>
+          <a href="https://tech.osteel.me/tag/scheduler">scheduler</a>
           ]
       </small>
     </p>
@@ -310,9 +282,9 @@ server {
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet";
-              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet";
-              var disqus_title = "Docker for local web development, part 6: expose a local container to the Internet";
+              var disqus_identifier = "/posts/docker-for-local-web-development-part-8-scheduled-tasks";
+              var disqus_url = "https://tech.osteel.me/posts/docker-for-local-web-development-part-8-scheduled-tasks";
+              var disqus_title = "Docker for local web development, part 8: scheduled tasks";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
