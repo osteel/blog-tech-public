@@ -35,7 +35,8 @@
 
     <meta name="tags" contents="tutorial" />
     <meta name="tags" contents="docker" />
-    <meta name="tags" contents="" />
+    <meta name="tags" contents="ssl" />
+    <meta name="tags" contents="https" />
 
   </head>
 
@@ -132,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-05-01 ::
+          Last updated: 2020-06-19 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -319,9 +320,9 @@ cert_install () {
     fi
 }
 </code></pre>
-<p>If you're on macOS or on a Linux distribution, this function will automatically install the self-signed certificate on your machine. Unfortunately, Windows users will have to do it manually, but with the help of this <a href="https://www.thewindowsclub.com/manage-trusted-root-certificates-windows">tutorial</a> the process should be fairly straightforward.</p>
+<p>If you're on macOS or on a Debian-based Linux distribution, this function will automatically install the self-signed certificate on your machine. Unfortunately, Windows users will have to do it manually, but with the help of this <a href="https://www.thewindowsclub.com/manage-trusted-root-certificates-windows">tutorial</a> the process should be fairly straightforward.</p>
 <p>Let's break the <code>cert_install</code> function down: it first verifies whether the current host system is macOS by checking the content of the pre-defined <code>$OSTYPE</code> environment variable, which will start with <code>darwin</code> if that's the case. It then adds the certificate to the trusted certificates.</p>
-<p>If the current system is Linux, the function will create a symbolic link between the certificate and the <code>/usr/local/share/ca-certificates</code> folder, and run <code>update-ca-certificates</code> so it is taken it into account.</p>
+<p>If the current system is Linux, the function will create a symbolic link between the certificate and the <code>/usr/local/share/ca-certificates</code> folder, and run <code>update-ca-certificates</code> so it is taken it into account. Note that this code will only work for Debian-based distributions – if you use a different one, you will need to adapt the <code>if</code> condition accordingly, or add extra conditions to cover more distributions.</p>
 <p>Since the <code>sudo</code> program is used in both cases, running the command will probably require you to enter your system account password.</p>
 <p>Let's try to install the certificate (you can also run this on Windows, but you'll be invited to install the certificate manually as mentioned earlier):</p>
 <pre><code>$ demo cert install
@@ -626,11 +627,12 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-05-01" pubdate>2020-05-01</time>
+          <time datetime="2020-06-19" pubdate>2020-06-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
-          <a href="https://tech.osteel.me/tag/"></a>
+          <a href="https://tech.osteel.me/tag/ssl">ssl</a>
+          <a href="https://tech.osteel.me/tag/https">https</a>
           ]
       </small>
     </p>
