@@ -191,3 +191,11 @@ p img, video, .flash-video, .media-embed  {
   display: inline-block;
   margin-bottom: 0.75rem;
 }
+
+/*
+ * Table of contents
+ */
+
+ul ul {
+  margin-bottom: 0;
+}
