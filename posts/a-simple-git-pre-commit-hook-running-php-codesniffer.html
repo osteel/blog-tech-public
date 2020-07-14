@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/07/14/pre-commit-01.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <title>A simple Git pre-commit hook running PHP_CodeSniffer &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+
+    <meta name="tags" contents="git" />
+    <meta name="tags" contents="hook" />
+    <meta name="tags" contents="php" />
+    <meta name="tags" contents="commit" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://tech.osteel.me/theme/img/profile.jpg"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Oh hi! I'm Yannick Chenot, a French web developer contractor based in London.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="http://www.last.fm/user/OSteEL" target="_blank">last.fm</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2020
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      A simple Git pre-commit hook running PHP_CodeSniffer
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2020-07-14 ::
+        Published: 14/07/2020
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-simple-git-pre-commit-hook-running-php-codesniffer.html">history</a> ]
+      </small>
+    </span>
+
+    <p><img alt="Pre-commit hook" src="/images/2020/07/14/pre-commit-01.png" title="Pre-commit hook" /></p>
+<p><a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">Git hooks</a> are scripts that are run every time a specific Git-related event happens, like a commit or a checkout.</p>
+<p>They can be used to do a lot of different things; a common use case is to scan the code which is about to be committed in search for violations of a coding standard, so they are fixed before the code is pushed to the repository, which is way quicker than letting the build pipeline flag them (or worse, a peer reviewer, who'd rather spend their time focussing on more important issues).</p>
+<p>This is the kind of hook I was looking for for one of my projects, and since I couldn't find something simple enough I ended up writing my own.</p>
+<h2 id="psr-12">PSR-12</h2>
+<p>PHP has a few coding standards flying around, but for the past few years the ones from the <a href="https://www.php-fig.org/">PHP Framework Interop Group</a> (PHP-FIG) seem to have gained the most traction. They currently offer three different levels:</p>
+<ul>
+<li><a href="https://www.php-fig.org/psr/psr-1">PSR-1</a> (Basic Coding Standard);</li>
+<li><a href="https://www.php-fig.org/psr/psr-2">PSR-2</a> (Coding Style Guide);</li>
+<li><a href="https://www.php-fig.org/psr/psr-12">PSR-12</a> (Extended Coding Style Guide).</li>
+</ul>
+<p>Each one builds on the previous one; PSR-12 was approved in September 2019 and supersedes PSR-2, which is now deprecated.</p>
+<h2 id="php_codesniffer">PHP_CodeSniffer</h2>
+<p><a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a> is a tool composed of two different scripts:</p>
+<ul>
+<li><code>phpcs</code>, which detects violations of a defined coding standard;</li>
+<li><code>phpcbf</code>, which automatically fixes some of them.</li>
+</ul>
+<p>My goal was to trigger the first script at every commit, and to offer to run the second script if some violations were detected. Whether or not the second script is run, if some violations remain the commit does not happen, unless a specific option is used.</p>
+<h2 id="installation">Installation</h2>
+<p>Download the <a href="https://raw.githubusercontent.com/osteel/git-pre-commit-phpcs/master/pre-commit">pre-commit file</a> from the <a href="https://github.com/osteel/git-pre-commit-phpcs" title="Pre-commit hook for Git running PHP_CodeSniffer">project's GitHub repository</a>, and put it under <code>.git/hooks</code> at the root of your project.</p>
+<p>Make sure it is executable:</p>
+<pre><code>$ chmod +x pre-commit
+</code></pre>
+<p>Install PHP_CodeSniffer following one of the <a href="https://github.com/squizlabs/PHP_CodeSniffer#installation">suggested methods</a> – I personally like to install it on a per-project basis as a Composer dependency, but it's really up to you:</p>
+<pre><code>$ composer require --dev squizlabs/php_codesniffer
+</code></pre>
+<p>Once you've done that, you can update the <code>STANDARD</code> variable at the top of the <code>pre-commit</code> file to change the coding standard, or leave <code>PSR12</code> by default.</p>
+<p>The hook also assumes that PHP_CodeSniffer's <code>bin</code> folder is at the same level as the <code>.git</code> folder by default, but depending on the chosen installation that might not be the case. You can set a different location simply by updating the <code>BIN</code> variable.</p>
+<pre><code>#!/bin/bash
+
+STANDARD="PSR12"
+BIN="./vendor/bin"
+</code></pre>
+<p>That's it! For other standards and options, please visit <a href="https://github.com/squizlabs/PHP_CodeSniffer/wiki/Usage">PHP_CodeSniffer's usage page</a>.</p>
+<h2 id="use">Use</h2>
+<p>All you have to do now is commit some new code; PHP_CodeSniffer will analyse it, flag the violations if it finds any and ask you whether you want it to fix them for you:</p>
+<p><img alt="Automated fix" src="/images/2020/07/14/pre-commit-02.png" title="Automated fix" /></p>
+<p>It will also automatically stage the files it updates, and if it cannot fix them all, it will ask you to address the remaining ones manually.</p>
+<p>If you want to commit anyway, all you have to do is to use the <code>--no-verify</code> option to skip the hook altogether:</p>
+<pre><code>$ git commit --no-verify
+</code></pre>
+<h2 id="other-projects">Other projects</h2>
+<p>Of course Git hooks are nothing new, and there are plenty of open source projects leveraging them, <a href="https://githooks.com/">for all sorts of languages and purposes</a>. In my case I was looking for something simple since I only needed a single hook anyway, but once you've got multiple hooks, managing them can become a bit of a pain.</p>
+<p>I reviewed a number of tools and found <a href="https://github.com/rycus86/githooks">this one</a> that looked quite good, although I must admit I was a little confused by the concept of templates in introduces. This project also comes with a <a href="https://blog.viktoradam.net/2018/07/26/githooks-auto-install-hooks/">blog post</a> explaining it in a bit more detail.</p>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on the
+          <time datetime="2020-07-14" pubdate>2020-07-14</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/git">git</a>
+          <a href="https://tech.osteel.me/tag/hook">hook</a>
+          <a href="https://tech.osteel.me/tag/php">php</a>
+          <a href="https://tech.osteel.me/tag/commit">commit</a>
+          ]
+      </small>
+    </p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section>
+      <h2>Like this?</h2>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/a-simple-git-pre-commit-hook-running-php-codesniffer";
+              var disqus_url = "https://tech.osteel.me/posts/a-simple-git-pre-commit-hook-running-php-codesniffer";
+              var disqus_title = "A simple Git pre-commit hook running PHP_CodeSniffer";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
