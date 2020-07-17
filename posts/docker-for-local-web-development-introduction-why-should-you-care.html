@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-06-19 ::
+          Last updated: 2020-07-17 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -222,9 +222,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="performance-is-terrible">"Performance is terrible"</h2>
 <p>It used to be terrible. Now it's just not great.</p>
 <p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance. There are ways to make it better, however, which are mentioned throughout the articles.</p>
-<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time, with newer versions of Docker Desktop.</p>
+<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time, with newer versions of Docker Desktop, which seems to be confirmed by recent progress around <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a> and <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen for macOS</a>.</p>
 <h2 id="im-on-windows">"I'm on Windows"</h2>
 <p>Ah mate, I feel you. You work on Microsoft's operating system, and you read somewhere that running Docker on it is a bit of a pain? Well, the bad news is, this is still largely true. The good news, however, is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
+<p>Also, recent developments around WSL 2 as previously mentioned and a <a href="https://www.docker.com/blog/shortening-the-developer-commute-with-docker-and-microsoft-azure/">new partnership between Azure and Docker</a> seem to indicate the pain won't last for much longer.</p>
 <p>Nevertheless, running Docker on Microsoft's OS is tricky enough that I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> to help you get started. I recommend you read it after this introduction and before proceeding further, even though I regularly refer to it throughout the articles.</p>
 <p>A caveat: I work on a Mac and don't have regular access to a Windows machine, so if any Microsoft-related trickery seems to be at play I'm afraid I won't be of much assistance (this is also valid for Linux distributions, although from experience these don't tend to cause any trouble).</p>
 <p>I would also like to make a full disclosure: while it is true that everything covered in this series will also work on Windows, the overall experience is still likely to feel a bit brittle, especially from the moment Bash is involved. There is always a way to mitigate those frictions, but it generally takes a little extra TLC.</p>
@@ -242,7 +243,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-06-19" pubdate>2020-06-19</time>
+          <time datetime="2020-07-17" pubdate>2020-07-17</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

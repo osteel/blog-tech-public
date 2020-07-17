@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-07-10 ::
+          Last updated: 2020-07-17 ::
         Published: 2020-07-06
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-conclusion-where-to-go-from-here.html">history</a> ]
       </small>
@@ -180,7 +180,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>And if that's not enough, comments are always open!</p>
 <h2 id="you-said-it-wouldnt-be-too-slow-but-really-it-is">"You said it wouldn't be too slow, but really, it is"</h2>
 <p>If you feel that way, you're probably running Docker Desktop on macOS or Windows. And even though I happily run a similar setup on macOS myself, I appreciate that performance might still feel suboptimal to you.</p>
-<p>While improvement in this regard is long overdue on both operating systems, things have been moving in the right direction lately, with progress being made around <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL2 on Windows</a> on the one hand, and around <a href="https://docs.docker.com/docker-for-mac/mutagen-caching/">Mutagen for macOS</a> on the other. These are still quite new at the time of writing, but I encourage you to look into them nevertheless.</p>
+<p>While improvement in this regard is long overdue on both operating systems, things have been moving in the right direction lately, with progress being made around <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL2 on Windows</a> on the one hand, and around <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen for macOS</a> on the other. These are still quite new at the time of writing, but I encourage you to look into them nevertheless.</p>
 <p>There are also other ways to improve performance. The main bottleneck on both platforms is around file sharing between the host and the containers. To mitigate this, you could for example bundle the HTTP server and the backend together in a single image, using <a href="http://supervisord.org/">Supervisor</a> as the container's process to run both Nginx and PHP-FPM. That would reduce the number of mounted folders, which should improve performance a bit.</p>
 <p>Another seemingly popular approach is to mix Docker services with native tools. For instance, people like <a href="https://twitter.com/JoseCanHelp">Jose Soto</a> advocate using <a href="https://laravel.com/docs/valet">Laravel Valet</a> on macOS to run your PHP application, and to use Docker containers for all of the other services (such as MySQL and Redis). This way, you get near-native performance for the applications you actually write code for, while still enjoying Docker's flexibility for everything else.</p>
 <p>I personally do not favour this approach as it means a lot is left to the developer to set up, while what I'm trying to achieve is a unique, ready-to-use development environment that works for everyone in the team. But if you operate as a freelancer or if your company lets you deal with your working environment as you see fit, this could be a good solution.</p>
@@ -239,7 +239,7 @@ COPY --from=build .
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-07-10" pubdate>2020-07-10</time>
+          <time datetime="2020-07-17" pubdate>2020-07-17</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
