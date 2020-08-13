@@ -7,11 +7,11 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2020/08/13/github-profile-01.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
-    <title>I've got a blog &mdash; osteel's blog</title>
+    <title>Dynamic GitHub profile README with Github Actions and PHP &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -33,7 +33,7 @@
 
 
 
-    <meta name="tags" contents="blog" />
+    <meta name="tags" contents="github" />
 
   </head>
 
@@ -125,28 +125,105 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      I've got a blog
+      Dynamic GitHub profile README with Github Actions and PHP
     </h1>
     <span class="post-date">
       <small>
-        Published: 2014-08-19
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/ive-got-a-blog.html">history</a> ]
+          Last updated: 2020-08-13 ::
+        Published: 13/08/2020
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/dynamic-github-profile-readme-with-github-actions-and-php.html">history</a> ]
       </small>
     </span>
 
-    <h2 id="yeah-finally">Yeah, finally.</h2>
-<p>It should have been started 8 years ago but well, better late than never, eh? Let's say that's my very own Duke Nukem Forever.</p>
-<h2 id="so-what-will-be-in-there">So what will be in there?</h2>
-<p>Posts about dev, surely. There <em>should</em> be one about launching a blog like this one very soon. A blog using <a href="http://blog.getpelican.com/" title="Pelican project's home page">Pelican</a>, that is.</p>
-<p>For those of you who happen to speak French and want to read about a random dude's life, go check out the <a href="/category/life.html" title="les trucs persos">other part of this blog</a>.</p>
-<p>Enjoy the ride!</p>
+    <p>A few weeks ago, GitHub quietly released a feature that didn't go unnoticed for long – profile READMEs. A profile README is essentially a README file for your GitHub profile, rather than a specific repository's. You can set one up by creating a repository whose name is identical to your GitHub username – in my case, that username is <code>osteel</code>, so I've created the <a href="https://github.com/osteel/osteel"><code>osteel/osteel</code> repository</a>.</p>
+<p>A little box like this one should appear during the process:</p>
+<p><img alt="Special repository" src="/images/2020/08/13/github-profile-02.png" title="Special repository" /></p>
+<p>Once the repository is created, simply add a <code>README</code> file to it, featuring a short description explaining how great you are. Commit and push – your GitHub profile page should now display it by default.</p>
+<p><img alt="GitHub profile README" src="/images/2020/08/13/github-profile-01.png" title="GitHub profile README" /></p>
+<p>This is quite cool already, but as I was <a href="https://www.aboutmonica.com/blog/how-to-create-a-github-profile-readme" title="How To Create A GitHub Profile README">browsing some examples</a> I stumbled upon <a href="https://github.com/simonw">Simon Willison’s version</a>, which has some dynamic content like recent work and blog publications. He wrote about it <a href="https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/">on his blog</a>, explaining how he used a combination of <a href="https://github.com/features/actions">GitHub Actions</a> and Python to automatically update the README, and I've decided to do something similar, but with PHP.</p>
+<h2 id="the-php-script">The PHP script</h2>
+<p>I am so used to working on projects with frameworks nowadays that it actually took me a <a href="https://www.frobiovox.com/posts/2016/08/16/basic-hello-world-with-composer-and-php.html">quick search</a> to get started with a basic PHP script featuring some Composer dependencies.</p>
+<p>I initialised the project with <code>composer init</code> and installed <a href="https://github.com/dg/rss-php">a lightweight library</a> to parse my blog's <a href="https://tech.osteel.me/feeds/rss.xml">RSS feed</a>:</p>
+<pre><code>$ composer require dg/rss-php
+</code></pre>
+<p>Here's the full PHP script (<code>posts.php</code>):</p>
+<pre><code>&lt;?php
+
+// Load Composer's autoload
+require_once __DIR__ . '/vendor/autoload.php';
+
+// Load the RSS feed
+$feed = Feed::loadRss('https://tech.osteel.me/feeds/rss.xml')-&gt;toArray();
+
+// Generate the list of blog posts
+$posts = '';
+foreach (array_slice($feed['item'], 0, 5) as $post) {
+    $date   = date('d/m/Y', strtotime($post['pubDate']));
+    $posts .= sprintf("\n* **[%s]** [%s](%s \"%s\")", $date, $post['title'], $post['link'], $post['title']);
+}
+
+// Generate the new content
+$content = preg_replace(
+    '#&lt;!-- posts --&gt;.*&lt;!-- /posts --&gt;#s',
+    sprintf('&lt;!-- posts --&gt;%s&lt;!-- /posts --&gt;', $posts),
+    file_get_contents('README.md')
+);
+
+// Overwrite the file
+file_put_contents('README.md', $content);
+</code></pre>
+<p>Nothing too complicated here – Composer's autoload is required at the top, allowing me to use the RSS parsing library to generate a Markdown list of blog posts as a string, which I then insert between the <code>&lt;!-- posts --&gt;</code> and <code>&lt;!-- /posts --&gt;</code> tags (which should be already present in the <code>README</code> file). Finally, I replace the file's content with the new one.</p>
+<h2 id="the-github-action">The GitHub action</h2>
+<p><a href="https://github.com/features/actions">GitHub Actions</a> are a fairly recent addition to GitHub, allowing developers to automate various CI/CD tasks, like running test suites or deploying web services. </p>
+<p>GitHub actions are defined as YAML files to be placed in a <code>.github/workflows</code> folder at the root of the project, containing a list of steps that they are to execute.</p>
+<p>Here's mine (<code>posts.yml</code>):</p>
+<pre><code>name: Update blog posts
+
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+    - cron:  '0 0 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v2
+    - name: Install PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+    - name: Install Composer dependencies
+      run: composer install
+    - name: Insert blog posts
+      run: php posts.php
+    - name: Push changes
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Updated latest blog posts
+</code></pre>
+<p>Again, nothing too complicated. I first give the action a name, followed by a list of events that should trigger it – pushing some code to the repository, a manual trigger from the interface (<code>workflow_dispatch</code>), or every day at midnight (like a cron task).</p>
+<p>I then indicate that it should run on an Ubuntu image, where it will:</p>
+<ul>
+<li><a href="https://github.com/actions/checkout">Clone the repository</a>;</li>
+<li><a href="https://github.com/shivammathur/setup-php">Install PHP 7.4</a>;</li>
+<li>Install the Composer dependencies;</li>
+<li>Run the PHP script;</li>
+<li><a href="https://github.com/stefanzweifel/git-auto-commit-action">Commit and push the changes</a>, if any.</li>
+</ul>
+<p>That's it! My GitHub profile README will now automatically be updated every time I publish a new article.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>This was a quick experiment aiming at exploring GitHub Actions, which I expect to use more in the future. It was also fun to use PHP as a simple scripting language again, in a procedural way.</p>
+<p>I've voluntarily left out a few things in order to keep this article short and simple – please refer to <a href="https://github.com/osteel/osteel">the repository</a> for more for implementation details.</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2014-08-19T00:00:00+01:00" pubdate>2014-08-19</time>
+          <time datetime="2020-08-13" pubdate>2020-08-13</time>
           :: [
-          <a href="https://tech.osteel.me/tag/blog.html">blog</a>
+          <a href="https://tech.osteel.me/tag/github">github</a>
           ]
       </small>
     </p>
@@ -210,9 +287,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/posts/ive-got-a-blog";
-              var disqus_url = "https://tech.osteel.me/posts/ive-got-a-blog";
-              var disqus_title = "I've got a blog";
+              var disqus_identifier = "/posts/dynamic-github-profile-readme-with-github-actions-and-php";
+              var disqus_url = "https://tech.osteel.me/posts/dynamic-github-profile-readme-with-github-actions-and-php";
+              var disqus_title = "Dynamic GitHub profile README with Github Actions and PHP";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
