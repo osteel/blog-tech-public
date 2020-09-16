@@ -133,39 +133,40 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2016-08-04 ::
+          Last updated: 2020-09-16 ::
         Published: 2015-08-10
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/how-to-use-the-fork-of-a-repository-with-composer.html">history</a> ]
       </small>
     </span>
 
     <p><img alt="Composer and GitHub" src="/images/2015/08/10/composer-fork.jpg" title="Composer and GitHub" /></p>
-<p>When using packages maintained by other developers, you often find yourself waiting for a fix, an update or the merge of a PR that will come with the next release but you need it now. A workaround is to fork the corresponding repository (which you may have done already if you are the author of the PR), make the updates you need and then use your fork in your project instead of the original package.</p>
-<p>If I wanted to use a fork of <a href="https://github.com/guzzle/guzzle">Guzzle</a> for example, I would edit <code>composer.json</code> like so (<a href="https://github.com/osteel"><code>osteel</code></a> is my GitHub username):</p>
-<pre><code>{  
-    "name": "osteel/myproject",  
-    "description": "My project.",  
-    "license": "MIT",  
-    "type": "project",  
-    "repositories": [  
-        {  
-            "type": "vcs",  
-            "url": "https://github.com/osteel/guzzle"  
-        }  
-    ],  
-    "require": {  
-        "laravel/lumen-framework": "5.1.*",  
-        "guzzlehttp/guzzle": "dev-master"  
-    }  
+<p>When using packages maintained by other developers, you may eventually find yourself waiting for a fix, an update, or the merge of a PR that will be available with the next release. If you can't wait, a workaround is to fork the corresponding repository, make the changes you need and then use your fork instead of the original package.</p>
+<p>Say I want to use my own version of <a href="https://github.com/guzzle/guzzle">Guzzle</a> – I would edit <code>composer.json</code> like so (<a href="https://github.com/osteel"><code>osteel</code></a> is my GitHub username):</p>
+<pre><code>{
+    ...
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:osteel/guzzle"
+        }
+    ],
+    "require": {
+        "guzzlehttp/guzzle": "dev-master"
+    }
+    ...
 }
 </code></pre>
-<p>This would use the master branch of my fork (replace <em>master</em> with whichever branch name you want to use).</p>
-<p>Don't forget to watch the original repository to be aware of new releases, or use <a href="http://gh-release-watch.com">http://gh-release-watch.com</a> if you don't want to get notifications for all the issues, conversations, etc (while GitHub is considering the possibility of <a href="https://github.com/isaacs/github/issues/410">watching for releases only</a>).</p>
+<p>This would use the <code>master</code> branch of my fork. If my fix were in a branch named <code>bugfix</code>, I would require <code>dev-bugfix</code> instead.</p>
+<p>I would then run the following command:</p>
+<pre><code>$ composer update guzzlehttp/guzzle
+</code></pre>
+<p>It would download and use my fork instead of the original package. Done!</p>
+<p>Just make sure to change it back to the latter once your fix is merged 😉</p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2016-08-04" pubdate>2016-08-04</time>
+          <time datetime="2020-09-16" pubdate>2020-09-16</time>
           :: [
           <a href="https://tech.osteel.me/tag/composer">composer</a>
           <a href="https://tech.osteel.me/tag/github">github</a>
