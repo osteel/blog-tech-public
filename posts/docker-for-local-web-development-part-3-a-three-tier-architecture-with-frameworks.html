@@ -517,8 +517,9 @@ CMD ["yarn", "serve"]
 <p>Rebuild the image:</p>
 <pre><code>$ docker-compose build frontend
 </code></pre>
-<p>And simply restart the project (Docker should pick up the image changes and automatically recreate the frontend container):</p>
-<pre><code>$ docker-compose restart
+<p>And stop and restart the project (Docker will only pick up the image changes if you stop the containers first – for some reason, a simple <code>restart</code> won't):</p>
+<pre><code>$ docker-compose stop
+$ docker-compose start
 </code></pre>
 <p>Once everything is up and running, access <a href="http://frontend.demo.test">frontend.demo.test</a> and you should see Vue.js' welcome page:</p>
 <p><img alt="Vue.js home" src="/images/2020/03/30/docker-03.png" title="Vue.js home" /></p>

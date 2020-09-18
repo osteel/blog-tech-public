@@ -130,7 +130,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-07-17 ::
+          Last updated: 2020-09-18 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -160,7 +160,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#who-this-series-is-for">Who this series is for</a></li>
 <li><a href="#why-should-i-listen-to-you">"Why should I listen to you?"</a></li>
 <li><a href="#i-am-already-using-vagranthomestead">"I am already using Vagrant/Homestead"</a></li>
-<li><a href="#how-about-laradock">"How about Laradock?"</a></li>
+<li><a href="#how-about-insert-favourite-docker-based-solution">"How about [insert favourite Docker-based solution]?"</a></li>
 <li><a href="#serverless-is-the-way-to-go">"Serverless is the way to go"</a></li>
 <li><a href="#performance-is-terrible">"Performance is terrible"</a></li>
 <li><a href="#im-on-windows">"I'm on Windows"</a></li>
@@ -208,9 +208,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Does that mean you should only use Docker locally if your application involves microservices?</p>
 <p>The answer is yes and no. The more complex the application, the more moving parts it is composed of, the more likely you will need a solution like Docker. But even if your application is rather simple, starting and stopping some containers is way faster than booting and halting a virtual machine, and in the eventuality of your application evolving in some unexpected ways (like they always do), adopting Docker from the get go gives you the confidence your setup is future-proof.</p>
 <p>Besides, instead of using a pre-packaged virtual machine like Homestead, featuring way more tools than any given application has any use for, using Docker the way I suggest ensures that you only ever install what you actually need, in a proactive way. You regain control of your environment.</p>
-<h2 id="how-about-laradock">"How about Laradock?"</h2>
-<p><a href="https://laradock.io/">Laradock</a> is to Docker what Homestead is to Vagrant: a pre-packaged environment for PHP applications. While I don't personally use it, I have heard a lot of good things and it might just be enough for your needs. Their motto is <em>Use Docker First - Then Learn About It Later</em>, which is an excellent approach in my opinion.</p>
-<p>That being said, the purpose of this tutorial series is precisely to get a deeper understanding of how to make Docker work for you. If all you are interested in for the moment is using a Docker-based environment without the hassle of setting it up by yourself, by all means give Laradock a try, and feel free to come back whenever you want to create your own, tailored environment.</p>
+<h2 id="how-about-insert-favourite-docker-based-solution">"How about [insert favourite Docker-based solution]?"</h2>
+<p>There are quite a few Docker-based development environments out there, and it seems that every few weeks a new one pops up. <a href="https://laradock.io/">Laradock</a> was arguably the first to get some traction, and is to Docker what Homestead is to Vagrant: a pre-packaged environment for PHP applications. While I don't personally use it, I have heard a lot of good things and it might just be enough for your needs. Their motto is <em>Use Docker First - Then Learn About It Later</em>, which is an excellent approach in my opinion.</p>
+<p>There's also <a href="https://github.com/tighten/takeout">Takeout</a>, <a href="https://www.ddev.com/">DDEV</a>, and I'm sure plenty of others that are very good at what they do. The purpose of this series, however, is to give you a deeper understanding of Docker so you can build your own environment, one that matches perfectly any given project's requirements. If all you want to do for the moment is using a Docker-based solution without the hassle of setting it up yourself, by all means give one of the aforementioned projects a try, and feel free to come back whenever you want to create your own, tailored setup.</p>
+<p>All in all I see this explosion of Docker-based environments as a good sign – a confirmation that this is the right tool for the job, one that will be embraced more and more in the future.</p>
 <h2 id="serverless-is-the-way-to-go">"Serverless is the way to go"</h2>
 <p><a href="https://en.wikipedia.org/wiki/Serverless_computing" title="Serverless computing">Serverless computing</a> is on the rise and the word on the street is that <a href="https://read.acloud.guru/serverless-is-eating-the-stack-and-people-are-freaking-out-and-they-should-be-431a9e0db482" title="Serverless is eating the stack and people are freaking out — as they should be">it's coming for Docker</a>.</p>
 <p>Meanwhile, <a href="https://hackernoon.com/will-serverless-computing-kill-docker-containers-222671bffdc4" title="Will Serverless Computing Kill Docker Containers?">others argue</a> that the comparison is moot because the two technologies serve completely different purposes.</p>
@@ -220,14 +221,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>That doesn't mean I won't use a Lambda function where it seems relevant, or that serverless shouldn't be on your watchlist. On that note, if you wish to explore the subject further, I found this <a href="https://www.zdnet.com/article/what-serverless-computing-really-means-and-everything-else-you-need-to-know/" title="What serverless computing really means, and everything else you need to know">article by ZDNet</a> to be informative.</p>
 <h2 id="performance-is-terrible">"Performance is terrible"</h2>
 <p>It used to be terrible. Now it's just not great.</p>
-<p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance. There are ways to make it better, however, which are mentioned throughout the articles.</p>
-<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time, with newer versions of Docker Desktop, which seems to be confirmed by recent progress around <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a> and <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen for macOS</a>.</p>
+<p>This is the one real trade off to using Docker Desktop as a development environment for the entire stack, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance. There are ways to make it better, however, which are mentioned throughout this series.</p>
+<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time: Windows now has <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a>, and there are <a href="https://github.com/docker/for-mac/issues/1592">ongoing discussions around performance on macOS</a>.</p>
 <h2 id="im-on-windows">"I'm on Windows"</h2>
-<p>Ah mate, I feel you. You work on Microsoft's operating system, and you read somewhere that running Docker on it is a bit of a pain? Well, the bad news is, this is still largely true. The good news, however, is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
-<p>Also, recent developments around WSL 2 as previously mentioned and a <a href="https://www.docker.com/blog/shortening-the-developer-commute-with-docker-and-microsoft-azure/">new partnership between Azure and Docker</a> seem to indicate the pain won't last for much longer.</p>
-<p>Nevertheless, running Docker on Microsoft's OS is tricky enough that I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> to help you get started. I recommend you read it after this introduction and before proceeding further, even though I regularly refer to it throughout the articles.</p>
+<p>As previously mentioned, with the unveiling of <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> it seems that running Docker inside Windows is now perfectly fine. But if you can't use it for some reason, running Docker on Microsoft's OS can be a bit of a pain. The good news is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
+<p>To help you get started, I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> which I recommend you read after this introduction.</p>
 <p>A caveat: I work on a Mac and don't have regular access to a Windows machine, so if any Microsoft-related trickery seems to be at play I'm afraid I won't be of much assistance (this is also valid for Linux distributions, although from experience these don't tend to cause any trouble).</p>
-<p>I would also like to make a full disclosure: while it is true that everything covered in this series will also work on Windows, the overall experience is still likely to feel a bit brittle, especially from the moment Bash is involved. There is always a way to mitigate those frictions, but it generally takes a little extra TLC.</p>
 <h2 id="it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</h2>
 <p>Finally, some developers simply dismiss Docker as not being their problem. This is a fair argument, as Docker sits somewhere beyond the realm of pure application development. If anything, a sysadmin or DevOps engineer should set it up for you, right?</p>
 <p>Well, yes, you are entitled to feel that way. But if DevOps can refer to individuals with an interest for both system administration and coding, effectively acting as bridges between the two, it can also be interpreted as people from both sides meeting halfway.</p>
@@ -242,7 +241,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-07-17" pubdate>2020-07-17</time>
+          <time datetime="2020-09-18" pubdate>2020-09-18</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
