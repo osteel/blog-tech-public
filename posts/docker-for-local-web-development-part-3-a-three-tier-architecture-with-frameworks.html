@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-07-17 ::
+          Last updated: 2020-09-19 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -271,7 +271,7 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 </div>
 
 <p>The rest of the changes brought to <code>docker-compose.yml</code> mostly consist of the <code>delegated</code> option being added where relevant.</p>
-<p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/7.x/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
+<p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
 <pre><code>server {
     listen      80;
     listen      [::]:80;
@@ -389,9 +389,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 <pre><code>$ docker-compose build backend
 </code></pre>
 <p>Once this is done, run the following command:</p>
-<pre><code>$ docker-compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp "7.*"
+<pre><code>$ docker-compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp "8.*"
 </code></pre>
-<p>This will use the version of Composer installed on the backend container (no need to install Composer locally!) to create a new Laravel 7 project in the container's <code>/var/www/backend/tmp</code> folder.</p>
+<p>This will use the version of Composer installed on the backend container (no need to install Composer locally!) to create a new Laravel 8 project in the container's <code>/var/www/backend/tmp</code> folder.</p>
 <p>As per <code>docker-compose.yml</code>, the container's working directory is <code>/var/www/backend</code>, onto which the local folder <code>src/backend</code> was mounted – if you look into that directory now on your local machine, you will find a new <code>tmp</code> folder containing the files of a fresh Laravel application. But why did we not create the project in <code>backend</code> directly?</p>
 <p>Behind the scenes, <code>composer create-project</code> performs a <code>git clone</code>, and that won't work if the target directory is not empty. In our case, <code>backend</code> already contains the Dockerfile, which is necessary to run the command in the first place. We essentially created the <code>tmp</code> folder as a temporary home for our project, and we now need to move back the files to their final location:</p>
 <pre><code>$ docker-compose run --rm backend sh -c "mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp"
@@ -433,7 +433,7 @@ SESSION_DRIVER=file
 <p>Let's also verify our database settings by running Laravel's default migrations:</p>
 <pre><code>$ docker-compose exec backend php artisan migrate
 </code></pre>
-<p>You can log into <a href="http://phpmyadmin.test">phpmyadmin.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>users</code> and <code>failed_jobs</code>).</p>
+<p>You can log into <a href="http://phpmyadmin.test">phpmyadmin.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>users</code>, <code>password_resets</code> and <code>failed_jobs</code>).</p>
 <p>There is one last thing we need to do before moving on to the frontend application: since our aim is to have it interact with the backend, let's add the following endpoint to <code>routes/api.php</code>:</p>
 <pre><code>Route::get('/hello-there', function () {
     return 'General Kenobi';
@@ -517,9 +517,8 @@ CMD ["yarn", "serve"]
 <p>Rebuild the image:</p>
 <pre><code>$ docker-compose build frontend
 </code></pre>
-<p>And stop and restart the project (Docker will only pick up the image changes if you stop the containers first – for some reason, a simple <code>restart</code> won't):</p>
-<pre><code>$ docker-compose stop
-$ docker-compose start
+<p>And start the project so Docker picks up the image changes (for some reason, the <code>restart</code> command won't do that):</p>
+<pre><code>$ docker-compose start
 </code></pre>
 <p>Once everything is up and running, access <a href="http://frontend.demo.test">frontend.demo.test</a> and you should see Vue.js' welcome page:</p>
 <p><img alt="Vue.js home" src="/images/2020/03/30/docker-03.png" title="Vue.js home" /></p>
@@ -616,7 +615,7 @@ p {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-07-17" pubdate>2020-07-17</time>
+          <time datetime="2020-09-19" pubdate>2020-09-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-05-11 ::
+          Last updated: 2020-09-19 ::
         Published: 2020-05-11
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-6-expose-a-local-container-to-the-internet.html">history</a> ]
       </small>
@@ -218,8 +218,9 @@ server {
     ...
 </pre>
 
-<p>Only the bit in bold needs to be added, the rest of the file remains as it is. Save it and restart the project in order to create the Ngrok container and to reload the Nginx configuration:</p>
-<pre><code>$ demo restart
+<p>Only the bit in bold needs to be added, the rest of the file remains as it is. Save it and stop and restart the project in order to create the Ngrok container and to reload the Nginx configuration:</p>
+<pre><code>$ demo stop
+$ demo start
 </code></pre>
 <p>Open <a href="http://localhost:4040">localhost:4040</a> in your browser:</p>
 <p><img alt="Ngrok interface" src="/images/2020/05/11/docker-02.png" title="Ngrok interface" /></p>
@@ -241,7 +242,7 @@ server {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-05-11" pubdate>2020-05-11</time>
+          <time datetime="2020-09-19" pubdate>2020-09-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
