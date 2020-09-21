@@ -484,7 +484,7 @@ volumes:
 <h3 id="phpmyadmin">phpMyAdmin</h3>
 <p>When it comes to dealing with a MySQL database, <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> remains a popular choice; conveniently, they provide a <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin">Docker image</a> which is pretty straightforward to set up.</p>
 <div class="info">
-<p><span class="title">Not using phpMyAdmin?</span> If you are used to some other tool like <a href="https://www.sequelpro.com">Sequel Pro</a> or <a href="https://www.mysql.com/products/workbench">MySQL Workbench</a>, you can simply update the MySQL configuration in <code>docker-compose.yml</code> and add a <code>ports</code> section mapping your local machine's port 3306 to the container's:</p>
+<p><span class="title">Not using phpMyAdmin?</span> If you are used to some other tool like <a href="https://github.com/Sequel-Ace/Sequel-Ace">Sequel Ace</a> or <a href="https://www.mysql.com/products/workbench">MySQL Workbench</a>, you can simply update the MySQL configuration in <code>docker-compose.yml</code> and add a <code>ports</code> section mapping your local machine's port 3306 to the container's:</p>
 <pre>
     ...
       ports:
@@ -551,7 +551,7 @@ volumes:
 <p>Now, before we proceed further, let's destroy our containers and volumes so we can start afresh:</p>
 <pre><code>$ docker-compose down -v
 </code></pre>
-<p>Create a <code>.env</code> file alongside <code>'docker-compose.yml</code>, with the following content:</p>
+<p>Create a <code>.env</code> file alongside <code>docker-compose.yml</code>, with the following content:</p>
 <pre><code>COMPOSE_PROJECT_NAME=demo
 </code></pre>
 <p>Save the file and run <code>docker-compose up -d</code> again, followed by <code>docker-compose ps</code>: each container is now prefixed with <code>demo_</code>.</p>
