@@ -130,7 +130,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-09-18 ::
+          Last updated: 2020-10-01 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -221,7 +221,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>That doesn't mean I won't use a Lambda function where it seems relevant, or that serverless shouldn't be on your watchlist. On that note, if you wish to explore the subject further, I found this <a href="https://www.zdnet.com/article/what-serverless-computing-really-means-and-everything-else-you-need-to-know/" title="What serverless computing really means, and everything else you need to know">article by ZDNet</a> to be informative.</p>
 <h2 id="performance-is-terrible">"Performance is terrible"</h2>
 <p>It used to be terrible. Now it's just not great.</p>
-<p>This is the one real trade off to using Docker Desktop as a development environment for the entire stack, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance. There are ways to make it better, however, which are mentioned throughout this series.</p>
+<p>This is the one real trade off to using Docker Desktop as a development environment for the entire stack, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance (and the recently introduced gRPC FUSE doesn't seem to make a big difference). There are ways to make it better, however, which are mentioned throughout this series.</p>
 <p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time: Windows now has <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a>, and there are <a href="https://github.com/docker/for-mac/issues/1592">ongoing discussions around performance on macOS</a>.</p>
 <h2 id="im-on-windows">"I'm on Windows"</h2>
 <p>As previously mentioned, with the unveiling of <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> it seems that running Docker inside Windows is now perfectly fine. But if you can't use it for some reason, running Docker on Microsoft's OS can be a bit of a pain. The good news is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
@@ -236,12 +236,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In the end, you may not fully embrace the final result of this series. Be it for performance reasons as mentioned earlier, or because you feel some aspects of the setup are too complicated or just don't work for you, this development environment may not entirely satisfy you in its suggested form.</p>
 <p>But that is not the true purpose of this series. While you can definitely take my approach at face value, my true objective is to give you enough confidence to integrate Docker to your development workflow in any way you see fit – to provide enough practical knowledge to adapt it to your own use cases.</p>
 <p>And I can guarantee that by the end of this series, you will think of ways to use Docker for your own benefit.</p>
-<p>Now. Shall we <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">get started</a>?</p>
+<p>Now. <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Shall we get started?</a></p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-09-18" pubdate>2020-09-18</time>
+          <time datetime="2020-10-01" pubdate>2020-10-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
