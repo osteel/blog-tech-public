@@ -77,7 +77,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -94,8 +94,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -142,8 +142,8 @@ styles, `#sidebar-checkbox` for behavior. -->
       </small>
     </span>
 
-    <p><strong>[UPDATE 2020/03/05]:</strong> This is old content. I published an up to date, more complete <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">tutorial series</a> about using Docker for local web development, which I invite you to read instead.</p>
-<hr />
+    <p class="info"><span class="title">Heads-up!</span>This is old content. I published an up to date, more complete <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">tutorial series</a> about using Docker for local web development, which I invite you to read instead.</p>
+
 <p><img alt="Docker logo" src="/images/2015/12/18/docker-tutorial1.jpg" title="Docker logo" /></p>
 <p>If you are somewhat following what's happening in the tech world, you must have heard of Docker.</p>
 <p>If you haven't, first, get out of your cave, and then, here is a short description of the thing, borrowed from <a href="https://en.wikipedia.org/wiki/Docker_%28software%29">Wikipedia</a>:</p>
@@ -155,9 +155,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>[it allows] independent "containers" to run within a single Linux instance, avoiding the overhead of starting and maintaining virtual machines.</p>
 </blockquote>
 <p>Hmm ok. It starts to sound familiar and vaguely useful.</p>
-<p>I don't know about you, but working on a Mac (and previously on a Windows machine) (shush), I set up a Vagrant box for almost every single project I work on (if you have no clue what Vagrant is, please take a look at <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html">this post</a> first, especially this <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html#vagrant">short bit</a>).<br />
+<p>I don't know about you, but working on a Mac (and previously on a Windows machine) (shush), I set up a Vagrant box for almost every single project I work on (if you have no clue what Vagrant is, please take a look at <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html">this post</a> first, especially this <a href="/posts/2015/01/25/how-to-use-vagrant-for-local-web-development.html#vagrant">short bit</a>).
 Whenever I need to work on any of these projects, I run a quick <code>vagrant up</code> and get it running in its own isolated virtual machine (VM) in a matter of minutes. Pretty handy.</p>
-<p>But that's still a few minutes to get up and running, and having a VM for each project quickly ends up taking a shitload of resources and space on the disk.<br />
+<p>But that's still a few minutes to get up and running, and having a VM for each project quickly ends up taking a shitload of resources and space on the disk.
 You could take Laravel's initial approach with <a href="http://laravel.com/docs/master/homestead">Homestead</a> and run several projects on the same VM, but it kinda defeats the purpose of having isolated environments.</p>
 <p>So what does Docker have to do with this?</p>
 <p>Well, the promise behind it is to provide isolated environments running on a same virtual machine (with <a href="https://github.com/boot2docker/boot2docker">Boot2Docker</a>) that starts in about five seconds.</p>
@@ -192,8 +192,10 @@ You could take Laravel's initial approach with <a href="http://laravel.com/docs/
 <p><img alt="Dancing Tyrion" src="/images/2015/12/18/docker-tutorial3.gif" title="Dancing Tyrion" /></p>
 <hr />
 <p><strong>Note:</strong> You might get this kind of error when trying to complete the first step:</p>
-<pre><code>Network timed out while trying to connect to https://index.docker.io/v1/repositories/library/hello-world/images. You may want to check your internet connection or if you are behind a proxy.
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">Network</span> <span class="nv">timed</span> <span class="nv">out</span> <span class="k">while</span> <span class="nv">trying</span> <span class="nv">to</span> <span class="k">connect</span> <span class="nv">to</span> <span class="nv">https</span>:<span class="o">//</span><span class="nv">index</span>.<span class="nv">docker</span>.<span class="nv">io</span><span class="o">/</span><span class="nv">v1</span><span class="o">/</span><span class="nv">repositories</span><span class="o">/</span><span class="nv">library</span><span class="o">/</span><span class="nv">hello</span><span class="o">-</span><span class="nv">world</span><span class="o">/</span><span class="nv">images</span>. <span class="nv">You</span> <span class="nv">may</span> <span class="nv">want</span> <span class="nv">to</span> <span class="nv">check</span> <span class="nv">your</span> <span class="nv">internet</span> <span class="nv">connection</span> <span class="nv">or</span> <span class="k">if</span> <span class="nv">you</span> <span class="nv">are</span> <span class="nv">behind</span> <span class="nv">a</span> <span class="nv">proxy</span>.
+</pre></div>
+
+
 <p>In that case, simply run <code>docker-machine restart default</code> and try again.</p>
 <hr />
 <p>All good? Well done.</p>
@@ -220,17 +222,23 @@ You could take Laravel's initial approach with <a href="http://laravel.com/docs/
 <h3 id="nginx">Nginx</h3>
 <p>But first, let's start with an extremely basic configuration to make sure everything is working properly and that we're all on the same page (this will also allow you to familiarise with a few commands in the process).</p>
 <p>Create a folder for your project (I named mine <em>docker-tutorial</em>) and add a <code>docker-compose.yml</code> file into it, with this content:</p>
-<pre><code>nginx:
-    image: nginx:latest
-    ports:
-        - 80:80
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">nginx</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">nginx</span><span class="o">:</span><span class="n">latest</span>
+    <span class="n">ports</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">80</span><span class="o">:</span><span class="mi">80</span>
+</pre></div>
+
+
 <p>Save it and, from that same folder in your terminal, run:</p>
-<pre><code>$ docker-compose up -d
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose up -d
+</pre></div>
+
+
 <p>It might take a little while as the Nginx image needs to be pulled first. When it is done, run:</p>
-<pre><code>$ docker-machine ip default
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-machine ip default
+</pre></div>
+
+
 <p>Copy the IP address that displays and paste it in the address bar of your favourite browser. You should see Nginx's welcome page:</p>
 <p><img alt="Nginx welcome page" src="/images/2015/12/18/docker-tutorial4.png" title="Nginx welcome page" /></p>
 <p>Nice! So what did we do here?</p>
@@ -244,25 +252,27 @@ You could take Laravel's initial approach with <a href="http://laravel.com/docs/
 <h3 id="php">PHP</h3>
 <p>Still following? Good. Now let's try and add PHP and a custom <code>index.php</code> file to be displayed when accessing the machine's private IP.</p>
 <p>Replace the content of <code>docker-compose.yml</code> with this one:</p>
-<pre><code>nginx:
-    build: ./nginx/
-    ports:
-        - 80:80
-    links:
-        - php
-    volumes:
-        - ./www/html:/var/www/html
+<div class="highlight"><pre><span></span><span class="n">nginx</span><span class="o">:</span>
+    <span class="n">build</span><span class="o">:</span> <span class="o">./</span><span class="n">nginx</span><span class="o">/</span>
+    <span class="n">ports</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">80</span><span class="o">:</span><span class="mi">80</span>
+    <span class="n">links</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">php</span>
+    <span class="n">volumes</span><span class="o">:</span>
+        <span class="o">-</span> <span class="o">./</span><span class="n">www</span><span class="sr">/html:/var/www/</span><span class="n">html</span>
 
-php:
-    image: php:7.0-fpm
-    expose:
-        - 9000
-    volumes:
-        - ./www/html:/var/www/html
-</code></pre>
+<span class="n">php</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">php</span><span class="o">:</span><span class="mf">7.0</span><span class="o">-</span><span class="n">fpm</span>
+    <span class="n">expose</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">9000</span>
+    <span class="n">volumes</span><span class="o">:</span>
+        <span class="o">-</span> <span class="o">./</span><span class="n">www</span><span class="sr">/html:/var/www/</span><span class="n">html</span>
+</pre></div>
+
+
 <p>A few things here: we added a new container named <code>php</code>, which will use the official PHP image, and more specifically the <code>7.0-fpm</code> tag. As this image doesn't expose the port 9000 by default, we specify it ourselves.</p>
 <p>At this point you might be wondering what is the difference between <code>expose</code> and <code>ports</code>: the former allows to expose some ports to the <em>other containers only</em>, and the latter makes them accessible to the <em>host machine</em>.</p>
-<p>We also added a <code>volumes</code> key. What we're saying here is that the directory <code>./www/html</code> must be mounted inside the container as its <code>/var/www/html</code> directory. To simplify, it means that the content of <code>./www/html</code> on our host machine will be <em>in sync</em> with the container's <code>/var/www/html</code> directory. It also means that this content will be <em>persistent</em> even if we destroy the container.<br />
+<p>We also added a <code>volumes</code> key. What we're saying here is that the directory <code>./www/html</code> must be mounted inside the container as its <code>/var/www/html</code> directory. To simplify, it means that the content of <code>./www/html</code> on our host machine will be <em>in sync</em> with the container's <code>/var/www/html</code> directory. It also means that this content will be <em>persistent</em> even if we destroy the container.
 More on that later.</p>
 <hr />
 <p><strong>Note:</strong> If you have trouble mounting a local folder inside a container, please have a look at the corresponding <a href="https://docs.docker.com/engine/tutorials/dockervolumes/#/mount-a-host-directory-as-a-data-volume">documentation</a>.</p>
@@ -271,67 +281,75 @@ More on that later.</p>
 <p>Finally, we replaced the <code>image</code> key for a <code>build</code> one, pointing to a <code>nginx/</code> directory inside the current folder. Here, we tell Docker Compose not to use an existing image but to use the <code>Dockerfile</code> from <code>nginx/</code> to build a new image.</p>
 <p>If you followed the <em>get started</em> guide, you should already have an idea of what a Dockerfile is. Basically, it is a file allowing to describe what must be installed on the image, what commands should be run on it, etc.</p>
 <p>Here is what ours looks like (create a <code>Dockerfile</code> file with this content under a new <code>nginx/</code> directory):</p>
-<pre><code>FROM nginx:latest
+<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="n">nginx</span><span class="p">:</span><span class="n">latest</span>
 
-COPY ./default.conf /etc/nginx/conf.d/default.conf
-</code></pre>
+<span class="k">COPY</span> <span class="p">.</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">conf</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">nginx</span><span class="o">/</span><span class="n">conf</span><span class="p">.</span><span class="n">d</span><span class="o">/</span><span class="k">default</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+
+
 <p>Not much to see, eh!</p>
 <p>We start from the official Nginx image we have already used earlier and we replace the default configuration it contains with our own (might be worth noting that by default the official Nginx image will only take files named following the pattern <code>*.conf</code> and under <code>conf.d/</code> into account - a mere detail but it drove me crazy for almost three hours at the time).</p>
 <p>Let's add this <code>default.conf</code> file into <code>nginx/</code>:</p>
-<pre><code>server {
-    listen 80 default_server;
-    root /var/www/html;
-    index index.html index.php;
+<div class="highlight"><pre><span></span><span class="nv">server</span> {
+    <span class="nv">listen</span> <span class="mi">80</span> <span class="nv">default_server</span><span class="c1">;</span>
+    <span class="nv">root</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">www</span><span class="o">/</span><span class="nv">html</span><span class="c1">;</span>
+    <span class="nv">index</span> <span class="nv">index</span>.<span class="nv">html</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
 
-    charset utf-8;
+    <span class="nv">charset</span> <span class="nv">utf</span><span class="o">-</span><span class="mi">8</span><span class="c1">;</span>
 
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
+    <span class="nv">location</span> <span class="o">/</span> {
+        <span class="nv">try_files</span> $<span class="nv">uri</span> $<span class="nv">uri</span><span class="o">/</span> <span class="o">/</span><span class="nv">index</span>.<span class="nv">php</span>?$<span class="nv">query_string</span><span class="c1">;</span>
     }
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">favicon</span>.<span class="nv">ico</span> { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">robots</span>.<span class="nv">txt</span>  { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
 
-    access_log off;
-    error_log  /var/log/nginx/error.log error;
+    <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">;</span>
+    <span class="nv">error_log</span>  <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">log</span><span class="o">/</span><span class="nv">nginx</span><span class="o">/</span><span class="nv">error</span>.<span class="nv">log</span> <span class="nv">error</span><span class="c1">;</span>
 
-    sendfile off;
+    <span class="k">sendfile</span> <span class="nv">off</span><span class="c1">;</span>
 
-    client_max_body_size 100m;
+    <span class="nv">client_max_body_size</span> <span class="mi">100</span><span class="nv">m</span><span class="c1">;</span>
 
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass php:9000;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
+    <span class="nv">location</span> <span class="o">~</span> \.<span class="nv">php</span>$ {
+        <span class="nv">fastcgi_split_path_info</span> <span class="o">^</span><span class="ss">(</span>.<span class="o">+</span>\.<span class="nv">php</span><span class="ss">)(</span><span class="o">/</span>.<span class="o">+</span><span class="ss">)</span>$<span class="c1">;</span>
+        <span class="nv">fastcgi_pass</span> <span class="nv">php</span>:<span class="mi">9000</span><span class="c1">;</span>
+        <span class="nv">fastcgi_index</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
+        <span class="k">include</span> <span class="nv">fastcgi_params</span><span class="c1">;</span>
+        <span class="nv">fastcgi_param</span> <span class="nv">SCRIPT_FILENAME</span> <span class="mh">$d</span><span class="nv">ocument_root</span><span class="mh">$fa</span><span class="nv">stcgi_script_name</span><span class="c1">;</span>
+        <span class="nv">fastcgi_intercept_errors</span> <span class="nv">off</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffer_size</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffers</span> <span class="mi">4</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
     }
 
-    location ~ /\.ht {
-        deny all;
+    <span class="nv">location</span> <span class="o">~</span> <span class="o">/</span>\.<span class="nv">ht</span> {
+        <span class="nv">deny</span> <span class="nv">all</span><span class="c1">;</span>
     }
 }
-</code></pre>
+</pre></div>
+
+
 <p>It is a very basic Nginx server config.</p>
 <p>What is interesting to note here however is this line:</p>
-<pre><code>fastcgi_pass php:9000;
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nt">fastcgi_pass</span> <span class="nt">php</span><span class="p">:</span><span class="nd">9000</span><span class="o">;</span>
+</pre></div>
+
+
 <p>We are asking Nginx to proxy the requests to the port 9000 of our <code>php</code> container: that's what the <code>links</code> key from the config for the <code>nginx</code> container in the <code>docker-compose.yml</code> file was for!</p>
 <p>We just need one more file - <code>index.php</code>, inside <code>www/html</code> under the current directory:</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-    &lt;head&gt;
-        &lt;meta charset="utf-8"&gt;
-        &lt;title&gt;Hello World!&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;img src="https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif" alt="Hello World!" /&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello World!<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello World!&quot;</span> <span class="p">/&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
 <p>Yes, it only contains HTML but we just want to make sure that PHP files are correctly served.</p>
 <p>Here is what your tree should look like by now:</p>
 <p><img alt="Tree" src="/images/2015/12/18/docker-tutorial6.png" title="Tree" /></p>
@@ -347,182 +365,208 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 <p>Time to add some database madness!</p>
 <h3 id="data">Data</h3>
 <h4 id="volumes-and-data-containers">Volumes and data containers</h4>
-<p>Before we actually dive into the configuration of MySQL, let's have a closer look at this <code>volumes</code> thing. Both the <code>nginx</code> and <code>php</code> containers have the same directory mounted inside, and it's common practice to use what is called a <em>data container</em> to hold this kind of data.<br />
+<p>Before we actually dive into the configuration of MySQL, let's have a closer look at this <code>volumes</code> thing. Both the <code>nginx</code> and <code>php</code> containers have the same directory mounted inside, and it's common practice to use what is called a <em>data container</em> to hold this kind of data.
 In other words, it's a way to <em>factorise</em> the access to this data by other containers.</p>
 <p>Change the content of <code>docker-compose.yml</code> for the following:</p>
-<pre><code>nginx:
-    build: ./nginx/
-    ports:
-        - 80:80
-    links:
-        - php
-    volumes_from:
-        - app
+<div class="highlight"><pre><span></span><span class="n">nginx</span><span class="o">:</span>
+    <span class="n">build</span><span class="o">:</span> <span class="o">./</span><span class="n">nginx</span><span class="o">/</span>
+    <span class="n">ports</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">80</span><span class="o">:</span><span class="mi">80</span>
+    <span class="n">links</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">php</span>
+    <span class="n">volumes_from</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">app</span>
 
-php:
-    image: php:7.0-fpm
-    expose:
-        - 9000
-    volumes_from:
-        - app
+<span class="n">php</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">php</span><span class="o">:</span><span class="mf">7.0</span><span class="o">-</span><span class="n">fpm</span>
+    <span class="n">expose</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">9000</span>
+    <span class="n">volumes_from</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">app</span>
 
-app:
-    image: php:7.0-fpm
-    volumes:
-        - ./www/html:/var/www/html
-    command: "true"
-</code></pre>
-<p>Several things happened: first, we added a new container named <code>app</code>, using the same <code>volumes</code> parameter as the <code>nginx</code> and <code>php</code> ones. The purpose of this container is solely to hold the application code: when Docker Compose will create it, it is going to be stopped at once as it doesn't do anything apart from executing the command <em>"true"</em>. This is not a problem as for the volume to be accessible, the container needs to exist but doesn't need to be running, also preventing the pointless use of extra resources.<br />
+<span class="n">app</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">php</span><span class="o">:</span><span class="mf">7.0</span><span class="o">-</span><span class="n">fpm</span>
+    <span class="n">volumes</span><span class="o">:</span>
+        <span class="o">-</span> <span class="o">./</span><span class="n">www</span><span class="sr">/html:/var/www/</span><span class="n">html</span>
+    <span class="n">command</span><span class="o">:</span> <span class="s2">&quot;true&quot;</span>
+</pre></div>
+
+
+<p>Several things happened: first, we added a new container named <code>app</code>, using the same <code>volumes</code> parameter as the <code>nginx</code> and <code>php</code> ones. The purpose of this container is solely to hold the application code: when Docker Compose will create it, it is going to be stopped at once as it doesn't do anything apart from executing the command <em>"true"</em>. This is not a problem as for the volume to be accessible, the container needs to exist but doesn't need to be running, also preventing the pointless use of extra resources.
 Besides, you'll notice that we're using the same PHP image as the <code>php</code> container's: this is a good practice as this image already exists and reusing it doesn't take any extra space (as opposed to using a <em>data-only</em> image such as <em>busybox</em>, as you may see in other tutorials out there).</p>
 <p>The other change we made is <code>volumes</code> was replaced with <code>volumes_from</code> in <code>nginx</code> and <code>php</code>'s configurations and both are pointing to this new <code>app</code> container. This is quite self-explanatory, but basically we are telling Docker Compose to mount the volumes from <code>app</code> in both these containers.</p>
-<p>Run <code>docker-compose up -d</code> again and make sure you can still access the virtual machine's private IP properly.<br />
+<p>Run <code>docker-compose up -d</code> again and make sure you can still access the virtual machine's private IP properly.
 Running <code>docker ps</code> now should display this:</p>
 <p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial9.png" title="List of containers" /></p>
 <p><em>"Wait a minute. Where's the <code>app</code> container?"</em></p>
-<p>I'm glad you asked. If you recall I've just said that the container was stopped right after its creation, and <code>docker ps</code> only displays the <em>running</em> containers.<br />
+<p>I'm glad you asked. If you recall I've just said that the container was stopped right after its creation, and <code>docker ps</code> only displays the <em>running</em> containers.
 Now run <code>docker ps -a</code>:</p>
 <p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial10.png" title="List of containers" /></p>
 <p>There it is!</p>
 <p>If you're interested in reading more about data containers and volumes (and I encourage you to do so), I'd suggest <a href="http://container-solutions.com/understanding-volumes-docker/" title="Understanding Volumes in Docker">this article by Adrian Mouat</a> which gives a good overview (you will also find all the sources I used at the end of this article).</p>
 <h4 id="mysql">MySQL</h4>
-<p>Alright! Enough digression, back to MySQL. </p>
+<p>Alright! Enough digression, back to MySQL.</p>
 <p>Open <code>docker-compose.yml</code> again and add this at the end:</p>
-<pre><code>mysql:
-    image: mysql:latest
-    volumes_from:
-        - data
-    environment:
-        MYSQL_ROOT_PASSWORD: secret
-        MYSQL_DATABASE: project
-        MYSQL_USER: project
-        MYSQL_PASSWORD: project
+<div class="highlight"><pre><span></span><span class="n">mysql</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">mysql</span><span class="o">:</span><span class="n">latest</span>
+    <span class="n">volumes_from</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">data</span>
+    <span class="n">environment</span><span class="o">:</span>
+        <span class="n">MYSQL_ROOT_PASSWORD</span><span class="o">:</span> <span class="n">secret</span>
+        <span class="n">MYSQL_DATABASE</span><span class="o">:</span> <span class="n">project</span>
+        <span class="n">MYSQL_USER</span><span class="o">:</span> <span class="n">project</span>
+        <span class="n">MYSQL_PASSWORD</span><span class="o">:</span> <span class="n">project</span>
 
-data:
-    image: mysql:latest
-    volumes:
-        - /var/lib/mysql
-    command: "true"
-</code></pre>
+<span class="n">data</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">mysql</span><span class="o">:</span><span class="n">latest</span>
+    <span class="n">volumes</span><span class="o">:</span>
+        <span class="o">-</span> <span class="sr">/var/lib/</span><span class="n">mysql</span>
+    <span class="n">command</span><span class="o">:</span> <span class="s2">&quot;true&quot;</span>
+</pre></div>
+
+
 <p>And update the config for the <code>php</code> container to add a link to the <code>mysql</code> one and use a Dockerfile to build the image:</p>
-<pre><code>php:
-    build: ./php/
-    expose:
-        - 9000
-    links:
-        - mysql
-    volumes_from:
-        - app
-</code></pre>
-<p>You already know what the purpose of the <code>links</code> parameter is, so let's have a look at the new Dockerfile:</p>
-<pre><code>FROM php:7.0-fpm
+<div class="highlight"><pre><span></span><span class="n">php</span><span class="o">:</span>
+    <span class="n">build</span><span class="o">:</span> <span class="o">./</span><span class="n">php</span><span class="o">/</span>
+    <span class="n">expose</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">9000</span>
+    <span class="n">links</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">mysql</span>
+    <span class="n">volumes_from</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">app</span>
+</pre></div>
 
-RUN docker-php-ext-install pdo_mysql
-</code></pre>
+
+<p>You already know what the purpose of the <code>links</code> parameter is, so let's have a look at the new Dockerfile:</p>
+<div class="highlight"><pre><span></span><span class="k">FROM</span> <span class="n">php</span><span class="p">:</span><span class="mi">7</span><span class="p">.</span><span class="mi">0</span><span class="o">-</span><span class="n">fpm</span>
+
+<span class="n">RUN</span> <span class="n">docker</span><span class="o">-</span><span class="n">php</span><span class="o">-</span><span class="n">ext</span><span class="o">-</span><span class="n">install</span> <span class="n">pdo_mysql</span>
+</pre></div>
+
+
 <p>Again, not much in there: we simply install the <em>pdo_mysql</em> extension so we can connect to the database (see <em>How to install more PHP extensions</em> from the <a href="https://hub.docker.com/_/php/">image's doc</a>). Put this file in a new <code>php/</code> directory.</p>
 <p>Moving on to the MySQL configuration: we start from the <a href="https://hub.docker.com/_/mysql/">official MySQL image</a>, and as you can see there is a new <code>environment</code> key we haven't met so far: it allows to declare some environment variables that will be accessible in the container. More specifically here, we set the root password for MySQL, and a name (<code>project</code>), a user and a password for a database to be created (all the available variables are listed in the <a href="https://hub.docker.com/_/mysql/">image's documentation</a>).</p>
-<p>Following the same principle as exposed earlier, we also declare a <code>data</code> container whose aim is only to hold the MySQL data present in <code>/var/lib/mysql</code> on the container (and reusing the same MySQL image to save disk space). You might have noticed that, unlike what we were doing so far, we do not declare a specific directory on the host machine to be mounted into <code>/var/lib/mysql</code> (normally specified before the colon): we don't need to know where this directory is, we just want its content to persist, so we let Docker Compose handle this part.<br />
+<p>Following the same principle as exposed earlier, we also declare a <code>data</code> container whose aim is only to hold the MySQL data present in <code>/var/lib/mysql</code> on the container (and reusing the same MySQL image to save disk space). You might have noticed that, unlike what we were doing so far, we do not declare a specific directory on the host machine to be mounted into <code>/var/lib/mysql</code> (normally specified before the colon): we don't need to know where this directory is, we just want its content to persist, so we let Docker Compose handle this part.
 Although that does not mean we have no idea where this folder sits - but we'll have a look at this later.</p>
 <p>One thing worth noting right now tho, is that if this volume already contains MySQL data, the <code>MYSQL_ROOT_PASSWORD</code> variable will be ignored and if the <code>MYSQL_DATABASE</code> already exists, it will remain untouched.</p>
 <p>In order to be able to test the connection to the database straight away, let's update the <code>index.php</code> file a bit:</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-    &lt;head&gt;
-        &lt;meta charset="utf-8"&gt;
-        &lt;title&gt;Hello World!&lt;/title&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;img src="https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif" alt="Hello World!" /&gt;
-        &lt;?php
-        $database   = $user = $password = "project";
-        $host       = "mysql";
-        $connection = new PDO("mysql:host={$host};dbname={$database};charset=utf8", $user, $password);
-        $query      = $connection-&gt;query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE='BASE TABLE'");
-        $tables     = $query-&gt;fetchAll(PDO::FETCH_COLUMN);
+<div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello World!<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2015/12/18/docker-tutorial2.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello World!&quot;</span> <span class="p">/&gt;</span>
+        <span class="cp">&lt;?php</span>
+        <span class="nv">$database</span>   <span class="o">=</span> <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$password</span> <span class="o">=</span> <span class="s2">&quot;project&quot;</span><span class="p">;</span>
+        <span class="nv">$host</span>       <span class="o">=</span> <span class="s2">&quot;mysql&quot;</span><span class="p">;</span>
+        <span class="nv">$connection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PDO</span><span class="p">(</span><span class="s2">&quot;mysql:host=</span><span class="si">{</span><span class="nv">$host</span><span class="si">}</span><span class="s2">;dbname=</span><span class="si">{</span><span class="nv">$database</span><span class="si">}</span><span class="s2">;charset=utf8&quot;</span><span class="p">,</span> <span class="nv">$user</span><span class="p">,</span> <span class="nv">$password</span><span class="p">);</span>
+        <span class="nv">$query</span>      <span class="o">=</span> <span class="nv">$connection</span><span class="o">-&gt;</span><span class="na">query</span><span class="p">(</span><span class="s2">&quot;SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE=&#39;BASE TABLE&#39;&quot;</span><span class="p">);</span>
+        <span class="nv">$tables</span>     <span class="o">=</span> <span class="nv">$query</span><span class="o">-&gt;</span><span class="na">fetchAll</span><span class="p">(</span><span class="nx">PDO</span><span class="o">::</span><span class="na">FETCH_COLUMN</span><span class="p">);</span>
 
-        if (empty($tables)) {
-            echo "&lt;p&gt;There are no tables in database \"{$database}\".&lt;/p&gt;";
-        } else {
-            echo "&lt;p&gt;Database \"{$database}\" has the following tables:&lt;/p&gt;";
-            echo "&lt;ul&gt;";
-            foreach ($tables as $table) {
-                echo "&lt;li&gt;{$table}&lt;/li&gt;";
-            }
-            echo "&lt;/ul&gt;";
-        }
-        ?&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+        <span class="k">if</span> <span class="p">(</span><span class="k">empty</span><span class="p">(</span><span class="nv">$tables</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">&quot;&lt;p&gt;There are no tables in database </span><span class="se">\&quot;</span><span class="si">{</span><span class="nv">$database</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">.&lt;/p&gt;&quot;</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">echo</span> <span class="s2">&quot;&lt;p&gt;Database </span><span class="se">\&quot;</span><span class="si">{</span><span class="nv">$database</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> has the following tables:&lt;/p&gt;&quot;</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">&quot;&lt;ul&gt;&quot;</span><span class="p">;</span>
+            <span class="k">foreach</span> <span class="p">(</span><span class="nv">$tables</span> <span class="k">as</span> <span class="nv">$table</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">echo</span> <span class="s2">&quot;&lt;li&gt;</span><span class="si">{</span><span class="nv">$table</span><span class="si">}</span><span class="s2">&lt;/li&gt;&quot;</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">&quot;&lt;/ul&gt;&quot;</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="cp">?&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+
 <p>This script will try to connect to the database and list the tables it contains.</p>
 <p>We're all set! Run <code>docker-compose up -d</code> in your terminal again, followed by <code>docker ps -a</code> (again, it might take a little while as the MySQL image needs to be pulled). You should see five containers, two of which are exited:</p>
 <p><img alt="List of containers" src="/images/2015/12/18/docker-tutorial11.png" title="List of containers" /></p>
 <p>Now refresh the browser tab: <em>"There are no tables in database 'project'"</em> should appear.</p>
 <p>Event though the next point is about phpMyAdmin and you will be able to use it to edit your databases, I am now going to show you how to access the running MySQL container and use the MySQL command line interface.</p>
 <p>From the result of the previous command, copy the <em>running</em> MySQL container ID (<code>5207587d116b</code> in our case) and run:</p>
-<pre><code>$ docker exec -it 5207587d116b /bin/bash
-</code></pre>
+<div class="highlight"><pre><span></span>$ <span class="nv">docker</span> <span class="k">exec</span> <span class="o">-</span><span class="nv">it</span> <span class="mi">5207587</span><span class="nv">d116b</span> <span class="o">/</span><span class="nv">bin</span><span class="o">/</span><span class="nv">bash</span>
+</pre></div>
+
+
 <p>You are now running an interactive shell in this container (you can also use its name instead of its ID).</p>
 <p><a href="https://docs.docker.com/engine/reference/commandline/exec/"><code>docker exec</code></a> allows to execute a command in a running container, <code>-t</code> attaches a terminal and <code>-i</code> makes it interactive. Finally, <code>/bin/bash</code> is the command that is run and creates a <code>bash</code> instance inside the container.</p>
 <p>Of course, you can use the same command for other containers too.</p>
 <p>From there, all you need to do is run <code>mysql -uroot -psecret</code> to enter the MySQL CLI. List the databases running <code>show databases;</code>:</p>
 <p><img alt="List of databases" src="/images/2015/12/18/docker-tutorial12.png" title="List of databases" /></p>
 <p>Change the current database for <code>project</code> and create a new table:</p>
-<pre><code>$ mysql&gt; use project
-$ mysql&gt; CREATE TABLE users (id int);
-</code></pre>
+<div class="highlight"><pre><span></span>$ mysql&gt; use project
+$ mysql&gt; CREATE TABLE users <span class="o">(</span>id int<span class="o">)</span><span class="p">;</span>
+</pre></div>
+
+
 <p>Refresh the project page: the table <code>users</code> should now be listed.</p>
 <p>You can exit the MySQL CLI entering <code>\q</code> and the container with <code>ctrl</code> + <code>d</code>.</p>
 <p>There is one question about the MySQL data we haven't answered yet: where does it sit on the host machine?</p>
 <p>Earlier we set up the <code>data</code> container in <code>docker-compose.yml</code> as follows:</p>
-<pre><code>data:
-    image: mysql:latest
-    volumes:
-        - /var/lib/mysql
-    command: "true"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">data</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">mysql</span><span class="o">:</span><span class="n">latest</span>
+    <span class="n">volumes</span><span class="o">:</span>
+        <span class="o">-</span> <span class="sr">/var/lib/</span><span class="n">mysql</span>
+    <span class="n">command</span><span class="o">:</span> <span class="s2">&quot;true&quot;</span>
+</pre></div>
+
+
 <p>That means we let Docker Compose mount a directory of its choice from the host machine into <code>/var/lib/mysql</code>. So where is it?</p>
 <p>Run <code>docker ps -a</code> again, copy the ID of the <em>exited</em> MySQL container this time (<code>7970b851b07a</code> in our case) , and run :</p>
-<pre><code>$ docker inspect 7970b851b07a
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker inspect 7970b851b07a
+</pre></div>
+
+
 <p>Some JSON data should appear on your screen. Look for the <code>Mounts</code> section:</p>
-<pre><code>...,
-"Mounts": [
-    {
-        "Name": "0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f",
-        "Source": "/mnt/sda1/var/lib/docker/volumes/0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f/_data",
-        "Destination": "/var/lib/mysql",
-        "Driver": "local",
-        "Mode": "",
-        "RW": true
-    }
-],
-...
-</code></pre>
+<div class="highlight"><pre><span></span><span class="p">...,</span>
+<span class="ss">&quot;Mounts&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="err">{</span>
+        <span class="ss">&quot;Name&quot;</span><span class="p">:</span> <span class="ss">&quot;0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;Source&quot;</span><span class="p">:</span> <span class="ss">&quot;/mnt/sda1/var/lib/docker/volumes/0cd0f26f7a41e40437019d9e5514b237e492dc72a6459da88d36621a9af2599f/_data&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;Destination&quot;</span><span class="p">:</span> <span class="ss">&quot;/var/lib/mysql&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;Driver&quot;</span><span class="p">:</span> <span class="ss">&quot;local&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;Mode&quot;</span><span class="p">:</span> <span class="ss">&quot;&quot;</span><span class="p">,</span>
+        <span class="ss">&quot;RW&quot;</span><span class="p">:</span> <span class="k">true</span>
+    <span class="err">}</span>
+<span class="p">],</span>
+<span class="p">...</span>
+</pre></div>
+
+
 <p>The data contained in the volume sits in the <code>"Source"</code> directory.</p>
 <p><em>"Hmm I see.</em></p>
 <p><em>But… what happens to the volumes if we remove the containers that hold them?"</em></p>
 <p>Excellent question!</p>
 <p>Well, they actually stay around, taking disk space for nothing.</p>
 <p>Two solutions for this. First, we can make sure to remove the volumes along with the container using the <code>-v</code> option:</p>
-<pre><code>$ docker rm -v containerid
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker rm -v containerid
+</pre></div>
+
+
 <p>Or, if some containers were removed without the <code>-v</code> option, resulting in dangling volumes:</p>
-<pre><code>$ docker volume rm $(docker volume ls -qf dangling=true)
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker volume rm <span class="k">$(</span>docker volume ls -qf <span class="nv">dangling</span><span class="o">=</span><span class="nb">true</span><span class="k">)</span>
+</pre></div>
+
+
 <p>This command uses the <code>docker volume ls</code> command with the <code>q</code> and <code>f</code> options to respectively list the volumes' names only and keep the dangling ones (<code>dangling=true</code>).</p>
 <p>Check the <a href="https://docs.docker.com/engine/reference/commandline/cli/">Docker command line documentation</a> for more info.</p>
 <h3 id="phpmyadmin">phpMyAdmin</h3>
 <p>Being able to access a container and deal with MySQL using the command line interface is a good thing, but sometimes it is convenient to have a more friendly user interface. PHPMyAdmin is arguably the <em>de facto</em> choice when it comes to MySQL, so let's set it up using Docker!</p>
 <p>Open <code>docker-compose.yml</code> again and add the following:</p>
-<pre><code>phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    ports:
-        - 8080:80
-    links:
-        - mysql
-    environment:
-        PMA_HOST: mysql
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">phpmyadmin</span><span class="o">:</span>
+    <span class="n">image</span><span class="o">:</span> <span class="n">phpmyadmin</span><span class="o">/</span><span class="n">phpmyadmin</span>
+    <span class="n">ports</span><span class="o">:</span>
+        <span class="o">-</span> <span class="mi">8080</span><span class="o">:</span><span class="mi">80</span>
+    <span class="n">links</span><span class="o">:</span>
+        <span class="o">-</span> <span class="n">mysql</span>
+    <span class="n">environment</span><span class="o">:</span>
+        <span class="n">PMA_HOST</span><span class="o">:</span> <span class="n">mysql</span>
+</pre></div>
+
+
 <p>Once again, we start from the <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin/">official phpMyAdmin image</a>. We publish its port 80 to the virtual machine's port 8080, we link it to the <code>mysql</code> container (obviously) and we set it as the host using the <code>PMA_HOST</code> environment variable.</p>
 <p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded and, once everything is up, visit the project page again, appending <code>:8080</code> to the private IP (that's how we access the VM's port 8080):</p>
 <p><img alt="phpMyAdmin" src="/images/2015/12/18/docker-tutorial13.png" title="phpMyAdmin" /></p>
@@ -532,7 +576,7 @@ $ mysql&gt; CREATE TABLE users (id int);
 <p>This is a lot to digest already, so taking a break might be a good idea. Don't forget to read on eventually though, as the next couple of sections will most likely clarify a few points.</p>
 <p>Again, the setup is also available as a <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a>. Feel free to clone it and play around.</p>
 <h2 id="handling-multiple-projects">Handling multiple projects</h2>
-<p>One big advantage of using Docker rather than say, multiple Vagrant boxes, is if several containers use the same base images, the disk space usage will only increase by the read-write layer of each container, which is usually only a few megabytes.<br />
+<p>One big advantage of using Docker rather than say, multiple Vagrant boxes, is if several containers use the same base images, the disk space usage will only increase by the read-write layer of each container, which is usually only a few megabytes.
 To put it differently, if you use the same stack for most of your projects, each new project will basically only take a few extra megabytes to run (not taking into account the size of the codebase here, obviously).</p>
 <p>Say you want to use the same stack except you need PostgreSQL instead of MySQL. All you need to do is change the database container image for your new project, and all the other containers will reuse the images you already have locally.</p>
 <p>Pretty neat.</p>
@@ -541,33 +585,45 @@ To put it differently, if you use the same stack for most of your projects, each
 <p>That's not really an issue as you can easily stop containers.</p>
 <p>You might have noticed that we used <code>docker</code> and <code>docker-compose</code> commands in turn, which might be a tad confusing. To simplify, let's say <code>docker-compose</code> allows to run the same commands as <code>docker</code>, but on all the containers defined in the <code>docker-compose.yml</code> file at once, or for these containers only.</p>
 <p>Let's take a couple of examples:</p>
-<pre><code>docker ps -a
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">ps</span> <span class="o">-</span><span class="n">a</span>
+</pre></div>
+
+
 <p>You already know this command: it displays all the containers of the Docker machine, be they running or not. <em>All</em> of them.</p>
 <p>However:</p>
-<pre><code>docker-compose ps
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">ps</span>
+</pre></div>
+
+
 <p>will do the same, but for the containers defined in the <code>docker-compose.yml</code> file of the current directory only (you will notice that <code>-a</code> is not necessary and that the order of the displayed info is slightly different).</p>
-<p>It comes in handy when you begin to have a lot of containers managed by the same VM.<br />
+<p>It comes in handy when you begin to have a lot of containers managed by the same VM.
 But there is more:</p>
-<pre><code>docker-compose stop
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">stop</span>
+</pre></div>
+
+
 <p>will stop all the containers described in the current <code>docker-compose.yml</code> file. Basically when you are done with a project, run this command to stop all its related containers. To connect the dots with what I said above, that will also free the port 80 for another project if need be.</p>
 <p>Start them again using the now familiar <code>docker-compose up -d</code>.</p>
 <p>You can also delete all the <em>stopped</em> containers of the current project running:</p>
-<pre><code>docker-compose rm
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">rm</span>
+</pre></div>
+
+
 <p>Just like its equivalent <code>docker rm</code>, you can add the option <code>-v</code> if you want to remove the corresponding volumes as well (if you don't, you might end up with dangling volumes as already mentioned earlier).</p>
 <p>Check the <a href="https://docs.docker.com/engine/reference/commandline/cli/"><code>docker</code></a> and <a href="https://docs.docker.com/compose/reference/"><code>docker-compose</code></a> references for more details.</p>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <p>Obviously, not everything is always going to work at once. Docker Compose might refuse to build an image or start a container and what is displayed in the console is not always very helpful.</p>
 <p>When something goes wrong, run:</p>
-<pre><code>docker-compose logs
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span><span class="o">-</span><span class="n">compose</span> <span class="n">logs</span>
+</pre></div>
+
+
 <p>This will display the logs for the containers of the current <code>docker-compose.yml</code> file. You can also run <code>docker-compose ps</code> and check the <code>State</code> column: if there is an exit code different than <code>0</code>, there was a problem with the container.</p>
 <p>Display the logs specific to a container with:</p>
-<pre><code>docker logs containerid
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">docker</span> <span class="n">logs</span> <span class="n">containerid</span>
+</pre></div>
+
+
 <p>The container's name will work too.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Docker is an amazing technology and of course there is much more to it (I'm not even started with deployment and how to use it into production and believe me, it is very promising).</p>
@@ -609,7 +665,7 @@ But there is more:</p>
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

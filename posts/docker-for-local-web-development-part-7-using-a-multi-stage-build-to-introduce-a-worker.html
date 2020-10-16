@@ -73,7 +73,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -90,8 +90,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -180,32 +180,55 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Now that all of the characters have been introduced, it's time to get into the plot.</p>
 <p>The first thing we need to do is to install the Redis extension for PHP, since it is not part of the pre-compiled ones. As this extension is a bit complicated to set up, we'll use a <a href="https://github.com/mlocati/docker-php-extension-installer">convenient script</a> featured in the <a href="https://hub.docker.com/_/php">official PHP images' documentation</a>, which makes it easy to install PHP extensions across Linux distributions.</p>
 <p>Replace the content of the backend's Dockerfile with this one:</p>
-<pre><code>FROM php:7.4-fpm-alpine
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine</span>
 
-# Import extension installer
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+<span class="c"># Import extension installer</span>
+<span class="k">COPY</span> --from<span class="o">=</span>mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
-# Install extensions
-RUN install-php-extensions bcmath pdo_mysql redis
+<span class="c"># Install extensions</span>
+<span class="k">RUN</span> install-php-extensions bcmath pdo_mysql redis
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+<span class="c"># Install Composer</span>
+<span class="k">RUN</span> curl -sS https://getcomposer.org/installer <span class="p">|</span> php -- --install-dir<span class="o">=</span>/usr/local/bin --filename<span class="o">=</span>composer
 
-# Install extra packages
-RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
-</code></pre>
+<span class="c"># Install extra packages</span>
+<span class="k">RUN</span> apk --no-cache add bash mysql-client mariadb-connector-c-dev
+</pre></div>
+</td></tr></table>
+
 <p>Note that <code>redis</code> was added to the list of extensions.</p>
 <p>Build the image:</p>
-<pre><code>$ demo build backend
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo build backend
+</pre></div>
+
+
 <p>Our next task is to run an instance of Redis. In accordance with the principle of running a single process per container, we'll create a dedicated service in <code>docker-compose.yml</code>, and since the <a href="https://hub.docker.com/_/redis">official images</a> include an Alpine version, that's what we are going to use:</p>
-<pre><code># Redis Service
-redis:
-  image: redis:6-alpine
-  command: ["redis-server", "--appendonly", "yes"]
-  volumes:
-    - redisdata:/data
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Redis Service</span>
+<span class="nt">redis</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">redis:6-alpine</span>
+  <span class="nt">command</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;redis-server&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;--appendonly&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;yes&quot;</span><span class="p p-Indicator">]</span>
+  <span class="nt">volumes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">redisdata:/data</span>
+</pre></div>
+</td></tr></table>
+
 <p>The image's <a href="https://github.com/docker-library/redis/blob/master/6.0/Dockerfile">default start-up command</a> is <code>redis-server</code> with no option, but <a href="https://hub.docker.com/_/redis">as per the documentation</a>, it doesn't cover data persistence. In order to enable it, we need to set the <code>appendonly</code> option to <code>yes</code>, hence the <code>command</code> configuration setting, overriding the default one (this also shows you how to do this without using a Dockerfile).</p>
 <p>For data persistence to be fully functional, we also need a volume, to be added at the bottom of the file:</p>
 <pre>
@@ -237,22 +260,30 @@ backend:
 </pre>
 
 <p>Save <code>docker-compose.yml</code> and start the project to download the new image and create the corresponding container and volume:</p>
-<pre><code>$ demo start
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo start
+</pre></div>
+
+
 <p>This will also recreate the backend container in order to use the updated image we built earlier – the one including the Redis extension.</p>
 <p>To make sure Redis is running properly, take a look at the logs:</p>
-<pre><code>$ demo logs redis
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo logs redis
+</pre></div>
+
+
 <p>They should display something like this:</p>
 <p><img alt="Redis logs" src="/images/2020/05/25/docker-02.png" title="Redis logs" /></p>
 <p>There's one last thing we need to do prior to creating our job: the backend application is currently set up to run the jobs immediately, and we need to tell it to queue them using Redis instead.</p>
 <p>Open <code>src/backend/.env</code>, and spot the following line:</p>
-<pre><code>QUEUE_CONNECTION=sync
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">QUEUE_CONNECTION</span><span class="o">=</span>sync
+</pre></div>
+
+
 <p>Replace it with these two lines:</p>
-<pre><code>QUEUE_CONNECTION=redis
-REDIS_HOST=redis
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">QUEUE_CONNECTION</span><span class="o">=</span>redis
+<span class="nv">REDIS_HOST</span><span class="o">=</span>redis
+</pre></div>
+
+
 <p>That's all we need here, because the other parameters' default values are already the right ones (you can find them in <code>src/backend/config/database.php</code>).</p>
 <div class="info">
 <p><span class="title">Monitoring Redis</span> If you want to use an external tool to access your Redis database, you can simply update the service's configuration in <code>docker-compose.yml</code> and add a <code>ports</code> section mapping your local machine's port 6379 to the container's:</p>
@@ -268,41 +299,76 @@ REDIS_HOST=redis
 
 <h2 id="the-job">The job</h2>
 <p>Laravel has built-in scaffolding tools we can use to create a job:</p>
-<pre><code>$ demo artisan make:job Time
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo artisan make:job Time
+</pre></div>
+
+
 <p>This command will create a new <code>Jobs</code> folder in <code>src/backend/app</code>, containing a <code>Time.php</code> file. Open it and change the content of the <code>handle</code> method to this one:</p>
-<pre><code>/**
- * Execute the job.
- *
- * @return void
- */
-public function handle()
-{
-    \Log::info(sprintf('It is %s', date('g:i a T')));
-}
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span> <span class="c1">// ignore this line, it&#39;s for syntax highlighting only</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * Execute the job.</span>
+<span class="sd"> *</span>
+<span class="sd"> * @return void</span>
+<span class="sd"> */</span>
+<span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="nx">\Log</span><span class="o">::</span><span class="na">info</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;It is %s&#39;</span><span class="p">,</span> <span class="nb">date</span><span class="p">(</span><span class="s1">&#39;g:i a T&#39;</span><span class="p">)));</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>All the job does is log the current time. The class already has all of the necessary traits to make it <em>queueable</em>, so there's no need to worry about that.</p>
 <p>Laravel has a nice <a href="https://laravel.com/docs/7.x/scheduling">command scheduler</a> we can use to define tasks that need to be executed periodically, with <a href="https://laravel.com/docs/7.x/scheduling#scheduling-queued-jobs">built-in helpers</a> to manage queued jobs specifically.</p>
 <p>Open the <code>src/backend/app/Console/Kernel.php</code> file and update the <code>schedule</code> method:</p>
-<pre><code>/**
- * Define the application's command schedule.
- *
- * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
- * @return void
- */
-protected function schedule(Schedule $schedule)
-{
-    $schedule-&gt;job(new \App\Jobs\Time)-&gt;everyMinute();
-}
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span> <span class="c1">// ignore this line, it&#39;s for syntax highlighting only</span>
+
+<span class="sd">/**</span>
+<span class="sd"> * Define the application&#39;s command schedule.</span>
+<span class="sd"> *</span>
+<span class="sd"> * @param  \Illuminate\Console\Scheduling\Schedule  $schedule</span>
+<span class="sd"> * @return void</span>
+<span class="sd"> */</span>
+<span class="k">protected</span> <span class="k">function</span> <span class="nf">schedule</span><span class="p">(</span><span class="nx">Schedule</span> <span class="nv">$schedule</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$schedule</span><span class="o">-&gt;</span><span class="na">job</span><span class="p">(</span><span class="k">new</span> <span class="nx">\App\Jobs\Time</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">everyMinute</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>We essentially ask the scheduler to dispatch the <code>Time</code> job every minute.</p>
 <p>It won't do that by itself though, and needs to be started via an Artisan command. But before we run it, we'll start a queue worker manually, so we can see the jobs being processed in real time.</p>
 <p>Open a new terminal window and run the following command:</p>
-<pre><code>$ demo artisan queue:work
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo artisan queue:work
+</pre></div>
+
+
 <p>You can now go back to the first terminal window and run the scheduler:</p>
-<pre><code>$ demo artisan schedule:run
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo artisan schedule:run
+</pre></div>
+
+
 <p>Which should display something like this:</p>
 <p><img alt="schedule:run" src="/images/2020/05/25/docker-03.png" title="schedule:run" /></p>
 <p>If all went well, the other window should now show this:</p>
@@ -337,27 +403,45 @@ CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
 </pre>
 
 <p>We now have two separate stages: <code>backend</code> and <code>worker</code>. The former is basically the original Dockerfile – we've simply named it <code>backend</code> using the <code>as</code> keyword at the very top:</p>
-<pre><code>FROM php:7.4-fpm-alpine as backend
-</code></pre>
-<p>The latter aims to describe the worker, and is based on the former:</p>
-<pre><code>FROM backend as worker
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine as backend</span>
+</pre></div>
 
-# Start worker
-CMD ["php", "/var/www/backend/artisan", "queue:work"]
-</code></pre>
+
+<p>The latter aims to describe the worker, and is based on the former:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> backend as worker</span>
+
+<span class="c"># Start worker</span>
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;php&quot;</span><span class="p">,</span> <span class="s2">&quot;/var/www/backend/artisan&quot;</span><span class="p">,</span> <span class="s2">&quot;queue:work&quot;</span><span class="p">]</span>
+</pre></div>
+</td></tr></table>
+
 <p>All we do here is we reuse the <code>backend</code> stage almost as is, only overriding its default command by defining the <code>queue:work</code> Artisan command in its place. In other words, whenever a container is started for the <code>worker</code> stage, its running process will be the queue worker instead of PHP-FPM by default.</p>
 <p>How do we start such a container? We first need to define a separate service in <code>docker-compose.yml</code>:</p>
-<pre><code># Worker Service
-worker:
-  build:
-    context: ./src/backend
-    target: worker
-  working_dir: /var/www/backend
-  volumes:
-    - ./src/backend:/var/www/backend:delegated
-  depends_on:
-    - backend
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Worker Service</span>
+<span class="nt">worker</span><span class="p">:</span>
+  <span class="nt">build</span><span class="p">:</span>
+    <span class="nt">context</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend</span>
+    <span class="nt">target</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">worker</span>
+  <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/backend</span>
+  <span class="nt">volumes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend:/var/www/backend:delegated</span>
+  <span class="nt">depends_on</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">backend</span>
+</pre></div>
+</td></tr></table>
+
 <p>This all looks familiar already, except for the <code>build</code> section which now has a couple of properties: <code>context</code> and <code>target</code>. The former points to the folder where the Dockerfile shall be found, and the latter allows us to specify which stage should be used as the base image for the service's containers.</p>
 <p>We're almost done with <code>docker-compose.yml</code> – we just need to update the definition of the <code>backend</code> service to tell it to target the <code>backend</code> stage:</p>
 <pre>
@@ -376,29 +460,41 @@ backend:
 </pre>
 
 <p>Save the file and build the corresponding images:</p>
-<pre><code>$ demo build backend
+<div class="highlight"><pre><span></span>$ demo build backend
 $ demo build worker
-</code></pre>
+</pre></div>
+
+
 <p>Start the project for the new images to be picked up:</p>
-<pre><code>$ demo start
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo start
+</pre></div>
+
+
 <p>Then run the scheduler again:</p>
-<pre><code>$ demo artisan schedule:run
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo artisan schedule:run
+</pre></div>
+
+
 <p>If all went well, the job should be scheduled and a new line should appear in <code>src/backend/storage/laravel.log</code>, while the worker's container logs display a couple of new lines:</p>
-<pre><code>$ demo logs worker
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo logs worker
+</pre></div>
+
+
 <p><img alt="Worker logs" src="/images/2020/05/25/docker-06.png" title="Worker logs" /></p>
 <p>Your worker is now complete! It will run silently in the background every time you start your project, ready to process any job your application throws at it.</p>
 <h2 id="updating-the-initialisation-script">Updating the initialisation script</h2>
 <p>If you've been with me from the start and are using a Bash layer to manage your setup, all that's left to do is to update the backend's initialisation script so it uses Redis for queues by default.</p>
 <p>The steps are very similar to what we did at the beginning of this article – open <code>.docker/backend/init</code>, and spot the following line:</p>
-<pre><code>QUEUE_CONNECTION=sync
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">QUEUE_CONNECTION</span><span class="o">=</span>sync
+</pre></div>
+
+
 <p>Replace it with these two lines and save the file:</p>
-<pre><code>QUEUE_CONNECTION=redis
-REDIS_HOST=redis
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">QUEUE_CONNECTION</span><span class="o">=</span>redis
+<span class="nv">REDIS_HOST</span><span class="o">=</span>redis
+</pre></div>
+
+
 <p>Done!</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Multi-stage builds are a powerful tool of which this is a mere introduction. Each stage can refer to a different image, basically allowing maintainers to come up with all sorts of pipeline-like builds, where the tools used at each stage are discarded to only keep the final output in the resulting image. Think about that for a minute.</p>
@@ -423,7 +519,7 @@ REDIS_HOST=redis
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

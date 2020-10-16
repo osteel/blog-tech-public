@@ -73,7 +73,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -90,8 +90,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -177,24 +177,38 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>There are multiple schedulers out there that we can use with Docker; they all more or less work in a similar way, but I settled on <a href="https://hub.docker.com/r/mcuadros/ofelia">Ofelia</a> for its simplicity. Ofelia is written in Go and allows us to quickly define tasks to be run periodically, targeting any of our setup's containers.</p>
 <p>There are various ways to define scheduled tasks with Ofelia, mostly differing in where the tasks' configuration is located. I personally favour the approach involving a <code>config.ini</code> file, for it doesn't require updating the other services, ensuring minimum coupling and easy replacement if necessary (another configuration approach implies changing the targeted services' definition in <code>docker-compose.yml</code>, which I'm less happy with).</p>
 <p>Let's see what this looks like in practice. Create a new <code>scheduler</code> folder under the <code>.docker</code> directory at the root, and add a <code>config.ini</code> file to it, with the following content:</p>
-<pre><code>[job-exec "Laravel Scheduler"]
-schedule = @every 1m
-container = demo_backend_1
-command = php /var/www/backend/artisan schedule:run
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">[</span>job-exec <span class="s2">&quot;Laravel Scheduler&quot;</span><span class="o">]</span>
+<span class="nv">schedule</span> <span class="o">=</span> @every 1m
+<span class="nv">container</span> <span class="o">=</span> demo_backend_1
+<span class="nb">command</span> <span class="o">=</span> php /var/www/backend/artisan schedule:run
+</pre></div>
+</td></tr></table>
+
 <p>Here we've defined a single job – Laravel's <code>schedule:run</code> Artisan command – to be run every minute on the backend's container. <code>job-exec</code> indicates that we'll be using the already running backend container (as you may have guessed, there's also a <code>job-run</code> option to spin up a fresh container instead), whose name we assigned to the <code>container</code> key: <code>demo_backend_1</code>. This is Ofelia's only small defect in my opinion: it won't guess the container's name based on the service's, and requires us to specify the running container's expected name instead.</p>
 <p>It's not really a big deal since we know the container's name is made of the project's name, the service's name and the container's number, but automatic name resolution would definitely be a plus. There are <a href="https://github.com/mcuadros/ofelia/issues/78">discussions</a> about this, but it looks like it won't be implemented just yet.</p>
 <p>In any case, what's interesting to observe here is that instead of being run from inside the container, the command ends up being exposed to and run from the outside. This is how scheduling tasks in Docker should be contemplated: as some sort of internally exposed API for command line operations, centrally managed by a scheduler.</p>
 <p>We now need to define a service for that scheduler, to be added to <code>docker-compose.yml</code>:</p>
-<pre><code># Scheduler Service
-scheduler:
-  image: mcuadros/ofelia:latest
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    - ./.docker/scheduler/config.ini:/etc/ofelia/config.ini
-  depends_on:
-    - backend
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Scheduler Service</span>
+<span class="nt">scheduler</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mcuadros/ofelia:latest</span>
+  <span class="nt">volumes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/run/docker.sock:/var/run/docker.sock:ro</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/scheduler/config.ini:/etc/ofelia/config.ini</span>
+  <span class="nt">depends_on</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">backend</span>
+</pre></div>
+</td></tr></table>
+
 <p>Mind the fact that the <code>config.ini</code> file is mounted onto the container, and that the backend container is required to be started first.</p>
 <p>Believe it or not, we're pretty much done. Save the file and run <code>demo start</code> to download Ofelia's image and start the scheduler, before running <code>demo logs scheduler</code> to ensure it is functional:</p>
 <p><img alt="Scheduler logs" src="/images/2020/06/08/docker-02.png" title="Scheduler logs" /></p>
@@ -225,7 +239,7 @@ scheduler:
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

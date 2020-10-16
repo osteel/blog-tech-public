@@ -73,7 +73,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -90,8 +90,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -176,18 +176,26 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-5"><em>part-5</em> branch</a>, which is the final result of today's article.</p>
 <h2 id="generating-the-certificate">Generating the certificate</h2>
 <p>We will generate the certificate and its key in a new <code>certs</code> folder under <code>.docker/nginx</code> – create that folder and add the following <code>.gitignore</code> file to it:</p>
-<pre><code>*
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span>*
 !.gitignore
-</code></pre>
+</pre></div>
+</td></tr></table>
+
 <p>These two lines mean that all of the files contained in that directory except for <code>.gitignore</code> will be ignored by Git (this is a nicer version of the <code>.keep</code> file you may sometimes encounter, which aims to version an empty folder in Git).</p>
 <p>Since one of the goals of using Docker is to avoid cluttering the local machine as much as possible, we'll use a container to install OpenSSL and generate the certificate. Nginx's is a logical choice for this – being our proxy, it will be the one receiving the encrypted traffic on port 443, before redirecting it to the right container:</p>
 <p><img alt="Traffic" src="/images/2020/04/27/docker-02.jpg" title="Traffic" /></p>
 <p>We need a Dockerfile for this, which we'll add under <code>.docker/nginx</code>:</p>
-<pre><code>FROM nginx:1.17-alpine
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> nginx:1.17-alpine</span>
 
-# Install packages
-RUN apk --update --no-cache add openssl
-</code></pre>
+<span class="c"># Install packages</span>
+<span class="k">RUN</span> apk --update --no-cache add openssl
+</pre></div>
+</td></tr></table>
+
 <p>We also need to update <code>docker-compose.yml</code> to reference this Dockerfile and mount the <code>certs</code> folder onto the Nginx container, to make the certificate available to the web server. Also, since the SSL/TLS traffic uses port 443, the local machine's port 443 must be mapped to the container's (as always, changes have been highlighted in bold):</p>
 <pre>
 # Nginx Service
@@ -208,8 +216,10 @@ nginx:
 </pre>
 
 <p>Build the new image:</p>
-<pre><code>$ demo build nginx
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo build nginx
+</pre></div>
+
+
 <p>All of the tools necessary to generate our certificate are now in place – we just need to add the corresponding Bash command and function.</p>
 <p>First, let's update our application menu, at the bottom of the <code>demo</code> file:</p>
 <pre>
@@ -240,54 +250,89 @@ Available commands:
 
 <p>To save us a trip later, I've also added the menu for the certificate installation, even if we won't implement it just yet.</p>
 <p>Add the corresponding cases to the switch:</p>
-<pre><code>    cert)
-        case "$2" in
-            generate)
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span>    cert<span class="o">)</span>
+        <span class="k">case</span> <span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span> in
+            generate<span class="o">)</span>
                 cert_generate
-                ;;
-            install)
+                <span class="p">;;</span>
+            install<span class="o">)</span>
                 cert_install
-                ;;
-            *)
-                cat &lt;&lt; EOF
+                <span class="p">;;</span>
+            *<span class="o">)</span>
+                cat <span class="s">&lt;&lt; EOF</span>
 
-Certificate management commands.
+<span class="s">Certificate management commands.</span>
 
-Usage:
-    demo cert &lt;command&gt;
+<span class="s">Usage:</span>
+<span class="s">    demo cert &lt;command&gt;</span>
 
-Available commands:
-    generate .................................. Generate a new certificate
-    install ................................... Install the certificate
+<span class="s">Available commands:</span>
+<span class="s">    generate .................................. Generate a new certificate</span>
+<span class="s">    install ................................... Install the certificate</span>
 
-EOF
-                ;;
-        esac
-        ;;
-</code></pre>
+<span class="s">EOF</span>
+                <span class="p">;;</span>
+        <span class="k">esac</span>
+        <span class="p">;;</span>
+</pre></div>
+</td></tr></table>
+
 <p>Since there are a couple of subcommands for <code>cert</code>, I've also added a submenu describing them. Save the file and check out the look of the new menus:</p>
-<pre><code>$ demo
+<div class="highlight"><pre><span></span>$ demo
 $ demo cert
-</code></pre>
+</pre></div>
+
+
 <p>The second command should display something like this:</p>
 <p><img alt="Submenu" src="/images/2020/04/27/docker-03.png" title="Submenu" /></p>
 <p>Still in the <code>demo</code> file, add the <code>cert_generate</code> function:</p>
-<pre><code># Generate a wildcard certificate
-cert_generate () {
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Generate a wildcard certificate</span>
+cert_generate <span class="o">()</span> <span class="o">{</span>
     rm -Rf .docker/nginx/certs/demo.test.*
-    docker-compose run --rm nginx sh -c "cd /etc/nginx/certs &amp;&amp; touch openssl.cnf &amp;&amp; cat /etc/ssl/openssl.cnf &gt; openssl.cnf &amp;&amp; echo \"\" &gt;&gt; openssl.cnf &amp;&amp; echo \"[ SAN ]\" &gt;&gt; openssl.cnf &amp;&amp; echo \"subjectAltName=DNS.1:demo.test,DNS.2:*.demo.test\" &gt;&gt; openssl.cnf &amp;&amp; openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout demo.test.key -out demo.test.crt -days 3650 -subj \"/CN=*.demo.test\" -config openssl.cnf -extensions SAN &amp;&amp; rm openssl.cnf"
-}
-</code></pre>
+    docker-compose run --rm nginx sh -c <span class="s2">&quot;cd /etc/nginx/certs &amp;&amp; touch openssl.cnf &amp;&amp; cat /etc/ssl/openssl.cnf &gt; openssl.cnf &amp;&amp; echo \&quot;\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;[ SAN ]\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;subjectAltName=DNS.1:demo.test,DNS.2:*.demo.test\&quot; &gt;&gt; openssl.cnf &amp;&amp; openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout demo.test.key -out demo.test.crt -days 3650 -subj \&quot;/CN=*.demo.test\&quot; -config openssl.cnf -extensions SAN &amp;&amp; rm openssl.cnf&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>The first line of the function simply gets rid of previously generated certificates and keys that may still be in the <code>certs</code> directory. The second line is quite long and a bit complicated, but essentially it brings up a new, single-use container based on Nginx's image (<code>docker-compose run --rm nginx</code>) and runs a bunch of commands on it (that's the portion between the double quotes, after <code>sh -c</code>).</p>
 <p>I won't go into the details of these, but the gist is they create a wildcard self-signed certificate for <code>*.demo.test</code> as well as the corresponding key. A self-signed certificate is a certificate that is not signed by a certificate authority; in practice, you wouldn't use such a certificate in production, but it is fine for a local setup.</p>
 <p>Try out the command:</p>
-<pre><code>$ demo cert generate
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo cert generate
+</pre></div>
+
+
 <p>You should see something like this:</p>
 <p><img alt="Certificate generation" src="/images/2020/04/27/docker-04.png" title="Certificate generation" /></p>
 <p>The resulting files are generated in the container's <code>/etc/nginx/certs</code> folder, which, as per <code>docker-compose.yml</code>, corresponds to our local <code>.docker/nginx/certs</code> directory. If you look inside that local directory now, you will see a couple of new files – <code>demo.test.crt</code> and <code>demo.test.key</code>.</p>
 <p>Your overall file structure should now look like this:</p>
-<pre><code>docker-tutorial/
+<div class="highlight"><pre><span></span>docker-tutorial/
 ├── .docker/
 │   ├── backend/
 │   ├── mysql/
@@ -304,130 +349,241 @@ cert_generate () {
 ├── .gitignore
 ├── demo
 └── docker-compose.yml
-</code></pre>
+</pre></div>
+
+
 <h2 id="installing-the-certificate">Installing the certificate</h2>
 <p>Let's now implement the <code>cert_install</code> function, still in the <code>demo</code> file (after <code>cert_generate</code>):</p>
-<pre><code># Install the certificate
-cert_install () {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Install the certificate</span>
+cert_install <span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$OSTYPE</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;darwin&quot;</span>* <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
         sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain .docker/nginx/certs/demo.test.crt
-    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-        sudo ln -s "$(pwd)/.docker/nginx/certs/demo.test.crt" /usr/local/share/ca-certificates/demo.test.crt
+    <span class="k">elif</span> <span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$OSTYPE</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;linux-gnu&quot;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+        sudo ln -s <span class="s2">&quot;</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="s2">/.docker/nginx/certs/demo.test.crt&quot;</span> /usr/local/share/ca-certificates/demo.test.crt
         sudo update-ca-certificates
-    else
-        echo "Could not install the certificate on the host machine, please do it manually"
-    fi
-}
-</code></pre>
+    <span class="k">else</span>
+        <span class="nb">echo</span> <span class="s2">&quot;Could not install the certificate on the host machine, please do it manually&quot;</span>
+    <span class="k">fi</span>
+<span class="o">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>If you're on macOS or on a Debian-based Linux distribution, this function will automatically install the self-signed certificate on your machine. Unfortunately, Windows users will have to do it manually, but with the help of this <a href="https://www.thewindowsclub.com/manage-trusted-root-certificates-windows">tutorial</a> the process should be fairly straightforward.</p>
 <p>Let's break the <code>cert_install</code> function down: it first verifies whether the current host system is macOS by checking the content of the pre-defined <code>$OSTYPE</code> environment variable, which will start with <code>darwin</code> if that's the case. It then adds the certificate to the trusted certificates.</p>
 <p>If the current system is Linux, the function will create a symbolic link between the certificate and the <code>/usr/local/share/ca-certificates</code> folder, and run <code>update-ca-certificates</code> so it is taken it into account. Note that this code will only work for Debian-based distributions – if you use a different one, you will need to adapt the <code>if</code> condition accordingly, or add extra conditions to cover more distributions.</p>
 <p>Since the <code>sudo</code> program is used in both cases, running the command will probably require you to enter your system account password.</p>
 <p>Let's try to install the certificate (you can also run this on Windows, but you'll be invited to install the certificate manually as mentioned earlier):</p>
-<pre><code>$ demo cert install
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo cert install
+</pre></div>
+
+
 <p>If all went well, it should now appear in the list of certificates, like in macOS' Keychain Access:</p>
 <p><img alt="Keychain" src="/images/2020/04/27/docker-05.png" title="Keychain" /></p>
 <h2 id="the-nginx-server-configurations">The Nginx server configurations</h2>
 <p>Now that our certificate is ready, we need to update the Nginx server configurations to enable HTTPS support.</p>
 <p>First, update the content of <code>.docker/nginx/conf.d/backend.conf</code>:</p>
-<pre><code>server {
-    listen      443 ssl http2;
-    listen      [::]:443 ssl http2;
-    server_name backend.demo.test;
-    root        /var/www/backend/public;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">backend.demo.test</span><span class="p">;</span>
+    <span class="kn">root</span>        <span class="s">/var/www/backend/public</span><span class="p">;</span>
 
-    ssl_certificate     /etc/nginx/certs/demo.test.crt;
-    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+    <span class="kn">ssl_certificate</span>     <span class="s">/etc/nginx/certs/demo.test.crt</span><span class="p">;</span>
+    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/nginx/certs/demo.test.key</span><span class="p">;</span>
 
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-XSS-Protection "1; mode=block";
-    add_header X-Content-Type-Options "nosniff";
+    <span class="kn">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">&quot;SAMEORIGIN&quot;</span><span class="p">;</span>
+    <span class="kn">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">&quot;1</span><span class="p">;</span> <span class="kn">mode=block&quot;</span><span class="p">;</span>
+    <span class="kn">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">&quot;nosniff&quot;</span><span class="p">;</span>
 
-    index index.html index.htm index.php;
+    <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span> <span class="s">index.php</span><span class="p">;</span>
 
-    charset utf-8;
+    <span class="kn">charset</span> <span class="s">utf-8</span><span class="p">;</span>
 
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
-    }
+    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+        <span class="kn">try_files</span> <span class="nv">$uri</span> <span class="nv">$uri/</span> <span class="s">/index.php?</span><span class="nv">$query_string</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
+    <span class="kn">location</span> <span class="p">=</span> <span class="s">/favicon.ico</span> <span class="p">{</span> <span class="kn">access_log</span> <span class="no">off</span><span class="p">;</span> <span class="kn">log_not_found</span> <span class="no">off</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kn">location</span> <span class="p">=</span> <span class="s">/robots.txt</span>  <span class="p">{</span> <span class="kn">access_log</span> <span class="no">off</span><span class="p">;</span> <span class="kn">log_not_found</span> <span class="no">off</span><span class="p">;</span> <span class="p">}</span>
 
-    error_page 404 /index.php;
+    <span class="kn">error_page</span> <span class="mi">404</span> <span class="s">/index.php</span><span class="p">;</span>
 
-    location ~ \.php$ {
-        fastcgi_pass  backend:9000;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        include       fastcgi_params;
-    }
+    <span class="kn">location</span> <span class="p">~</span> <span class="sr">\.php$</span> <span class="p">{</span>
+        <span class="kn">fastcgi_pass</span>  <span class="n">backend</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">fastcgi_index</span> <span class="s">index.php</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span> <span class="s">SCRIPT_FILENAME</span> <span class="nv">$realpath_root$fastcgi_script_name</span><span class="p">;</span>
+        <span class="kn">include</span>       <span class="s">fastcgi_params</span><span class="p">;</span>
+    <span class="p">}</span>
 
-    location ~ /\.(?!well-known).* {
-        deny all;
-    }
-}
+    <span class="kn">location</span> <span class="p">~</span> <span class="sr">/\.(?!well-known).*</span> <span class="p">{</span>
+        <span class="kn">deny</span> <span class="s">all</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-server {
-    listen      80;
-    listen      [::]:80;
-    server_name backend.demo.test;
-    return      301 https://$server_name$request_uri;
-}
-</code></pre>
+<span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">backend.demo.test</span><span class="p">;</span>
+    <span class="kn">return</span>      <span class="mi">301</span> <span class="s">https://</span><span class="nv">$server_name$request_uri</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>Then, change the content of <code>.docker/nginx/conf.d/frontend.conf</code> to this one:</p>
-<pre><code>server {
-    listen      443 ssl http2;
-    listen      [::]:443 ssl http2;
-    server_name frontend.demo.test;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">frontend.demo.test</span><span class="p">;</span>
 
-    ssl_certificate     /etc/nginx/certs/demo.test.crt;
-    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+    <span class="kn">ssl_certificate</span>     <span class="s">/etc/nginx/certs/demo.test.crt</span><span class="p">;</span>
+    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/nginx/certs/demo.test.key</span><span class="p">;</span>
 
-    location / {
-        proxy_pass         http://frontend:8080;
-        proxy_http_version 1.1;
-        proxy_set_header   Upgrade $http_upgrade;
-        proxy_set_header   Connection 'upgrade';
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header   Host $host;
-    }
-}
+    <span class="kn">location</span> <span class="s">/</span> <span class="p">{</span>
+        <span class="kn">proxy_pass</span>         <span class="s">http://frontend:8080</span><span class="p">;</span>
+        <span class="kn">proxy_http_version</span> <span class="mi">1</span><span class="s">.1</span><span class="p">;</span>
+        <span class="kn">proxy_set_header</span>   <span class="s">Upgrade</span> <span class="nv">$http_upgrade</span><span class="p">;</span>
+        <span class="kn">proxy_set_header</span>   <span class="s">Connection</span> <span class="s">&#39;upgrade&#39;</span><span class="p">;</span>
+        <span class="kn">proxy_cache_bypass</span> <span class="nv">$http_upgrade</span><span class="p">;</span>
+        <span class="kn">proxy_set_header</span>   <span class="s">Host</span> <span class="nv">$host</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-server {
-    listen      80;
-    listen      [::]:80;
-    server_name frontend.demo.test;
-    return      301 https://$server_name$request_uri;
-}
-</code></pre>
+<span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">frontend.demo.test</span><span class="p">;</span>
+    <span class="kn">return</span>      <span class="mi">301</span> <span class="s">https://</span><span class="nv">$server_name$request_uri</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>Finally, replace the content of <code>.docker/nginx/conf.d/phpmyadmin.conf</code> with the following:</p>
-<pre><code>server {
-    listen      443 ssl http2;
-    listen      [::]:443 ssl http2;
-    server_name phpmyadmin.test;
-    root        /usr/src/phpmyadmin;
-    index       index.php;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">phpmyadmin.test</span><span class="p">;</span>
+    <span class="kn">root</span>        <span class="s">/usr/src/phpmyadmin</span><span class="p">;</span>
+    <span class="kn">index</span>       <span class="s">index.php</span><span class="p">;</span>
 
-    ssl_certificate     /etc/nginx/certs/demo.test.crt;
-    ssl_certificate_key /etc/nginx/certs/demo.test.key;
+    <span class="kn">ssl_certificate</span>     <span class="s">/etc/nginx/certs/demo.test.crt</span><span class="p">;</span>
+    <span class="kn">ssl_certificate_key</span> <span class="s">/etc/nginx/certs/demo.test.key</span><span class="p">;</span>
 
-    location ~* \.php$ {
-        fastcgi_pass   phpmyadmin:9000;
-        include        fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
-    }
-}
+    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
+        <span class="kn">fastcgi_pass</span>   <span class="n">phpmyadmin</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_FILENAME</span> <span class="nv">$document_root$fastcgi_script_name</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_NAME</span>     <span class="nv">$fastcgi_script_name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-server {
-    listen      80;
-    listen      [::]:80;
-    server_name phpmyadmin.test;
-    return      301 https://$server_name$request_uri;
-}
-</code></pre>
+<span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">phpmyadmin.test</span><span class="p">;</span>
+    <span class="kn">return</span>      <span class="mi">301</span> <span class="s">https://</span><span class="nv">$server_name$request_uri</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>The principle is similar for the three of them: a second <code>server</code> block has been added at the end, listening to traffic on port 80 and redirecting it to port 443, which is handled by the first <code>server</code> block. The latter is pretty much the same as the one it replaces, except for the addition of the <code>ssl_certificate</code> and <code>ssl_certificate_key</code> configuration keys, and the appearance of <code>http2</code>.</p>
 <p>We were unable to use HTTP2 so far because, while encryption is not required by the protocol, in practice <a href="https://http2.github.io/faq/#does-http2-require-encryption">most browsers only support it over an encrypted connection</a>. By introducing HTTPS to our setup, we can now benefit from the <a href="https://www.digitalocean.com/community/tutorials/http-1-1-vs-http-2-what-s-the-difference">improvements of HTTP2</a>.</p>
 <p>We also need to make a quick change to <code>src/frontend/src/App.vue</code>, where the backend endpoint should now use HTTPS instead of HTTP:</p>
@@ -442,8 +598,10 @@ mounted () {
 </pre>
 
 <p>Looks like we're ready to make a test! Restart the containers for the changes to take effect:</p>
-<pre><code>$ demo restart
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo restart
+</pre></div>
+
+
 <p>Access <a href="http://frontend.demo.test">frontend.demo.test</a> (remember that it can take a few seconds for Vue.js' development server to start – you can run <code>demo logs frontend</code> to monitor what's going on): you should automatically be redirected from HTTP to HTTPS, and the website should display correctly.</p>
 <p>We're encrypted!</p>
 <p><img alt="Hackerman" src="/images/2020/04/27/docker-06.gif" title="Hackerman" /></p>
@@ -477,36 +635,56 @@ init () {
 <h2 id="container-to-container-traffic">Container to container traffic</h2>
 <p>The above setup is suitable for most cases, but there's a situation where it falls short, and that is whenever a container needs to communicate with another one directly, without going through the browser. Let me walk you through this.</p>
 <p>First, bring up the project if it's currently stopped (<code>demo start</code>) and access the backend container:</p>
-<pre><code>$ docker-compose exec backend sh
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend sh
+</pre></div>
+
+
 <p>From there, try and <em>ping</em> the frontend container:</p>
-<pre><code>$ ping frontend
-</code></pre>
+<div class="highlight"><pre><span></span>$ ping frontend
+</pre></div>
+
+
 <p>The ping should respond with the frontend container's private IP, which is the expected behaviour. Try pinging the frontend again, this time using the domain name:</p>
-<pre><code>$ ping frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ ping frontend.demo.test
+</pre></div>
+
+
 <p>We also get a response, but from <em>localhost</em>, which is not quite right: we should get the same private IP address instead.</p>
 <p>Let's run a few more tests, still from the backend container, but using cURL commands:</p>
-<pre><code>$ curl frontend
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl frontend
+</pre></div>
+
+
 <p>Response:</p>
-<pre><code>curl: (7) Failed to connect to frontend port 80: Connection refused
-</code></pre>
+<div class="highlight"><pre><span></span>curl: <span class="o">(</span><span class="m">7</span><span class="o">)</span> Failed to connect to frontend port <span class="m">80</span>: Connection refused
+</pre></div>
+
+
 <p>This is expected because the frontend container is set up to listen on port 8080:</p>
-<pre><code>$ curl frontend:8080
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl frontend:8080
+</pre></div>
+
+
 <p>This command correctly returns the frontend's HTML code. Let's try again, but this time using the domain name:</p>
-<pre><code>$ curl frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl frontend.demo.test
+</pre></div>
+
+
 <p>Response:</p>
-<pre><code>curl: (7) Failed to connect to frontend.demo.test port 80: Connection refused
-</code></pre>
+<div class="highlight"><pre><span></span>curl: <span class="o">(</span><span class="m">7</span><span class="o">)</span> Failed to connect to frontend.demo.test port <span class="m">80</span>: Connection refused
+</pre></div>
+
+
 <p>Same issue as above – we should be targeting port 8080 instead:</p>
-<pre><code>$ curl frontend.demo.test:8080
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl frontend.demo.test:8080
+</pre></div>
+
+
 <p>Response:</p>
-<pre><code>curl: (7) Failed to connect to frontend.demo.test port 8080: Connection refused
-</code></pre>
+<div class="highlight"><pre><span></span>curl: <span class="o">(</span><span class="m">7</span><span class="o">)</span> Failed to connect to frontend.demo.test port <span class="m">8080</span>: Connection refused
+</pre></div>
+
+
 <p>Still not working... what's going on?</p>
 <p>Containers identify each other by name (e.g. <code>frontend</code>, <code>backend</code>, <code>mysql</code>, etc.) on the network created by Docker Compose. The domain names we defined for the frontend and the backend (<code>frontend.demo.test</code> and <code>backend.demo.test</code>) are recognised by our local machine because we updated its <code>hosts</code> file, but they have no meaning in the context of Docker Compose's network. In other words, for these domain names to be recognised on that network, we'd need to update the containers' <code>hosts</code> files as well, and we'd have to do it every time the containers are recreated.</p>
 <p>Thankfully, Docker Compose offers a better solution for this, in the form of <a href="https://docs.docker.com/compose/compose-file/#aliases">network aliases</a>. Aliases are alternative names we can give services and by which their containers will be discoverable on the network, in addition to the service's original name. These aliases can be domain names.</p>
@@ -548,26 +726,38 @@ nginx:
 </pre>
 
 <p>For the change to take effect, the network has to be recreated:</p>
-<pre><code>$ demo down &amp;&amp; demo start
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo down <span class="o">&amp;&amp;</span> demo start
+</pre></div>
+
+
 <p>We can now proceed with the same tests as earlier, starting with the ping:</p>
-<pre><code>$ docker-compose exec backend sh
+<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend sh
 $ ping frontend.demo.test
-</code></pre>
+</pre></div>
+
+
 <p>The command now responds with a proper private IP address. Let's try with cURL:</p>
-<pre><code>$ curl frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl frontend.demo.test
+</pre></div>
+
+
 <p>We do get a response, but a <code>301 Moved Permanently</code> one, which is expected – if you remember, we added a second <code>server</code> block to each Nginx config, responsible for redirecting HTTP traffic to HTTPS.</p>
 <p>Let's hit the HTTPS URL instead:</p>
-<pre><code>$ curl https://frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl https://frontend.demo.test
+</pre></div>
+
+
 <p>Response:</p>
-<pre><code>curl: (60) SSL certificate problem: self signed certificate
-</code></pre>
+<div class="highlight"><pre><span></span>curl: <span class="o">(</span><span class="m">60</span><span class="o">)</span> SSL certificate problem: self signed certificate
+</pre></div>
+
+
 <p>We're now getting to the issue I mentioned at the very beginning of this section. Our browser knows and accepts the self-signed certificate, because we installed it on our local machine; on the other hand, the backend container has no idea where this certificate comes from, and has no reason to trust it.</p>
 <p>The easy way to circumvent this is by ignoring the security checks altogether:</p>
-<pre><code>$ curl -k https://frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl -k https://frontend.demo.test
+</pre></div>
+
+
 <p>While this solution works, it is not recommended for obvious reasons, and you won't always have the luxury of setting the options as you see fit (especially if the call is made by a third-party package).</p>
 <p>What we need to do, really, is to install the certificate on the backend container as well, so it can recognise it and trust it the way our local machine does.</p>
 <p>To do that, we need to mount the directory containing the self-signed certificate onto the backend container. Exit the container (by running <code>exit</code> or by hitting <code>ctrl + d</code>) and update <code>docker-compose.yml</code>:</p>
@@ -585,15 +775,21 @@ backend:
 </pre>
 
 <p>Save the file and restart the containers:</p>
-<pre><code>$ demo restart
-</code></pre>
+<div class="highlight"><pre><span></span>$ demo restart
+</pre></div>
+
+
 <p>Access the backend container once again, and install the new certificate (you can ignore the warning):</p>
-<pre><code>$ docker-compose exec backend sh
+<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend sh
 $ update-ca-certificates
-</code></pre>
+</pre></div>
+
+
 <p>Try the cURL command one more time:</p>
-<pre><code>$ curl https://frontend.demo.test
-</code></pre>
+<div class="highlight"><pre><span></span>$ curl https://frontend.demo.test
+</pre></div>
+
+
 <p>You should finally get the frontend's HTML code.</p>
 <p>There's one last thing we need to do before wrapping up. Update the <code>cert_install</code> function in the <code>demo</code> file:</p>
 <pre>
@@ -639,7 +835,7 @@ cert_install () {
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

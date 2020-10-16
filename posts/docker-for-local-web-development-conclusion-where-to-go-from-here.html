@@ -71,7 +71,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -88,8 +88,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -195,26 +195,40 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h3 id="application-files">Application files</h3>
 <p>When deploying an image of your application to staging or production, that image should contain copies of your application files (including its dependencies), as mounting a local folder doesn't really apply in such an environment.</p>
 <p>Copying the files to the image is a fairly simple instruction:</p>
-<pre><code>COPY . .
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">COPY</span> . .
+</pre></div>
+
+
 <p>The line above essentially means "copy the content of the host's current directory (where the Dockerfile is located) to the image's working directory".</p>
 <p>A small caveat to this is that we don't need all of the files to be copied over – some of them are not essential to the production environment (e.g. READMEs, or even the Dockerfile itself), if not downright dangerous (e.g. <a href="https://en.internetwache.org/dont-publicly-expose-git-or-how-we-downloaded-your-websites-sourcecode-an-analysis-of-alexas-1m-28-07-2015/">Git-related files</a>). How do we deal with this?</p>
 <p>Much like Git's <code>.gitignore</code> files, <a href="https://docs.docker.com/engine/reference/builder/#dockerignore-file">Docker has <code>.dockerignore</code> files</a> that allow you to specify what to exclude from the build context when performing an <code>ADD</code> or <code>COPY</code> operation. I won't go into too much detail here, but <a href="https://codefresh.io/docker-tutorial/not-ignore-dockerignore-2/">this article</a> should give you all the info you need.</p>
 <h3 id="application-dependencies">Application dependencies</h3>
 <p>As for the application's dependencies, using our backend application as an example again, you would typically add a new stage to the Dockerfile to install the Composer packages, whose files the <code>production</code> stage would copy over, without keeping Composer itself (once the dependencies are installed, your production environment doesn't need it anymore).</p>
 <p>If that intermediary stage were named <code>build</code> and assuming there's also a <code>base</code> stage featuring PHP-FPM and the necessary PHP extensions only, it would look like the following:</p>
-<pre><code>FROM base as build
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> base as build</span>
 
-# Copy application files
-COPY . .
-# Install application dependencies
-RUN composer install --no-scripts --no-autoloader --verbose --prefer-dist --no-progress --no-interaction --no-dev --no-suggest
+<span class="c"># Copy application files</span>
+<span class="k">COPY</span> . .
+<span class="c"># Install application dependencies</span>
+<span class="k">RUN</span> composer install --no-scripts --no-autoloader --verbose --prefer-dist --no-progress --no-interaction --no-dev --no-suggest
 
-FROM base as production
+<span class="k">FROM</span><span class="s"> base as production</span>
 
-# Copy files from the build stage to the working directory
-COPY --from=build .
-</code></pre>
+<span class="c"># Copy files from the build stage to the working directory</span>
+<span class="k">COPY</span> --from<span class="o">=</span>build .
+</pre></div>
+</td></tr></table>
+
 <p>The resulting image is the one you would push to your container registry (e.g. Docker Hub), which in turn would be pulled by whatever IaaS platform you're using.</p>
 <h3 id="recent-partnerships">Recent partnerships</h3>
 <p>Finally, Docker has recently announced partnerships with both <a href="https://www.docker.com/blog/shortening-the-developer-commute-with-docker-and-microsoft-azure/" title="Shortening the developer commute with Docker and Microsoft Azure">Azure</a> and <a href="https://www.docker.com/blog/from-docker-straight-to-aws/" title="From Docker Straight to AWS">AWS</a> to simplify deploying Docker applications from desktop to the cloud using Docker Compose.</p>
@@ -249,7 +263,7 @@ COPY --from=build .
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

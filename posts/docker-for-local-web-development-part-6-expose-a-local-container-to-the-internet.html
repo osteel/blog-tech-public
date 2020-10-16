@@ -72,7 +72,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -89,8 +89,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -177,18 +177,30 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="installing-and-configuring">Installing and configuring</h2>
 <p>There is no official Docker image for Ngrok, but the community stepped up and made a few of them available.</p>
 <p>We'll use <a href="https://hub.docker.com/r/wernight/ngrok/">Werner Beroux's</a> today, for which we need to create a service in <code>docker-compose.yml</code>:</p>
-<pre><code># Ngrok Service
-ngrok:
-  image: wernight/ngrok:latest
-  ports:
-    - 4040:4040
-  environment:
-    NGROK_PROTOCOL: http
-    NGROK_PORT: nginx:443
-    NGROK_AUTH: ${NGROK_AUTH}
-  depends_on:
-    - nginx
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Ngrok Service</span>
+<span class="nt">ngrok</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">wernight/ngrok:latest</span>
+  <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">4040:4040</span>
+  <span class="nt">environment</span><span class="p">:</span>
+    <span class="nt">NGROK_PROTOCOL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">http</span>
+    <span class="nt">NGROK_PORT</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:443</span>
+    <span class="nt">NGROK_AUTH</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${NGROK_AUTH}</span>
+  <span class="nt">depends_on</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">nginx</span>
+</pre></div>
+</td></tr></table>
+
 <p>Ngrok comes with an interface served on the container's port 4040 which we mapped to localhost's, and since Nginx will once again be our entry point for the traffic, we made sure its container is started before Ngrok's using <code>depends_on</code>.</p>
 <p>That leaves us with a bunch of environment variables:</p>
 <ul>
@@ -199,13 +211,17 @@ ngrok:
 <p>That's all we need for today, but you might want to have a look at the other environment variables listed in the <a href="https://hub.docker.com/r/wernight/ngrok/">image's documentation</a>.</p>
 <p>We now need to set the authentication token, which you will find in your <a href="https://dashboard.ngrok.com/auth/your-authtoken">dashboard</a>. If you remember, in the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> of this series we created a <code>.env</code> file at the root of the project, alongside <code>docker-compose.yml</code>. So far we've only used it to specify a project name (to avoid container name collisions with other projects), but that's also where we'll set the token.</p>
 <p>Open the file and change its content to this one, replacing the <code>&lt;YOUR TOKEN&gt;</code> placeholder with... your token:</p>
-<pre><code>COMPOSE_PROJECT_NAME=demo
-NGROK_AUTH=&lt;YOUR TOKEN&gt;
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">COMPOSE_PROJECT_NAME</span><span class="o">=</span>demo
+<span class="nv">NGROK_AUTH</span><span class="o">=</span>&lt;YOUR TOKEN&gt;
+</pre></div>
+
+
 <p>For good measure, we should also update <code>.env.example</code>, to make it clear for future users that a value is expected:</p>
-<pre><code>COMPOSE_PROJECT_NAME=demo
-NGROK_AUTH=
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">COMPOSE_PROJECT_NAME</span><span class="o">=</span>demo
+<span class="nv">NGROK_AUTH</span><span class="o">=</span>
+</pre></div>
+
+
 <p>This gives you the flexibility to either set a token in <code>.env.example</code> for everyone to use, or to ask each developer to create their own Ngrok account and complete their local <code>.env</code> file accordingly.</p>
 <p>Of course, you could set the token in <code>docker-compose.yml</code> directly, but I wanted to show you another way to use the project's <code>.env</code> file.</p>
 <p>The last thing we need to do is to update the Nginx server configuration in <code>.docker/nginx/conf.d/backend.conf</code>:</p>
@@ -219,9 +235,11 @@ server {
 </pre>
 
 <p>Only the bit in bold needs to be added, the rest of the file remains as it is. Save it and stop and restart the project in order to create the Ngrok container and to reload the Nginx configuration:</p>
-<pre><code>$ demo stop
+<div class="highlight"><pre><span></span>$ demo stop
 $ demo start
-</code></pre>
+</pre></div>
+
+
 <p>Open <a href="http://localhost:4040">localhost:4040</a> in your browser:</p>
 <p><img alt="Ngrok interface" src="/images/2020/05/11/docker-02.png" title="Ngrok interface" /></p>
 <p>Two URLs are available – spot the HTTPS one and open it in a new tab, appending <code>/api/hello-there</code> to the end:</p>
@@ -254,7 +272,7 @@ $ demo start
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

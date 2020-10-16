@@ -72,7 +72,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -89,8 +89,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -171,8 +171,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">part 1</a> of this series, we went through the steps of creating a simple but functional LEMP stack running on Docker and orchestrated by Docker Compose, resulting in four containers running simultaneously.</p>
 <p>These containers are based on images that were downloaded from <a href="https://hub.docker.com/">Docker Hub</a>, each of these images having a different weight. But how much space are we talking about?</p>
 <p>Let's find out with this simple command, to be run from the root of our project:</p>
-<pre><code>$ docker-compose images
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose images
+</pre></div>
+
+
 <p>It will display a table containing the images used by the application and some information about them, including their weight:</p>
 <p><img alt="Docker regular images" src="/images/2020/03/16/docker-02.png" title="Docker regular images" /></p>
 <p>The total amounts to roughly 1.5 GB, which is not light. Why is that?</p>
@@ -182,8 +184,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="alpine-linux">Alpine Linux</h2>
 <p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the bare minimum by default and lets you install what you actually need for your application. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
 <p>Before we modify our setup, let's get rid of the current one:</p>
-<pre><code>$ docker-compose down -v --rmi all
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all
+</pre></div>
+
+
 <p>This command will stop and/or destroy the containers, as well as remove the volumes and images, allowing us to start afresh.</p>
 <p>Replace the content of <code>docker-compose.yml</code> with this one (changes have been highlighted in bold):</p>
 <pre>
@@ -247,33 +251,54 @@ volumes:
 <p class="info"><span class="title">Where to find help?</span> Using an external HTTP server for phpMyAdmin is actually not documented, and I had to dig up some <a href="https://github.com/phpmyadmin/docker/issues/253">GitHub issue</a> to put me on the right track. This is a good example of where to find help whenever official documentations fall short: browsing GitHub issues is usually a good place to start, as someone is likely to have stumbled upon the same problem before. I also sometimes find it helpful to have a look at the image's Dockerfile, as it is easier to use an image once we understand how it is built.</p>
 
 <p>As a result, we need an Nginx configuration for phpMyAdmin. Let's create a new <code>phpmyadmin.conf</code> file in <code>.docker/nginx/conf.d</code>, alongside <code>php.conf</code>:</p>
-<pre><code>server {
-    listen      80;
-    listen      [::]:80;
-    server_name phpmyadmin.test;
-    root        /usr/src/phpmyadmin;
-    index       index.php;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">phpmyadmin.test</span><span class="p">;</span>
+    <span class="kn">root</span>        <span class="s">/usr/src/phpmyadmin</span><span class="p">;</span>
+    <span class="kn">index</span>       <span class="s">index.php</span><span class="p">;</span>
 
-    location ~* \.php$ {
-        fastcgi_pass   phpmyadmin:9000;
-        include        fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
-    }
-}
-</code></pre>
+    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
+        <span class="kn">fastcgi_pass</span>   <span class="n">phpmyadmin</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_FILENAME</span> <span class="nv">$document_root$fastcgi_script_name</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_NAME</span>     <span class="nv">$fastcgi_script_name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>Again, a pretty standard server configuration that looks a lot like <code>php.conf</code>, except that it points to port 9000 of the phpMyAdmin service.</p>
 <p>You also need to update your local <code>hosts</code> file to add the new domain name (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
-<pre><code>127.0.0.1 php.test phpmyadmin.test
-</code></pre>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 php.test phpmyadmin.test
+</pre></div>
+
+
 <p>Back to <code>docker-compose.yml</code>: similar to our PHP application, the <code>phpmyadmindata</code> volume ensures the phpMyAdmin files are available to Nginx, the only difference being that instead of mounting a local folder of our choice (e.g. <code>src</code>), we let Docker Compose pick a local folder to mount both onto the Nginx and phpMyAdmin containers, effectively making the latter's content available to the former.</p>
 <p>Finally, we also got rid of the mapping of port 8080, since we will now be using Nginx's port 80 directly.</p>
 <p>Next in line is PHP. If you followed the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">previous part</a>, you already know that we use a <code>Dockerfile</code> located in <code>.docker/php</code> to describe and build our image.</p>
 <p>Replace its content with this one:</p>
-<pre><code>FROM php:7.4-fpm-alpine
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine</span>
 
-RUN docker-php-ext-install pdo_mysql
-</code></pre>
+<span class="k">RUN</span> docker-php-ext-install pdo_mysql
+</pre></div>
+</td></tr></table>
+
 <p>Just like Nginx, the only difference is we appended <code>-alpine</code> at the end of the image tag to get the Alpine-based version instead.</p>
 <p>That leaves us with the MySQL service, which hasn't changed at all. The reason is that at the time of writing, there is simply no available Alpine version for the MySQL image, for reasons laid out in this <a href="https://github.com/docker-library/mysql/issues/179">GitHub issue</a>.</p>
 <p>We are now ready to test out our new setup. Run the now familiar <code>docker-compose up -d</code> again, followed by <code>docker-compose images</code>:</p>
@@ -305,7 +330,7 @@ RUN docker-php-ext-install pdo_mysql
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>

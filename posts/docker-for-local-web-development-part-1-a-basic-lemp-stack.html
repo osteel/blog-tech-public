@@ -72,7 +72,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <h2>Categories</h2>
     <nav class="sidebar-nav">
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting.html">Contracting</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
@@ -89,8 +89,8 @@ styles, `#sidebar-checkbox` for behavior. -->
             <li><a class="sidebar-nav-item" href="https://www.osteel.me" target="_blank">Portfolio</a></li>
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
-            <li><a class="sidebar-nav-item" href="https://uk.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="http://instagram.com/osteel" target="_blank">Instagram</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
@@ -204,17 +204,28 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Don't worry if you feel a little confused; by the end of this post it will all make sense.</p>
 <h3 id="nginx">Nginx</h3>
 <p>The YAML configuration file will actually be our starting point: open your favourite text editor and add a new <code>docker-compose.yml</code> file to a directory of your choice on your local machine (your computer), with the following content:</p>
-<pre><code>version: '3.7'
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
 
-# Services
-services:
+<span class="c1"># Services</span>
+<span class="nt">services</span><span class="p">:</span>
 
-  # Nginx Service
-  nginx:
-    image: nginx:1.17
-    ports:
-      - 80:80
-</code></pre>
+  <span class="c1"># Nginx Service</span>
+  <span class="nt">nginx</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">ports</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
+</pre></div>
+</td></tr></table>
+
 <p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.7 is the latest version at the time of writing).</p>
 <p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.17 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
 <p class="info"><span class="title">Why not use the <em>latest</em> tag?</span> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future – it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
@@ -224,21 +235,27 @@ services:
 <p class="caption">Note the "Verified Content" at the top</p></p>
 <p>Back to <code>docker-compose.yml</code>: under <code>ports</code>, <code>80:80</code> indicates that we want to map our local machine's port 80 (used by HTTP) to the container's. In other words, when we will access port 80 on our local machine (i.e. your computer), we will be forwarded to the port 80 of the Nginx container.</p>
 <p>Let's test this out. Save the <code>docker-compose.yml</code> file, open a terminal and change the current directory to your project's before running the following command:</p>
-<pre><code>$ docker-compose up -d
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose up -d
+</pre></div>
+
+
 <p>It might take a little while as the Nginx image will first be downloaded from Docker Hub. When it is done, open <a href="http://localhost">localhost</a> in your browser, which should display Nginx's welcome page:</p>
 <p><img alt="Nginx" src="/images/2020/03/04/docker-part-1-03.png" title="Nginx" /></p>
 <p>Congratulations: you have just created your first Docker container.</p>
 <p><img alt="Approval" src="/images/2020/03/04/docker-part-1-04.gif" title="Approval" /></p>
 <p>Let's break down that command: by running <code>docker-compose up -d</code>, we essentially asked Docker Compose to build and start the containers described in <code>docker-compose.yml</code>; the <code>-d</code> option indicates that we want to run the containers in the background and get our terminal back.</p>
 <p>You can see which containers are currently running by executing the following command:</p>
-<pre><code>$ docker-compose ps
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose ps
+</pre></div>
+
+
 <p>Which should display something similar to this:</p>
 <p><img alt="docker-compose ps" src="/images/2020/03/04/docker-part-1-05.png" title="docker-compose ps" /></p>
 <p>To stop the containers, simply run:</p>
-<pre><code>$ docker-compose stop
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose stop
+</pre></div>
+
+
 <p>At this point, you might be wondering what the difference is between a service, an image and a container. A service is just one of your application's components, as listed in <code>docker-compose.yml</code>. Each service refers to an image, which is used to start and stop containers based on this image.</p>
 <p>To help you grasp the nuance, think of an image as a class, and of a container as an instance of that class.</p>
 <p>Speaking of OOP, how about we set up PHP?</p>
@@ -247,94 +264,159 @@ services:
 <p class="info"><span class="title">Not a PHP fan?</span> As mentioned in the <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">introduction</a>, while PHP is used on the server side throughout this series, swapping it for another language should be fairly straightforward.</p>
 
 <p>Replace the content of <code>docker-compose.yml</code> with this one:</p>
-<pre><code>version: '3.7'
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
 
-# Services
-services:
+<span class="c1"># Services</span>
+<span class="nt">services</span><span class="p">:</span>
 
-  # Nginx Service
-  nginx:
-    image: nginx:1.17
-    ports:
-      - 80:80
-    volumes:
-      - ./src:/var/www/php:ro
-      - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    depends_on:
-      - php
+  <span class="c1"># Nginx Service</span>
+  <span class="nt">nginx</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">ports</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d:ro</span>
+    <span class="nt">depends_on</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
 
-  # PHP Service
-  php:
-    image: php:7.4-fpm
-    working_dir: /var/www/php
-    volumes:
-      - ./src:/var/www/php
-</code></pre>
+  <span class="c1"># PHP Service</span>
+  <span class="nt">php</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">php:7.4-fpm</span>
+    <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/php</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
+</pre></div>
+</td></tr></table>
+
 <p>A few things going on here: let's forget about the Nginx service for a moment, and focus on the new PHP service instead. We start from the <code>php:7.4-fpm</code> image, corresponding to the tag <code>7.4-fpm</code> of <a href="https://hub.docker.com/_/php">PHP's official image</a>, featuring version 7.4 and PHP-FPM. Let's skip <code>working_dir</code> for now, and have a look at <code>volumes</code>. This section allows us to define <em>volumes</em> (basically, directories or single files) that we want to mount onto the container. This essentially means we can map local directories and files to directories and files on the container; in our case, we want Docker Compose to mount the <code>src</code> folder as the container's <code>/var/www/php</code> folder.</p>
 <p>What's in the <code>src/</code> folder? Nothing yet, but that's where we are going to place our application code. Once it is mounted onto the container, any change we make to our code will be immediately available, without the need to restart the container.</p>
 <p>Create the <code>src</code> directory (at the same level as <code>docker-compose.yml</code>) and add the following <code>index.php</code> file to it:</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;meta charset="UTF-8"&gt;
-        &lt;title&gt;Hello there&lt;/title&gt;
-        &lt;style&gt;
-            .center {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-            }
-        &lt;/style&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;img src="https://tech.osteel.me/images/2020/03/04/hello.gif" alt="Hello there" class="center"&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello there<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+            <span class="p">.</span><span class="nc">center</span> <span class="p">{</span>
+                <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
+                <span class="k">margin-left</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+                <span class="k">margin-right</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+                <span class="k">width</span><span class="p">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2020/03/04/hello.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello there&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table>
+
 <p>It only contains a little bit of HTML and CSS, but all we need for now is to make sure PHP files are correctly served.</p>
 <p>Back to the Nginx service: we added a <code>volumes</code> section to it as well, where we mount the directory containing our code just like we did for the PHP service (this is so Nginx gets a copy of <code>index.php</code>, without which it would return a <em>404 Not Found</em> when trying to access the file), and this time we also want to import the Nginx server configuration that will point to our application code:</p>
-<pre><code>- ./.docker/nginx/conf.d:/etc/nginx/conf.d
-</code></pre>
+<div class="highlight"><pre><span></span><span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d</span>
+</pre></div>
+
+
 <p>As Nginx automatically reads files ending with <code>.conf</code> located in the <code>/etc/nginx/conf.d</code> directory, by mounting our own local <code>conf.d</code> directory in its place we make sure the configuration files it contains will be processed by Nginx on the container.</p>
 <p>You may have noticed the addition of <code>:ro</code> at the end of both volumes: this option stands for <em>read only</em> and indicates that the container shall not modify the content of these volumes in any way.</p>
 <p>Create the <code>.docker/nginx/conf.d</code> folder and add the following <code>php.conf</code> file to it:</p>
-<pre><code>server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root   /var/www/php;
-    index  index.php;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span> <span class="mi">80</span> <span class="s">default_server</span><span class="p">;</span>
+    <span class="kn">listen</span> <span class="s">[::]:80</span> <span class="s">default_server</span><span class="p">;</span>
+    <span class="kn">root</span>   <span class="s">/var/www/php</span><span class="p">;</span>
+    <span class="kn">index</span>  <span class="s">index.php</span><span class="p">;</span>
 
-    location ~* \.php$ {
-        fastcgi_pass   php:9000;
-        include        fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
-    }
-}
-</code></pre>
+    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
+        <span class="kn">fastcgi_pass</span>   <span class="n">php</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_FILENAME</span> <span class="nv">$document_root$fastcgi_script_name</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_NAME</span>     <span class="nv">$fastcgi_script_name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p class="info"><span class="title">Note</span> Placing Docker-related files under a <code>.docker</code> folder is a common practice.</p>
 
 <p>This is a minimalist PHP-FPM server configuration borrowed from <a href="https://www.linode.com/docs/web-servers/nginx/serve-php-php-fpm-and-nginx/">Linode's website</a> that doesn't have much to it; simply notice we point the root to <code>/var/www/php</code>, which is the directory onto which we mount our application code in both our Nginx and PHP containers, and that we set the index to <code>index.php</code>.</p>
 <p>The following line is also interesting:</p>
-<pre><code>fastcgi_pass php:9000;
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">fastcgi_pass</span> <span class="n">php</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+</pre></div>
+
+
 <p>It tells Nginx to forward requests for PHP files to the PHP container's port 9000, which is the default port PHP-FPM listens on. Internally, Docker Compose will automatically resolve the <code>php</code> keyword to whatever private IP address it assigned to the PHP container.</p>
 <p>This is another great feature of Docker Compose: at start-up, it will automatically set up an internal network on which each container is discoverable via its service's name.</p>
 <p class="info"><span class="title">A word on networks</span> Docker Compose sets up a network with the <em>bridge</em> driver by default, but you can also specify the networks. I've personally never used any other network than the default one, but you can read about other options <a href="https://docs.docker.com/compose/networking/">here</a>.</p>
 
 <p>Finally, let's have a look at the last configuration section of the Nginx service:</p>
-<pre><code>depends_on:
-  - php
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">depends_on</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
+</pre></div>
+</td></tr></table>
+
 <p>Sometimes, the order in which Docker Compose starts the containers matters. As we want Nginx to forward PHP requests to the PHP container's port 9000, the following error might occur if Nginx happens to be ready before PHP:</p>
-<pre><code>[emerg] 1#1: host not found in upstream "php" in /etc/nginx/conf.d/php.conf:7
-nginx_1  | nginx: [emerg] host not found in upstream "php" in /etc/nginx/conf.d/php.conf:7
-nginx_1 exited with code 1
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">[</span>emerg<span class="o">]</span> <span class="m">1</span><span class="c1">#1: host not found in upstream &quot;php&quot; in /etc/nginx/conf.d/php.conf:7</span>
+nginx_1  <span class="p">|</span> nginx: <span class="o">[</span>emerg<span class="o">]</span> host not found in upstream <span class="s2">&quot;php&quot;</span> in /etc/nginx/conf.d/php.conf:7
+nginx_1 exited with code <span class="m">1</span>
+</pre></div>
+
+
 <p>This causes the Nginx process to stop, and as the Nginx container will only run for as long as the Nginx process is up, the container stops as well. The <code>depends_on</code> configuration ensures the PHP container will start before the Nginx one, saving us an embarrassing situation.</p>
 <p>Your directory and file structure should now look similar to this:</p>
-<pre><code>docker-tutorial/
+<div class="highlight"><pre><span></span>docker-tutorial/
 ├── .docker/
 │   └── nginx/
 │       └── conf.d/
@@ -342,136 +424,237 @@ nginx_1 exited with code 1
 ├── src/
 │   └── index.php
 └── docker-compose.yml
-</code></pre>
+</pre></div>
+
+
 <p>We are ready for another test. Go back to your terminal and run the same command again (this time, the PHP image will be downloaded):</p>
-<pre><code>$ docker-compose up -d
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose up -d
+</pre></div>
+
+
 <p>Refresh <a href="http://localhost">localhost</a>: if everything went well you will be greeted by the man who can disappear in a bathrobe.</p>
 <p>Update <code>index.php</code> (modify the content of the <code>&lt;title&gt;</code> tag, for instance) and reload the page: the change should appear immediately.</p>
 <p>If you run <code>docker-compose ps</code> you will observe that you now have two containers running: <code>nginx_1</code> and <code>php_1</code>.</p>
 <p>Let's inspect the PHP container:</p>
-<pre><code>$ docker-compose exec php bash
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> php bash
+</pre></div>
+
+
 <p>By running this command, we ask Docker Compose to execute Bash on the PHP container. You should get a new prompt indicating that you are currently under <code>/var/www/php</code>: this is what the <code>working_directory</code> configuration we ran into earlier is for. Run a simple <code>ls</code> to list the content of the directory: you should see <code>index.php</code>, which is expected as we mounted our local <code>src</code> folder onto the container's <code>/var/www/php</code> folder.</p>
 <p>Run <code>exit</code> to leave the container.</p>
 <p>Before we move on to the next section, let me show you one last trick. Go back to your terminal and run the following command:</p>
-<pre><code>$ docker-compose logs -f
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose logs -f
+</pre></div>
+
+
 <p>Wait for a few logs to display, and hit the <em>return</em> key a few times to add some empty lines. Refresh <a href="http://localhost">localhost</a> again and take another look at your terminal, which should have printed some new lines:</p>
 <p><img alt="docker-compose logs" src="/images/2020/03/04/docker-part-1-06.png" title="docker-compose logs" /></p>
 <p>This command aggregates the logs of every container, which is extremely useful for debugging: if anything goes wrong, your first reflex should always be to look at the logs. It is also possible to display the information of a specific container simply by appending the name of the service (e.g. <code>docker-compose logs -f nginx</code>).</p>
 <p>Hit <code>ctrl+c</code> to get your terminal back.</p>
 <h3 id="mysql">MySQL</h3>
 <p>The last key component of our LEMP stack is MySQL. Let's update <code>docker-compose.yml</code> again:</p>
-<pre><code>version: '3.7'
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
 
-# Services
-services:
+<span class="c1"># Services</span>
+<span class="nt">services</span><span class="p">:</span>
 
-  # Nginx Service
-  nginx:
-    image: nginx:1.17
-    ports:
-      - 80:80
-    volumes:
-      - ./src:/var/www/php:ro
-      - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    depends_on:
-      - php
+  <span class="c1"># Nginx Service</span>
+  <span class="nt">nginx</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">ports</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d:ro</span>
+    <span class="nt">depends_on</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
 
-  # PHP Service
-  php:
-    build: ./.docker/php
-    working_dir: /var/www/php
-    volumes:
-      - ./src:/var/www/php
-    depends_on:
-      - mysql
+  <span class="c1"># PHP Service</span>
+  <span class="nt">php</span><span class="p">:</span>
+    <span class="nt">build</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/php</span>
+    <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/php</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
+    <span class="nt">depends_on</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
 
-  # MySQL Service
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: demo
-    volumes:
-      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
-      - mysqldata:/var/lib/mysql
+  <span class="c1"># MySQL Service</span>
+  <span class="nt">mysql</span><span class="p">:</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql:8</span>
+    <span class="nt">environment</span><span class="p">:</span>
+      <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+      <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
+    <span class="nt">volumes</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
 
-# Volumes
-volumes:
+<span class="c1"># Volumes</span>
+<span class="nt">volumes</span><span class="p">:</span>
 
-  mysqldata:
-</code></pre>
+  <span class="nt">mysqldata</span><span class="p">:</span>
+</pre></div>
+</td></tr></table>
+
 <p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started before PHP. But before we dive into its configuration, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
 <p>A Dockerfile is like the recipe to build an image: every image has one, even official ones (see for instance <a href="https://github.com/nginxinc/docker-nginx/blob/5971de30c487356d5d2a2e1a79e02b2612f9a72f/mainline/buster/Dockerfile">Nginx's</a>).</p>
 <p>Create the <code>.docker/php</code> folder and add a file named <code>Dockerfile</code> to it, with the following content:</p>
-<pre><code>FROM php:7.4-fpm
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm</span>
 
-RUN docker-php-ext-install pdo_mysql
-</code></pre>
+<span class="k">RUN</span> docker-php-ext-install pdo_mysql
+</pre></div>
+</td></tr></table>
+
 <p>PHP needs the <code>pdo_mysql</code> extension in order to read from a MySQL database. Although it doesn't come with the official image, <a href="https://hub.docker.com/_/php">the Docker Hub description</a> provides some instructions to install PHP extensions easily. At the top of our Dockerfile, we indicate that we start from the official image, and we proceed with installing <code>pdo_mysql</code> with a <code>RUN</code> command. And that's it! Next time we start our containers, Docker Compose will pick up the changes and build a new image based on the recipe we gave it.</p>
 <p>A lot more can be done with a Dockerfile, and while this is a very basic example some more advanced use cases will be covered in subsequent articles.</p>
 <p>For the time being, let's update <code>index.php</code> to leverage the new extension:</p>
-<pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
-    &lt;head&gt;
-        &lt;meta charset="UTF-8"&gt;
-        &lt;title&gt;Hello there&lt;/title&gt;
-        &lt;style&gt;
-            body {
-                font-family: "Arial", sans-serif;
-                font-size: larger;
-            }
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>Hello there<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+            <span class="nt">body</span> <span class="p">{</span>
+                <span class="k">font-family</span><span class="p">:</span> <span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="kc">sans-serif</span><span class="p">;</span>
+                <span class="k">font-size</span><span class="p">:</span> <span class="kc">larger</span><span class="p">;</span>
+            <span class="p">}</span>
 
-            .center {
-                display: block;
-                margin-left: auto;
-                margin-right: auto;
-                width: 50%;
-            }
-        &lt;/style&gt;
-    &lt;/head&gt;
-    &lt;body&gt;
-        &lt;img src="https://tech.osteel.me/images/2020/03/04/hello.gif" alt="Hello there" class="center"&gt;
-        &lt;?php
-        $connection = new PDO('mysql:host=mysql;dbname=demo;charset=utf8', 'root', 'root');
-        $query      = $connection-&gt;query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = 'demo'");
-        $tables     = $query-&gt;fetchAll(PDO::FETCH_COLUMN);
+            <span class="p">.</span><span class="nc">center</span> <span class="p">{</span>
+                <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
+                <span class="k">margin-left</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+                <span class="k">margin-right</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+                <span class="k">width</span><span class="p">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2020/03/04/hello.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello there&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">&gt;</span>
+        <span class="cp">&lt;?php</span>
+<span class="cp">        $connection = new PDO(&#39;mysql:host=mysql;dbname=demo;charset=utf8&#39;, &#39;root&#39;, &#39;root&#39;);</span>
+<span class="cp">        $query      = $connection-&gt;query(&quot;SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = &#39;demo&#39;&quot;);</span>
+<span class="cp">        $tables     = $query-&gt;fetchAll(PDO::FETCH_COLUMN);</span>
 
-        if (empty($tables)) {
-            echo '&lt;p class="center"&gt;There are no tables in database &lt;code&gt;demo&lt;/code&gt;.&lt;/p&gt;';
-        } else {
-            echo '&lt;p class="center"&gt;Database &lt;code&gt;demo&lt;/code&gt; contains the following tables:&lt;/p&gt;';
-            echo '&lt;ul class="center"&gt;';
-            foreach ($tables as $table) {
-                echo "&lt;li&gt;{$table}&lt;/li&gt;";
-            }
-            echo '&lt;/ul&gt;';
-        }
-        ?&gt;
-    &lt;/body&gt;
-&lt;/html&gt;
-</code></pre>
+<span class="cp">        if (empty($tables)) {</span>
+<span class="cp">            echo &#39;&lt;p class=&quot;center&quot;&gt;There are no tables in database &lt;code&gt;demo&lt;/code&gt;.&lt;/p&gt;&#39;;</span>
+<span class="cp">        } else {</span>
+<span class="cp">            echo &#39;&lt;p class=&quot;center&quot;&gt;Database &lt;code&gt;demo&lt;/code&gt; contains the following tables:&lt;/p&gt;&#39;;</span>
+<span class="cp">            echo &#39;&lt;ul class=&quot;center&quot;&gt;&#39;;</span>
+<span class="cp">            foreach ($tables as $table) {</span>
+<span class="cp">                echo &quot;&lt;li&gt;{$table}&lt;/li&gt;&quot;;</span>
+<span class="cp">            }</span>
+<span class="cp">            echo &#39;&lt;/ul&gt;&#39;;</span>
+<span class="cp">        }</span>
+<span class="cp">        ?&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</td></tr></table>
+
 <p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet. Let's now have a look at the MySQL service in <code>docker-compose.yml</code>: the <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
 <p>In other words, a <code>demo</code> database will automatically be created for us when the container starts.</p>
 <p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file (in <em>read only</em> mode) we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
 <p>Create the <code>.docker/mysql</code> folder and add the following <code>my.cnf</code> file to it:</p>
-<pre><code>[mysqld]
-collation-server     = utf8mb4_unicode_ci
-character-set-server = utf8mb4
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">[</span>mysqld<span class="o">]</span>
+collation-server     <span class="o">=</span> utf8mb4_unicode_ci
+character-set-server <span class="o">=</span> utf8mb4
+</pre></div>
+</td></tr></table>
+
 <div class="info">
 <p><span class="title">Password plugin error?</span> Some versions of PHP prior to 7.4 are incompatible with MySQL's new default password plugin introduced with version 8. If you require an older version of PHP, you might also need to add the following line to the configuration file:</p>
 <pre>default-authentication-plugin = mysql_native_password</pre>
 </div>
 
 <p>The second volume looks a bit different than what we have seen so far: instead of pointing to a local folder, it refers to a named volume defined in a whole new <code>volumes</code> section which sits at the same level as <code>services</code>:</p>
-<pre><code># Volumes
-volumes:
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Volumes</span>
+<span class="nt">volumes</span><span class="p">:</span>
 
-  mysqldata:
-</code></pre>
+  <span class="nt">mysqldata</span><span class="p">:</span>
+</pre></div>
+</td></tr></table>
+
 <p>We need such a volume because without it, every time the <code>mysql</code> service container is destroyed the database is destroyed with it. To make it persistent, we basically tell the MySQL container to use the <code>mysqldata</code> volume to store the data locally, <code>local</code> being the default driver (just like networks, volumes come with various drivers and options which you can learn about <a href="https://docs.docker.com/compose/compose-file/#volumes-for-services-swarms-and-stack-files">here</a>). As a result, a local directory is mounted onto the container, the difference being that instead of specifying which one, we let Docker Compose pick a location.</p>
 <p>Go back to your terminal and run <code>docker-compose up -d</code> again. Once it is done downloading the MySQL image and all of the containers are up and running, refresh <a href="http://localhost">localhost</a>. You should see this:</p>
 <p><img alt="Hello there" src="/images/2020/03/04/docker-part-1-07.png" title="Hello there" /></p>
@@ -496,16 +679,26 @@ volumes:
 </div>
 
 <p>Open <code>docker-compose.yml</code> one last time and add the following service configuration after MySQL's:</p>
-<pre><code>  # PhpMyAdmin Service
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:5
-    ports:
-      - 8080:80
-    environment:
-      PMA_HOST: mysql
-    depends_on:
-      - mysql
-</code></pre>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># PhpMyAdmin Service</span>
+<span class="nt">phpmyadmin</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">phpmyadmin/phpmyadmin:5</span>
+  <span class="nt">ports</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">8080:80</span>
+  <span class="nt">environment</span><span class="p">:</span>
+    <span class="nt">PMA_HOST</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
+  <span class="nt">depends_on</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
+</pre></div>
+</td></tr></table>
+
 <p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate the MySQL container should be started first with <code>depends_on</code>, and set the host that phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned to the container).</p>
 <p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded, then, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
 <p><img alt="phpMyAdmin" src="/images/2020/03/04/docker-part-1-08.png" title="phpMyAdmin" /></p>
@@ -515,50 +708,75 @@ volumes:
 <h2 id="domain-name">Domain name</h2>
 <p>We have come a long way already and all that's left for today mostly boils down to polishing up our setup. While accessing <a href="http://localhost">localhost</a> is functional, it is not particularly user friendly.</p>
 <p>Replace the content of <code>.docker/nginx/conf.d/php.conf</code> with this one:</p>
-<pre><code>server {
-    listen      80;
-    listen      [::]:80;
-    server_name php.test;
-    root        /var/www/php;
-    index       index.php;
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+    <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
+    <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
+    <span class="kn">server_name</span> <span class="s">php.test</span><span class="p">;</span>
+    <span class="kn">root</span>        <span class="s">/var/www/php</span><span class="p">;</span>
+    <span class="kn">index</span>       <span class="s">index.php</span><span class="p">;</span>
 
-    location ~* \.php$ {
-        fastcgi_pass   php:9000;
-        include        fastcgi_params;
-        fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_param  SCRIPT_NAME     $fastcgi_script_name;
-    }
-}
-</code></pre>
+    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
+        <span class="kn">fastcgi_pass</span>   <span class="n">php</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_FILENAME</span> <span class="nv">$document_root$fastcgi_script_name</span><span class="p">;</span>
+        <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_NAME</span>     <span class="nv">$fastcgi_script_name</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
 <p>We essentially removed <code>default_server</code> (since the server will now be identified by a domain name) and added the <code>server_name</code> configuration, giving it the value <code>php.test</code>, which will be our application's address.</p>
 <p>There is one extra step we need to take for this to work: as <code>php.test</code> is not a real domain name (it is not registered anywhere), you need to edit your local machine's <code>hosts</code> file so it recognises it.</p>
 <p class="info"><span class="title">Where to find the <em>hosts</em> file?</span> On UNIX-based systems (essentially Linux distributions and macOS), it is located at <code>/etc/hosts</code>. On Windows, it should be located at <code>c:\windows\system32\drivers\etc\hosts</code>. You will need to edit it as administrator (<a href="https://www.howtogeek.com/howto/27350/beginner-geek-how-to-edit-your-hosts-file/">this tutorial</a> should help if you are unsure how to do that).</p>
 
 <p>Add the following line to your <code>hosts</code> file and save it:</p>
-<pre><code>127.0.0.1 php.test
-</code></pre>
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 php.test
+</pre></div>
+
+
 <p>Since we haven't updated <code>docker-compose.yml</code> nor any Dockerfile, this time a simple <code>docker-compose up -d</code> won't be enough for Docker Compose to pick up the changes. We need to explicitly tell it to restart the containers so the Nginx process is restarted and the new configuration is taken into account:</p>
-<pre><code>$ docker-compose restart
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose restart
+</pre></div>
+
+
 <p>Your application is now available at <a href="http://php.test">php.test</a>, as well as <a href="http://localhost">localhost</a>.</p>
 <h2 id="environment-variables">Environment variables</h2>
 <p>We are almost there, folks! The last thing I want to show you today is how to set environment variables for the whole Docker Compose project, rather than for a specific service like we have been doing so far (using the <code>environment</code> section in <code>docker-compose.yml</code>).</p>
 <p>Before we do that, I would like you to list the current containers:</p>
-<pre><code>$ docker-compose ps
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose ps
+</pre></div>
+
+
 <p>Notice how each container is prefixed by the name of your project directory (which would be <code>docker-tutorial</code> if you cloned the <a href="https://github.com/osteel/docker-tutorial/tree/part-1">repository</a>):</p>
 <p><img alt="docker-compose ps with prefix" src="/images/2020/03/04/docker-part-1-09.png" title="docker-compose ps with prefix" /></p>
 <p>Now, before we proceed further, let's destroy our containers and volumes so we can start afresh:</p>
-<pre><code>$ docker-compose down -v
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose down -v
+</pre></div>
+
+
 <p>Create a <code>.env</code> file alongside <code>docker-compose.yml</code>, with the following content:</p>
-<pre><code>COMPOSE_PROJECT_NAME=demo
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">COMPOSE_PROJECT_NAME</span><span class="o">=</span>demo
+</pre></div>
+
+
 <p>Save the file and run <code>docker-compose up -d</code> again, followed by <code>docker-compose ps</code>: each container is now prefixed with <code>demo_</code>.</p>
 <p>Why is this important? By assigning a unique name to your project, you ensure that no name collision will happen with other ones. If there are multiple Docker-based projects on your system that share the same name or directory name, and more than one use a service called <code>nginx</code>, Docker may complain that another container named <code>xxx_nginx</code> already exists when you bring up a Docker environment.</p>
 <p>While this might not seem essential, it is an easy way to avoid potential hassle in the future, and provides some consistency across the team. Speaking of which: if you've dealt with <code>.env</code> files before, you probably know that they are not supposed to be versioned and pushed to a code repository. Assuming you are using Git, you should add <code>.env</code> to a <code>.gitignore</code> file, and create a <code>.env.example</code> file that will be shared with your coworkers.</p>
 <p>Here is what the final directory and file structure should look like:</p>
-<pre><code>docker-tutorial/
+<div class="highlight"><pre><span></span>docker-tutorial/
 ├── .docker/
 │   ├── mysql/
 │   │   └── my.cnf
@@ -573,38 +791,56 @@ volumes:
 ├── .env.example
 ├── .gitignore
 └── docker-compose.yml
-</code></pre>
+</pre></div>
+
+
 <p>That is the extent to which we need environment variables for this article, but you can read more about them <a href="https://docs.docker.com/compose/environment-variables/">over here</a>.</p>
 <h2 id="commands-summary-and-cleaning-up-your-environment">Commands summary and cleaning up your environment</h2>
 <p>Before we wrap up, I'd like to summarise all of the commands we have been using so far, and throw a few more in so you can clean up your environment if you wish to. This can be used as a reference you can easily come back to if need be, especially in the beginning.</p>
 <p>Remember that they need to be run from your project's directory.</p>
 <p><em>Start and run the containers in the background</em></p>
-<pre><code>$ docker-compose up -d
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose up -d
+</pre></div>
+
+
 <p>If you update <code>docker-compose.yml</code>, an image or a Dockerfile, running this command again will pick up the changes automatically.</p>
 <p><em>Restart the containers</em></p>
-<pre><code>$ docker-compose restart
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose restart
+</pre></div>
+
+
 <p>Useful when some changes require a process to restart, e.g. restart Nginx to pick up some server configuration changes.</p>
 <p><em>List the containers</em></p>
-<pre><code>$ docker-compose ps
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose ps
+</pre></div>
+
+
 <p><em>Tail the containers' logs</em></p>
-<pre><code>$ docker-compose logs [service]
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose logs <span class="o">[</span>service<span class="o">]</span>
+</pre></div>
+
+
 <p>Replace <code>[service]</code> with a service name (e.g. <code>nginx</code>) to display this service's logs only.</p>
 <p><em>Stop the containers</em></p>
-<pre><code>$ docker-compose stop
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose stop
+</pre></div>
+
+
 <p><em>Stop and/or destroy the containers</em></p>
-<pre><code>$ docker-compose down
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose down
+</pre></div>
+
+
 <p><em>Stop and/or destroy the containers and their volumes (including named volumes)</em></p>
-<pre><code>$ docker-compose down -v
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose down -v
+</pre></div>
+
+
 <p><em>Delete everything, including images</em></p>
-<pre><code>$ docker-compose down -v --rmi all
-</code></pre>
+<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all
+</pre></div>
+
+
 <h2 id="conclusion">Conclusion</h2>
 <p>Here is a summary of what we have covered today:</p>
 <ul>
@@ -640,7 +876,7 @@ volumes:
     <div class="sharethis-inline-share-buttons"></div>
 
     <section>
-      <h2>Like this?</h2>
+      <h2>Enjoying the content?</h2>
       <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
         <label for="mce-EMAIL">Get notified of future posts by email:</label>
         <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
