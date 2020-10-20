@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-10-16 ::
+          Last updated: 2020-10-20 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -596,7 +596,7 @@ logs <span class="o">()</span> <span class="o">{</span>
 
 <span class="c1"># Restart the containers</span>
 restart <span class="o">()</span> <span class="o">{</span>
-    docker-compose stop <span class="o">&amp;&amp;</span> docker-compose start
+    stop <span class="o">&amp;&amp;</span> start
 <span class="o">}</span>
 
 <span class="c1"># Start the containers</span>
@@ -682,8 +682,8 @@ yarn <span class="o">()</span> <span class="o">{</span>
 </td></tr></table>
 
 <p>Mind the fact that <code>run --rm</code> is used to execute Artisan, Composer and Yarn commands on the backend and frontend containers respectively, basically allowing us to do so whether the containers are running or not.</p>
-<p>Also, you'll notice that the <code>restart</code> command does <code>docker-compose stop</code> followed by <code>docker-compose start</code>, even though <code>docker-compose restart</code> is also an option. The reason for that is that the latter is only truly useful to restart the containers' processes (e.g. Nginx, so it picks up a server configuration's changes, for instance). But say you've updated and rebuilt an image: running <code>docker-compose restart</code> won't recreate the corresponding container based on the image's new version, but reuse the old container instead.</p>
-<p>Essentially, in most cases stopping and starting the containers is more likely to achieve the desired effect than a simple <code>docker-compose restart</code>, even if it takes a few more seconds.</p>
+<p>Also, you'll notice that the <code>restart</code> command is essentially a shortcut for <code>demo stop</code> followed by <code>demo start</code>, even though <code>docker-compose restart</code> is also an option. The reason for that is that the latter is only truly useful to restart the containers' processes (e.g. Nginx, so it picks up a server configuration's changes, for instance). But say you've updated and rebuilt an image: running <code>docker-compose restart</code> won't recreate the corresponding container based on the image's new version, but reuse the old container instead.</p>
+<p>Essentially, in most cases stopping and starting (<code>up</code>) the containers is more likely to achieve the desired effect than a simple <code>docker-compose restart</code>, even if it takes a few more seconds.</p>
 <p>Finally, as the <code>destroy</code> function's job is to delete all of the containers, volumes and images, it would be quite a pain to run it by mistake, so I made it failsafe by adding a confirmation prompt.</p>
 <p>Most of the commands are now covered, but you might have noticed that a couple of them are still missing: <code>init</code> and <code>update</code>. These are a bit special, so the next section is dedicated to them.</p>
 <h2 id="initialising-and-updating-the-project">Initialising and updating the project</h2>
@@ -983,7 +983,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-10-16" pubdate>2020-10-16</time>
+          <time datetime="2020-10-20" pubdate>2020-10-20</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
