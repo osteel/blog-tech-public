@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-10-16 ::
+          Last updated: 2020-10-23 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -215,7 +215,7 @@ services:
     volumes:
       - ./src/backend:/var/www/backend:ro<strong>,delegated</strong>
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - phpmyadmindata:/usr/src/phpmyadmin<strong>:delegated</strong>
+      - phpmyadmindata:/var/www/phpmyadmin:ro<strong>,delegated</strong>
     depends_on:
       <strong>- backend</strong>
       - phpmyadmin
@@ -245,7 +245,7 @@ services:
     environment:
       PMA_HOST: mysql
     volumes:
-      - phpmyadmindata:/usr/src/phpmyadmin<strong>:delegated</strong>
+      - phpmyadmindata:/var/www/html<strong>:delegated</strong>
     depends_on:
       - mysql
 
@@ -819,7 +819,7 @@ $ docker-compose run --rm backend composer
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-10-16" pubdate>2020-10-16</time>
+          <time datetime="2020-10-23" pubdate>2020-10-23</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
