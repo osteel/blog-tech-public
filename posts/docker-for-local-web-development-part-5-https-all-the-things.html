@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-06-19 ::
+          Last updated: 2020-10-23 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -207,7 +207,7 @@ nginx:
   volumes:
     - ./src/backend:/var/www/backend:ro,delegated
     - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    - phpmyadmindata:/usr/src/phpmyadmin:delegated
+    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
     <strong>- ./.docker/nginx/certs:/etc/nginx/certs:delegated</strong>
   depends_on:
     - backend
@@ -557,11 +557,12 @@ cert_install <span class="o">()</span> <span class="o">{</span>
 21
 22
 23
-24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>      <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
     <span class="kn">listen</span>      <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
     <span class="kn">server_name</span> <span class="s">phpmyadmin.test</span><span class="p">;</span>
-    <span class="kn">root</span>        <span class="s">/usr/src/phpmyadmin</span><span class="p">;</span>
+    <span class="kn">root</span>        <span class="s">/var/www/phpmyadmin</span><span class="p">;</span>
     <span class="kn">index</span>       <span class="s">index.php</span><span class="p">;</span>
 
     <span class="kn">ssl_certificate</span>     <span class="s">/etc/nginx/certs/demo.test.crt</span><span class="p">;</span>
@@ -569,6 +570,7 @@ cert_install <span class="o">()</span> <span class="o">{</span>
 
     <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
         <span class="kn">fastcgi_pass</span>   <span class="n">phpmyadmin</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
+        <span class="kn">root</span>           <span class="s">/var/www/html</span><span class="p">;</span>
         <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
         <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_FILENAME</span> <span class="nv">$document_root$fastcgi_script_name</span><span class="p">;</span>
         <span class="kn">fastcgi_param</span>  <span class="s">SCRIPT_NAME</span>     <span class="nv">$fastcgi_script_name</span><span class="p">;</span>
@@ -717,7 +719,7 @@ nginx:
   volumes:
     - ./src/backend:/var/www/backend:ro,delegated
     - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    - phpmyadmindata:/usr/src/phpmyadmin:delegated
+    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
     - ./.docker/nginx/certs:/etc/nginx/certs:delegated,ro
   depends_on:
     - backend
@@ -822,7 +824,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-06-19" pubdate>2020-06-19</time>
+          <time datetime="2020-10-23" pubdate>2020-10-23</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
