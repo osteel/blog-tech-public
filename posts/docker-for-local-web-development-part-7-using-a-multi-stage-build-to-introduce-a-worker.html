@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-06-08 ::
+          Last updated: 2020-11-05 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -201,7 +201,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <span class="k">RUN</span> install-php-extensions bcmath pdo_mysql redis
 
 <span class="c"># Install Composer</span>
-<span class="k">RUN</span> curl -sS https://getcomposer.org/installer <span class="p">|</span> php -- --install-dir<span class="o">=</span>/usr/local/bin --filename<span class="o">=</span>composer
+<span class="k">COPY</span> --from<span class="o">=</span>composer:latest /usr/bin/composer /usr/local/bin/composer
 
 <span class="c"># Install extra packages</span>
 <span class="k">RUN</span> apk --no-cache add bash mysql-client mariadb-connector-c-dev
@@ -390,7 +390,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 RUN install-php-extensions bcmath pdo_mysql redis
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Install extra packages
 RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
@@ -506,7 +506,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-06-08" pubdate>2020-06-08</time>
+          <time datetime="2020-11-05" pubdate>2020-11-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

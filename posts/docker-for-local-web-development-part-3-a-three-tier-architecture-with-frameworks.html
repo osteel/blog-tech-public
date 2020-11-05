@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-10-23 ::
+          Last updated: 2020-11-05 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -440,10 +440,11 @@ zlib
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath
 
 <span class="c"># Install Composer</span>
-<span class="k">RUN</span> curl -sS https://getcomposer.org/installer <span class="p">|</span> php -- --install-dir<span class="o">=</span>/usr/local/bin --filename<span class="o">=</span>composer
+<span class="k">COPY</span> --from<span class="o">=</span>composer:latest /usr/bin/composer /usr/local/bin/composer
 </pre></div>
 </td></tr></table>
 
+<p>Here we're leveraging <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds">multi-stage builds</a> (more specifically, <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-an-external-image-as-a-stage">using an external image as a stage</a>) to get Composer's latest version from the <a href="https://hub.docker.com/_/composer">Composer Docker image</a> directly (we'll talk more about multi-stage builds in <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">part 7</a>).</p>
 <p>Updating the Dockerfile means we need to rebuild the image:</p>
 <div class="highlight"><pre><span></span>$ docker-compose build backend
 </pre></div>
@@ -553,7 +554,24 @@ $ docker-compose run --rm backend composer
 </pre></div>
 </td></tr></table>
 
-<p>Nothing that we haven't seen before here. Then, create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
+<p>Nothing that we haven't seen before here. We also need to specify in the Nginx service that the frontend service should be started first:</p>
+<pre>
+# Nginx Service
+nginx:
+  image: nginx:1.17-alpine
+  ports:
+    - 80:80
+  volumes:
+    - ./src/backend:/var/www/backend:ro,delegated
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
+  depends_on:
+    - backend
+    - phpmyadmin
+    <strong>- frontend</strong>
+</pre>
+
+<p>Then, create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
 <div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:13.10-alpine</span>
 </pre></div>
 
@@ -819,7 +837,7 @@ $ docker-compose run --rm backend composer
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-10-23" pubdate>2020-10-23</time>
+          <time datetime="2020-11-05" pubdate>2020-11-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
