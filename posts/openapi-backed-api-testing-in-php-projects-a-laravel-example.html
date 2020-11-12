@@ -146,7 +146,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>An OpenAPI definition can be used by documentation generation tools to display the API, code generation tools to generate servers and clients in various programming languages, testing tools, and many other use cases.</p>
 </blockquote>
 <p>– <a href="https://swagger.io/specification/">The OpenAPI Specification</a></p>
-<p>In this article, we will see how to combine OpenAPI definitions with integration tests to validate whether an API behaves the way it's supposed to, using the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package.</p>
+<p>In this article, we will see how to combine OpenAPI 3.0.x definitions with integration tests to validate whether an API behaves the way it's supposed to, using the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package.</p>
 <p>We will do so in a fresh <a href="https://laravel.com/">Laravel</a> installation, for which we'll also generate a <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> documentation using the <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a> package.</p>
 <p>I will first elaborate a bit further on why this is useful, but if you're just here for the code, you're welcome to skip ahead and go to the <a href="#a-laravel-example">Laravel example</a> section straight away.</p>
 <h2 id="the-issue">The issue</h2>
@@ -361,7 +361,7 @@ $ composer require darkaonline/l5-swagger
 <p>That being said, the added value is that said documentation is now guaranteed to be accurate, leading to happy consumers who can enjoy an API that just works; this, in turn, should lead to less frustrated developers.</p>
 <p>All in all, making the OpenAPI definition the single source of truth for both the API documentation and the integration tests is a strong incentive to make sure that it remains up to date; it naturally becomes a priority, where it used to be an afterthought.</p>
 <p>As for maintaining the OpenAPI definition itself, doing so manually can admittedly feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this VSCode one</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use tools like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface.</p>
-<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
+<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
 
     <p class="meta">
       <small>
