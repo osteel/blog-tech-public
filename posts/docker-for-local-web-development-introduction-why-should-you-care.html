@@ -130,13 +130,13 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-10-18 ::
+          Last updated: 2020-12-17 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
     </span>
 
-    <p class="info"><span class="title">Looking for a short, high-level introduction to Docker?</span>Check my answer to <a href="https://www.quora.com/What-is-Docker-When-should-I-use-Docker/answer/Yannick-Chenot?ch=10&share=0aafa672&srid=IVi" title="What is Docker? When should I use Docker?">"What is Docker? When should I use Docker?"</a> on Quora, and come back here if you like what you read!</p>
+    <p class="info"><span class="title">Looking for a shorter, higher-level introduction to Docker?</span>Check my answer to <a href="https://www.quora.com/What-is-Docker-When-should-I-use-Docker/answer/Yannick-Chenot?ch=10&share=0aafa672&srid=IVi" title="What is Docker? When should I use Docker?">"What is Docker? When should I use Docker?"</a> on Quora, and come back here if you like what you read.</p>
 
 <p><img alt="Docker logo" src="/images/2020/03/04/docker-introduction-01.jpg" title="Docker logo" /></p>
 <h2 id="in-this-series">In this series</h2>
@@ -151,7 +151,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">Part 7: using a multi-stage build to introduce a worker</a></li>
 <li><a href="/posts/docker-for-local-web-development-part-8-scheduled-tasks" title="Docker for local web development, part 8: scheduled tasks">Part 8: scheduled tasks</a></li>
 <li><a href="/posts/docker-for-local-web-development-conclusion-where-to-go-from-here" title="Docker for local web development, conclusion: where to go from here">Conclusion: where to go from here</a></li>
-<li><a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">Appendix A: Docker on Windows</a></li>
 </ul>
 <p>Subscribe to email alerts at the end of this article or follow me on <a href="https://twitter.com/osteel">Twitter</a> to be informed of new publications.</p>
 <h2 id="in-this-post">In this post</h2>
@@ -165,7 +164,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#how-about-insert-favourite-docker-based-solution">"How about [insert favourite Docker-based solution]?"</a></li>
 <li><a href="#serverless-is-the-way-to-go">"Serverless is the way to go"</a></li>
 <li><a href="#performance-is-terrible">"Performance is terrible"</a></li>
-<li><a href="#im-on-windows">"I'm on Windows"</a></li>
 <li><a href="#it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</a></li>
 <li><a href="#its-all-about-the-journey">It's all about the journey</a></li>
 </ul>
@@ -183,17 +181,17 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>"I am supposed to migrate a Wordpress website and I need a distraction".</p>
 </blockquote>
 <p>Whatever your motive is, you might notice the emergence of a theme, revolving around <em>understanding</em> and <em>being in control</em>: in my opinion, Docker is about empowering the developer, from providing a safe environment to try out technologies easily, without messing up your local environment (yes, even <a href="https://hub.docker.com/_/wordpress">Wordpress</a>), to opening the gates to the world of Ops.</p>
-<p>The aim of this tutorial series is to demystify a technology that can feel daunting at times, all the while providing most of the tools a developer might need to build a web project locally with Docker. <strong>It strictly focuses on the development environment and does not cover deploying Docker applications whatsoever</strong>, even though the end result can be used as part of a deployment process.</p>
-<p>No prior knowledge of Docker is required, but being comfortable around a terminal will help.</p>
+<p>The aim of this tutorial series is to demystify a technology that can feel daunting at times, all the while providing most of the tools a developer might need to build a web project locally with Docker. <strong>It strictly focuses on the development environment and does not cover deploying Docker applications whatsoever</strong>, even though it would only take a few tweaks to make the end result deployable.</p>
+<p>No prior knowledge of Docker is required, but being comfortable around a terminal will help, as well as being familiar with SSH keys.</p>
 <p>We will start our journey with a very basic LEMP stack and gradually increase the environment's complexity as we work our way through the different parts of the series, covering more and more use cases along the way. While the focus is mostly put on PHP on the server side, the overall architecture can be adapted for any language.</p>
 <p>You might find yourself stopping at a certain point because all of your needs have been addressed already, only to come back later when you need more. Wherever that is, each part of the series comes with its own branch from <a href="https://github.com/osteel/docker-tutorial">this repository</a>, which you can fork or download and use as a starting point for your own projects.</p>
-<p>That's it for the elevator pitch. Convinced already? Great, let's move on to the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a> (or head over <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">here</a> if you intend to run Docker on Windows). If not, let's try to address some of the doubts you might still have, starting with a little background check.</p>
+<p>That's it for the elevator pitch. Convinced already? Great, let's move on to the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a>. If not, let's try to address some of the doubts you might still have, starting with a little background check.</p>
 <h2 id="why-should-i-listen-to-you">"Why should I listen to you?"</h2>
 <p>I am a backend developer with more than a decade of experience, having worked with various types of companies in three different countries. I witnessed the evolution of the development environment landscape over time, from the early days of using <a href="http://www.wampserver.com">WAMP</a> and <a href="https://notepad-plus-plus.org">Notepad++</a> to migrating to full-fledged IDEs and custom virtual machines, before moving on to <a href="https://www.vagrantup.com">Vagrant</a> and eventually, <a href="https://laravel.com/docs/homestead">Homestead</a>.</p>
 <p>Back in 2015, I explored the possibility of using Docker locally as a development environment and <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development">wrote about it</a> in a couple of articles that were picked up by the official <a href="https://www.docker.com/newsletter-subscription">Docker newsletter</a>, but eventually dropped the idea, mainly because of performance issues.</p>
 <p>A the beginning of 2018, however, I was forced to revisit that thought because of Vagrant's shortcomings vis à vis the growing complexity of the project I was working on at the time (more on that in the next section), and realised progress had been made both in terms of performance and adoption.</p>
 <p>After tinkering about for a few days and successive iterations, I ended up with a decent development environment running on Docker, capable of meeting the application's new scope and greatly simplifying the onboarding of new developers.</p>
-<p>Since then, I successfully implemented and improved upon a similar setup in another company.</p>
+<p>Since then, I successfully implemented and improved upon a similar setup in other companies.</p>
 <p>While the approach taken in this series is certainly not the only one and is most likely perfectible, it has proven to be reliable and a significant improvement compared to previous Vagrant-based setups.</p>
 <h2 id="i-am-already-using-vagranthomestead">"I am already using Vagrant/Homestead"</h2>
 <p>Homestead is great. I used <a href="https://laravel.com">Laravel</a>'s pre-packaged Vagrant virtual machine (VM) for years, both for personal and clients' projects (if you have no clue what Vagrant is, please take a quick look at <a href="/posts/how-to-use-vagrant-for-local-web-development" title="How to use Vagrant for local web development">this post</a> first, especially <a href="/posts/how-to-use-vagrant-for-local-web-development#vagrant">this short section</a>). Homestead features pretty much everything you need for a PHP application, and allows you to spin up new websites very quickly. So why did I make the switch?</p>
@@ -212,7 +210,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Besides, instead of using a pre-packaged virtual machine like Homestead, featuring way more tools than any given application has any use for, using Docker the way I suggest ensures that you only ever install what you actually need, in a proactive way. You regain control of your environment.</p>
 <h2 id="how-about-insert-favourite-docker-based-solution">"How about [insert favourite Docker-based solution]?"</h2>
 <p>There are quite a few Docker-based development environments out there, and it seems that every few weeks a new one pops up. <a href="https://laradock.io/">Laradock</a> was arguably the first to get some traction, and is to Docker what Homestead is to Vagrant: a pre-packaged environment for PHP applications. While I don't personally use it, I have heard a lot of good things and it might just be enough for your needs. Their motto is <em>Use Docker First - Then Learn About It Later</em>, which is an excellent approach in my opinion.</p>
-<p>There's also <a href="https://github.com/tighten/takeout">Takeout</a>, <a href="https://www.ddev.com/">DDEV</a>, and I'm sure plenty of others that are very good at what they do. The purpose of this series, however, is to give you a deeper understanding of Docker so you can build your own environment, one that matches perfectly any given project's requirements. If all you want to do for the moment is using a Docker-based solution without the hassle of setting it up yourself, by all means give one of the aforementioned projects a try, and feel free to come back whenever you want to create your own, tailored setup.</p>
+<p>Laravel recently unveiled <a href="https://laravel.com/docs/sail">Sail</a>, their official Docker-based environment; there's also <a href="https://github.com/tighten/takeout">Takeout</a>, <a href="https://www.ddev.com/">DDEV</a>, and I'm sure plenty of others that are very good at what they do. The purpose of this series, however, is to give you a deeper understanding of Docker so you can build your own environment, one that matches perfectly any given project's requirements. If all you want to do for the moment is using a Docker-based solution without the hassle of setting it up yourself, by all means give one of the aforementioned projects a try, and feel free to come back whenever you want to create your own, tailored setup.</p>
 <p>All in all I see this explosion of Docker-based environments as a good sign – a confirmation that this is the right tool for the job, one that will be embraced more and more in the future.</p>
 <h2 id="serverless-is-the-way-to-go">"Serverless is the way to go"</h2>
 <p><a href="https://en.wikipedia.org/wiki/Serverless_computing" title="Serverless computing">Serverless computing</a> is on the rise and the word on the street is that <a href="https://read.acloud.guru/serverless-is-eating-the-stack-and-people-are-freaking-out-and-they-should-be-431a9e0db482" title="Serverless is eating the stack and people are freaking out — as they should be">it's coming for Docker</a>.</p>
@@ -225,10 +223,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>It used to be terrible. Now it's just not great.</p>
 <p>This is the one real trade off to using Docker Desktop as a development environment for the entire stack, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance (and the recently introduced gRPC FUSE doesn't seem to make a big difference). There are ways to make it better, however, which are mentioned throughout this series.</p>
 <p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time: Windows now has <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a>, and there are <a href="https://github.com/docker/for-mac/issues/1592">ongoing discussions around performance on macOS</a>.</p>
-<h2 id="im-on-windows">"I'm on Windows"</h2>
-<p>As previously mentioned, with the unveiling of <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> it seems that running Docker inside Windows is now perfectly fine. But if you can't use it for some reason, running Docker on Microsoft's OS can be a bit of a pain. The good news is that most of what is covered in this series has been successfully tested on Windows 10 at some point, even though it does require a few tweaks here and there.</p>
-<p>To help you get started, I came up with a <a href="/posts/docker-for-local-web-development-appendix-a-docker-on-windows" title="Docker for local web development, appendix A: Docker on Windows">special appendix</a> which I recommend you read after this introduction.</p>
-<p>A caveat: I work on a Mac and don't have regular access to a Windows machine, so if any Microsoft-related trickery seems to be at play I'm afraid I won't be of much assistance (this is also valid for Linux distributions, although from experience these don't tend to cause any trouble).</p>
 <h2 id="it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</h2>
 <p>Finally, some developers simply dismiss Docker as not being their problem. This is a fair argument, as Docker sits somewhere beyond the realm of pure application development. If anything, a sysadmin or DevOps engineer should set it up for you, right?</p>
 <p>Well, yes, you are entitled to feel that way. But if DevOps can refer to individuals with an interest for both system administration and coding, effectively acting as bridges between the two, it can also be interpreted as people from both sides meeting halfway.</p>
@@ -236,14 +230,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Whatever your specialty – backend, frontend or fullstack – and to whatever extent you feel concerned with the DevOps movement, I promise that learning about the cogs that make your applications tick is worth your time, and that you will be a better developer for it.</p>
 <h2 id="its-all-about-the-journey">It's all about the journey</h2>
 <p>In the end, you may not fully embrace the final result of this series. Be it for performance reasons as mentioned earlier, or because you feel some aspects of the setup are too complicated or just don't work for you, this development environment may not entirely satisfy you in its suggested form.</p>
-<p>But that is not the true purpose of this series. While you can definitely take my approach at face value, my true objective is to give you enough confidence to integrate Docker to your development workflow in any way you see fit – to provide enough practical knowledge to adapt it to your own use cases.</p>
+<p>But that is not the true purpose of this series. While you can definitely take my approach at face value, my main objective is to give you enough confidence to integrate Docker to your development workflow in any way you see fit – to provide enough practical knowledge to adapt it to your own use cases.</p>
 <p>And I can guarantee that by the end of this series, you will think of ways to use Docker for your own benefit.</p>
 <p>Now. <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">Shall we get started?</a></p>
 
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-10-18" pubdate>2020-10-18</time>
+          <time datetime="2020-12-17" pubdate>2020-12-17</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

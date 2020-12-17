@@ -131,13 +131,16 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-09-18 ::
+          Last updated: 2020-12-17 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-appendix-a-docker-on-windows.html">history</a> ]
       </small>
     </span>
 
-    <p><img alt="Docker on Windows" src="/images/2020/03/04/docker-appendix-a-01.jpg" title="Docker on Windows" /></p>
+    <div class="info"><span class="title">This content is deprecated</span><p>As usual things are moving fast with Docker, and since I started writing and publishing this series Microsoft released <a href="https://docs.microsoft.com/en-us/windows/wsl/">Windows Subsystem for Linux version 2</a> (WSL 2). Essentially, it allows Linux containers to run natively on Windows, without emulation, meaning overall performance should be much, much better. See the installation guide on Windows <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">here</a> and how to configure Docker Desktop to use it <a href="https://docs.docker.com/docker-for-windows/wsl/">here</a>.</p>
+<p>This is now the preferred way to use Docker on Windows and <strong>I do not recommend you follow the instructions below anymore</strong>. I simply leave them here for reference, in case some people still rely on them. I may take this page down altogether at some point in the future.</p></div>
+
+<p><img alt="Docker on Windows" src="/images/2020/03/04/docker-appendix-a-01.jpg" title="Docker on Windows" /></p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
 <li><a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">Introduction: why should you care?</a></li>
@@ -170,8 +173,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#something-missing">Something missing?</a></li>
 </ul>
 </div>
-<p class="info"><span class="title">Edit: WSL 2</span> As usual things are moving fast with Docker, and since I started writing and publishing this series Microsoft released <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2</a> (WSL 2). Essentially, it allows Linux containers to run natively on Windows, without emulation, meaning overall performance should be much, much better. I haven't tried this out myself and would need to get my hands on a proper Windows machine to do so, but based on general feedback I'd strongly encourage you to look into it. If you don't feel like it though, the approach described below is still valid.</p>
-
 <h2 id="why-this-appendix">Why this appendix?</h2>
 <p>You might have heard some rumours claiming Docker is a bit of a pain to run on Windows. The bad new is these rumours are mostly true. All is not lost, however: most hurdles come with little tricks that, once known and applied, make the experience of Docker on Windows almost the same as a Unix-based system.</p>
 <p>This appendix is about those little tricks, which should allow you to complete the entirety of this tutorial series and run the final result smoothly on Microsoft's OS.</p>
@@ -196,15 +197,21 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><img alt="Git console window" src="/images/2020/03/04/docker-appendix-a-03.png" title="Git console window" /></p>
 <p>Make sure to select <em>Use Windows' default console window</em>; if you don't, you will have to prepend any Docker command with <code>winpty</code>. This is a <a href="https://github.com/docker/for-win/issues/1588">long standing issue</a> that makes using the albeit nicer MinTTY a pain, although it seems Windows' console has improved with Windows 10 (<a href="https://willi.am/blog/2016/08/08/docker-for-windows-interactive-sessions-in-mintty-git-bash/" title="Docker for Windows: Interactive Sessions in MinTTY Git Bash">source</a>).</p>
 <p>If you also intend to clone the <a href="https://github.com/osteel/docker-tutorial">GitHub repository</a> coming with the series, you can run Git commands from the same terminal, provided an SSH key is set up. If you already use a GIT GUI like <a href="https://www.gitkraken.com">GitKraken</a>, you can skip this part; otherwise, open Git Bash and run the following command:</p>
-<pre><code>$ ls -l ~/.ssh
-</code></pre>
+<div class="highlight"><pre><span></span>$ ls -l ~/.ssh
+</pre></div>
+
+
 <p>If you don't see a couple of files named <code>id_rsa</code> and <code>id_rsa.pub</code> or if the folder doesn't exist, run the following command and hit <em>return</em> at every prompt:</p>
-<pre><code>$ ssh-keygen -o
-</code></pre>
+<div class="highlight"><pre><span></span>$ ssh-keygen -o
+</pre></div>
+
+
 <p>This will basically generate a public/private RSA key pair so Git Bash can interact with GitHub via SSH.</p>
 <p>Run the following command to display your public key and copy the result:</p>
-<pre><code>$ cat ~/.ssh/id_rsa.pub
-</code></pre>
+<div class="highlight"><pre><span></span>$ cat ~/.ssh/id_rsa.pub
+</pre></div>
+
+
 <p>Paste it as a new SSH key in your <a href="https://github.com/settings/keys">GitHub settings</a>.</p>
 <p>Your Git Bash is now set!</p>
 <p class="info"><span class="title">"Ok, but terminal XYZ is better"</span> I know there are other terminals for Windows out there (you can even <a href="https://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/" title="How to Install and Use the Linux Bash Shell on Windows 10">run a proper Linux distribution on Windows 10</a>, apparently), and if you are already using one that you are satisfied with, by all means keep using it. This guide is mostly intended for people who are not sure where to start, and to whom I suggest a fairly simple solution that I know works.</p>
@@ -215,8 +222,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="ports">Ports</h2>
 <p>The local setup needs ports 80 and 443 to be available, but the former might already be in use (which will most likely prevent the Nginx container from starting properly).</p>
 <p>A quick way to free up the port is to run the following command as admin (from Command Prompt, not from Git Bash):</p>
-<pre><code>$ net stop http /y
-</code></pre>
+<div class="highlight"><pre><span></span>$ net stop http /y
+</pre></div>
+
+
 <p>If you still have issues, have a look at <a href="http://www.devside.net/wamp-server/opening-up-port-80-for-apache-to-use-on-windows">this article</a>.</p>
 <p>Based on the way you intend to access the database, you might also need to free up port 3306 (unless you plan on using phpMyAdmin).</p>
 <h2 id="ssltls-certificates">SSL/TLS certificates</h2>
@@ -239,7 +248,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on the
-          <time datetime="2020-09-18" pubdate>2020-09-18</time>
+          <time datetime="2020-12-17" pubdate>2020-12-17</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

@@ -29,7 +29,7 @@ td img {
   color: #9a9a9a !important;
 }
 
-p img, video, .flash-video, .media-embed  {
+p img, video, .flash-video, .media-embed {
   box-shadow: rgba(0,0,0,0.15) 0 1px 4px !important;
   -moz-box-shadow: rgba(0,0,0,0.15) 0 1px 4px !important;
   -webkit-box-shadow: rgba(0,0,0,0.15) 0 1px 4px !important;
@@ -39,6 +39,10 @@ p img, video, .flash-video, .media-embed  {
   display: block !important;
   border: #fff 0.5em solid !important;
   margin: .5em auto 1.5em !important;
+}
+
+.twitter-tweet {
+  margin: auto;
 }
 
 .post .caption {

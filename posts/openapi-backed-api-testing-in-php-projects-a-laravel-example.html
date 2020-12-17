@@ -154,7 +154,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>To many developers, maintaining an API's documentation feels like extra homework when they've already passed the exam; it's boring, sometimes tedious, and often unrewarding. Some strategies can help, like using annotations to keep the code and the documentation in one place; but those are often annoying to write still, and even the most willing developer is not immune to an oversight that won't necessarily be caught by coworkers.</p>
 <p>The usual outcome is that, one way or another, the documentation and the API become out of sync, leading to confused consumers.</p>
 <p>Another aspect of API maintenance is ensuring that no endpoint stops functioning the way it's supposed to; regressions will be introduced eventually, and without a proper testing strategy they might go unnoticed for a while.</p>
-<p>A way to avoid this is to implement integration tests that will automatically check that the API's behaviour is correct, and that recently introduced changes have not had unintended consequences. This is fine, but still doesn't provide any guarantee that the expectations set in the integration tests are exactly the same as the ones displayed by the documentation.</p>
+<p>A way to avoid this is to implement integration tests that will automatically check that the API's behaviour is correct, and that recently introduced changes have not had unintended consequences. This is fine, but still doesn't provide any guarantee that the expectations set in the integration tests are exactly the same as the ones inferred from the documentation.</p>
 <p>If only there was a way to ensure that they perfectly reflect each other…</p>
 <h2 id="a-solution">A solution</h2>
 <p>We are now assuming that we've got an API documentation and some integration tests, and we'd like to align their expectations somehow.</p>
@@ -357,11 +357,27 @@ $ composer require darkaonline/l5-swagger
 
 <p>This could be implemented as a new <code>MakesOpenApiRequests</code> trait that would "extend" the <code>MakesHttpRequests</code> one, and that would first call the parent <code>call</code> method to get the response. It would then work out the path from the URI, and validate the response against the OpenAPI definition before returning it, for the calling test to perform any further assertions as needed.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>While the above setup is a great step up in improving an API's robustness, it is no silver bullet; it requires that every single endpoint is covered with integration tests, which is not easily enforceable in an automated way, and ultimately still requires some discipline and vigilance from the developers. It may even feel a bit coercive at first, since as a result they are basically <em>forced</em> to maintain the documentation in order to write successful tests.</p>
-<p>The added value, however, is that said documentation is now guaranteed to be accurate, leading to happy consumers who will now feel the joy of using an API that just works; this, in turn, should lead to less frustrated developers, who shall spend less time hunting down pesky discrepancies.</p>
+<p>While the above setup is a great step up in improving an API's robustness, it is no silver bullet; it requires that every single endpoint is covered with integration tests, which is not easily enforceable in an automated way, and ultimately still requires some discipline and vigilance from the developers. It may even feel a bit coercive to some at first, since as a result they are basically <em>forced</em> to maintain the documentation in order to write successful tests.</p>
+<p>The added value, however, is that said documentation is now guaranteed to be much more accurate, leading to happy consumers who will enjoy an API which is less likely to act erratically; this, in turn, should lead to less frustrated developers, who shall spend less time hunting down pesky discrepancies.</p>
 <p>All in all, making OpenAPI definitions the single source of truth for both the API documentation and the integration tests is in itself a strong incentive to keep them up to date; they naturally become a priority, where they used to be an afterthought.</p>
-<p>As for maintaining the OpenAPI definition itself, doing so manually can admittedly feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this VSCode one</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use tools like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface (note: I am not affiliated).</p>
-<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
+<p>As for maintaining the OpenAPI definition itself, doing so manually can admittedly feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this VSCode one</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use <a href="https://openapi.tools/#gui-editors">tools</a> like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface.</p>
+<p>And since we're talking about Stoplight*, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://swagger.io/specification">The OpenAPI Specification</a></li>
+<li><a href="https://github.com/osteel/openapi-httpfoundation-testing">The OpenAPI HttpFoundation Testing package</a></li>
+<li><a href="https://github.com/osteel/openapi-httpfoundation-testing-laravel-example">Laravel example repository</a></li>
+<li><a href="https://swagger.io/tools/swagger-ui">Swagger UI</a></li>
+<li><a href="https://github.com/DarkaOnLine/L5-Swagger">The L5 Swagger Laravel package</a></li>
+<li><a href="https://openapi.tools">OpenAPI.Tools</a></li>
+<li><a href="https://github.com/thephpleague/openapi-psr7-validator">The OpenAPI PSR-7 Message Validator package</a></li>
+<li><a href="https://symfony.com/components/HttpFoundation">The HttpFoundation component</a></li>
+<li><a href="https://www.php-fig.org/psr/psr-7">PSR-7: HTTP message interfaces</a></li>
+<li><a href="https://symfony.com/doc/current/components/psr7.html">The PSR-7 Bridge</a></li>
+<li><a href="https://github.com/Nyholm/psr7">PSR-7 implementation</a></li>
+<li><a href="https://stoplight.io/blog/api-design-first-vs-code-first">API Design-First vs Code First</a></li>
+</ul>
+<p><em>* I am not affiliated with them in any way</em></p>
 
     <p class="meta">
       <small>
