@@ -138,6 +138,18 @@ styles, `#sidebar-checkbox` for behavior. -->
       </small>
     </span>
 
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+    </section>
+
     <p><a href="http://nginx.org/"><img alt="Nginx logo" src="/images/2015/07/19/nginx.png" title="Nginx logo" /></a></p>
 <p><strong>[UPDATE 2015/08/02]</strong><br />
 As <a href="https://twitter.com/OtaK_/status/623057774260408320">@OtaK_ pointed out</a>, in most cases CORS should be handled directly by the app as it should return the allowed verbs by endpoint, instead of all of them being allowed by Nginx. This config should only be used for quick development, of a prototype or PoC for example, or if you are certain that the same verbs are allowed for all the endpoints (that would be the case for the assets returned by a CDN, for instance).<br />
@@ -264,9 +276,23 @@ As <a href="https://twitter.com/OtaK_/status/623057774260408320">@OtaK_ pointed 
 <p>More generally, all the headers' values are examples and you can modify them as you see fit.</p>
 <p>You could also put the global and options-related snippets into separate files (in <code>/etc/nginx/shared/</code>, for example) and import them with the Nginx's <code>include</code> directive.</p>
 
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+    </section>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
     <p class="meta">
       <small>
-        Last updated by osteel on the
+        Last updated by osteel on
           <time datetime="2015-08-02" pubdate>2015-08-02</time>
           :: [
           <a href="https://tech.osteel.me/tag/cors">cors</a>
@@ -276,21 +302,6 @@ As <a href="https://twitter.com/OtaK_/status/623057774260408320">@OtaK_ pointed 
           ]
       </small>
     </p>
-
-    <div class="sharethis-inline-share-buttons"></div>
-
-    <section>
-      <h2>Enjoying the content?</h2>
-      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
-        <label for="mce-EMAIL">Get notified of future posts by email:</label>
-        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
-        <input type="submit" value="Subscribe" name="subscribe" id="mc-embedded-subscribe" class="form-button">
-        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
-        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
-        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
-        <p class="tiny-note">You can unsubscribe at any time by clicking the link in the footer of the emails.<br>By clicking to subscribe, you acknowledge that your email address will be transferred to Mailchimp for processing.<br>Learn more about Mailchimp's privacy practices <a href="https://mailchimp.com/legal/" target="_blank">here</a>.</p>
-      </form>
-    </section>
 
     <section>
       <h2>Comments</h2>

@@ -52,20 +52,40 @@ p img, video, .flash-video, .media-embed {
   font-size: 18px;
 }
 
-.info {
-  background-color: #f0f5ff;
-  border: #d8e7fc 1px solid;
+/*
+ * Social medias
+ */
+
+.sharethis-inline-share-buttons {
+  margin-bottom: 1rem;
+}
+
+/*
+ * Boxes
+ */
+
+.info, .warning {
   border-radius: 0.3em;
   padding: 20px;
   margin-top: 0;
   margin-bottom: 1rem;
 }
 
-.info p:last-child, .info pre:last-child {
+.info {
+  background-color: #f0f5ff;
+  border: #d8e7fc 1px solid;
+}
+
+.warning {
+  background-color: #fff7f0;
+  border: #fce8d8 1px solid;
+}
+
+.info p:last-child, .info pre:last-child, .warning p:last-child, .warning pre:last-child  {
   margin-bottom: 0;
 }
 
-.info .title {
+.info .title, .warning .title {
   display: block;
   font-weight: bold;
   margin-bottom: .5rem;
@@ -74,6 +94,14 @@ p img, video, .flash-video, .media-embed {
 .info .title:before {
   content: "💡 ";
 }
+
+.warning .title:before {
+  content: "⚠️ ";
+}
+
+/*
+ * Forms
+ */
 
 .form-input {
   width: 100%;
@@ -87,26 +115,22 @@ p img, video, .flash-video, .media-embed {
   font-size: 0.75rem;
 }
 
-/*
- * Forms
- */
-
 .form-button {
-  height: 34px;
+  height: 32px;
   padding: 5px;
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.6);
-  background-color: #202020;
+  color: #FFF;
+  background-color: #7d7d7d;
   border-radius: 4px 4px 4px 4px;
   -moz-border-radius: 4px 4px 4px 4px;
   -webkit-border-radius: 4px 4px 4px 4px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: none;
   cursor: pointer;
   display: inline-block;
 }
 
 .form-button:hover {
-  color: #FFF;
+  background-color: #7e7e7e;
 }
 
 /*
