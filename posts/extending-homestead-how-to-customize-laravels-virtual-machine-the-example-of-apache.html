@@ -75,8 +75,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -157,18 +157,24 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Might be worth mentioning that my host machine runs Mac OS, and the steps below might slightly differ if you are on a different OS.</p>
 <h2 id="custom-provisioning">Custom provisioning</h2>
 <p>Looking at the <code>VagrantFile</code>, I noticed a few interesting lines:</p>
-<pre><code>afterScriptPath = File.expand_path("~/.homestead/after.sh")
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">afterScriptPath</span> <span class="o">=</span> <span class="n">File</span><span class="p">.</span><span class="n">expand_path</span><span class="p">(</span><span class="ss">&quot;~/.homestead/after.sh&quot;</span><span class="p">)</span>
+</pre></div>
+
+
 <p>and, later on:</p>
-<pre><code>if File.exists? afterScriptPath then
-    config.vm.provision "shell", path: afterScriptPath
-end
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">if</span> <span class="nv">File</span>.<span class="nv">exists</span>? <span class="nv">afterScriptPath</span> <span class="k">then</span>
+    <span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">provision</span> <span class="s2">&quot;</span><span class="s">shell</span><span class="s2">&quot;</span>, <span class="nv">path</span>: <span class="nv">afterScriptPath</span>
+<span class="k">end</span>
+</pre></div>
+
+
 <p>And here is the content of <code>~/.homestead/after.sh</code>:</p>
-<pre><code># If you would like to do some extra provisioning you may
-# add any commands you wish to this file and they will
-# be run after the Homestead machine is provisioned.
-</code></pre>
+<div class="highlight"><pre><span></span># <span class="k">If</span> <span class="nv">you</span> <span class="nv">would</span> <span class="nv">like</span> <span class="nv">to</span> <span class="k">do</span> <span class="nv">some</span> <span class="nv">extra</span> <span class="nv">provisioning</span> <span class="nv">you</span> <span class="nv">may</span>
+# <span class="nv">add</span> <span class="nv">any</span> <span class="nv">commands</span> <span class="nv">you</span> <span class="nv">wish</span> <span class="nv">to</span> <span class="nv">this</span> <span class="nv">file</span> <span class="nv">and</span> <span class="nv">they</span> <span class="nv">will</span>
+# <span class="nv">be</span> <span class="nv">run</span> <span class="nv">after</span> <span class="nv">the</span> <span class="nv">Homestead</span> <span class="nv">machine</span> <span class="nv">is</span> <span class="nv">provisioned</span>.
+</pre></div>
+
+
 <p>Gotta love Laravel...</p>
 <p>What it means is that after all the base Homestead set up is done, the script will look for a file named <code>after.sh</code> in the <code>.homestead/</code> folder under your user's directory, and run its content if it exists.</p>
 <p>This file is created along with the <code>Homestead.yaml</code> file when you first run <code>bash init.sh</code> after cloning the Homestead repository. As <code>~/.homestead/</code> is an independent folder, and if you work with other developers on the same project(s), it might be a good idea to version it for consistency across the team.</p>
@@ -177,27 +183,39 @@ end
 <h3 id="the-example-of-apache">The example of Apache</h3>
 <p>Let's take a simple example here. Homestead comes with Nginx preinstalled (nothing bad about that, quite the opposite actually), but you might have some projects that need to be run on Apache. If both servers cannot run at the same time, there is no harm in having them both installed and starting one or the other according to the current need.</p>
 <p>From your <em>host</em> machine, open a terminal window and edit the <code>after.sh</code> mentioned above:</p>
-<pre><code>vim ~/.homestead/after.sh
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vim</span> <span class="o">~/</span><span class="p">.</span><span class="n">homestead</span><span class="o">/</span><span class="k">after</span><span class="p">.</span><span class="n">sh</span>
+</pre></div>
+
+
 <p>Add these lines at the end of it:</p>
-<pre><code>sudo apt-get update
-sudo apt-get install -y apache2
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="k">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="o">-</span><span class="n">y</span> <span class="n">apache2</span>
+</pre></div>
+
+
 <p>What this will do is it will update the package lists to make sure we'll grab the latest version of the Apache one, and then install it (<code>-y</code> is there to answer <em>"yes"</em> by default where the user is normally prompted).</p>
 <p>Save the file and go to <code>~/Homestead/</code>, then run:</p>
-<pre><code>vagrant provision
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">provision</span>
+</pre></div>
+
+
 <p>This will force Homestead to re-run the provision scripts, and install the Apache server using the script you've just added.</p>
 <p><em>ssh</em> your Homestead box and run:</p>
-<pre><code>sudo service apache status
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">service</span> <span class="n">apache</span> <span class="n">status</span>
+</pre></div>
+
+
 <p>If everything went alright, you should get something like that:</p>
-<pre><code>* apache2 is not running
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">apache2</span> <span class="k">is</span> <span class="k">not</span> <span class="n">running</span>
+</pre></div>
+
+
 <p>This is expected, as it means that <em>1.</em> Apache has been correctly installed and <em>2.</em> Nginx is already running and we can't have both running at the same time. What we need to do now is to stop Nginx first and then start Apache:</p>
-<pre><code>sudo service nginx stop
-sudo service apache2 start
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">service</span> <span class="n">nginx</span> <span class="n">stop</span>
+<span class="n">sudo</span> <span class="n">service</span> <span class="n">apache2</span> <span class="k">start</span>
+</pre></div>
+
+
 <p>Accessing your Homestead machine from the browser should now display the default Apache screen (chances are the address is <a href="http://192.168.10.10">http://192.168.10.10</a>):</p>
 <p><img alt="Apache Welcome Screen" src="/images/2015/05/13/apache-welcome.png" title="Apache Welcome Screen" /></p>
 <p>That being said and done, you should be aware that Homestead will <em>not</em> create the Apache Virtual Hosts for you (as it does for the Nginx server confs). You will have to add them yourself in <code>/etc/apache2/</code>.<br />

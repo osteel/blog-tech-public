@@ -76,8 +76,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -144,27 +144,37 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Here are a few simple steps to use it on Homestead, but the process wouldn't differ much whatever your development environment is.</p>
 <p>First, <a href="http://www.adminer.org/#download">download <code>adminer.php</code></a>, rename it <code>index.php</code> and move it to an <code>adminer</code> folder under your usual Homestead projects directory.</p>
 <p>Add a new site to your <code>Homestead.yaml</code> file (adapt the path to your own config if necessary):</p>
-<pre><code>sites:
-    - map: adminer.local
-    to: /home/vagrant/projects/adminer
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sites</span><span class="p">:</span>
+    <span class="o">-</span> <span class="k">map</span><span class="p">:</span> <span class="n">adminer</span><span class="p">.</span><span class="k">local</span>
+    <span class="k">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">adminer</span>
+</pre></div>
+
+
 <p>Re-provision your box:</p>
-<pre><code>$ cd ~/Homestead
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> ~/Homestead
 $ vagrant provision
-</code></pre>
+</pre></div>
+
+
 <p>Edit your local <code>hosts</code> file to match the Homestead box IP address to the domain (on a Mac that's <code>/etc/hosts</code>):</p>
-<pre><code>192.168.10.10   adminer.local
-</code></pre>
+<div class="highlight"><pre><span></span><span class="mi">192</span><span class="p">.</span><span class="mi">168</span><span class="p">.</span><span class="mi">10</span><span class="p">.</span><span class="mi">10</span>   <span class="n">adminer</span><span class="p">.</span><span class="k">local</span>
+</pre></div>
+
+
 <p>You should now be able to access <a href="http://adminer.local">http://adminer.local</a>:</p>
 <p><img alt="Adminer" src="/images/2015/06/19/adminer.png" title="Adminer" /></p>
 <p>To access the MySQL databases, simply select <em>"MySQL"</em> in the <em>"System"</em> dropdown, type <em>"localhost"</em> in <em>"Server"</em> (there is a placeholder that looks like the value is entered by default but you actually need to type it in), and the default <em>"homestead"</em> and <em>"secret"</em> as <em>"Username"</em> and <em>"Password"</em> respectively (you can also tick the <em>"Permanent login"</em> box so the details are added as a link on the left column for quick access).</p>
 <p>The default PostgreSQL user doesn't have a password so you need to set one first.</p>
 <p><code>ssh</code> your Homestead box and run:</p>
-<pre><code>$ sudo -u postgres psql
-</code></pre>
+<div class="highlight"><pre><span></span>$ sudo -u postgres psql
+</pre></div>
+
+
 <p>You should be connected to PostgreSQL (notice <code>postgres=#</code> at the beginning of the prompt). Now type:</p>
-<pre><code>$ postgres=# alter user postgres password 'secret';
-</code></pre>
+<div class="highlight"><pre><span></span>$ <span class="nv">postgres</span><span class="o">=</span><span class="c1"># alter user postgres password &#39;secret&#39;;</span>
+</pre></div>
+
+
 <p>You've just set up a password for the default user (<em>"secret"</em>, just like for MySQL). Quit this interface typing <code>\q</code> and try to access the PostgreSQL databases from Adminer (select <em>"PostgreSQL"</em> in the <em>"System"</em> dropdown, type <em>"localhost"</em> in <em>"Server"</em>, and <em>"postgres"</em> and <em>"secret"</em> as <em>"Username"</em> and <em>"Password"</em> respectively).</p>
 <p>I personnally don't like the default theme, and there are a few other designs available <a href="http://www.adminer.org/#extras">from the website</a>. Download whichever you fancy (I went for <em>"pappu687"</em>) and place the <code>adminer.css</code> file at the same level as the <code>index.php</code> file you moved earlier.</p>
 <p>Refresh <a href="http://adminer.local">http://adminer.local</a>. You're done!</p>
@@ -174,11 +184,11 @@ $ vagrant provision
         Last updated by osteel on the
           <time datetime="2015-06-19T00:00:00+01:00" pubdate>2015-06-19</time>
           :: [
-          <a href="https://tech.osteel.me/tag/adminer.html">adminer</a>
-          <a href="https://tech.osteel.me/tag/phpmyadmin.html">phpmyadmin</a>
-          <a href="https://tech.osteel.me/tag/database.html">database</a>
-          <a href="https://tech.osteel.me/tag/homestead.html">homestead</a>
-          <a href="https://tech.osteel.me/tag/laravel.html">laravel</a>
+          <a href="https://tech.osteel.me/tag/adminer">adminer</a>
+          <a href="https://tech.osteel.me/tag/phpmyadmin">phpmyadmin</a>
+          <a href="https://tech.osteel.me/tag/database">database</a>
+          <a href="https://tech.osteel.me/tag/homestead">homestead</a>
+          <a href="https://tech.osteel.me/tag/laravel">laravel</a>
           ]
       </small>
     </p>

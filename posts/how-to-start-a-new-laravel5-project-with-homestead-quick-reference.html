@@ -73,8 +73,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -146,71 +146,97 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h3 id="a-note-about-ssh">A note about ssh</h3>
 <p>Laravel's documentation suggests to add an alias to <em>ssh</em> the Homestead box more quickly. I personnally prefer to use an ssh config to that purpose, as it is intended to.</p>
 <p>Update or create a <code>config</code> file in the <code>.ssh</code> folder of your home directory:</p>
-<pre><code>vim ~/.ssh/config
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vim</span> <span class="o">~/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">config</span>
+</pre></div>
+
+
 <p>Add the following content:</p>
-<pre><code># Homestead
-Host homestead
-HostName 127.0.0.1
-Port 2222
-User vagrant
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Homestead</span>
+<span class="k">Host</span> <span class="n">homestead</span>
+<span class="n">HostName</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">Port</span> <span class="mi">2222</span>
+<span class="k">User</span> <span class="n">vagrant</span>
+</pre></div>
+
+
 <p>You can now access the Homestead machine from anywhere running:</p>
-<pre><code>ssh homestead
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">homestead</span>
+</pre></div>
+
+
 <h2 id="create-the-project">Create the project</h2>
 <p>First add a new site to the <code>~/.homestead/Homestead.yaml</code> file:</p>
-<pre><code>vim ~/.homestead/Homestead.yaml
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vim</span> <span class="o">~/</span><span class="p">.</span><span class="n">homestead</span><span class="o">/</span><span class="n">Homestead</span><span class="p">.</span><span class="n">yaml</span>
+</pre></div>
+
+
 <p>Something like:</p>
-<pre><code>sites:
-    - map: site1.local
-      to: /home/vagrant/projects/site1
-    - map: new-site.local
-      to: /home/vagrant/projects/new-site/public
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sites</span><span class="p">:</span>
+    <span class="o">-</span> <span class="k">map</span><span class="p">:</span> <span class="n">site1</span><span class="p">.</span><span class="k">local</span>
+      <span class="k">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">site1</span>
+    <span class="o">-</span> <span class="k">map</span><span class="p">:</span> <span class="k">new</span><span class="o">-</span><span class="n">site</span><span class="p">.</span><span class="k">local</span>
+      <span class="k">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="k">new</span><span class="o">-</span><span class="n">site</span><span class="o">/</span><span class="k">public</span>
+</pre></div>
+
+
 <p>Here we want to start a new Laravel project (arbitrarily called "new-site") so we point the root to the <code>public/</code> directory.</p>
 <p>There is also another method, using the <code>serve</code> script, allowing to add a new project without having to edit <code>Homestead.yaml</code> nor to provision the box again. My preference goes to the first method because I like keep track of my existing projects in <code>Homestead.yaml</code>.</p>
 <p>I don't specify the database in this file, because I don't want the databases to be reset every time I provision the Vagrant box. Speaking of which, we now need to run this command, from <code>~/Homestead/</code>:</p>
-<pre><code>vagrant provision
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">provision</span>
+</pre></div>
+
+
 <p>or:</p>
-<pre><code>vagrant up —-provision
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">up</span> <span class="err">—</span><span class="o">-</span><span class="n">provision</span>
+</pre></div>
+
+
 <p>if your box isn't running yet.</p>
 <p>This will basically create the right Nginx config on the Vagrant box and restart Nginx in there (and, like I said, reset the databases that are declared in the <code>Homestead.yaml</code> file, so be careful. Simply remove the databases for which you don't want that to happen under <code>databases</code> from that file).</p>
 <p>Now, edit the <code>hosts</code> file of your host machine (<code>sudo vim /etc/hosts</code> on MacOS) to match the new domain to the box's IP:</p>
-<pre><code>192.168.10.10    new-site.local
-</code></pre>
+<div class="highlight"><pre><span></span><span class="mi">192</span><span class="p">.</span><span class="mi">168</span><span class="p">.</span><span class="mi">10</span><span class="p">.</span><span class="mi">10</span>    <span class="k">new</span><span class="o">-</span><span class="n">site</span><span class="p">.</span><span class="k">local</span>
+</pre></div>
+
+
 <p>Then, <code>ssh</code> the box and create your new project using Composer (in my config, all my projects are under the <code>~/projects/</code> directory of the Vagrant box) (this will probably take a little while):</p>
-<pre><code>ssh homestead
-cd projects
-composer create-project laravel/laravel new-site
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">ssh</span> <span class="n">homestead</span>
+<span class="n">cd</span> <span class="n">projects</span>
+<span class="n">composer</span> <span class="k">create</span><span class="o">-</span><span class="n">project</span> <span class="n">laravel</span><span class="o">/</span><span class="n">laravel</span> <span class="k">new</span><span class="o">-</span><span class="n">site</span>
+</pre></div>
+
+
 <p>This will copy Laravel and all its dependencies in the <code>new-site</code> directory.</p>
 <p>If everything went fine, you should now be able to access <a href="http://new-site.local">http://new-site.local</a> and see the default Laravel screen:</p>
 <p><img alt="Laravel Welcome Screen" src="/images/2015/04/23/laravel-welcome.png" title="Laravel Welcome Screen" /></p>
 <h2 id="set-up-the-database">Set up the database</h2>
 <p>From the Homestead box, connect to MySQL and create the database with the right user (the password for <code>homestead</code> is "secret"):</p>
-<pre><code>mysql -uhomestead -p
-create database newsite;
-grant usage on *.* to newsite@localhost identified by 'password';
-grant all privileges on newsite.* to newsite@localhost;
-flush privileges;
-\q
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">mysql</span><span class="w"> </span><span class="o">-</span><span class="n">uhomestead</span><span class="w"> </span><span class="o">-</span><span class="n">p</span><span class="w"></span>
+<span class="k">create</span><span class="w"> </span><span class="k">database</span><span class="w"> </span><span class="n">newsite</span><span class="p">;</span><span class="w"></span>
+<span class="k">grant</span><span class="w"> </span><span class="k">usage</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="o">*</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">newsite</span><span class="nv">@localhost</span><span class="w"> </span><span class="n">identified</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="s1">&#39;password&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">grant</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="k">privileges</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">newsite</span><span class="p">.</span><span class="o">*</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">newsite</span><span class="nv">@localhost</span><span class="p">;</span><span class="w"></span>
+<span class="n">flush</span><span class="w"> </span><span class="k">privileges</span><span class="p">;</span><span class="w"></span>
+<span class="err">\</span><span class="n">q</span><span class="w"></span>
+</pre></div>
+
+
 <p>Be sure to note the chosen password and edit the <code>.env</code> file of your project, changing the values for the database details:</p>
-<pre><code>DB_HOST=localhost
-DB_DATABASE=newsite
-DB_USERNAME=newsite
-DB_PASSWORD=password
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">DB_HOST</span><span class="o">=</span><span class="n">localhost</span>
+<span class="n">DB_DATABASE</span><span class="o">=</span><span class="n">newsite</span>
+<span class="n">DB_USERNAME</span><span class="o">=</span><span class="n">newsite</span>
+<span class="n">DB_PASSWORD</span><span class="o">=</span><span class="n">password</span>
+</pre></div>
+
+
 <p>Laravel comes with a couple of database migration scripts, creating the <code>users</code> and <code>password_resets</code> tables respectively. A quick way to check that the database is correctly set up is to run these scripts, from the project's root:</p>
-<pre><code>php artisan migrate
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span>
+</pre></div>
+
+
 <p>If the migration is successful, you're all set! Reset the database if necessary:</p>
-<pre><code>php artisan migrate:reset
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">php</span> <span class="n">artisan</span> <span class="n">migrate</span><span class="p">:</span><span class="k">reset</span>
+</pre></div>
+
+
 <p>That's it! A few quick steps to get started on a new Laravel project with Homestead.</p>
 
     <p class="meta">

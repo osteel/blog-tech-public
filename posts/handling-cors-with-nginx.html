@@ -75,8 +75,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -149,108 +149,116 @@ As <a href="https://twitter.com/OtaK_/status/623057774260408320">@OtaK_ pointed 
 <h2 id="nginx-extras">nginx-extras</h2>
 <p>First of all, Nginx's traditional <code>add_header</code> directive doesn't work with <code>4xx</code> responses. As we still want to add custom headers to them, we need to install the <a href="http://wiki.nginx.org/HttpHeadersMoreModule">ngx_headers_more module</a> to be able to use the <code>more_set_headers</code> directive, which also works with <code>4xx</code> responses.</p>
 <p>While the documentation suggests to build the Nginx source with the module, if you are on a Debian distro you can actually easily install it with the <a href="https://packages.debian.org/sid/nginx-extras">nginx-extras package</a>:</p>
-<pre><code>sudo apt-get install nginx-extras
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="n">nginx</span><span class="o">-</span><span class="n">extras</span>
+</pre></div>
+
+
 <h2 id="the-server-configuration">The server configuration</h2>
 <p>Here is what a typical server config of a Laravel project looks like, <em>without</em> the CORS bit (I am voluntarily omitting the SSL part to keep the post short, but it works exactly the same):</p>
-<pre><code>server {
-    listen 80;
-    server_name example-site.com;
-    root "/home/vagrant/projects/example-site/public";
+<div class="highlight"><pre><span></span><span class="nv">server</span> {
+    <span class="nv">listen</span> <span class="mi">80</span><span class="c1">;</span>
+    <span class="nv">server_name</span> <span class="nv">example</span><span class="o">-</span><span class="nv">site</span>.<span class="nv">com</span><span class="c1">;</span>
+    <span class="nv">root</span> <span class="s2">&quot;</span><span class="s">/home/vagrant/projects/example-site/public</span><span class="s2">&quot;</span><span class="c1">;</span>
 
-    index index.html index.htm index.php;
+    <span class="nv">index</span> <span class="nv">index</span>.<span class="nv">html</span> <span class="nv">index</span>.<span class="nv">htm</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
 
-    charset utf-8;
+    <span class="nv">charset</span> <span class="nv">utf</span><span class="o">-</span><span class="mi">8</span><span class="c1">;</span>
 
-    location / {
-        try_files $uri $uri/ /index.php?$query_string;
+    <span class="nv">location</span> <span class="o">/</span> {
+        <span class="nv">try_files</span> $<span class="nv">uri</span> $<span class="nv">uri</span><span class="o">/</span> <span class="o">/</span><span class="nv">index</span>.<span class="nv">php</span>?$<span class="nv">query_string</span><span class="c1">;</span>
     }
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">favicon</span>.<span class="nv">ico</span> { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">robots</span>.<span class="nv">txt</span>  { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
 
-    access_log off;
-    error_log  /var/log/nginx/example-site.com-error.log error;
+    <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">;</span>
+    <span class="nv">error_log</span>  <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">log</span><span class="o">/</span><span class="nv">nginx</span><span class="o">/</span><span class="nv">example</span><span class="o">-</span><span class="nv">site</span>.<span class="nv">com</span><span class="o">-</span><span class="nv">error</span>.<span class="nv">log</span> <span class="nv">error</span><span class="c1">;</span>
 
-    sendfile off;
+    <span class="k">sendfile</span> <span class="nv">off</span><span class="c1">;</span>
 
-    client_max_body_size 100m;
+    <span class="nv">client_max_body_size</span> <span class="mi">100</span><span class="nv">m</span><span class="c1">;</span>
 
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
+    <span class="nv">location</span> <span class="o">~</span> \.<span class="nv">php</span>$ {
+        <span class="nv">fastcgi_split_path_info</span> <span class="o">^</span><span class="ss">(</span>.<span class="o">+</span>\.<span class="nv">php</span><span class="ss">)(</span><span class="o">/</span>.<span class="o">+</span><span class="ss">)</span>$<span class="c1">;</span>
+        <span class="nv">fastcgi_pass</span> <span class="nv">unix</span>:<span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">run</span><span class="o">/</span><span class="nv">php5</span><span class="o">-</span><span class="nv">fpm</span>.<span class="nv">sock</span><span class="c1">;</span>
+        <span class="nv">fastcgi_index</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
+        <span class="k">include</span> <span class="nv">fastcgi_params</span><span class="c1">;</span>
+        <span class="nv">fastcgi_param</span> <span class="nv">SCRIPT_FILENAME</span> <span class="mh">$d</span><span class="nv">ocument_root</span><span class="mh">$fa</span><span class="nv">stcgi_script_name</span><span class="c1">;</span>
+        <span class="nv">fastcgi_intercept_errors</span> <span class="nv">off</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffer_size</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffers</span> <span class="mi">4</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
     }
 
-    location ~ /\.ht {
-        deny all;
+    <span class="nv">location</span> <span class="o">~</span> <span class="o">/</span>\.<span class="nv">ht</span> {
+        <span class="nv">deny</span> <span class="nv">all</span><span class="c1">;</span>
     }
 }
-</code></pre>
+</pre></div>
+
+
 <p>Now, <em>with</em> the CORS handling:</p>
-<pre><code>server {
-    listen 80;
-    server_name example-site.com;
-    root "/home/vagrant/projects/example-site/public";
+<div class="highlight"><pre><span></span><span class="nv">server</span> {
+    <span class="nv">listen</span> <span class="mi">80</span><span class="c1">;</span>
+    <span class="nv">server_name</span> <span class="nv">example</span><span class="o">-</span><span class="nv">site</span>.<span class="nv">com</span><span class="c1">;</span>
+    <span class="nv">root</span> <span class="s2">&quot;</span><span class="s">/home/vagrant/projects/example-site/public</span><span class="s2">&quot;</span><span class="c1">;</span>
 
-    index index.html index.htm index.php;
+    <span class="nv">index</span> <span class="nv">index</span>.<span class="nv">html</span> <span class="nv">index</span>.<span class="nv">htm</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
 
-    charset utf-8;
+    <span class="nv">charset</span> <span class="nv">utf</span><span class="o">-</span><span class="mi">8</span><span class="c1">;</span>
 
-    more_set_headers 'Access-Control-Allow-Origin: $http_origin';
-    more_set_headers 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE, HEAD';
-    more_set_headers 'Access-Control-Allow-Credentials: true';
-    more_set_headers 'Access-Control-Allow-Headers: Origin,Content-Type,Accept,Authorization';
+    <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Origin: $http_origin</span><span class="s1">&#39;</span><span class="c1">;</span>
+    <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE, HEAD</span><span class="s1">&#39;</span><span class="c1">;</span>
+    <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Credentials: true</span><span class="s1">&#39;</span><span class="c1">;</span>
+    <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Headers: Origin,Content-Type,Accept,Authorization</span><span class="s1">&#39;</span><span class="c1">;</span>
 
-    location / {
-        if ($request_method = 'OPTIONS') {
-            more_set_headers 'Access-Control-Allow-Origin: $http_origin';
-            more_set_headers 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE, HEAD';
-            more_set_headers 'Access-Control-Max-Age: 1728000';
-            more_set_headers 'Access-Control-Allow-Credentials: true';
-            more_set_headers 'Access-Control-Allow-Headers: Origin,Content-Type,Accept,Authorization';
-            more_set_headers 'Content-Type: text/plain; charset=UTF-8';
-            more_set_headers 'Content-Length: 0';
-            return 204;
+    <span class="nv">location</span> <span class="o">/</span> {
+        <span class="k">if</span> <span class="ss">(</span>$<span class="nv">request_method</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="s">OPTIONS</span><span class="s1">&#39;</span><span class="ss">)</span> {
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Origin: $http_origin</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE, HEAD</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Max-Age: 1728000</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Credentials: true</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Access-Control-Allow-Headers: Origin,Content-Type,Accept,Authorization</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Content-Type: text/plain; charset=UTF-8</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="nv">more_set_headers</span> <span class="s1">&#39;</span><span class="s">Content-Length: 0</span><span class="s1">&#39;</span><span class="c1">;</span>
+            <span class="k">return</span> <span class="mi">204</span><span class="c1">;</span>
         }
-        try_files $uri $uri/ /index.php?$query_string;
+        <span class="nv">try_files</span> $<span class="nv">uri</span> $<span class="nv">uri</span><span class="o">/</span> <span class="o">/</span><span class="nv">index</span>.<span class="nv">php</span>?$<span class="nv">query_string</span><span class="c1">;</span>
     }
 
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">favicon</span>.<span class="nv">ico</span> { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span><span class="nv">robots</span>.<span class="nv">txt</span>  { <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">; log_not_found off; }</span>
 
-    access_log off;
-    error_log  /var/log/nginx/example-site.com-error.log error;
+    <span class="nv">access_log</span> <span class="nv">off</span><span class="c1">;</span>
+    <span class="nv">error_log</span>  <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">log</span><span class="o">/</span><span class="nv">nginx</span><span class="o">/</span><span class="nv">example</span><span class="o">-</span><span class="nv">site</span>.<span class="nv">com</span><span class="o">-</span><span class="nv">error</span>.<span class="nv">log</span> <span class="nv">error</span><span class="c1">;</span>
 
-    sendfile off;
+    <span class="k">sendfile</span> <span class="nv">off</span><span class="c1">;</span>
 
-    client_max_body_size 100m;
+    <span class="nv">client_max_body_size</span> <span class="mi">100</span><span class="nv">m</span><span class="c1">;</span>
 
-    location ~ \.php$ {
-        fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_intercept_errors off;
-        fastcgi_buffer_size 16k;
-        fastcgi_buffers 4 16k;
+    <span class="nv">location</span> <span class="o">~</span> \.<span class="nv">php</span>$ {
+        <span class="nv">fastcgi_split_path_info</span> <span class="o">^</span><span class="ss">(</span>.<span class="o">+</span>\.<span class="nv">php</span><span class="ss">)(</span><span class="o">/</span>.<span class="o">+</span><span class="ss">)</span>$<span class="c1">;</span>
+        <span class="nv">fastcgi_pass</span> <span class="nv">unix</span>:<span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">run</span><span class="o">/</span><span class="nv">php5</span><span class="o">-</span><span class="nv">fpm</span>.<span class="nv">sock</span><span class="c1">;</span>
+        <span class="nv">fastcgi_index</span> <span class="nv">index</span>.<span class="nv">php</span><span class="c1">;</span>
+        <span class="k">include</span> <span class="nv">fastcgi_params</span><span class="c1">;</span>
+        <span class="nv">fastcgi_param</span> <span class="nv">SCRIPT_FILENAME</span> <span class="mh">$d</span><span class="nv">ocument_root</span><span class="mh">$fa</span><span class="nv">stcgi_script_name</span><span class="c1">;</span>
+        <span class="nv">fastcgi_intercept_errors</span> <span class="nv">off</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffer_size</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
+        <span class="nv">fastcgi_buffers</span> <span class="mi">4</span> <span class="mi">16</span><span class="nv">k</span><span class="c1">;</span>
     }
 
-    location ~ /\.ht {
-        deny all;
+    <span class="nv">location</span> <span class="o">~</span> <span class="o">/</span>\.<span class="nv">ht</span> {
+        <span class="nv">deny</span> <span class="nv">all</span><span class="c1">;</span>
     }
 }
-</code></pre>
+</pre></div>
+
+
 <p>And that is pretty much it.</p>
 <p>All you need to do now is to reload your Nginx confs:</p>
-<pre><code>sudo service nginx reload
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">service</span> <span class="n">nginx</span> <span class="n">reload</span>
+</pre></div>
+
+
 <h2 id="extra-considerations">Extra considerations</h2>
 <p>Note that this allows <em>any</em> domain to access your app, and while this is most likely enough for local development, on a production server you might want to fine-tune this configuration to allow specific domains only (<code>Access_Control_Allow_Origin</code>).</p>
 <p>More generally, all the headers' values are examples and you can modify them as you see fit.</p>

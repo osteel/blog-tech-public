@@ -74,8 +74,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -144,13 +144,15 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><strong>Note:</strong> the following was tested on Windows 8, but the steps described below shouldn't change too much between the different versions.</p>
 <h2 id="vagrant-ssh">Vagrant ssh</h2>
 <p>The first issue I came across was that <code>vagrant ssh</code> doesn't work out of the box. I was greeted with a constructive message:</p>
-<pre><code>`ssh` executable not found in any directories in the %PATH% variable. Is an SSH client installed? Try installing Cygwin, MinGW or Git, all of witch contain an SSH client. Or use your favorite SSH client with the following authentication information shown below:
+<div class="highlight"><pre><span></span><span class="ss">`ssh`</span> <span class="n">executable</span> <span class="k">not</span> <span class="n">found</span> <span class="k">in</span> <span class="n">any</span> <span class="n">directories</span> <span class="k">in</span> <span class="n">the</span> <span class="o">%</span><span class="n">PATH</span><span class="o">%</span> <span class="n">variable</span><span class="p">.</span> <span class="k">Is</span> <span class="n">an</span> <span class="n">SSH</span> <span class="n">client</span> <span class="n">installed</span><span class="o">?</span> <span class="n">Try</span> <span class="n">installing</span> <span class="n">Cygwin</span><span class="p">,</span> <span class="n">MinGW</span> <span class="k">or</span> <span class="n">Git</span><span class="p">,</span> <span class="k">all</span> <span class="n">of</span> <span class="n">witch</span> <span class="n">contain</span> <span class="n">an</span> <span class="n">SSH</span> <span class="n">client</span><span class="p">.</span> <span class="k">Or</span> <span class="k">use</span> <span class="n">your</span> <span class="n">favorite</span> <span class="n">SSH</span> <span class="n">client</span> <span class="k">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">authentication</span> <span class="n">information</span> <span class="n">shown</span> <span class="n">below</span><span class="p">:</span>
 
-Host: 127.0.0.1
-Port: 2222
-Username: vagrant
-Private key: C:/path/to/project/.vagrant/machines/default/virtualbox/private_key
-</code></pre>
+<span class="n">Host</span><span class="p">:</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">Port</span><span class="p">:</span> <span class="mi">2222</span>
+<span class="n">Username</span><span class="p">:</span> <span class="n">vagrant</span>
+<span class="n">Private</span> <span class="k">key</span><span class="p">:</span> <span class="n">C</span><span class="p">:</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">to</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="p">.</span><span class="n">vagrant</span><span class="o">/</span><span class="n">machines</span><span class="o">/</span><span class="k">default</span><span class="o">/</span><span class="n">virtualbox</span><span class="o">/</span><span class="n">private_key</span>
+</pre></div>
+
+
 <p>Fine. Let's <a href="http://git-scm.com/downloads" title="Git - Downloads">install Git</a>, then (considering it is not already the case).</p>
 <h3 id="git-install">Git install</h3>
 <p>The key is when the <em>"Adjusting your PATH environment"</em> screen pops up:</p>
@@ -180,13 +182,15 @@ Personally, it never caused me any trouble.</p>
 <p>Ah, but wait. There <em>is</em> another way.</p>
 <h2 id="putty">PuTTY</h2>
 <p>Remember that error message we initially got trying to <code>ssh</code> the box? Let's have a look at the second part of it:</p>
-<pre><code>Or use your favorite SSH client with the following authentication information shown below:
+<div class="highlight"><pre><span></span><span class="k">Or</span> <span class="n">use</span> <span class="n">your</span> <span class="n">favorite</span> <span class="n">SSH</span> <span class="n">client</span> <span class="k">with</span> <span class="n">the</span> <span class="n">following</span> <span class="n">authentication</span> <span class="n">information</span> <span class="n">shown</span> <span class="n">below</span><span class="p">:</span>
 
-Host: 127.0.0.1
-Port: 2222
-Username: vagrant
-Private key: C:/path/to/project/.vagrant/machines/default/virtualbox/private_key
-</code></pre>
+<span class="k">Host</span><span class="p">:</span> <span class="mi">127</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">1</span>
+<span class="n">Port</span><span class="p">:</span> <span class="mi">2222</span>
+<span class="n">Username</span><span class="p">:</span> <span class="n">vagrant</span>
+<span class="n">Private</span> <span class="k">key</span><span class="p">:</span> <span class="k">C</span><span class="p">:</span><span class="o">/</span><span class="n">path</span><span class="o">/</span><span class="k">to</span><span class="o">/</span><span class="n">project</span><span class="o">/</span><span class="p">.</span><span class="n">vagrant</span><span class="o">/</span><span class="n">machines</span><span class="o">/</span><span class="k">default</span><span class="o">/</span><span class="n">virtualbox</span><span class="o">/</span><span class="n">private_key</span>
+</pre></div>
+
+
 <p>I wasn't joking when I said it was constructive, because it really tells you what to do.</p>
 <p>The Windows console works ok but let's be honest, in the long run it is a real pain to use. It does the trick for a quick <code>vagrant ssh</code> but when the time comes to actually do some work on an Ubuntu server for example, a better shell is desirable.</p>
 <h3 id="enter-putty">Enter PuTTY</h3>
@@ -216,10 +220,12 @@ Private key: C:/path/to/project/.vagrant/machines/default/virtualbox/private_key
 <p>One of the fairly known limitations of using Vagrant on Windows with VirtualBox is that the latter won't let you create symlinks on the shared folders for security reasons. This quickly becomes problematic when dealing with npm packages, for example.</p>
 <p>One of the workarounds is to use the <em>"no bin link"</em> parameter (e.g. <code>npm install --no-bin-link</code>), but this is not always enough.</p>
 <p>Fortunately, there is a way to bypass this restriction. In your Vagrantfile, add the following piece of config:</p>
-<pre><code>config.vm.provider "virtualbox" do |v|
-  v.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
-end
-</code></pre>
+<div class="highlight"><pre><span></span><span class="nv">config</span>.<span class="nv">vm</span>.<span class="nv">provider</span> <span class="s2">&quot;</span><span class="s">virtualbox</span><span class="s2">&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="nv">v</span><span class="o">|</span>
+  <span class="nv">v</span>.<span class="nv">customize</span> [<span class="s2">&quot;</span><span class="s">setextradata</span><span class="s2">&quot;</span>, :<span class="nv">id</span>, <span class="s2">&quot;</span><span class="s">VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root</span><span class="s2">&quot;</span>, <span class="s2">&quot;</span><span class="s">1</span><span class="s2">&quot;</span>]
+<span class="k">end</span>
+</pre></div>
+
+
 <p>As Windows won't let standard users create symlinks, you now need to start your Vagrant box in administrator mode (open a Windows terminal in admin mode before running <code>vagrant up</code>, for example). Make sure no other box is already running though, as it won't start if VirtualBox is already running in standard mode.</p>
 <h3 id="maximum-path-length">Maximum path length</h3>
 <p>Another recurring problem comes from the fact that Windows' maximum length for a path is 255 characters. Again, this is quickly an issue when dealing with npm packages, especially when they have dependencies, themselves having dependencies, etc.</p>
@@ -228,11 +234,13 @@ end
 <h3 id="practical-example-npm-packages">Practical example: npm packages</h3>
 <p>So you have this project relying on npm packages. You tried to install them using <code>--no-bin-link</code> but no luck, looks like some of the paths are too long.</p>
 <p>Fear not, Macless: update your Vagrant config as shown above to allow the creation of symlinks, boot your VM in admin mode, create a destination directory for your npm packages somewhere outside of the shared folder and create a symlink between it and the <em>"node_modules"</em> one:</p>
-<pre><code>mkdir ~/node_modules
-ln -s /home/vagrant/node_modules /vagrant/node_modules
-cd /vagrant
-npm install
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">~/</span><span class="n">node_modules</span>
+<span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">node_modules</span> <span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">node_modules</span>
+<span class="n">cd</span> <span class="o">/</span><span class="n">vagrant</span>
+<span class="n">npm</span> <span class="n">install</span>
+</pre></div>
+
+
 <p>Et voilà.</p>
 <p><strong>Note:</strong> this implies preventing the <em>"node_modules"</em> directory from being versionned.</p>
 <h2 id="conclusion">Conclusion</h2>

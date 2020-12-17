@@ -77,8 +77,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -181,69 +181,81 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Chances are you will want to add images to some of your articles. They will have to be stored somewhere and copied over at compilation.</p>
 <p>To that end, create a folder named <em>"images"</em> in <em>"content"</em>. I personally follow the same structure as for the articles, e.g. I place pictures under <em>"images/2015/02/22/"</em> for articles published on that day.</p>
 <p>To have this directory copied to <em>"output/"</em> with the rest of the content, open <em>"pelicanconf.py"</em> and add this section:</p>
-<pre><code>STATIC_PATHS = [
-    'images'
-]
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;images&#39;</span>
+<span class="p">]</span>
+</pre></div>
+
+
 <p>This simply indicates to the generation script that this directory is to be copied as is under <em>"output/"</em>.</p>
 <p>And this is how you would embed images in your articles (Markdown syntax):</p>
-<pre><code>!["Example image"](/images/2015/02/22/example.jpg "Example image")
-</code></pre>
-<p>How about a favicon? Create another directory under <em>"content/"</em>, named <em>"extra"</em>. Place your favicon in there, and edit the config file again:</p>
-<pre><code>STATIC_PATHS = [
-    'images',
-    'extra'
-]
+<div class="highlight"><pre><span></span><span class="o">!</span><span class="p">[</span><span class="ss">&quot;Example image&quot;</span><span class="p">](</span><span class="o">/</span><span class="n">images</span><span class="o">/</span><span class="mi">2015</span><span class="o">/</span><span class="mi">02</span><span class="o">/</span><span class="mi">22</span><span class="o">/</span><span class="n">example</span><span class="p">.</span><span class="n">jpg</span> <span class="ss">&quot;Example image&quot;</span><span class="p">)</span>
+</pre></div>
 
-EXTRA_PATH_METADATA = {
-    'extra/favicon.ico': {'path': 'favicon.ico'}
-}
-</code></pre>
+
+<p>How about a favicon? Create another directory under <em>"content/"</em>, named <em>"extra"</em>. Place your favicon in there, and edit the config file again:</p>
+<div class="highlight"><pre><span></span><span class="n">STATIC_PATHS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;images&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;extra&#39;</span>
+<span class="p">]</span>
+
+<span class="n">EXTRA_PATH_METADATA</span> <span class="o">=</span> <span class="err">{</span>
+    <span class="s1">&#39;extra/favicon.ico&#39;</span><span class="p">:</span> <span class="err">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;favicon.ico&#39;</span><span class="err">}</span>
+<span class="err">}</span>
+</pre></div>
+
+
 <p>The <em>"EXTRA_PATH_METADATA"</em> allows to specify more precisely the path of specific files. Here, we basically say that we want <em>"favicon.ico"</em> from the <em>"extra"</em> directory to be copied at the root of the blog.</p>
 <p>You can add as many files as you wish in there, such as a <em>"robots.txt"</em>, for example.</p>
 <h3 id="google-analytics">Google Analytics</h3>
 <p>Pelican supports Google Analytics out of the box. All it takes is to add the following line to the <em>"publishconf.py"</em> file (<em>"UA-XXXX-Y"</em> being your own tracking id):</p>
-<pre><code>GOOGLE_ANALYTICS = "UA-XXXX-Y"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">GOOGLE_ANALYTICS</span> <span class="o">=</span> <span class="ss">&quot;UA-XXXX-Y&quot;</span>
+</pre></div>
+
+
 <h3 id="sitemap">Sitemap</h3>
 <p>Under <em>"theme/templates/"</em>, add a <em>"sitemap.html"</em> file:</p>
-<pre><code>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
-&lt;urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"&gt;
+<div class="highlight"><pre><span></span><span class="o">&lt;</span>?<span class="nv">xml</span> <span class="nv">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">1.0</span><span class="s2">&quot;</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">UTF-8</span><span class="s2">&quot;</span>?<span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nv">urlset</span> <span class="nv">xmlns</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">http://www.sitemaps.org/schemas/sitemap/0.9</span><span class="s2">&quot;</span><span class="o">&gt;</span>
 
-{% for article in articles %}
-  &lt;url&gt;
-    &lt;loc&gt;{{ SITEURL }}/{{ article.url }}&lt;/loc&gt;
-    &lt;priority&gt;0.8&lt;/priority&gt;
-  &lt;/url&gt;
+{<span class="o">%</span> <span class="k">for</span> <span class="nv">article</span> <span class="nv">in</span> <span class="nv">articles</span> <span class="o">%</span>}
+  <span class="o">&lt;</span><span class="nv">url</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">loc</span><span class="o">&gt;</span>{{ <span class="nv">SITEURL</span> }}<span class="o">/</span>{{ <span class="nv">article</span>.<span class="nv">url</span> }}<span class="o">&lt;/</span><span class="nv">loc</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">priority</span><span class="o">&gt;</span><span class="mi">0</span>.<span class="mi">8</span><span class="o">&lt;/</span><span class="nv">priority</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nv">url</span><span class="o">&gt;</span>
 
-  {% for translation in article.translations %}
-  &lt;url&gt;
-    &lt;loc&gt;{{ SITEURL }}/{{ translation.url }}&lt;/loc&gt;
-    &lt;priority&gt;0.8&lt;/priority&gt;
-  &lt;/url&gt;
-  {% endfor %}
-{% endfor %}
+  {<span class="o">%</span> <span class="k">for</span> <span class="nv">translation</span> <span class="nv">in</span> <span class="nv">article</span>.<span class="nv">translations</span> <span class="o">%</span>}
+  <span class="o">&lt;</span><span class="nv">url</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">loc</span><span class="o">&gt;</span>{{ <span class="nv">SITEURL</span> }}<span class="o">/</span>{{ <span class="nv">translation</span>.<span class="nv">url</span> }}<span class="o">&lt;/</span><span class="nv">loc</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">priority</span><span class="o">&gt;</span><span class="mi">0</span>.<span class="mi">8</span><span class="o">&lt;/</span><span class="nv">priority</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nv">url</span><span class="o">&gt;</span>
+  {<span class="o">%</span> <span class="nv">endfor</span> <span class="o">%</span>}
+{<span class="o">%</span> <span class="nv">endfor</span> <span class="o">%</span>}
 
-{% for page in pages %}
-  &lt;url&gt;
-    &lt;loc&gt;{{ SITEURL }}/{{ page.url }}&lt;/loc&gt;
-    &lt;priority&gt;1.0&lt;/priority&gt;
-  &lt;/url&gt;
+{<span class="o">%</span> <span class="k">for</span> <span class="nv">page</span> <span class="nv">in</span> <span class="nv">pages</span> <span class="o">%</span>}
+  <span class="o">&lt;</span><span class="nv">url</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">loc</span><span class="o">&gt;</span>{{ <span class="nv">SITEURL</span> }}<span class="o">/</span>{{ <span class="nv">page</span>.<span class="nv">url</span> }}<span class="o">&lt;/</span><span class="nv">loc</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">priority</span><span class="o">&gt;</span><span class="mi">1</span>.<span class="mi">0</span><span class="o">&lt;/</span><span class="nv">priority</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nv">url</span><span class="o">&gt;</span>
 
-  {% for translation in page.translations %}
-  &lt;url&gt;
-    &lt;loc&gt;{{ SITEURL }}/{{ translation.url }}&lt;/loc&gt;
-    &lt;priority&gt;1.0&lt;/priority&gt;
-  &lt;/url&gt;
-  {% endfor %}
-{% endfor %}
+  {<span class="o">%</span> <span class="k">for</span> <span class="nv">translation</span> <span class="nv">in</span> <span class="nv">page</span>.<span class="nv">translations</span> <span class="o">%</span>}
+  <span class="o">&lt;</span><span class="nv">url</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">loc</span><span class="o">&gt;</span>{{ <span class="nv">SITEURL</span> }}<span class="o">/</span>{{ <span class="nv">translation</span>.<span class="nv">url</span> }}<span class="o">&lt;/</span><span class="nv">loc</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">priority</span><span class="o">&gt;</span><span class="mi">1</span>.<span class="mi">0</span><span class="o">&lt;/</span><span class="nv">priority</span><span class="o">&gt;</span>
+  <span class="o">&lt;/</span><span class="nv">url</span><span class="o">&gt;</span>
+  {<span class="o">%</span> <span class="nv">endfor</span> <span class="o">%</span>}
+{<span class="o">%</span> <span class="nv">endfor</span> <span class="o">%</span>}
 
-&lt;/urlset&gt;
-</code></pre>
+<span class="o">&lt;/</span><span class="nv">urlset</span><span class="o">&gt;</span>
+</pre></div>
+
+
 <p>Edit <em>"pelicanconf.py"</em>:</p>
-<pre><code>DIRECT_TEMPLATES = (('index', 'tags', 'categories', 'archives', 'sitemap'))
-SITEMAP_SAVE_AS = 'sitemap.xml'
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">DIRECT_TEMPLATES</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;index&#39;</span><span class="p">,</span> <span class="s1">&#39;tags&#39;</span><span class="p">,</span> <span class="s1">&#39;categories&#39;</span><span class="p">,</span> <span class="s1">&#39;archives&#39;</span><span class="p">,</span> <span class="s1">&#39;sitemap&#39;</span><span class="p">))</span>
+<span class="n">SITEMAP_SAVE_AS</span> <span class="o">=</span> <span class="s1">&#39;sitemap.xml&#39;</span>
+</pre></div>
+
+
 <h3 id="feeds">Feeds</h3>
 <p>Are also supported by default. This is just a matter of configuration, which is all well explained in the <a href="http://pelican.readthedocs.org/en/latest/settings.html#feed-settings" title="Pelican Documentation - Feeds">documentation</a>.</p>
 <h2 id="conclusion">Conclusion</h2>

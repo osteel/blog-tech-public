@@ -77,8 +77,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -152,18 +152,24 @@ styles, `#sidebar-checkbox` for behavior. -->
 <hr />
 <hr />
 <p><strong>Note for Ubuntu users:</strong> You might need to install the NFS server:</p>
-<pre><code>apt-get install nfs-kernel-server
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">apt</span><span class="o">-</span><span class="k">get</span> <span class="n">install</span> <span class="n">nfs</span><span class="o">-</span><span class="n">kernel</span><span class="o">-</span><span class="n">server</span>
+</pre></div>
+
+
 <hr />
 <p>In <code>~/.homestead/Homestead.yaml</code>, under the <code>folders</code> section, add a <code>type</code> option under the folders you wish to map using NFS, as such:</p>
-<pre><code>folders:
-    - map: ~/Work/www/homestead
-      to: /home/vagrant/projects
-      type: "nfs"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">folders</span><span class="p">:</span>
+    <span class="o">-</span> <span class="k">map</span><span class="p">:</span> <span class="o">~/</span><span class="k">Work</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">homestead</span>
+      <span class="k">to</span><span class="p">:</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="n">projects</span>
+      <span class="k">type</span><span class="p">:</span> <span class="ss">&quot;nfs&quot;</span>
+</pre></div>
+
+
 <p>Now, stop Homestead if it was running (<code>vagrant halt</code> from <code>~/Homestead</code> or however you usually do it) and start it again, forcing the provisioning step, e.g.:</p>
-<pre><code>vagrant up —-provision
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">up</span> <span class="err">—</span><span class="o">-</span><span class="n">provision</span>
+</pre></div>
+
+
 <p>You will be asked to enter your Mac OS user password before Vagrant mounts the folder(s).</p>
 <p>That's it!</p>
 <p>You may wonder why isn't NFS activated by default, then: the reason is because it won't work out of the box on all operating systems, as seen in the notes above.</p>

@@ -75,8 +75,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -347,7 +347,7 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 </td></tr></table>
 
 <p>Mind the values for <code>server_name</code> and <code>fastcgi_pass</code> (now pointing to port 9000 of the backend container).</p>
-<p class="info"><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to the one of this series in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, which is our case in this series.</p>
+<p class="info"><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to this series' in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, which is the case in this series.</p>
 
 <p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
 <div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.test

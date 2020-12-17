@@ -77,8 +77,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -177,93 +177,119 @@ If you are not familiar with Vagrant and wish to learn more about it, take a loo
 <p>The following tutorial was made using <em>Ubuntu 14.04.1 LTS</em> boxes, and the part that will cover the deployment with Fabric relies on one of Vagrant's features (<a href="https://docs.vagrantup.com/v2/multi-machine/index.html" title="Vagrant doc - Multi-Machine"><em>"Multi-Machine"</em></a>).</p>
 <p>If you choose not to use Vagrant, you will still learn how to deploy your blog using Fabric, but you won't be able to test it right away.</p>
 <p>If you choose to take the Vagrant way however, use this Vagrantfile:</p>
-<pre><code># -*- mode: ruby -*-
-# vi: set ft=ruby :
+<div class="highlight"><pre><span></span><span class="c1"># -*- mode: ruby -*-</span>
+<span class="c1"># vi: set ft=ruby :</span>
 
-# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
-VAGRANTFILE_API_VERSION = "2"
+<span class="c1"># Vagrantfile API/syntax version. Don&#39;t touch unless you know what you&#39;re doing!</span>
+<span class="no">VAGRANTFILE_API_VERSION</span> <span class="o">=</span> <span class="s2">&quot;2&quot;</span>
 
-Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+<span class="no">Vagrant</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="no">VAGRANTFILE_API_VERSION</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
 
-  # Used box
-  config.vm.box = "ubuntu/trusty32"
+  <span class="c1"># Used box</span>
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="s2">&quot;ubuntu/trusty32&quot;</span>
 
-  config.vm.define "local" do |local|
-    # Accessing "localhost:8000" will access port 8000 on the guest machine
-    local.vm.network :forwarded_port, guest: 8000, host: 8000, auto_correct: true
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;local&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">local</span><span class="o">|</span>
+    <span class="c1"># Accessing &quot;localhost:8000&quot; will access port 8000 on the guest machine</span>
+    <span class="n">local</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:forwarded_port</span><span class="p">,</span> <span class="ss">guest</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span> <span class="ss">host</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span> <span class="ss">auto_correct</span><span class="p">:</span> <span class="kp">true</span>
 
-    # Copy the default Vagrant ssh private key over
-    local.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "~/.ssh/insecure_private_key"
-  end
+    <span class="c1"># Copy the default Vagrant ssh private key over</span>
+    <span class="n">local</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">provision</span> <span class="s2">&quot;file&quot;</span><span class="p">,</span> <span class="ss">source</span><span class="p">:</span> <span class="s2">&quot;~/.vagrant.d/insecure_private_key&quot;</span><span class="p">,</span> <span class="ss">destination</span><span class="p">:</span> <span class="s2">&quot;~/.ssh/insecure_private_key&quot;</span>
+  <span class="k">end</span>
 
-  config.vm.define "server" do |server|
-    # Private IP
-    server.vm.network :private_network, ip: "192.168.72.3"
-  end
+  <span class="n">config</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">define</span> <span class="s2">&quot;server&quot;</span> <span class="k">do</span> <span class="o">|</span><span class="n">server</span><span class="o">|</span>
+    <span class="c1"># Private IP</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">vm</span><span class="o">.</span><span class="n">network</span> <span class="ss">:private_network</span><span class="p">,</span> <span class="ss">ip</span><span class="p">:</span> <span class="s2">&quot;192.168.72.3&quot;</span>
+  <span class="k">end</span>
 
-end
-</code></pre>
+<span class="k">end</span>
+</pre></div>
+
+
 <p>Don't worry too much if you don't understand everything at first, I will explain a bit more in due time. Just know that this config will allow you to run two different machines: one will be your local one (conveniently named <em>"local"</em>) and the other one (named <em>"server"</em>) will be used to simulate a remote server.</p>
 <p>For now, begin your journey with:</p>
-<pre><code>vagrant up local
-vagrant ssh local
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">up</span> <span class="k">local</span>
+<span class="n">vagrant</span> <span class="n">ssh</span> <span class="k">local</span>
+</pre></div>
+
+
 <p>Unless stated otherwise, all the steps covered in this part and the next ones need to happen on the <em>"local"</em> machine.</p>
 <h2 id="python-pip-and-virtualenv">Python, pip and virtualenv</h2>
 <h3 id="python">Python</h3>
 <p>Pelican is written in Python and is installed via <em>pip</em>, the language's <a href="https://pypi.python.org/pypi" title="The Python Package Index">recommended tool</a> to install packages (it is basically what <em>npm</em> is to JavaScript).
 Pelican works with Python 2.7.x, and chances are it is already available on your OS. To make sure of this, open a terminal and type:</p>
-<pre><code>python --version
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">python</span> <span class="c1">--version</span>
+</pre></div>
+
+
 <p>If the command fails, please head to the <a href="https://wiki.python.org/moin/BeginnersGuide/Download" title="Beginners Guide">installation guide</a> and follow instructions for your platform.</p>
 <p>Pelican <em>should</em> just work with Python 3.3+ as well, but as our intent is to use Fabric for deployment, we will stick to 2.7.x in this tutorial.</p>
 <h3 id="pip">pip</h3>
 <p>If the version of Python you have is 2.7.9+, you are in luck because pip is already included. If not, install it this way:</p>
-<pre><code>wget https://bootstrap.pypa.io/get-pip.py -P /tmp/
-sudo python /tmp/get-pip.py
-rm /tmp/get-pip.py
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">bootstrap</span><span class="p">.</span><span class="n">pypa</span><span class="p">.</span><span class="n">io</span><span class="o">/</span><span class="k">get</span><span class="o">-</span><span class="n">pip</span><span class="p">.</span><span class="n">py</span> <span class="o">-</span><span class="n">P</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span>
+<span class="n">sudo</span> <span class="n">python</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="k">get</span><span class="o">-</span><span class="n">pip</span><span class="p">.</span><span class="n">py</span>
+<span class="n">rm</span> <span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="k">get</span><span class="o">-</span><span class="n">pip</span><span class="p">.</span><span class="n">py</span>
+</pre></div>
+
+
 <p>The <code>-P</code> option allows to prefix the downloaded file with the destination folder (<em>"/tmp/"</em> in our case).</p>
 <p>Let's take this opportunity of having pip handy to install <a href="http://www.fabfile.org/" title="Official website"><em>Fabric</em></a> straight away:</p>
-<pre><code>sudo pip install Fabric
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">Fabric</span>
+</pre></div>
+
+
 <p>We are going to use it soon enough.</p>
 <p>We could now install Pelican right away using pip, but we are going to take an extra step before that.</p>
 <h3 id="virtualenv">virtualenv</h3>
 <p>If you are a developer, you may have come across situations where different projects need different versions of the same language to run, or different versions of other dependencies. Python is no exception to this, and it came up with a solution to address it: the use of Virtual Environments.</p>
 <p>A Virtual Environment (VE) isolates a set of dependencies for a project. We are going to use <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/" title="Documentation"><em>virtualenv</em></a> along with its buddy <a href="http://virtualenvwrapper.readthedocs.org/en/latest/index.html" title="Documentation"><em>virtualenvwrapper</em></a> to that purpose.</p>
 <p>First, we need to install them using pip:</p>
-<pre><code>sudo pip install virtualenv
-sudo pip install virtualenvwrapper
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenv</span>
+<span class="n">sudo</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">virtualenvwrapper</span>
+</pre></div>
+
+
 <p>By default, virtualenv will create a folder named after the environment's directly inside the project's folder, and will do so for each project. virtualenvwrapper adds a set of functionalities on top of virtualenv to make its use easier, and placing all the VEs in the same folder is one of them (much cleaner IMHO and prevents us from having to add the folders in each project's <em>.gitignore</em> file).</p>
 <p>Let's define where virtualenwrapper should gather all the folders:</p>
-<pre><code>echo 'export WORKON_HOME=$HOME/.virtualenvs' &gt;&gt; /home/vagrant/.bashrc
-echo 'source /usr/local/bin/virtualenvwrapper.sh' &gt;&gt; /home/vagrant/.bashrc
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s1">&#39;export WORKON_HOME=$HOME/.virtualenvs&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="p">.</span><span class="n">bashrc</span>
+<span class="n">echo</span> <span class="s1">&#39;source /usr/local/bin/virtualenvwrapper.sh&#39;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="p">.</span><span class="n">bashrc</span>
+</pre></div>
+
+
 <p>Remember that I am using a Vagrant box here, hence <em>"vagrant"</em> as the username. Change this for the right value if necessary.</p>
 <p>I place these commands at the end of my <em>.bashrc</em> file so that <em>WORKON_HOME</em> is correctly initialized any time I start a new shell.</p>
 <p>Let's <code>source</code> our <em>.bashrc</em> file so the shell is updated with the new values:</p>
-<pre><code>source ~/.bashrc
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">source</span> <span class="o">~/</span><span class="p">.</span><span class="n">bashrc</span>
+</pre></div>
+
+
 <p>It is now time to create our first VE. As we are setting up a blog, let's call it <em>"blog"</em>:</p>
-<pre><code>mkvirtualenv blog
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">mkvirtualenv</span> <span class="n">blog</span>
+</pre></div>
+
+
 <p>Your prompt should now look like this:</p>
-<pre><code>(blog)vagrant@vagrant-ubuntu-trusty-32:/vagrant$
-</code></pre>
+<div class="highlight"><pre><span></span><span class="p">(</span><span class="n">blog</span><span class="p">)</span><span class="n">vagrant</span><span class="nv">@vagrant</span><span class="o">-</span><span class="n">ubuntu</span><span class="o">-</span><span class="n">trusty</span><span class="o">-</span><span class="mi">32</span><span class="err">:</span><span class="o">/</span><span class="n">vagrant</span><span class="err">$</span><span class="w"></span>
+</pre></div>
+
+
 <p>Mind the <em>"(blog)"</em> bit at the beginning: it indicates that you are currently using the <em>blog</em> VE. <code>mkvirtualenv</code> not only creates it, but activates it as well.</p>
 <p>This is how you leave it:</p>
-<pre><code>deactivate
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">deactivate</span>
+</pre></div>
+
+
 <p>Now let's check that the VE's folder was added to the right location:</p>
-<pre><code>ls $WORKON_HOME
-ls ~/.virtualenvs
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">ls</span> <span class="err">$</span><span class="n">WORKON_HOME</span>
+<span class="n">ls</span> <span class="o">~/</span><span class="p">.</span><span class="n">virtualenvs</span>
+</pre></div>
+
+
 <p>Both commands should give the same list, and the <em>"blog"</em> folder should be among them (only if you set <em>".virtualenvs"</em> as the destination folder earlier, of course).</p>
 <p>To activate your VE, use the following command:</p>
-<pre><code>workon blog
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">workon</span> <span class="n">blog</span>
+</pre></div>
+
+
 <p>Here you are, ready to move on to the installation of Pelican itself.</p>
 <p>Note that all the steps above is how you would prepare an environment for a Python project in general.</p>
 <p>Just sayin' :)</p>

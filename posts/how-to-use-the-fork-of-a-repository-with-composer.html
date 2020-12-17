@@ -76,8 +76,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -142,24 +142,28 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p><img alt="Composer and GitHub" src="/images/2015/08/10/composer-fork.jpg" title="Composer and GitHub" /></p>
 <p>When using packages maintained by other developers, you may eventually find yourself waiting for a fix, an update, or the merge of a PR that will be available with the next release. If you can't wait, a workaround is to fork the corresponding repository, make the changes you need and then use your fork instead of the original package.</p>
 <p>Say I want to use my own version of <a href="https://github.com/guzzle/guzzle">Guzzle</a> – I would edit <code>composer.json</code> like so (<a href="https://github.com/osteel"><code>osteel</code></a> is my GitHub username):</p>
-<pre><code>{
-    ...
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:osteel/guzzle"
-        }
-    ],
-    "require": {
-        "guzzlehttp/guzzle": "dev-master"
-    }
-    ...
-}
-</code></pre>
+<div class="highlight"><pre><span></span><span class="err">{</span><span class="w"></span>
+<span class="w">    </span><span class="p">...</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;repositories&quot;</span><span class="err">:</span><span class="w"> </span><span class="o">[</span><span class="n"></span>
+<span class="n">        {</span>
+<span class="n">            &quot;type&quot;: &quot;vcs&quot;,</span>
+<span class="n">            &quot;url&quot;: &quot;git@github.com:osteel/guzzle&quot;</span>
+<span class="n">        }</span>
+<span class="n">    </span><span class="o">]</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="ss">&quot;require&quot;</span><span class="err">:</span><span class="w"> </span><span class="err">{</span><span class="w"></span>
+<span class="w">        </span><span class="ss">&quot;guzzlehttp/guzzle&quot;</span><span class="err">:</span><span class="w"> </span><span class="ss">&quot;dev-master&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="err">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">...</span><span class="w"></span>
+<span class="err">}</span><span class="w"></span>
+</pre></div>
+
+
 <p>This would use the <code>master</code> branch of my fork. If my fix were in a branch named <code>bugfix</code>, I would require <code>dev-bugfix</code> instead.</p>
 <p>I would then run the following command:</p>
-<pre><code>$ composer update guzzlehttp/guzzle
-</code></pre>
+<div class="highlight"><pre><span></span>$ composer update guzzlehttp/guzzle
+</pre></div>
+
+
 <p>It would download and use my fork instead of the original package. Done!</p>
 <p>Just make sure to change it back to the latter once your fix is merged 😉</p>
 

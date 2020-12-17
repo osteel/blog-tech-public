@@ -77,8 +77,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -162,66 +162,94 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 <h2 id="pelican-installation">Pelican installation</h2>
 <p>If you are using The Vagrant config provided in part 1, start the <em>"local"</em> box and <em>ssh</em> it if it is not already the case:</p>
-<pre><code>vagrant up local
-vagrant ssh local
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">up</span> <span class="k">local</span>
+<span class="n">vagrant</span> <span class="n">ssh</span> <span class="k">local</span>
+</pre></div>
+
+
 <p>Then, activate the Virtual Environment:</p>
-<pre><code>workon blog
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">workon</span> <span class="n">blog</span>
+</pre></div>
+
+
 <p>Go to the directory you want your blog to reside in (if you are using Vagrant, this is <em>"/vagrant"</em>) and type:</p>
-<pre><code>pip install pelican
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pelican</span>
+</pre></div>
+
+
 <p>Pelican allows to use either <a href="http://docutils.sourceforge.net/rst.html" title="Official website">reStructuredText</a> or <a href="http://daringfireball.net/projects/markdown/" title="Official website">Markdown</a> formats for your articles. I personally use Markdown, but the choice is up to you.<br />
 You can also use plain HTML if that's your thing.</p>
 <p>Install your weapon of choice:</p>
-<pre><code>pip install Markdown
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">Markdown</span>
+</pre></div>
+
+
 <p>Now is a good time to save our current list of dependencies. Type this:</p>
-<pre><code>pip freeze
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="k">freeze</span>
+</pre></div>
+
+
 <p>This command will give you the list of the packages that are installed in your VE. It should more or less look like this:</p>
-<pre><code>blinker==1.3
-docutils==0.12
-feedgenerator==1.7
-Jinja2==2.7.3
-Markdown==2.5.2
-MarkupSafe==0.23
-pelican==3.5.0
-Pygments==2.0.2
-python-dateutil==2.4.0
-pytz==2014.10
-six==1.9.0
-Unidecode==0.4.17
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">blinker</span><span class="o">==</span><span class="mi">1</span><span class="p">.</span><span class="mi">3</span>
+<span class="n">docutils</span><span class="o">==</span><span class="mi">0</span><span class="p">.</span><span class="mi">12</span>
+<span class="n">feedgenerator</span><span class="o">==</span><span class="mi">1</span><span class="p">.</span><span class="mi">7</span>
+<span class="n">Jinja2</span><span class="o">==</span><span class="mi">2</span><span class="p">.</span><span class="mi">7</span><span class="p">.</span><span class="mi">3</span>
+<span class="n">Markdown</span><span class="o">==</span><span class="mi">2</span><span class="p">.</span><span class="mi">5</span><span class="p">.</span><span class="mi">2</span>
+<span class="n">MarkupSafe</span><span class="o">==</span><span class="mi">0</span><span class="p">.</span><span class="mi">23</span>
+<span class="n">pelican</span><span class="o">==</span><span class="mi">3</span><span class="p">.</span><span class="mi">5</span><span class="p">.</span><span class="mi">0</span>
+<span class="n">Pygments</span><span class="o">==</span><span class="mi">2</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">2</span>
+<span class="n">python</span><span class="o">-</span><span class="n">dateutil</span><span class="o">==</span><span class="mi">2</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">0</span>
+<span class="n">pytz</span><span class="o">==</span><span class="mi">2014</span><span class="p">.</span><span class="mi">10</span>
+<span class="n">six</span><span class="o">==</span><span class="mi">1</span><span class="p">.</span><span class="mi">9</span><span class="p">.</span><span class="mi">0</span>
+<span class="n">Unidecode</span><span class="o">==</span><span class="mi">0</span><span class="p">.</span><span class="mi">4</span><span class="p">.</span><span class="mi">17</span>
+</pre></div>
+
+
 <p>pip allows you to save this list into a file, in order to quickly reinstall its content if you need to (on another machine, for example):</p>
-<pre><code>pip freeze &gt; requirements.txt
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="k">freeze</span> <span class="o">&gt;</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+
+
 <p>All you need to do to reinstall this environment somewhere else is:</p>
-<pre><code>pip install -r requirements.txt
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">r</span> <span class="n">requirements</span><span class="p">.</span><span class="n">txt</span>
+</pre></div>
+
+
 <p>Handy.</p>
 <p>Now let's set up the skeleton for your blog using the built-in wizard:</p>
-<pre><code>pelican-quickstart
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">pelican</span><span class="o">-</span><span class="n">quickstart</span>
+</pre></div>
+
+
 <p>Pelican will now ask you a series of questions. Some of them have a value between square brackets at the end: this is the default value you can select simply hitting <em>return</em>.</p>
 <p>I will only list the questions that might be a bit confusing here:</p>
-<pre><code>Do you want to specify a URL prefix? e.g., http://example.com   (Y/n)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">Do</span> <span class="nv">you</span> <span class="nv">want</span> <span class="nv">to</span> <span class="nv">specify</span> <span class="nv">a</span> <span class="nv">URL</span> <span class="nv">prefix</span>? <span class="nv">e</span>.<span class="nv">g</span>., <span class="nv">http</span>:<span class="o">//</span><span class="nv">example</span>.<span class="nv">com</span>   <span class="ss">(</span><span class="nv">Y</span><span class="o">/</span><span class="nv">n</span><span class="ss">)</span>
+</pre></div>
+
+
 <p>Only if you already have a domain name that will point to your blog. You will be able to update this later directly in the publish config file.</p>
-<pre><code>Do you want to generate a Fabfile/Makefile to automate generation and publishing? (Y/n)
-Do you want an auto-reload &amp; simpleHTTP script to assist with theme and site development? (Y/n)
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">Do</span> <span class="nv">you</span> <span class="nv">want</span> <span class="nv">to</span> <span class="nv">generate</span> <span class="nv">a</span> <span class="nv">Fabfile</span><span class="o">/</span><span class="nv">Makefile</span> <span class="nv">to</span> <span class="nv">automate</span> <span class="nv">generation</span> <span class="nv">and</span> <span class="nv">publishing</span>? <span class="ss">(</span><span class="nv">Y</span><span class="o">/</span><span class="nv">n</span><span class="ss">)</span>
+<span class="k">Do</span> <span class="nv">you</span> <span class="nv">want</span> <span class="nv">an</span> <span class="nv">auto</span><span class="o">-</span><span class="nv">reload</span> <span class="o">&amp;</span> <span class="nv">simpleHTTP</span> <span class="nv">script</span> <span class="nv">to</span> <span class="nv">assist</span> <span class="nv">with</span> <span class="nv">theme</span> <span class="nv">and</span> <span class="nv">site</span> <span class="nv">development</span>? <span class="ss">(</span><span class="nv">Y</span><span class="o">/</span><span class="nv">n</span><span class="ss">)</span>
+</pre></div>
+
+
 <p>Answer <em>"Yes"</em> to both, these are functionalities we are going to use.</p>
 <p>Then say <em>"No"</em> to all the different means to upload your blog. You might end up wanting to use one of the listed methods, but they are not covered in this article.</p>
-<pre><code>Done. Your new project is available at /vagrant
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">Done</span><span class="p">.</span> <span class="n">Your</span> <span class="k">new</span> <span class="n">project</span> <span class="k">is</span> <span class="n">available</span> <span class="k">at</span> <span class="o">/</span><span class="n">vagrant</span>
+</pre></div>
+
+
 <p>Sweet!</p>
 <p>Now let's have a glance at the default look of the blog. Type this:</p>
-<pre><code>fab build
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">build</span>
+</pre></div>
+
+
 <p>Then:</p>
-<pre><code>fab serve
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">serve</span>
+</pre></div>
+
+
 <p>You've just launched a local webserver, that uses the port 8000 by default. Open your browser and navigate to <a href="http://localhost:8000">http://localhost:8000</a>: the default skeleton and template should display (this also works with the Vagrant box because we activated the port forwarding option, cf the Vagrantfile in the <a href="#the-vagrant-way">Vagrant way section</a>).</p>
 <p><img alt="&quot;Default theme&quot;" src="/images/2015/02/26/pelican-skeleton.png" title="Default theme" /></p>
 <p>That was easy, wasn't it?</p>
@@ -233,32 +261,36 @@ Here I choose to use Fabric simply because this is also what we are going to use
 <h2 id="writing-content">Writing content</h2>
 <p>How about actually writing something now?</p>
 <p>Create a file in the <em>"content"</em> folder, something like <em>"my-first-post.md"</em> (put the appropriate extension if you didn't go for Markdown). Add some content in it, following this format at the beginning:</p>
-<pre><code>Author: osteel
-Title: My first post!
-Date: 2015-02-22
-Slug: my-first-post
-Category: test
+<div class="highlight"><pre><span></span><span class="n">Author</span><span class="o">:</span> <span class="n">osteel</span>
+<span class="n">Title</span><span class="o">:</span> <span class="n">My</span> <span class="n">first</span> <span class="n">post</span><span class="o">!</span>
+<span class="n">Date</span><span class="o">:</span> <span class="mi">2015</span><span class="o">-</span><span class="mi">02</span><span class="o">-</span><span class="mi">22</span>
+<span class="n">Slug</span><span class="o">:</span> <span class="n">my</span><span class="o">-</span><span class="n">first</span><span class="o">-</span><span class="n">post</span>
+<span class="n">Category</span><span class="o">:</span> <span class="n">test</span>
 
-##A subtitle
+<span class="err">##</span><span class="n">A</span> <span class="n">subtitle</span>
 
-Some **Markdown** content, with some *formatting*.
+<span class="n">Some</span> <span class="o">**</span><span class="n">Markdown</span><span class="o">**</span> <span class="n">content</span><span class="o">,</span> <span class="k">with</span> <span class="n">some</span> <span class="o">*</span><span class="n">formatting</span><span class="o">*.</span>
 
-A list:
+<span class="n">A</span> <span class="n">list</span><span class="o">:</span>
 
- - Milk
- - Butter
- - Eggs
+ <span class="o">-</span> <span class="n">Milk</span>
+ <span class="o">-</span> <span class="n">Butter</span>
+ <span class="o">-</span> <span class="n">Eggs</span>
 
-Etc.
-</code></pre>
+<span class="n">Etc</span><span class="o">.</span>
+</pre></div>
+
+
 <p>Pelican will analyze the first lines to properly generate the post. Rebuild and serve your blog with <code>fab reserve</code>, and reload <a href="http://localhost:8000">http://localhost:8000</a>: you should see your post.</p>
 <p>The generated HTML files are put into the <em>"output"</em> folder. A <em>"test"</em> category was automatically created and placed in the header (if you had specified none, it would have created a category called <em>"misc"</em> by default).</p>
 <p>This is basically how to write articles. Pelican also allows to create static pages that are not posts (typically, the <em>"about"</em> or <em>"contact"</em> pages). Simply add a <em>"pages"</em> folder under <em>"content"</em>, and edit a <em>"about.md"</em> file:</p>
-<pre><code>Title: About
-Slug: about
+<div class="highlight"><pre><span></span><span class="n">Title</span><span class="o">:</span> <span class="n">About</span>
+<span class="n">Slug</span><span class="o">:</span> <span class="n">about</span>
 
-Amazing blog.
-</code></pre>
+<span class="n">Amazing</span> <span class="n">blog</span><span class="o">.</span>
+</pre></div>
+
+
 <p>Regenerate the content and refresh the web page: a new <em>"about"</em> entry has been placed in the header.</p>
 <p>These are the very basics of writing content. You probably wonder how to tweak the template to your taste now. Don't worry, we are getting there.</p>
 <p>But first, let's pick a theme!</p>
@@ -267,120 +299,189 @@ Amazing blog.
 <p>Pelican comes with a variety of themes to choose among the <a href="https://github.com/getpelican/pelican-themes">official repository</a> ones or custom ones made by various people.</p>
 <p>I am not going to invent much here and will mostly follow the instructions available on the repository's page.</p>
 <p>First, clone all the themes in a local directory (if you are using the Vagrant box, you will probably want to install Git now - <code>sudo apt-get install -y git-core</code>):</p>
-<pre><code>git clone --recursive https://github.com/getpelican/pelican-themes ~/pelican-themes
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="c1">--recursive https://github.com/getpelican/pelican-themes ~/pelican-themes</span>
+</pre></div>
+
+
 <p>Then, open the <em>"pelicanconf.py"</em> file and add these lines at the end (change <em>"vagrant"</em> for the correct username if necessary):</p>
-<pre><code># Theme
-THEME = "/home/vagrant/pelican-themes/mnmlist"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Theme</span>
+<span class="n">THEME</span> <span class="o">=</span> <span class="ss">&quot;/home/vagrant/pelican-themes/mnmlist&quot;</span>
+</pre></div>
+
+
 <p>Rebuild and serve:</p>
-<pre><code>fab reserve
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">reserve</span>
+</pre></div>
+
+
 <p>Reload <a href="http://localhost:8000">http://localhost:8000</a>: you are now looking at the <em>"mnmlist"</em> theme!</p>
 <p>Test as many themes as you like until you find one that suits you. I personally went for the <a href="https://github.com/duilio/pelican-octopress-theme" title="GitHub repo">Octopress</a> one, ported from <a href="http://octopress.org/" title="Official website">Octopress</a> by Maurizio Sambati.</p>
 <p>Once you picked one, copy its content in a new <em>"theme"</em> folder in your blog's directory:</p>
-<pre><code>mkdir theme
-cp -rf ~/pelican-themes/mnmlist/* theme/
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="n">theme</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">rf</span> <span class="o">~/</span><span class="n">pelican</span><span class="o">-</span><span class="n">themes</span><span class="o">/</span><span class="n">mnmlist</span><span class="cm">/* theme/</span>
+</pre></div>
+
+
 <p>Edit <em>"pelicanconf.py"</em> again and change the value of <em>"THEME"</em> for the new location:</p>
-<pre><code>THEME = "theme"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">THEME</span> <span class="o">=</span> <span class="ss">&quot;theme&quot;</span>
+</pre></div>
+
+
 <p>Rebuild and refresh to make sure it worked.</p>
 <p>You can now remove the other themes:</p>
-<pre><code>rm -rf ~/pelican-themes
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">~/</span><span class="n">pelican</span><span class="o">-</span><span class="n">themes</span>
+</pre></div>
+
+
 <p>Most of the themes have their own settings. Just have look at the theme's own README file to know what they are (here is the <a href="https://github.com/getpelican/pelican-themes/tree/master/mnmlist"><em>"mnmlist"</em></a> one, for example).</p>
 <h2 id="configuration">Configuration</h2>
 <p>We had a quick preview of the configuration in the previous section, when we changed the theme's path. Pelican actually has two configuration files: <em>"pelicanconf.py"</em>, with whom we made acquaintance already, and <em>"publishconf.py"</em>, which contains production-wise settings.</p>
 <p>The latter should contain settings that are relevant to your live environment only; we will see examples later on.</p>
 <p>Your <em>"pelicanconf.py"</em> file should currently look like something like that:</p>
-<pre><code>#!/usr/bin/env python
-# -*- coding: utf-8 -*- #
-from __future__ import unicode_literals
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+<span class="c1"># -*- coding: utf-8 -*- #</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">unicode_literals</span>
 
-AUTHOR = u'osteel'
-SITENAME = u'My Blog'
-SITEURL = ''
+<span class="n">AUTHOR</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;osteel&#39;</span>
+<span class="n">SITENAME</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;My Blog&#39;</span>
+<span class="n">SITEURL</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 
-PATH = 'content'
+<span class="n">PATH</span> <span class="o">=</span> <span class="s1">&#39;content&#39;</span>
 
-TIMEZONE = 'Europe/Paris'
+<span class="n">TIMEZONE</span> <span class="o">=</span> <span class="s1">&#39;Europe/Paris&#39;</span>
 
-DEFAULT_LANG = u'en'
+<span class="n">DEFAULT_LANG</span> <span class="o">=</span> <span class="sa">u</span><span class="s1">&#39;en&#39;</span>
 
-# Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
-AUTHOR_FEED_ATOM = None
-AUTHOR_FEED_RSS = None
+<span class="c1"># Feed generation is usually not desired when developing</span>
+<span class="n">FEED_ALL_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">CATEGORY_FEED_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">TRANSLATION_FEED_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">AUTHOR_FEED_ATOM</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">AUTHOR_FEED_RSS</span> <span class="o">=</span> <span class="bp">None</span>
 
-# Blogroll
-LINKS = (('Pelican', 'http://getpelican.com/'),
-         ('Python.org', 'http://python.org/'),
-         ('Jinja2', 'http://jinja.pocoo.org/'),
-         ('You can modify those links in your config file', '#'),)
+<span class="c1"># Blogroll</span>
+<span class="n">LINKS</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;Pelican&#39;</span><span class="p">,</span> <span class="s1">&#39;http://getpelican.com/&#39;</span><span class="p">),</span>
+         <span class="p">(</span><span class="s1">&#39;Python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;http://python.org/&#39;</span><span class="p">),</span>
+         <span class="p">(</span><span class="s1">&#39;Jinja2&#39;</span><span class="p">,</span> <span class="s1">&#39;http://jinja.pocoo.org/&#39;</span><span class="p">),</span>
+         <span class="p">(</span><span class="s1">&#39;You can modify those links in your config file&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">),)</span>
 
-# Social widget
-SOCIAL = (('You can add links in your config file', '#'),
-          ('Another social link', '#'),)
+<span class="c1"># Social widget</span>
+<span class="n">SOCIAL</span> <span class="o">=</span> <span class="p">((</span><span class="s1">&#39;You can add links in your config file&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">),</span>
+          <span class="p">(</span><span class="s1">&#39;Another social link&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">),)</span>
 
-DEFAULT_PAGINATION = 10
+<span class="n">DEFAULT_PAGINATION</span> <span class="o">=</span> <span class="mi">10</span>
 
-# Uncomment following line if you want document-relative URLs when developing
-#RELATIVE_URLS = True
+<span class="c1"># Uncomment following line if you want document-relative URLs when developing</span>
+<span class="c1">#RELATIVE_URLS = True</span>
 
-# Theme
-THEME = "theme"
-</code></pre>
+<span class="c1"># Theme</span>
+<span class="n">THEME</span> <span class="o">=</span> <span class="s2">&quot;theme&quot;</span>
+</pre></div>
+</td></tr></table>
+
 <p>Most of the parameters are pretty straightforward, and I invite you to have a look at the <a href="http://pelican.readthedocs.org/en/latest/settings.html" title="Pelican documentation - Settings">documentation</a> that describes them all.</p>
 <p>I am going to focus on specific areas: URLs, plugins and comments.</p>
 <h3 id="urls">URLs</h3>
 <p>For now, our posts' URLs look like so:</p>
-<pre><code>http://sitename.com/article-slug.html
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">sitename</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">article</span><span class="o">-</span><span class="n">slug</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+
+
 <p>We are going to change this to adopt a format like the one I am using for my blog:</p>
-<pre><code>http://sitename.com/year/month/day/article-slug.html
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">sitename</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="k">year</span><span class="o">/</span><span class="k">month</span><span class="o">/</span><span class="k">day</span><span class="o">/</span><span class="n">article</span><span class="o">-</span><span class="n">slug</span><span class="p">.</span><span class="n">html</span>
+</pre></div>
+
+
 <p>Obtaining this result is pretty easy. Open the <em>"pelicanconf.py"</em> file and add these lines:</p>
-<pre><code># URLs
-ARTICLE_URL = 'posts/{date:%Y}/{date:%m}/{date:%d}/{slug}.html'
-ARTICLE_SAVE_AS = 'posts/{date:%Y}/{date:%m}/{date:%d}/{slug}.html'
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">URLs</span>
+<span class="n">ARTICLE_URL</span> <span class="o">=</span> <span class="s1">&#39;posts/{date:%Y}/{date:%m}/{date:%d}/{slug}.html&#39;</span>
+<span class="n">ARTICLE_SAVE_AS</span> <span class="o">=</span> <span class="s1">&#39;posts/{date:%Y}/{date:%m}/{date:%d}/{slug}.html&#39;</span>
+</pre></div>
+
+
 <p>Now, let's move the post we created earlier in a folder reflecting this structure. Go to the <em>"content"</em> folder and create subfolders as following (change the date if you want to):</p>
-<pre><code>cd content
-mkdir 2015 2015/02 2015/02/22
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">content</span>
+<span class="n">mkdir</span> <span class="mi">2015</span> <span class="mi">2015</span><span class="o">/</span><span class="mi">02</span> <span class="mi">2015</span><span class="o">/</span><span class="mi">02</span><span class="o">/</span><span class="mi">22</span>
+</pre></div>
+
+
 <p>Then move the post:</p>
-<pre><code>mv my-first-post.md 2015/02/22
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">mv</span> <span class="n">my</span><span class="o">-</span><span class="k">first</span><span class="o">-</span><span class="n">post</span><span class="p">.</span><span class="n">md</span> <span class="mi">2015</span><span class="o">/</span><span class="mi">02</span><span class="o">/</span><span class="mi">22</span>
+</pre></div>
+
+
 <p>Rebuild and refresh: URLs are now a bit more structured.</p>
 <p>Of course, this is just an example, and you are free to adopt any format you want.</p>
 <h3 id="plugins">Plugins</h3>
 <p>Pelican supports plugins since its version 3.0, allowing to add functionalities without having to touch the core. Plugins are maintained in a <a href="https://github.com/getpelican/pelican-plugins" title="Pelican - Plugins GitHub repository">separate repository</a> just like the themes.</p>
 <p>You will find a description of each one of them there, and we are going to manage them the same way we did for the themes.</p>
 <p><code>git clone</code> them all locally, and copy over those you want in a new <em>"plugins"</em> folder in your blog's directory. If you want to use the <a href="https://github.com/getpelican/pelican-plugins/tree/master/liquid_tags">Liquid Tags</a> plugin for example, this is how you would do:</p>
-<pre><code>git clone https://github.com/getpelican/pelican-plugins ~/pelican-plugins
-mkdir plugins
-cp -rf ~/pelican-plugins/liquid_tags plugins/
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="p">.</span><span class="n">com</span><span class="o">/</span><span class="n">getpelican</span><span class="o">/</span><span class="n">pelican</span><span class="o">-</span><span class="n">plugins</span> <span class="o">~/</span><span class="n">pelican</span><span class="o">-</span><span class="n">plugins</span>
+<span class="n">mkdir</span> <span class="n">plugins</span>
+<span class="n">cp</span> <span class="o">-</span><span class="n">rf</span> <span class="o">~/</span><span class="n">pelican</span><span class="o">-</span><span class="n">plugins</span><span class="o">/</span><span class="n">liquid_tags</span> <span class="n">plugins</span><span class="o">/</span>
+</pre></div>
+
+
 <p>Open <em>"pelicanconf.py"</em> and add these lines at the end:</p>
-<pre><code># Plugins
-PLUGIN_PATHS = ['plugins']
-PLUGINS = ['liquid_tags']
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="n">Plugins</span>
+<span class="n">PLUGIN_PATHS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;plugins&#39;</span><span class="p">]</span>
+<span class="n">PLUGINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;liquid_tags&#39;</span><span class="p">]</span>
+</pre></div>
+
+
 <p>Pelican now knows where to find the plugins and which ones to load.</p>
 <p>Rebuild and refresh.</p>
 <p>Copy as many plugins as you like, update the config file accordingly and, when you are done, delete the other ones:</p>
-<pre><code>rm -rf ~/pelican-plugins
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="o">~/</span><span class="n">pelican</span><span class="o">-</span><span class="n">plugins</span>
+</pre></div>
+
+
 <h3 id="comments">Comments</h3>
 <p>Pelican natively supports <a href="https://disqus.com/" title="Official website">Disqus</a>, a third party service that will take care of your commenting system for free, externally (nothing to host).</p>
 <p>Head to the website and create an account. Set it up as you like and note your sitename, which is just the string before <em>".disqus"</em> in the URL of your account.<br />
 For example, mine is <em>"https://osteel.disqus.com"</em>, so my sitename is <em>"osteel"</em>.</p>
 <p>Now edit <em>"pelicanconf.py"</em> and add the following line (with the right sitename, of course):</p>
-<pre><code>DISQUS_SITENAME = "osteel"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">DISQUS_SITENAME</span> <span class="o">=</span> <span class="ss">&quot;osteel&quot;</span>
+</pre></div>
+
+
 <p>Build, serve and refresh: you should have a nice comment box at the bottom of your article.</p>
 <p><strong>Note:</strong> We added this config parameter to <em>"pelicanconf.py"</em> so you could see the result straight away, but this actually only relevant in the context of your live environment (Disqus won't recognize your local URL). This is typically one of the settings that should be in the other config file, <em>"publishconf.py"</em>.</p>
 <p>That's it for today. In <a href="/posts/2015/03/02/install-and-deploy-a-pelican-blog-using-fabric-part-3-fabric.html" title="Install and deploy a Pelican blog using Fabric - Part 3: Fabric">part 3</a>, we will see how to use Fabric to automate the provisioning of a server and the publication of new content.</p>

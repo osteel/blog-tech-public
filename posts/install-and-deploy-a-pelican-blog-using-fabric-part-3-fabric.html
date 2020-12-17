@@ -77,8 +77,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blog">Blog</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/contracting">Contracting</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/docker">Docker</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel.html">Laravel</a>
-        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc.html">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/nginx">Nginx</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
         <a class="sidebar-nav-item" href="https://tech.osteel.me/category/vagrant">Vagrant</a>
@@ -161,62 +161,74 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="versioning">Versioning</h2>
 <p>The next stop in our journey is versioning. What we want to do is to be able to push our content to some repository so it can be pulled on the server later on (and it is always good to have a backup that we can clone and start working on locally in no time).</p>
 <p>Create a new repo on your favorite host (like <a href="https://github.com/">GitHub</a> or <a href="https://bitbucket.org/">Bitbucket</a>) and set up your local one:</p>
-<pre><code>git init
-git remote add origin your-repo-address
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">init</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="k">add</span> <span class="n">origin</span> <span class="n">your</span><span class="o">-</span><span class="n">repo</span><span class="o">-</span><span class="n">address</span>
+</pre></div>
+
+
 <p>Create a <em>".gitignore"</em> file (<em>".vagrant/"</em> is not required if you don't use Vagrant):</p>
-<pre><code>output/*
-*.py[cod]
-cache/
-.vagrant/
-</code></pre>
+<div class="highlight"><pre><span></span><span class="k">output</span><span class="cm">/*</span>
+<span class="cm">*.py[cod]</span>
+<span class="cm">cache/</span>
+<span class="cm">.vagrant/</span>
+</pre></div>
+
+
 <p>We exclude the content of <em>"output/"</em> as the content will be generated directly on the live server, with its own settings.</p>
 <p>Make your first commit and push your code:</p>
-<pre><code>git add -A
-git commit -m 'First commit'
-git push
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">git</span> <span class="k">add</span> <span class="o">-</span><span class="n">A</span>
+<span class="n">git</span> <span class="k">commit</span> <span class="o">-</span><span class="n">m</span> <span class="s1">&#39;First commit&#39;</span>
+<span class="n">git</span> <span class="n">push</span>
+</pre></div>
+
+
 <p>That's it!</p>
 <h2 id="deployment-with-fabric">Deployment with Fabric</h2>
 <p><a href="http://www.fabfile.org/" title="Fabric website">Fabric</a> is a command-line tool written in Python allowing to perform remote operations over SSH. It is often used for server provisioning and deployment.</p>
 <p>We installed it earlier with pip (<code>pip install Fabric</code>) and started using it already to build and serve our blog locally, using the <code>fab build</code> and <code>fab serve</code> commands among others. These commands are contained in a file named <em>"fabfile.py"</em>, at the root of your blog. We are now going to have a look at it and explain it a little bit.</p>
 <h3 id="fabfilepy">fabfile.py</h3>
 <p>Let's open the file in and editor and dissect it section by section:</p>
-<pre><code>from fabric.api import *
-import fabric.contrib.project as project
-import os
-import sys
-import SimpleHTTPServer
-import SocketServer
-</code></pre>
+<div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">fabric.api</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">fabric.contrib.project</span> <span class="kn">as</span> <span class="nn">project</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">SimpleHTTPServer</span>
+<span class="kn">import</span> <span class="nn">SocketServer</span>
+</pre></div>
+
+
 <p>Basically the imports of all the necessary libraries. <em>SimpleHTTPServer</em> is the one used by <code>fab serve</code>, for example.</p>
-<pre><code># Local path configuration (can be absolute or relative to fabfile)
-env.deploy_path = 'output'
-DEPLOY_PATH = env.deploy_path
+<div class="highlight"><pre><span></span><span class="err">#</span><span class="w"> </span><span class="k">Local</span><span class="w"> </span><span class="k">path</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="p">(</span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="k">absolute</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">relative</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">fabfile</span><span class="p">)</span><span class="w"></span>
+<span class="n">env</span><span class="p">.</span><span class="n">deploy_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;output&#39;</span><span class="w"></span>
+<span class="n">DEPLOY_PATH</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">env</span><span class="p">.</span><span class="n">deploy_path</span><span class="w"></span>
 
-# Remote server configuration
-production = 'root@localhost:22'
-dest_path = '/var/www'
+<span class="err">#</span><span class="w"> </span><span class="n">Remote</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">configuration</span><span class="w"></span>
+<span class="n">production</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;root@localhost:22&#39;</span><span class="w"></span>
+<span class="n">dest_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;/var/www&#39;</span><span class="w"></span>
 
-# Rackspace Cloud Files configuration settings
-env.cloudfiles_username = 'my_rackspace_username'
-env.cloudfiles_api_key = 'my_rackspace_api_key'
-env.cloudfiles_container = 'my_cloudfiles_container'
-</code></pre>
+<span class="err">#</span><span class="w"> </span><span class="n">Rackspace</span><span class="w"> </span><span class="n">Cloud</span><span class="w"> </span><span class="n">Files</span><span class="w"> </span><span class="n">configuration</span><span class="w"> </span><span class="n">settings</span><span class="w"></span>
+<span class="n">env</span><span class="p">.</span><span class="n">cloudfiles_username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;my_rackspace_username&#39;</span><span class="w"></span>
+<span class="n">env</span><span class="p">.</span><span class="n">cloudfiles_api_key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;my_rackspace_api_key&#39;</span><span class="w"></span>
+<span class="n">env</span><span class="p">.</span><span class="n">cloudfiles_container</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;my_cloudfiles_container&#39;</span><span class="w"></span>
+</pre></div>
+
+
 <p>This section is about configuration. We will update the <em>"Remote server configuration"</em> bit soon. We are not using <em>Rackspace</em> in this tutorial so we can just ignore this part.</p>
 <p>The following function definitions (e.g. <em>"def clean()"</em>) are all the commands you can run from the terminal (using <em>"fab command_name"</em> as you already know). You are already familiar with a few of them (<code>build</code>, <code>serve</code>, <code>reserve</code>) and I encourage you to take a look at the others and try them out (you might find that you are more comfortable with some of them for your workflow). The code for most of these commands is quite self-explanatory.</p>
 <p>Now let's have a look at the last one, <em>"publish"</em>:</p>
-<pre><code>@hosts(production)
-def publish():
-    local('pelican -s publishconf.py')
-    project.rsync_project(
-        remote_dir=dest_path,
-        exclude=".DS_Store",
-        local_dir=DEPLOY_PATH.rstrip('/') + '/',
-        delete=True,
-        extra_opts='-c',
-    )
-</code></pre>
+<div class="highlight"><pre><span></span><span class="p">@</span><span class="nx">hosts</span><span class="p">(</span><span class="nx">production</span><span class="p">)</span>
+<span class="nx">def</span> <span class="nx">publish</span><span class="p">():</span>
+    <span class="kd">local</span><span class="p">(</span><span class="s1">&#39;pelican -s publishconf.py&#39;</span><span class="p">)</span>
+    <span class="nx">project.rsync_project</span><span class="p">(</span>
+        <span class="n">remote_dir</span><span class="o">=</span><span class="nx">dest_path</span><span class="p">,</span>
+        <span class="n">exclude</span><span class="o">=</span><span class="s2">&quot;.DS_Store&quot;</span><span class="p">,</span>
+        <span class="n">local_dir</span><span class="o">=</span><span class="nx">DEPLOY_PATH.rstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+        <span class="n">delete</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">extra_opts</span><span class="o">=</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+
+
 <p>What's happenning here? First, we indicate that we want to <em>ssh</em> the host whose configuration is contained in the <em>"production"</em> variable mentioned above. Then, in the body of the function itself, we first generate the HTML <em>locally</em> using the live config (<em>"publishconf.py"</em>), and we synchronize the output with the remote server's destination directory defined by the <em>"dest_path"</em> variable and the <em>"DEPLOY_PATH"</em> environment variable.</p>
 <p>The synchronization is performed using <a href="http://docs.fabfile.org/en/latest/api/contrib/project.html" title="Documentation"><code>project.rsync_project</code></a>, which is a wrapper for the <code>rsync</code> command, allowing to upload newly modified files only.</p>
 <p>Basically, everything is there already for you to update a remote server with new content with a single command executed locally. And honestly that might be just enough for your needs. </p>
@@ -232,85 +244,91 @@ def publish():
 <p>And even if we all agree that the true beauty comes from the inside, we don't want it to be ugly.</p>
 <p>Under <em>"content/pages/"</em>, create a new folder named <em>"errors/"</em> and the files <em>"403.md"</em>, <em>"404.md"</em> and <em>"50x.md"</em> in it (adapt the extensions to the format you chose).</p>
 <p>Here is the content of my <em>404</em> page as an example:</p>
-<pre><code>Title: Hmm...
-Slug: 404
-Status: hidden
+<div class="highlight"><pre><span></span><span class="nl">Title</span><span class="p">:</span> <span class="n">Hmm</span><span class="p">...</span>
+<span class="nl">Slug</span><span class="p">:</span> <span class="mi">404</span>
+<span class="nl">Status</span><span class="p">:</span> <span class="n">hidden</span>
 
-Nope. Don't know what you're talking about, pal.
+<span class="n">Nope</span><span class="p">.</span> <span class="n">Don</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">know</span> <span class="n">what</span> <span class="n">you</span><span class="err">&#39;</span><span class="n">re</span> <span class="n">talking</span> <span class="n">about</span><span class="p">,</span> <span class="n">pal</span><span class="p">.</span>
 
-[Go home](/ "Back to home").
-</code></pre>
+<span class="p">[</span><span class="n">Go</span> <span class="n">home</span><span class="p">](</span><span class="o">/</span> <span class="s">&quot;Back to home&quot;</span><span class="p">).</span>
+</pre></div>
+
+
 <p>Not much new here, except for the <em>"hidden"</em> status, whose effect is to prevent it from being displayed along with the other pages (<em>"about"</em> etc).</p>
 <p>Follow the same format for the two other pages.</p>
 <p>When you are done, create a new file called <em>"blog.conf"</em> under the <em>".provision/"</em> directory, with this content:</p>
-<pre><code>server {
-    listen 80; ## listen for ipv4; this line is default and implied
-    listen [::]:80 default ipv6only=on; ## listen for ipv6
+<div class="highlight"><pre><span></span><span class="nv">server</span> {
+    <span class="nv">listen</span> <span class="mi">80</span><span class="c1">; ## listen for ipv4; this line is default and implied</span>
+    <span class="nv">listen</span> [::]:<span class="mi">80</span> <span class="nv">default</span> <span class="nv">ipv6only</span><span class="o">=</span><span class="nv">on</span><span class="c1">; ## listen for ipv6</span>
 
-    # Make site accessible from http://my-blog.local.com
-    server_name my-blog.local.com;
-    root /var/www/blog;
+    # <span class="nv">Make</span> <span class="nv">site</span> <span class="nv">accessible</span> <span class="nv">from</span> <span class="nv">http</span>:<span class="o">//</span><span class="nv">my</span><span class="o">-</span><span class="nv">blog</span>.<span class="nv">local</span>.<span class="nv">com</span>
+    <span class="nv">server_name</span> <span class="nv">my</span><span class="o">-</span><span class="nv">blog</span>.<span class="nv">local</span>.<span class="nv">com</span><span class="c1">;</span>
+    <span class="nv">root</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">www</span><span class="o">/</span><span class="nv">blog</span><span class="c1">;</span>
 
-    location = / {
-        # Instead of handling the index, just
-        # rewrite / to /index.html
-        rewrite ^ /index.html;
+    <span class="nv">location</span> <span class="o">=</span> <span class="o">/</span> {
+        # <span class="nv">Instead</span> <span class="nv">of</span> <span class="nv">handling</span> <span class="nv">the</span> <span class="nv">index</span>, <span class="nv">just</span>
+        # <span class="nv">rewrite</span> <span class="o">/</span> <span class="nv">to</span> <span class="o">/</span><span class="nv">index</span>.<span class="nv">html</span>
+        <span class="nv">rewrite</span> <span class="o">^</span> <span class="o">/</span><span class="nv">index</span>.<span class="nv">html</span><span class="c1">;</span>
     }
 
-    location / {
-        try_files $uri.htm $uri.html $uri =404;
+    <span class="nv">location</span> <span class="o">/</span> {
+        <span class="nv">try_files</span> $<span class="nv">uri</span>.<span class="nv">htm</span> $<span class="nv">uri</span>.<span class="nv">html</span> $<span class="nv">uri</span> <span class="o">=</span><span class="mi">404</span><span class="c1">;</span>
     }
 
-    access_log /var/log/blog/access.log;
-    error_log /var/log/blog/error.log;
+    <span class="nv">access_log</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">log</span><span class="o">/</span><span class="nv">blog</span><span class="o">/</span><span class="nv">access</span>.<span class="nv">log</span><span class="c1">;</span>
+    <span class="nv">error_log</span> <span class="o">/</span><span class="nv">var</span><span class="o">/</span><span class="nv">log</span><span class="o">/</span><span class="nv">blog</span><span class="o">/</span><span class="nv">error</span>.<span class="nv">log</span><span class="c1">;</span>
 
-    # Redirect server error pages
-    error_page 500 502 503 504 /pages/50x.html;
-    error_page 404 /pages/404.html;
-    error_page 403 /pages/403.html;
+    # <span class="nv">Redirect</span> <span class="nv">server</span> <span class="nv">error</span> <span class="nv">pages</span>
+    <span class="nv">error_page</span> <span class="mi">500</span> <span class="mi">502</span> <span class="mi">503</span> <span class="mi">504</span> <span class="o">/</span><span class="nv">pages</span><span class="o">/</span><span class="mi">50</span><span class="nv">x</span>.<span class="nv">html</span><span class="c1">;</span>
+    <span class="nv">error_page</span> <span class="mi">404</span> <span class="o">/</span><span class="nv">pages</span><span class="o">/</span><span class="mi">404</span>.<span class="nv">html</span><span class="c1">;</span>
+    <span class="nv">error_page</span> <span class="mi">403</span> <span class="o">/</span><span class="nv">pages</span><span class="o">/</span><span class="mi">403</span>.<span class="nv">html</span><span class="c1">;</span>
 }
-</code></pre>
+</pre></div>
+
+
 <p>You may have recognized the nginx format: it is indeed the HTTP server I am going to use (feel free to adapt this to your favorite one).</p>
 <p>This is a rather basic config: the website will be accessible at <em>http://my-blog.local.com</em>, its root will be <em>"/var/www/blog/"</em> on the remote server, the logs will be written under <em>"/var/log/blog/"</em>, and the errors will be redirected to the different pages you have just created.</p>
 <p>Now, open back <em>"fabfile.py"</em> and, before the <em>"publish"</em> function, add a <em>"provision"</em> one (it could be after as well, but the provisioning is supposed to come <em>before</em> the publication, right? But maybe that is just my OCD speaking):</p>
-<pre><code>@hosts(production)
-def provision():
-    if run('nginx -v', warn_only=True).failed:
-        sudo('apt-get -y install nginx')
-        sudo('rm /etc/nginx/sites-available/default')
-        sudo('service nginx start')
-    put('./.provision/blog.conf', '/etc/nginx/sites-available/blog.conf', use_sudo=True)
-    sudo('rm -f /etc/nginx/sites-enabled/blog.conf')
-    sudo('ln -s /etc/nginx/sites-available/blog.conf /etc/nginx/sites-enabled/blog.conf')
+<div class="highlight"><pre><span></span>@<span class="nv">hosts</span><span class="ss">(</span><span class="nv">production</span><span class="ss">)</span>
+<span class="nv">def</span> <span class="nv">provision</span><span class="ss">()</span>:
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">nginx -v</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">apt-get -y install nginx</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">rm /etc/nginx/sites-available/default</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">service nginx start</span><span class="s1">&#39;</span><span class="ss">)</span>
+    <span class="nv">put</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">./.provision/blog.conf</span><span class="s1">&#39;</span>, <span class="s1">&#39;</span><span class="s">/etc/nginx/sites-available/blog.conf</span><span class="s1">&#39;</span>, <span class="nv">use_sudo</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>
+    <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">rm -f /etc/nginx/sites-enabled/blog.conf</span><span class="s1">&#39;</span><span class="ss">)</span>
+    <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">ln -s /etc/nginx/sites-available/blog.conf /etc/nginx/sites-enabled/blog.conf</span><span class="s1">&#39;</span><span class="ss">)</span>
 
-    if run('test -d %s/%s' % (log_path, sitename), warn_only=True).failed:
-        sudo('mkdir %s/%s' % (log_path, sitename))
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">test -d %s/%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="ss">(</span><span class="nv">log_path</span>, <span class="nv">sitename</span><span class="ss">)</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkdir %s/%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="ss">(</span><span class="nv">log_path</span>, <span class="nv">sitename</span><span class="ss">))</span>
 
-    if run('test -d %s' % root_path, warn_only=True).failed:
-        sudo('mkdir %s' % root_path)
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">test -d %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">root_path</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkdir %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">root_path</span><span class="ss">)</span>
 
-    if run('git -v', warn_only=True).failed:
-        sudo('apt-get install -y git-core')
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git -v</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">apt-get install -y git-core</span><span class="s1">&#39;</span><span class="ss">)</span>
 
-    if run('pip --version', warn_only=True).failed:
-        run('wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py -P /tmp/')
-        sudo('python /tmp/get-pip.py')
-        run('rm /tmp/get-pip.py')
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">pip --version</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py -P /tmp/</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">python /tmp/get-pip.py</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">rm /tmp/get-pip.py</span><span class="s1">&#39;</span><span class="ss">)</span>
 
-    if run('fab --version', warn_only=True).failed:
-        sudo('pip install Fabric')
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">fab --version</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">pip install Fabric</span><span class="s1">&#39;</span><span class="ss">)</span>
 
-    if run('virtualenv --version', warn_only=True).failed:
-        sudo('pip install virtualenv')
-        sudo('pip install virtualenvwrapper')
-        run('echo "export WORKON_HOME=$HOME/.virtualenvs" &gt;&gt; /home/vagrant/.bashrc')
-        run('echo "source /usr/local/bin/virtualenvwrapper.sh" &gt;&gt; /home/vagrant/.bashrc')
-        with prefix('WORKON_HOME=$HOME/.virtualenvs'):
-            with prefix('source /usr/local/bin/virtualenvwrapper.sh'):
-                run('mkvirtualenv %s' % sitename)
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">virtualenv --version</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">pip install virtualenv</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">pip install virtualenvwrapper</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">echo &quot;export WORKON_HOME=$HOME/.virtualenvs&quot; &gt;&gt; /home/vagrant/.bashrc</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">echo &quot;source /usr/local/bin/virtualenvwrapper.sh&quot; &gt;&gt; /home/vagrant/.bashrc</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">with</span> <span class="nv">prefix</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">WORKON_HOME=$HOME/.virtualenvs</span><span class="s1">&#39;</span><span class="ss">)</span>:
+            <span class="nv">with</span> <span class="nv">prefix</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">source /usr/local/bin/virtualenvwrapper.sh</span><span class="s1">&#39;</span><span class="ss">)</span>:
+                <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkvirtualenv %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">sitename</span><span class="ss">)</span>
 
-    sudo('service nginx restart')
-</code></pre>
+    <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">service nginx restart</span><span class="s1">&#39;</span><span class="ss">)</span>
+</pre></div>
+
+
 <p>Quite a few things here but, if you look closely, you will realize these are basically all the steps you have taken at the beginning of the tutorial.</p>
 <p>The pattern is almost always the same:</p>
 <ul>
@@ -326,73 +344,89 @@ Again, if you followed this tutorial from the start, this should feel familiar.<
 <p>Now as I am using <em>Ubuntu 14.04.1 LTS</em> boxes, I <em>know</em> my <em>"remote"</em> server comes with Python preinstalled. If yours doesn't, well you will have to add the steps to install it :)</p>
 <p>Shall we test this now? Sure thing, but we need to do something first. Remember the configuration section of <em>"fabfile.py"</em> mentioned earlier? It is time to set up the details of our remote server. This is where the use of Vagrant comes in handy as, if you used the Vagrant config I gave you at the beginning of this post, then the <em>"remote server"</em> box is already there, reporting for duty.</p>
 <p>Open a new terminal on your host machine, go to the blog's root, and type this:</p>
-<pre><code>vagrant up server
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">up</span> <span class="n">server</span>
+</pre></div>
+
+
 <p>Now update <em>"fabfile.py"</em>, changing the server configuration for this one:</p>
-<pre><code># Remote server configuration
-production = 'vagrant@192.168.72.3:22'
-env.key_filename = '/home/vagrant/.ssh/insecure_private_key'
-root_path = '/var/www'
-log_path = '/var/log'
-dest_path = '~/dev'
-sitename = 'blog'
-symlink_folder = 'output'
-</code></pre>
+<div class="highlight"><pre><span></span><span class="cp"># Remote server configuration</span>
+<span class="n">production</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">vagrant</span><span class="mf">@192.168.72.3</span><span class="o">:</span><span class="mi">22</span><span class="err">&#39;</span>
+<span class="n">env</span><span class="p">.</span><span class="n">key_filename</span> <span class="o">=</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">vagrant</span><span class="o">/</span><span class="p">.</span><span class="n">ssh</span><span class="o">/</span><span class="n">insecure_private_key</span><span class="err">&#39;</span>
+<span class="n">root_path</span> <span class="o">=</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="err">&#39;</span>
+<span class="n">log_path</span> <span class="o">=</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="err">&#39;</span>
+<span class="n">dest_path</span> <span class="o">=</span> <span class="err">&#39;</span><span class="o">~/</span><span class="n">dev</span><span class="err">&#39;</span>
+<span class="n">sitename</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">blog</span><span class="err">&#39;</span>
+<span class="n">symlink_folder</span> <span class="o">=</span> <span class="err">&#39;</span><span class="n">output</span><span class="err">&#39;</span>
+</pre></div>
+
+
 <p>The IP address is the one that was specified in the Vagrant config, and the private SSH key is the Vagrant one, copied over from the host machine, via this line of the config:</p>
-<pre><code># Copy the default Vagrant ssh private key over
-local.vm.provision "file", source: "~/.vagrant.d/insecure_private_key", destination: "~/.ssh/insecure_private_key"
-</code></pre>
+<div class="highlight"><pre><span></span><span class="o">#</span> <span class="k">Copy</span> <span class="n">the</span> <span class="k">default</span> <span class="n">Vagrant</span> <span class="n">ssh</span> <span class="n">private</span> <span class="k">key</span> <span class="n">over</span>
+<span class="k">local</span><span class="p">.</span><span class="n">vm</span><span class="p">.</span><span class="n">provision</span> <span class="ss">&quot;file&quot;</span><span class="p">,</span> <span class="k">source</span><span class="p">:</span> <span class="ss">&quot;~/.vagrant.d/insecure_private_key&quot;</span><span class="p">,</span> <span class="n">destination</span><span class="p">:</span> <span class="ss">&quot;~/.ssh/insecure_private_key&quot;</span>
+</pre></div>
+
+
 <p>As mentioned earlier, we will <em>ssh</em> the box as the <em>"vagrant"</em> user. The rest of the variables are path/folder names used in both the <em>"provision"</em> and <em>"publish"</em> functions (next section). </p>
 <p>Now, from the <em>"local"</em> Vagrant machine:</p>
-<pre><code>fab provision
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">provision</span>
+</pre></div>
+
+
 <p>If everything is set up properly, you should see a series of text lines scrolling off the screen: your <em>"server"</em> box is being provisionned :)</p>
 <p>When it is done, you can <em>ssh</em> your <em>"server"</em> VM and play around to observe that everything was properly installed:</p>
-<pre><code>vagrant ssh server
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">vagrant</span> <span class="n">ssh</span> <span class="n">server</span>
+</pre></div>
+
+
 <h3 id="publish">Publish</h3>
 <p>We are now able to provision a server with everything required to run our blog, and all it takes is to update a few lines of configuration in <em>"fabfile.py"</em> and running one command.</p>
 <p>Pretty cool, eh?</p>
 <p>Anyway, we are yet to update the <em>"publish"</em> function to automate the publication of new content, pulling it from our Git repository.</p>
 <p>Here is what it looks like:</p>
-<pre><code>@hosts(production)
-def publish():
-    if run('cat ~/.ssh/id_rsa.pub', warn_only=True).failed:
-        run('ssh-keygen -N "" -f ~/.ssh/id_rsa')
-        key = run('cat ~/.ssh/id_rsa.pub')
-        prompt("Add this key to your Git repository and then hit return:\n\n%s\n\n" % key)
+<div class="highlight"><pre><span></span>@<span class="nv">hosts</span><span class="ss">(</span><span class="nv">production</span><span class="ss">)</span>
+<span class="nv">def</span> <span class="nv">publish</span><span class="ss">()</span>:
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">cat ~/.ssh/id_rsa.pub</span><span class="s1">&#39;</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">ssh-keygen -N &quot;&quot; -f ~/.ssh/id_rsa</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">key</span> <span class="o">=</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">cat ~/.ssh/id_rsa.pub</span><span class="s1">&#39;</span><span class="ss">)</span>
+        <span class="nv">prompt</span><span class="ss">(</span><span class="s2">&quot;</span><span class="s">Add this key to your Git repository and then hit return:</span><span class="se">\n\n</span><span class="s">%s</span><span class="se">\n\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nv">key</span><span class="ss">)</span>
 
-    if run('test -d %s' % dest_path, warn_only=True).failed:
-        run('mkdir %s' % dest_path)
+    <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">test -d %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">dest_path</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+        <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkdir %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">dest_path</span><span class="ss">)</span>
 
-    with cd(dest_path):
-        if run('test -d %s' % sitename, warn_only=True).failed:
-            run('mkdir %s' % sitename)
-            with cd(sitename):
-                run('git clone %s .' % git_repository)
-                if run('test -d %s' % symlink_folder, warn_only=True).failed:
-                    run('mkdir %s' % symlink_folder)
-                sudo('ln -s %s/%s/%s %s/%s' % (dest_path, sitename, symlink_folder, root_path, sitename))
+    <span class="nv">with</span> <span class="nv">cd</span><span class="ss">(</span><span class="nv">dest_path</span><span class="ss">)</span>:
+        <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">test -d %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">sitename</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+            <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkdir %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">sitename</span><span class="ss">)</span>
+            <span class="nv">with</span> <span class="nv">cd</span><span class="ss">(</span><span class="nv">sitename</span><span class="ss">)</span>:
+                <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git clone %s .</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">git_repository</span><span class="ss">)</span>
+                <span class="k">if</span> <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">test -d %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">symlink_folder</span>, <span class="nv">warn_only</span><span class="o">=</span><span class="nv">True</span><span class="ss">)</span>.<span class="nv">failed</span>:
+                    <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">mkdir %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">symlink_folder</span><span class="ss">)</span>
+                <span class="nv">sudo</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">ln -s %s/%s/%s %s/%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="ss">(</span><span class="nv">dest_path</span>, <span class="nv">sitename</span>, <span class="nv">symlink_folder</span>, <span class="nv">root_path</span>, <span class="nv">sitename</span><span class="ss">))</span>
 
-        with cd(sitename):
-            run('git reset --hard HEAD')
-            run('git pull origin master')
-            with prefix('WORKON_HOME=$HOME/.virtualenvs'):
-                with prefix('source /usr/local/bin/virtualenvwrapper.sh'):
-                    run('workon %s' % sitename)
-                    run('pip install -r requirements.txt')
-                    run('fab preview')
-</code></pre>
+        <span class="nv">with</span> <span class="nv">cd</span><span class="ss">(</span><span class="nv">sitename</span><span class="ss">)</span>:
+            <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git reset --hard HEAD</span><span class="s1">&#39;</span><span class="ss">)</span>
+            <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">git pull origin master</span><span class="s1">&#39;</span><span class="ss">)</span>
+            <span class="nv">with</span> <span class="nv">prefix</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">WORKON_HOME=$HOME/.virtualenvs</span><span class="s1">&#39;</span><span class="ss">)</span>:
+                <span class="nv">with</span> <span class="nv">prefix</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">source /usr/local/bin/virtualenvwrapper.sh</span><span class="s1">&#39;</span><span class="ss">)</span>:
+                    <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">workon %s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nv">sitename</span><span class="ss">)</span>
+                    <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">pip install -r requirements.txt</span><span class="s1">&#39;</span><span class="ss">)</span>
+                    <span class="nv">run</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">fab preview</span><span class="s1">&#39;</span><span class="ss">)</span>
+</pre></div>
+
+
 <p>First, we check if there is an existing SSH private key for the <em>"vagrant"</em> user (or whatever user you set up): we are going to pull the content from a Git repository over SSH, so we need one. If none is found, the script will generate one for us and display it so we can add it to our repo. Once this is done, just hit <em>return</em> to continue the execution.</p>
 <p>The destination path is then created if necessary: in our case, the repository is cloned and updated in <em>"~/dev/blog"</em>. From there, a symlink is created between <em>"~/dev/blog/output"</em> and <em>"/var/www/blog"</em>, so the generated HTML files alone are in <em>"/var/www/blog"</em>.</p>
 <p>Finally, the Virtual Environment is activated, the pip dependencies installed, and the content generated with the live config.</p>
 <p>Let's test our new function:</p>
-<pre><code>fab publish
-</code></pre>
+<div class="highlight"><pre><span></span><span class="n">fab</span> <span class="n">publish</span>
+</pre></div>
+
+
 <p>Once the execution is over, you should be able to see your blog at the private IP address <a href="http://192.168.72.3">192.168.72.3</a>.</p>
 <p>There is one last little step to take to access it from the server name as defined in the nginx config. Open the <em>"hosts"</em> file of your host machine and add the following line (change the domain for the one you chose, if different):</p>
-<pre><code>192.168.72.3    my-blog.local.com
-</code></pre>
+<div class="highlight"><pre><span></span><span class="mi">192</span><span class="p">.</span><span class="mi">168</span><span class="p">.</span><span class="mi">72</span><span class="p">.</span><span class="mi">3</span>    <span class="n">my</span><span class="o">-</span><span class="n">blog</span><span class="p">.</span><span class="k">local</span><span class="p">.</span><span class="n">com</span>
+</pre></div>
+
+
 <p>You can now access <a href="http://my-blog.local.com">http://my-blog.local.com</a>.</p>
 <p>That's it! You now know how to provision a server and publish your content using Fabric.</p>
 <p>In the <a href="/posts/2015/03/04/install-and-deploy-a-pelican-blog-using-fabric-part-4-workflow-extras-and-conclusion.html" title="Install and deploy a Pelican blog using Fabric - Part 4: workflow, extras and conclusion">next part</a>, we will review a complete workflow, implement a few extra things and conclude this tutorial with a few openings on what to do to go further.</p>
