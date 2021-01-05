@@ -78,7 +78,7 @@ p img, video, .flash-video, .media-embed {
 
 .warning {
   background-color: #fff7f0;
-  border: #fce8d8 1px solid;
+  border: #ffe1c8 1px solid;
 }
 
 .info p:last-child, .info pre:last-child, .warning p:last-child, .warning pre:last-child  {
@@ -130,7 +130,7 @@ p img, video, .flash-video, .media-embed {
 }
 
 .form-button:hover {
-  background-color: #7e7e7e;
+  background-color: #858585;
 }
 
 /*
