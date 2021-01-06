@@ -174,10 +174,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Sail's approach is different, in that the development environment's description is included with the rest of the codebase. Instead of relying on the presence of a third-party solution on the developer's machine, the project comes with a set of instructions for Docker to pick up and build the corresponding environment.</p>
 <p>The application comes with batteries included, only requiring a single command to spin up its development environment, regardless of the developer's operating system so long as Docker is installed on it. It also introduces the notion of a bespoke development environment for the application, which, in my opinion, is Laravel Sail's real kicker.</p>
 <p>While this approach is a major departure from traditional solutions, Sail still bears some resemblance to them around the tools it comes with, some of which are essential, others not.</p>
-<p>Let's review the most important ones, and the way they're implemented.</p>
+<p>Let's review the most important ones and the way they're implemented.</p>
 <h2 id="how-does-it-work">How does it work?</h2>
 <p>From here on, it will probably be easier to follow along with a fresh installation of Laravel, although the files I refer to come with links to the <a href="https://github.com/laravel/sail">official GitHub repository</a>. If you've got a little bit of time, go follow the <a href="https://laravel.com/docs/installation#your-first-laravel-project">instructions for your operating system</a> now and come back here when you're done.</p>
-<p>Sail is currently composed of three main components: PHP, MySQL and Redis. As per the <a href="https://laravel.com/docs/sail#introduction">documentation</a>, the whole setup gravitates around two files: <code>docker-compose.yml</code> [<a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.yml">link</a>] (which you will find at the project's root after a fresh install) and the <code>sail</code> script [<a href="https://github.com/laravel/sail/blob/1.x/bin/sail">link</a>] (found under <code>vendor/bin</code>).</p>
+<p>Sail is currently composed of three main components: PHP, MySQL and Redis. As per the <a href="https://laravel.com/docs/sail#introduction">documentation</a>, the whole setup gravitates around two files: <code>docker-compose.yml</code> [<a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.yml">link</a>] (which you will find at the project's root after a fresh installation) and the <code>sail</code> script [<a href="https://github.com/laravel/sail/blob/1.x/bin/sail">link</a>] (found under <code>vendor/bin</code>).</p>
 <h3 id="the-docker-composeyml-file">The <code>docker-compose.yml</code> file</h3>
 <p>As mentioned earlier, Laravel Sail is based on Docker, which is a technology leveraging containers. As a rule of thumb, each container should only run one process; roughly translated, that means that each container should only run a single piece of software. If we apply this rule to the above setup, we'll need one container for PHP, another one for MySQL, and a third one for Redis.</p>
 <p>These containers make up your application, and they need to be <em>orchestrated</em> for it to function properly. There are several ways to do this, but Laravel Sail relies on <a href="https://docs.docker.com/compose/">Docker Compose</a> to do the job, which is the easiest and most used solution for local setups.</p>
@@ -355,7 +355,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The first line of the condition starts with <code>shift</code>, which is a Bash <em>built-in</em> that skips as many arguments as the number it is followed by. In this case, <code>shift 1</code> skips the <code>composer</code> argument, making <code>--version</code> the new first argument. The program then makes sure that Sail is running, before executing a weird command split over four lines, which I'm breaking down below:</p>
+<p>The first line of the condition starts with <code>shift</code>, which is a Bash <em>built-in</em> that skips as many arguments as the number it is followed by. In this case, <code>shift 1</code> skips the <code>composer</code> argument, making <code>--version</code> the new first argument. The program then makes sure that Sail is running, before executing a weird command split over four lines, which I break down below:</p>
 <div class="highlight"><pre><span></span>docker-compose <span class="nb">exec</span> <span class="se">\</span>
     -u sail <span class="se">\</span>
     <span class="s2">&quot;</span><span class="nv">$APP_SERVICE</span><span class="s2">&quot;</span> <span class="se">\</span>
@@ -374,7 +374,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>It would be quite cumbersome to type this kind of commands every single time; that's why the <code>sail</code> script provides shortcuts for them, making the user experience much smoother.</p>
+<p>It would be quite cumbersome to type this kind of command every single time; that's why the <code>sail</code> script provides shortcuts for them, making the user experience much smoother.</p>
 <p>Have a look at the rest of the smaller <code>if</code> statements inside the big one to see what else is covered – you'll see that roughly the same principle applies everywhere.</p>
 <hr />
 <p>There are a few other features available out of the box (like <a href="https://laravel.com/docs/sail#sharing-your-site">making local containers public</a>), but we've now covered the substance of what Laravel Sail currently offers. While this is a pretty good start already, it is somewhat limited, even for a basic application.</p>
@@ -391,7 +391,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>We'll get back to those in a minute; for the time being, let's try and install the <a href="https://github.com/jenssegers/laravel-mongodb">Laravel MongoDB</a> package, which will make it easy to use MongoDB with our favourite framework:</p>
+<p>We'll get back to those in a minute; for the time being, let's try and instal the <a href="https://github.com/jenssegers/laravel-mongodb">Laravel MongoDB</a> package, which will make it easy to use MongoDB with our favourite framework:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail composer require jenssegers/mongodb
 </pre></div>
 
@@ -478,7 +478,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The changes I've made are the following: first, I specified the tag <code>4.4</code> of the <code>mongo</code> image. If you don't specify one, Docker Compose will pull the <code>latest</code> tag by default, which is not a good practice since it will refer to different versions of MongoDB over time, as new releases are available. The introduction of breaking changes could create instability in your Docker setup, so it's better to target a specific version, matching the production one whenever possible.</p>
+<p>The changes I've made are the following: first, I specified the tag <code>4.4</code> of the <code>mongo</code> image. If you don't specify one, Docker Compose will pull the <code>latest</code> tag by default, which is not good practice since it will refer to different versions of MongoDB over time, as new releases are available. The introduction of breaking changes could create instability in your Docker setup, so it's better to target a specific version, matching the production one whenever possible.</p>
 <p>Then, I declared a <code>MONGO_INITDB_DATABASE</code> environment variable for the container to create a database with the corresponding name at start-up, and I matched the value of each environment variable to one coming from the <code>.env</code> file (we'll come back to those in a minute).</p>
 <p>I also added a <code>volumes</code> section, mounting a Docker-managed volume onto the container's <code>/data/db</code> folder. The same principle as MySQL and Redis here applies: if you don't persist the data on your local machine, it will be lost every time the MongoDB container is destroyed. In other words, as the MongoDB data is stored in the container's <code>/data/db</code> folder, we persist that folder locally using a volume.</p>
 <p>As this volume doesn't exist yet, we need to declare it at the bottom of <code>docker-compose.yml</code>, after the two other ones:</p>
@@ -492,7 +492,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>Finally, I added the <code>networks</code> section to ensure the service is on the same network as the other ones.</p>
+<p>Finally, I added the <code>networks</code> section to ensure the service is on the same network as the others.</p>
 <p>We can now configure Laravel MongoDB as per the package's <a href="https://github.com/jenssegers/laravel-mongodb#configuration">instructions</a>. Open <code>config/database.php</code> and add the following database connection:</p>
 <div class="highlight"><pre><span></span><span class="x">&#39;mongodb&#39; =&gt; [</span>
 <span class="x">    &#39;driver&#39; =&gt; &#39;mongodb&#39;,</span>
@@ -533,7 +533,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>Let's push the test further by updating the <code>User</code> model so it <a href="https://github.com/jenssegers/laravel-mongodb#extending-the-authenticable-base-model">extends</a> Laravel MongoDB's <code>Authenticable</code> model:</p>
+<p>We can push the test further by updating the <code>User</code> model so it <a href="https://github.com/jenssegers/laravel-mongodb#extending-the-authenticable-base-model">extends</a> Laravel MongoDB's <code>Authenticable</code> model:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
 <span class="k">namespace</span> <span class="nx">App\Models</span><span class="p">;</span>
@@ -641,16 +641,16 @@ switched to db laravel_sail
 
 <p>The Artisan menu should display.</p>
 <p>That's it! If you need more commands, you can add them as new <code>if...else</code> conditions inside the big <code>if</code> of the copy of the <code>sail</code> script at the root of the project.</p>
-<p>It works exactly the same, except that you now need to run <code>./sail</code> instead of <code>./vendor/bin/sail</code> (or update your Bash alias if you created one like suggested in the <a href="https://laravel.com/docs/sail#configuring-a-bash-alias">documentation</a>).</p>
+<p>It works exactly the same way, except that you now need to run <code>./sail</code> instead of <code>./vendor/bin/sail</code> (or update your Bash alias if you created one as suggested in the <a href="https://laravel.com/docs/sail#configuring-a-bash-alias">documentation</a>).</p>
 <hr />
 <p>We are now running a fully functional instance of MongoDB as part of our Docker setup, nicely integrated with Laravel Sail. But MongoDB is a mere example here – you can do the same with pretty much any technology you'd like to use.</p>
 <p>Go <a href="https://hub.docker.com">take a look</a> now! Most major actors have Docker images – official or community-maintained – with easy-to-follow instructions. In most cases, you'll have a local instance of the software running in minutes.</p>
 <p>There are probably many more things we could do to customise Laravel Sail, but the three methods described above should get you a long way already.</p>
-<p>At this stage, you may be thinking that Laravel's new environment has a lot going on for it, maybe even more so than you initially thought. Yet, the point of this article is to avoid using it...</p>
+<p>At this stage, you may be thinking that Laravel's new environment has a lot going for it, maybe even more so than you initially thought. Yet, the point of this article is to avoid using it...</p>
 <p>So where am I going with this?</p>
 <div class="info">
 <span class="title">Why not use Takeout?</span>
-<p>While reading this section, it may have occurred to you that existing solutions like <a href="">Takeout</a> support MongoDB out of the box. While using Sail in conjunction with some other technology is <a href="https://mattstauffer.com/blog/how-to-use-takeout-to-add-new-services-to-laravel-sail-and-save-ram/">possible</a> and would make up for some of its current limitations, relying on Takeout would reintroduce a third-party dependency to our setup. Instead of just using Docker, we would now expect everyone in the team to also install and configure Takeout on their machine.</p>
+<p>While reading this section, it may have occurred to you that existing solutions like <a href="">Takeout</a> support MongoDB out of the box. While using Sail in conjunction with some other technology is <a href="https://mattstauffer.com/blog/how-to-use-takeout-to-add-new-services-to-laravel-sail-and-save-ram/">possible</a> and would make up for some of its current limitations, relying on Takeout would reintroduce a third-party dependency to our setup. Instead of just using Docker, we would now expect everyone in the team to also instal and configure Takeout on their machine.</p>
 <p>Sail opens the way to having the whole development environment handled by a single <code>docker-compose.yml</code> file that is part of the codebase. My opinion is that if we go down that path, we should embrace it all the way and make Docker the only third-party dependency.</p>
 <p>That is not to say Takeout has no utility whatsoever; it makes a lot of sense to circumvent some performance issues that we will talk about later in this article.</p>
 </div>
@@ -662,22 +662,22 @@ switched to db laravel_sail
 <p>But before I elaborate on this, let's review some actual pain points of Sail, even though I expect the Laravel team to address most of them sooner rather than later.</p>
 <p>The first one concerns the custom <code>sail</code> commands: while it's possible to extend the <code>sail</code> script as demonstrated earlier, the process is a bit ugly and somewhat hacky. Sail's maintainers could fix this with an explicit Bash extension point allowing users to add their own shortcuts, or by publishing the <code>sail</code> script along with the other files.</p>
 <p>Second, the Laravel application is served by PHP's development server. I won't go into too much detail here, but as mentioned before <a href="http://supervisord.org/">Supervisor</a> manages the PHP process in the <code>laravel.test</code> container; <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/supervisord.conf#L5">this line</a> is where Supervisor runs the <code>php artisan serve</code> command, which starts PHP's development server under the hood.</p>
-<p>The point here is that the environment doesn't use a proper web server (e.g. Nginx), which means we can't easily have local domain names, nor bring HTTPS to the setup. This may be fine for quick prototyping, but more elaborated development will most likely need those.</p>
+<p>The point here is that the environment doesn't use a proper web server (e.g. Nginx), which means we can't easily have local domain names, nor bring HTTPS to the setup. This may be fine for quick prototyping, but more elaborate development will most likely need those.</p>
 <p>The third issue is less obvious at this stage: what is likely to happen is that Laravel will add more and more services to Sail, to at least be on a par with Homestead. This means that a lot of software will be thrown in to try and cater for an always greater range of applications, with any given one only using a small subset of the available services.</p>
 <p>Redis and Memcached are already not essential to most applications, yet the setup starts an instance of the former by default, and while the latter is currently commented out, it still needlessly clutters the <code>docker-compose.yml</code> file. I bet that the Laravel team is currently exploring ways to enable/disable services (like Takeout or <a href="https://laradock.io/">Laradock</a> do), but whatever the preferred approach, the result will be the same – a lot of stuff you don't need.</p>
-<p>The fourth issue is one I noticed while trying to clone and run a fresh instance of this article's <a href="https://github.com/osteel/laravel-sail-extended">repository</a> for testing. While the process to create a new Laravel project based on Sail works well, I couldn't find proper instructions to install and run an existing one.</p>
-<p>You can't run <code>./vendor/bin/sail up</code> because the <code>vendor</code> folder doesn't exist yet. For this folder to be created, you need to run <code>composer install</code>; but if your project relies on dependencies present on the Docker image but not on your local machine, <code>composer install</code> won't work. You can run <code>composer install --ignore-platform-reqs</code> instead, but that doesn't feel right. There should be a way to install and run an existing project without relying on a local Composer instance and clunky commands.</p>
-<p>The last issue belongs to a separate category, as it relates to Docker overall, and not Laravel Sail specifically. It should be carefully considered before going down the Docker road and deserves a section of its own.</p>
+<p>The fourth issue is one I noticed while trying to clone and run a fresh instance of this article's <a href="https://github.com/osteel/laravel-sail-extended">repository</a> for testing. While the process to create a new Laravel project based on Sail works well, I couldn't find proper instructions to instal and run an existing one.</p>
+<p>You can't run <code>./vendor/bin/sail up</code> because the <code>vendor</code> folder doesn't exist yet. For this folder to be created, you need to run <code>composer install</code>; but if your project relies on dependencies present on the Docker image but not on your local machine, <code>composer install</code> won't work. You can run <code>composer install --ignore-platform-reqs</code> instead, but that doesn't feel right. There should be a way to instal and run an existing project without relying on a local Composer instance and clunky commands.</p>
+<p>The last issue belongs to a separate category, as it relates to Docker overall and not Laravel Sail specifically. It should be carefully considered before going down the Docker road and deserves a section of its own.</p>
 <h2 id="the-whale-in-the-cabin">The whale in the cabin</h2>
-<p>The one major caveat that appears to be absent from the conversation so far relates to performance. While this shouldn't affect Linux users, if you run Docker Desktop on your system you will most likely experience long loading times, especially on macOS (it seems like using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> on Windows can mitigate the slowness).</p>
+<p>The one major caveat that appears to be absent from the conversation so far relates to performance. While this shouldn't affect Linux users, if you run Docker Desktop on your system you will most likely experience long loading times, especially on macOS (it seems that using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> on Windows can mitigate the slowness).</p>
 <p>You can see it for yourself right now: if you're using Docker Desktop and Sail is running, try and load the <a href="http://localhost">Laravel welcome page</a> – you will probably notice a delay.</p>
-<p>I won't go into too much detail here, but the reason essentially comes from the host's underlying filesystem, which does not perform well around mounted local directories. As we've seen earlier, this is how Laravel Sail gets the application's source code in the Laravel application's container, hence the slowness.</p>
+<p>I won't go into too much detail here, but the reason essentially comes from the host's underlying filesystem, which does not perform well around mounted local directories. As we've seen, this is how Laravel Sail gets the application's source code in the Laravel application's container, hence the slowness.</p>
 <p>This is where an approach like Takeout's makes sense, as instead of running PHP from a Docker container, they expect developers to run it on their local machine (e.g. via <a href="https://laravel.com/docs/valet">Valet</a>), all the while providing instances of services like MySQL or MongoDB, thus offering convenience without sacrificing performance. But from the moment you choose to run PHP via a Docker container (like Sail does), the added value of Takeout decreases, in my opinion.</p>
-<p>There are strategies to somewhat mitigate these performance issues, but the Laravel documentation mentions none of them, let alone the fact that performance might be an issue at all, which I find surprising, to say the least.</p>
+<p>There are strategies to mitigate these performance issues, but the Laravel documentation mentions none of them, let alone the fact that performance might be an issue at all, which I find surprising.</p>
 <p>That being said, you might be comfortable enough with performance as it is; I, for one, have been OK with it for years, even though I use Docker Desktop on macOS. The bottom line is that this aspect should be carefully considered before moving your whole setup to a solution running PHP in a container, be it Laravel Sail or something else.</p>
-<p>But once you've made that decision and whether the other issues are eventually addressed, the main idea of this article remains the same.</p>
+<p>But once you've made that decision, and whether or not the other issues are eventually addressed, the main idea of this article remains the same.</p>
 <h2 id="you-dont-need-laravel-sail">You don't need Laravel Sail</h2>
-<p>If you're considering building anything substantial using Laravel Sail as your development environment, sooner or later you will have to extend it. You'll find yourself fumbling around the Dockerfiles and eventually writing your own; you'll have to add some services to <code>docker-compose.yml</code> and throw in a few custom Bash commands.</p>
+<p>If you're considering building anything substantial using Laravel Sail as your development environment, sooner or later you will have to extend it. You'll find yourself fumbling around the Dockerfiles and eventually writing your own; having to add some services to <code>docker-compose.yml</code>; and maybe throwing in a few custom Bash commands.</p>
 <p>Once you get there, there's one question you should ask yourself:</p>
 <blockquote>
 <p>What's stopping me from building my own setup?</p>
@@ -701,15 +701,15 @@ switched to db laravel_sail
 
 
 <p>The <code>docker-compose.yml</code> file would declare two services – one for the backend and one for the frontend – both pointing to each's respective Dockerfile.</p>
-<p>If the backend and the frontend live in different repositories, you could create a third one, containing your Docker development environment exclusively. Just <em>git-ignore</em> the <code>src</code> folder and complete your Bash script so it pulls both application repositories in it, using the same commands you would normally run by hand.</p>
-<p>Even if your project is a Laravel monolith, this kind of structure is already cleaner than mixing-up development-related files with the rest of the source code. Moreover, if your application grows bigger and needs other components besides Laravel, you're already in a good position to support them.</p>
+<p>If the backend and the frontend live in different repositories, you could create a third one, containing your Docker development environment exclusively. Just <em>git-ignore</em> the <code>src</code> folder and complete your Bash script so that it pulls both application repositories into it, using the same commands you would normally run by hand.</p>
+<p>Even if your project is a Laravel monolith, this kind of structure is already cleaner than mixing up development-related files with the rest of the source code. Moreover, if your application grows bigger and needs other components besides Laravel, you're already in a good position to support them.</p>
 <p>Once you've made the effort to understand Laravel Sail to extend it, nothing is stopping you from building your own development environments, <em>whether or not Laravel is part of the equation</em>. That's right, you can build bespoke Docker-based environments for anything.</p>
 <p>And if Laravel is part of the stack, nothing prevents you from reusing Sail's Dockerfiles if you're not comfortable writing your own yet; after all, they are already optimised for Laravel. Likewise, you can draw inspiration from Sail's <code>docker-compose.yml</code> file if that helps.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Don't get me wrong: Laravel Sail has a lot going on for it, and I am glad to see such an established actor push forward the adoption of Docker for local development.</p>
+<p>Don't get me wrong: Laravel Sail has a lot going for it, and I am glad to see such an established actor push forward the adoption of Docker for local development.</p>
 <p>We love our frameworks because they offer guidelines to achieve desired results in a way we know to be efficient and battle-tested, and it's only natural that they also seek to provide the environment that will allow their users to build upon them. But one thing that Sail incidentally shows us is that this doesn't have to be part of the framework's mandate anymore.</p>
 <p>Much like Truman's sailboat helps him overcome his fear of the sea and takes him to the edges of the artificial world he lives in, Sail reveals both the confines of Laravel and a way to escape from them.</p>
-<p>You may feel like Sail is more than enough for your needs today, or that you're not yet ready to go your own way. That's fine. But Laravel will always be limited by its monolithic nature, and as you grow as a developer, the day will come where your Laravel application will be but a single component of a larger system, for which Sail won't be enough anymore. Eventually, your small sailboat will bump into a painted backdrop.</p>
+<p>You may feel that Sail is more than enough for your needs today, or that you're not yet ready to go your own way. That's fine. But Laravel will always be limited by its monolithic nature, and as you grow as a developer, the day will come where your Laravel application will be but a single component of a larger system, for which Sail won't be enough anymore. Eventually, your small sailboat will bump into a painted backdrop.</p>
 <p>If you'd like to explore this further but feel like you need more guidance, I've published <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">a series on the subject</a> that should get you going. It requires no prior knowledge of Docker and covers web servers, HTTPS, domain names and many other things. It doesn't have all the answers but will get you to a place where you can find your own.</p>
 <p>What you do next is entirely up to you; just know that there's a whole world out there, waiting for you.</p>
 <blockquote>
