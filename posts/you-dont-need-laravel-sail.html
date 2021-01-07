@@ -460,7 +460,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>Next up on the list: adding a Docker service for MongoDB.</p>
+<p>Next up: adding a Docker service for MongoDB.</p>
 <h3 id="adding-new-services">Adding new services</h3>
 <p>MongoDB is essentially another database; as a result, the corresponding service will be very similar to the ones of MySQL and Redis. A quick search on <a href="https://hub.docker.com">Docker Hub</a> reveals that there is <a href="https://hub.docker.com/_/mongo">an official image</a> for it, which we are going to use.</p>
 <p>Its documentation contains an example configuration for Docker Compose, which we can copy and adjust to our needs. Open <code>docker-compose.yml</code> and add the following service at the bottom, after the <code>mailhog</code> one:</p>
