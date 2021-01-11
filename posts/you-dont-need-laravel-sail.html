@@ -293,13 +293,13 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li>the <code>start-container</code> file [<a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/start-container">link</a>] is a Bash script that will do a few things every time the container starts, because it is defined as the container's <a href="https://docs.docker.com/engine/reference/builder/#entrypoint">ENTRYPOINT</a>. We can see that it's made executable by the <code>RUN chmod +x</code> instruction;</li>
 <li>finally, <code>EXPOSE 8000</code> doesn't do anything, apart from informing the reader that this container listens on the specified port at runtime (which actually seems wrong here, since the application is served on port 80, not 8000).</li>
 </ul>
-<p>Other things are happening in this Dockerfile, but the above is the gist of it. Note that this one pertains to PHP 8.0, but Laravel Sail also comes with a <a href="https://github.com/laravel/sail/blob/1.x/runtimes/7.4/Dockerfile">7.4 version</a> you can point to from the <code>laravel.test</code> service in  <code>docker-compose.yml</code> instead.</p>
+<p>Other things are happening in this Dockerfile, but the above is the gist of it. Note that this one pertains to PHP 8.0, but Laravel Sail also comes with a <a href="https://github.com/laravel/sail/blob/1.x/runtimes/7.4/Dockerfile">7.4 version</a> you can point to from the <code>laravel.test</code> service in <code>docker-compose.yml</code> instead.</p>
 <p>The service also has a <code>depends_on</code> section containing the list of services whose containers should be started prior to the Laravel application's. Since the latter references both MySQL and Redis, theirs should be started first to avoid connection errors.</p>
 <p>The rest of the settings should be familiar by now, so I'll skip them.</p>
 <h4 id="the-selenium-memcached-and-mailhog-services">The <code>selenium</code>, <code>memcached</code> and <code>mailhog</code> services</h4>
 <p>These are the smaller services I referred to earlier; <code>selenium</code> and <code>mailhog</code> are already documented <a href="https://laravel.com/docs/sail#laravel-dusk">here</a> and <a href="https://laravel.com/docs/sail#previewing-emails">here</a>, and <code>memcached</code> doesn't seem to be used at the time of writing. The point is they work the same way as the other ones: they pull existing images from Docker Hub and use them as-is, with minimal configuration.</p>
 <h3 id="the-sail-script">The <code>sail</code> script</h3>
-<p>If you followed <a href="(https://laravel.com/docs/installation#your-first-laravel-project)">Laravel's installation instructions</a> for your operating system, you must have run the following command at some point:</p>
+<p>If you followed <a href="https://laravel.com/docs/installation#your-first-laravel-project">Laravel's installation instructions</a> for your operating system, you must have run the following command at some point:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up
 </pre></div>
 

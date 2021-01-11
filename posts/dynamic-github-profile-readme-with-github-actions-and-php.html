@@ -131,7 +131,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-08-13 ::
+          Last updated: 2021-01-11 ::
         Published: 13/08/2020
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/dynamic-github-profile-readme-with-github-actions-and-php.html">history</a> ]
       </small>
@@ -149,20 +149,33 @@ styles, `#sidebar-checkbox` for behavior. -->
       </form>
     </section>
 
-    <p>A few weeks ago, GitHub quietly released a feature that didn't go unnoticed for long – profile READMEs. A profile README is essentially a README file for your GitHub profile, rather than a specific repository's. You can set one up by creating a repository whose name is identical to your GitHub username – in my case, that username is <code>osteel</code>, so I've created the <a href="https://github.com/osteel/osteel"><code>osteel/osteel</code> repository</a>.</p>
-<p>A little box like this one should appear during the process:</p>
+    <p>A few weeks ago, GitHub quietly released a feature that was quickly noticed by the community – profile READMEs. A <a href="https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme">profile README</a> is a global <code>README</code> file for your GitHub profile, which you can set up by creating a public repository whose name is identical to your GitHub username. For instance, as my username is <code>osteel</code>, I created the <code>osteel/osteel</code> <a href="https://github.com/osteel/osteel">repository</a>.</p>
+<p>A little box like this one should appear while you add your own:</p>
 <p><img alt="Special repository" src="/images/2020/08/13/github-profile-02.png" title="Special repository" /></p>
-<p>Once the repository is created, simply add a <code>README</code> file to it, featuring a short description explaining how great you are. Commit and push – your GitHub profile page should now display it by default.</p>
+<p>Once the repository is created, add a <code>README</code> file with a short description explaining how great you are, and your GitHub profile page will display its content by default:</p>
 <p><img alt="GitHub profile README" src="/images/2020/08/13/github-profile-01.png" title="GitHub profile README" /></p>
-<p>This is quite cool already, but as I was <a href="https://www.aboutmonica.com/blog/how-to-create-a-github-profile-readme" title="How To Create A GitHub Profile README">browsing some examples</a> I stumbled upon <a href="https://github.com/simonw">Simon Willison’s version</a>, which has some dynamic content like recent work and blog publications. He wrote about it <a href="https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/">on his blog</a>, explaining how he used a combination of <a href="https://github.com/features/actions">GitHub Actions</a> and Python to automatically update the README, and I've decided to do something similar, but with PHP.</p>
+<p>Neat and simple.</p>
+<p>As I was <a href="https://www.aboutmonica.com/blog/how-to-create-a-github-profile-readme" title="How To Create A GitHub Profile README">browsing examples</a> for some inspiration, I stumbled upon Simon Willison's <a href="https://github.com/simonw">version</a>, which features some dynamic content like recent work and blog publications. He explained how he used a combination of <a href="https://github.com/features/actions">GitHub Actions</a> and Python to achieve this in a <a href="https://simonwillison.net/2020/Jul/10/self-updating-profile-readme/">blog post</a>, and I decided to do something similar with PHP.</p>
+<h2 id="the-placeholder">The placeholder</h2>
+<p>The first thing to do is to create a placeholder in the <code>README</code> file where the dynamic content will go. Since I wanted to automatically insert the latest publications of my blog, I used the following tags:</p>
+<div class="highlight"><pre><span></span><span class="c">&lt;!-- posts --&gt;&lt;!-- /posts --&gt;</span>
+</pre></div>
+
+
+<p>You might recognise this format; since Markdown files also support HTML, I used some HTML comment tags to make sure they wouldn't show up on my profile page.</p>
 <h2 id="the-php-script">The PHP script</h2>
-<p>I am so used to working on projects with frameworks nowadays that it actually took me a <a href="https://www.frobiovox.com/posts/2016/08/16/basic-hello-world-with-composer-and-php.html">quick search</a> to get started with a basic PHP script featuring some Composer dependencies.</p>
-<p>I initialised the project with <code>composer init</code> and installed <a href="https://github.com/dg/rss-php">a lightweight library</a> to parse my blog's <a href="https://tech.osteel.me/feeds/rss.xml">RSS feed</a>:</p>
+<p>I can't remember the last time I wrote some PHP without a framework; as a result, I had to do a <a href="https://www.frobiovox.com/posts/2016/08/16/basic-hello-world-with-composer-and-php.html">quick search</a> just to get started with a basic PHP script and some Composer dependencies.</p>
+<p>Turn out it's quite simple! The first step is to initialise the project with the following command:</p>
+<div class="highlight"><pre><span></span>$ composer init
+</pre></div>
+
+
+<p>From there, I installed <a href="https://github.com/dg/rss-php">a lightweight library</a> to parse my blog's <a href="https://tech.osteel.me/feeds/rss.xml">RSS feed</a>:</p>
 <div class="highlight"><pre><span></span>$ composer require dg/rss-php
 </pre></div>
 
 
-<p>Here's the full PHP script (<code>posts.php</code>):</p>
+<p>I then added a <code>posts.php</code> file at the root of the project, with the following content:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -213,11 +226,13 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>Nothing too complicated here – Composer's autoload is required at the top, allowing me to use the RSS parsing library to generate a Markdown list of blog posts as a string, which I then insert between the <code>&lt;!-- posts --&gt;</code> and <code>&lt;!-- /posts --&gt;</code> tags (which should be already present in the <code>README</code> file). Finally, I replace the file's content with the new one.</p>
+<p>Nothing too complicated here – Composer's <em>autoload</em> is required at the top, allowing me to load the RSS parser to generate a list of blog posts as a string, in Markdown format.</p>
+<p>The existing content of the <code>README</code> file is then loaded into the <code>$content</code> variable, and the Markdown string is inserted between its <code>&lt;!-- posts --&gt;</code> and <code>&lt;!-- /posts --&gt;</code> tags with <code>preg_replace</code>.</p>
+<p>Finally, the file's entire content is replaced with the new one, using the <code>file_put_contents</code> function.</p>
 <h2 id="the-github-action">The GitHub action</h2>
 <p><a href="https://github.com/features/actions">GitHub Actions</a> are a fairly recent addition to GitHub, allowing developers to automate various CI/CD tasks, like running test suites or deploying web services.</p>
-<p>GitHub actions are defined as YAML files to be placed in a <code>.github/workflows</code> folder at the root of the project, containing a list of steps that they are to execute.</p>
-<p>Here's mine (<code>posts.yml</code>):</p>
+<p>They must be defined using YAML format in a <code>.github/workflows</code> folder at the root of the project, and contain a list of steps that they are to execute.</p>
+<p>Here's mine, which I named <code>posts.yml</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -272,19 +287,28 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>Again, nothing too complicated. I first give the action a name, followed by a list of events that should trigger it – pushing some code to the repository, a manual trigger from the interface (<code>workflow_dispatch</code>), or every day at midnight (like a cron task).</p>
-<p>I then indicate that it should run on an Ubuntu image, where it will:</p>
+<p>Again, nothing too complicated. We first give the action a name, and then define a list of events that should trigger it – pushing some code to the repository, a manual trigger from the interface (<code>workflow_dispatch</code>), or periodically like a cron job (here, every day at midnight).</p>
+<p>We then indicate that the action should run on an Ubuntu image, where it will:</p>
 <ul>
-<li><a href="https://github.com/actions/checkout">Clone the repository</a>;</li>
-<li><a href="https://github.com/shivammathur/setup-php">Install PHP 7.4</a>;</li>
-<li>Install the Composer dependencies;</li>
-<li>Run the PHP script;</li>
-<li><a href="https://github.com/stefanzweifel/git-auto-commit-action">Commit and push the changes</a>, if any.</li>
+<li><a href="https://github.com/actions/checkout">clone the repository</a>;</li>
+<li><a href="https://github.com/shivammathur/setup-php">instal PHP 7.4</a>;</li>
+<li>instal the Composer dependencies;</li>
+<li>run the PHP script;</li>
+<li><a href="https://github.com/stefanzweifel/git-auto-commit-action">commit and push the changes</a>, if any.</li>
 </ul>
-<p>That's it! My GitHub profile README will now automatically be updated every time I publish a new article.</p>
+<p>That's it! My GitHub profile is now automatically updated every time I publish a new article.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>This was a quick experiment aiming at exploring GitHub Actions, which I expect to use more in the future. It was also fun to use PHP as a simple scripting language again, in a procedural way.</p>
-<p>I've voluntarily left out a few things in order to keep this article short and simple – please refer to <a href="https://github.com/osteel/osteel">the repository</a> for more for implementation details.</p>
+<p>This was a quick experiment aiming at exploring GitHub Actions, which I expect to use more and more in the future. It was also fun to use PHP as a simple scripting language again, in a procedural way.</p>
+<p>I've voluntarily left out a few things in order to keep this article short and simple – please refer to <a href="https://github.com/osteel/osteel">the repository</a> for implementation details.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://docs.github.com/en/free-pro-team@latest/github/setting-up-and-managing-your-github-profile/managing-your-profile-readme">Managing your profile README</a></li>
+<li><a href="https://github.com/features/actions">GitHub Actions</a></li>
+<li><a href="https://github.com/osteel/osteel">This article’s repository</a></li>
+<li><a href="https://github.com/actions/checkout">GitHub Action: Checkout V2</a></li>
+<li><a href="https://github.com/shivammathur/setup-php">GitHub Action: Setup PHP</a></li>
+<li><a href="https://github.com/stefanzweifel/git-auto-commit-action">GitHub Action: Git Auto Commit</a></li>
+</ul>
 
     <div class="sharethis-inline-share-buttons"></div>
 
@@ -303,7 +327,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-08-13" pubdate>2020-08-13</time>
+          <time datetime="2021-01-11" pubdate>2021-01-11</time>
           :: [
           <a href="https://tech.osteel.me/tag/github">github</a>
           ]
