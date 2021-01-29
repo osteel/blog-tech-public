@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-12-17 ::
+          Last updated: 2021-01-29 ::
         Published: 2020-03-16
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
       </small>
@@ -197,14 +197,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="alpine-linux">Alpine Linux</h2>
 <p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the bare minimum by default and lets you install what you actually need for your application. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
 <p>Before we modify our setup, let's get rid of the current one:</p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all
+<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all --remove-orphans
 </pre></div>
 
 
 <p>This command will stop and/or destroy the containers, as well as remove the volumes and images, allowing us to start afresh.</p>
 <p>Replace the content of <code>docker-compose.yml</code> with this one (changes have been highlighted in bold):</p>
 <pre>
-version: '3.7'
+version: '3.8'
 
 # Services
 services:
@@ -347,7 +347,7 @@ volumes:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-12-17" pubdate>2020-12-17</time>
+          <time datetime="2021-01-29" pubdate>2021-01-29</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

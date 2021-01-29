@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-12-17 ::
+          Last updated: 2021-01-29 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -224,7 +224,7 @@ styles, `#sidebar-checkbox` for behavior. -->
  7
  8
  9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
 
 <span class="c1"># Services</span>
 <span class="nt">services</span><span class="p">:</span>
@@ -237,7 +237,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.7 is the latest version at the time of writing).</p>
+<p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.8 is the latest version at the time of writing).</p>
 <p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.17 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
 <p class="info"><span class="title">Why not use the <em>latest</em> tag?</span> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future – it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
 
@@ -296,7 +296,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 19
 20
 21
-22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
 
 <span class="c1"># Services</span>
 <span class="nt">services</span><span class="p">:</span>
@@ -502,7 +502,7 @@ nginx_1 exited with code <span class="m">1</span>
 36
 37
 38
-39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.7&#39;</span>
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
 
 <span class="c1"># Services</span>
 <span class="nt">services</span><span class="p">:</span>
@@ -847,11 +847,12 @@ character-set-server <span class="o">=</span> utf8mb4
 </pre></div>
 
 
-<p><em>Delete everything, including images</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all
+<p><em>Delete everything, including images and orphan containers</em></p>
+<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all --remove-orphans
 </pre></div>
 
 
+<p>Orphan containers are left behind containers that used to match a Docker Compose service but are now not connected to anything, which sometimes happens while you're building your Docker setup.</p>
 <h2 id="conclusion">Conclusion</h2>
 <p>Here is a summary of what we have covered today:</p>
 <ul>
@@ -889,7 +890,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-12-17" pubdate>2020-12-17</time>
+          <time datetime="2021-01-29" pubdate>2021-01-29</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

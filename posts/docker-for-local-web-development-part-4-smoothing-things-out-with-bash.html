@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-12-17 ::
+          Last updated: 2021-01-29 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -594,7 +594,7 @@ composer <span class="o">()</span> <span class="o">{</span>
 destroy <span class="o">()</span> <span class="o">{</span>
     <span class="nb">read</span> -p <span class="s2">&quot;This will delete containers, volumes and images. Are you sure? [y/N]: &quot;</span> -r
     <span class="k">if</span> <span class="o">[[</span> ! <span class="nv">$REPLY</span> <span class="o">=</span>~ ^<span class="o">[</span>Yy<span class="o">]</span>$ <span class="o">]]</span><span class="p">;</span> <span class="k">then</span> exit<span class="p">;</span> <span class="k">fi</span>
-    docker-compose down -v --rmi all
+    docker-compose down -v --rmi all --remove-orphans
 <span class="o">}</span>
 
 <span class="c1"># Stop and destroy all containers</span>
@@ -1010,7 +1010,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-12-17" pubdate>2020-12-17</time>
+          <time datetime="2021-01-29" pubdate>2021-01-29</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
