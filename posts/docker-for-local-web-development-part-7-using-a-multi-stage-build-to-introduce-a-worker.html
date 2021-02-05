@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-12-17 ::
+          Last updated: 2021-02-05 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -205,7 +205,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine</span>
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 
 <span class="c"># Import extension installer</span>
 <span class="k">COPY</span> --from<span class="o">=</span>mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
@@ -394,7 +394,7 @@ backend:
 <p>This is where we're finally going to leverage <a href="https://docs.docker.com/develop/develop-images/multistage-build/">multi-stage builds</a>. The idea is basically to split the Dockerfile into different sections containing slightly different configurations, and which can be targeted individually to produce different images. Let's see what that means in practice.</p>
 <p>Replace the content of <code>src/backend/Dockerfile</code> with this one (changes highlighted in bold):</p>
 <pre>
-FROM php:7.4-fpm-alpine <strong>as backend</strong>
+FROM php:8.0-fpm-alpine <strong>as backend</strong>
 
 # Import extension installer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
@@ -416,7 +416,7 @@ CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
 </pre>
 
 <p>We now have two separate stages: <code>backend</code> and <code>worker</code>. The former is basically the original Dockerfile – we've simply named it <code>backend</code> using the <code>as</code> keyword at the very top:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine as backend</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine as backend</span>
 </pre></div>
 
 
@@ -533,7 +533,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-12-17" pubdate>2020-12-17</time>
+          <time datetime="2021-02-05" pubdate>2021-02-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

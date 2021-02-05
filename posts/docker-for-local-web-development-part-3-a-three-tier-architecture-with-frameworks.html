@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-21-29 ::
+          Last updated: 2021-02-05 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -222,7 +222,7 @@ services:
 
   # Nginx Service
   nginx:
-    image: nginx:1.17-alpine
+    image: nginx:1.19-alpine
     ports:
       - 80:80
     volumes:
@@ -361,7 +361,7 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 </td></tr></table>
 
 <p>Mind the values for <code>server_name</code> and <code>fastcgi_pass</code> (now pointing to port 9000 of the backend container).</p>
-<p class="info"><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to this series' in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, which is the case in this series.</p>
+<p class="info"><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to this series' in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, as is the case in this series.</p>
 
 <p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
 <div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.test
@@ -370,7 +370,7 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 
 <p>Note that we've also added the frontend's domain to save us a trip later.</p>
 <p>Create the <code>src/backend</code> directory and add a Dockerfile with the following content to it:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 </pre></div>
 
 
@@ -449,7 +449,7 @@ zlib
 4
 5
 6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm-alpine</span>
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 
 <span class="c"># Install extensions</span>
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath
@@ -520,7 +520,7 @@ zlib
 </pre></div>
 
 
-<p>You can log into <a href="http://phpmyadmin.test">phpmyadmin.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>users</code>, <code>password_resets</code> and <code>failed_jobs</code>).</p>
+<p>You can log into <a href="http://phpmyadmin.test">phpmyadmin.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>failed_jobs</code>, <code>migrations</code>, <code>password_resets</code> and <code>users</code>).</p>
 <p>There is one last thing we need to do before moving on to the frontend application: since our aim is to have it interact with the backend, let's add the following endpoint to <code>routes/api.php</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -573,7 +573,7 @@ $ docker-compose run --rm backend composer
 <pre>
 # Nginx Service
 nginx:
-  image: nginx:1.17-alpine
+  image: nginx:1.19-alpine
   ports:
     - 80:80
   volumes:
@@ -587,7 +587,7 @@ nginx:
 </pre>
 
 <p>Then, create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:13.10-alpine</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:15-alpine</span>
 </pre></div>
 
 
@@ -672,7 +672,7 @@ nginx:
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:13.10-alpine</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:15-alpine</span>
 
 <span class="c"># Start application</span>
 <span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;yarn&quot;</span><span class="p">,</span> <span class="s2">&quot;serve&quot;</span><span class="p">]</span>
@@ -685,7 +685,7 @@ nginx:
 
 
 <p>And start the project so Docker picks up the image changes (for some reason, the <code>restart</code> command won't do that):</p>
-<div class="highlight"><pre><span></span>$ docker-compose start
+<div class="highlight"><pre><span></span>$ docker-compose up -d
 </pre></div>
 
 
@@ -702,7 +702,7 @@ nginx:
 </pre></div>
 
 
-<p>While Yarn is doing its thing, let's replace the content of <code>src/frontend/src/App.vue</code> with this one:</p>
+<p>Once Yarn is done, replace the content of <code>src/frontend/src/App.vue</code> with this one:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -866,7 +866,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-21-29" pubdate>2021-21-29</time>
+          <time datetime="2021-02-05" pubdate>2021-02-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

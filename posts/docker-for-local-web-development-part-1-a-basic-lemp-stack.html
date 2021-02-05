@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-01-29 ::
+          Last updated: 2021-02-05 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -231,14 +231,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
 </pre></div>
 </td></tr></table>
 
 <p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.8 is the latest version at the time of writing).</p>
-<p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.17 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
+<p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.19 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
 <p class="info"><span class="title">Why not use the <em>latest</em> tag?</span> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future – it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
 
 <p>Much like a Github repository, image descriptions on Docker Hub usually do a good job at explaining how to use it and what the available versions are. Here, we are looking at Nginx's official image: Docker <a href="https://docs.docker.com/docker-hub/official_images/">keeps a curated list</a> of "official" images (sometimes maintained by upstream developers, but not always), which I always use whenever possible. They are easily recognisable: their page mentions <em>Docker Official Images</em> at the top, and Docker Hub separates them clearly from the community images when doing a search:</p>
@@ -303,7 +303,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
@@ -314,14 +314,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <span class="c1"># PHP Service</span>
   <span class="nt">php</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">php:7.4-fpm</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">php:8.0-fpm</span>
     <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/php</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
 </pre></div>
 </td></tr></table>
 
-<p>A few things going on here: let's forget about the Nginx service for a moment, and focus on the new PHP service instead. We start from the <code>php:7.4-fpm</code> image, corresponding to the tag <code>7.4-fpm</code> of <a href="https://hub.docker.com/_/php">PHP's official image</a>, featuring version 7.4 and PHP-FPM. Let's skip <code>working_dir</code> for now, and have a look at <code>volumes</code>. This section allows us to define <em>volumes</em> (basically, directories or single files) that we want to mount onto the container. This essentially means we can map local directories and files to directories and files on the container; in our case, we want Docker Compose to mount the <code>src</code> folder as the container's <code>/var/www/php</code> folder.</p>
+<p>A few things going on here: let's forget about the Nginx service for a moment, and focus on the new PHP service instead. We start from the <code>php:8.0-fpm</code> image, corresponding to the tag <code>8.0-fpm</code> of <a href="https://hub.docker.com/_/php">PHP's official image</a>, featuring version 8.0 and PHP-FPM. Let's skip <code>working_dir</code> for now, and have a look at <code>volumes</code>. This section allows us to define <em>volumes</em> (basically, directories or single files) that we want to mount onto the container. This essentially means we can map local directories and files to directories and files on the container; in our case, we want Docker Compose to mount the <code>src</code> folder as the container's <code>/var/www/php</code> folder.</p>
 <p>What's in the <code>src/</code> folder? Nothing yet, but that's where we are going to place our application code. Once it is mounted onto the container, any change we make to our code will be immediately available, without the need to restart the container.</p>
 <p>Create the <code>src</code> directory (at the same level as <code>docker-compose.yml</code>) and add the following <code>index.php</code> file to it:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -509,7 +509,7 @@ nginx_1 exited with code <span class="m">1</span>
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.17</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
@@ -549,7 +549,7 @@ nginx_1 exited with code <span class="m">1</span>
 <p>Create the <code>.docker/php</code> folder and add a file named <code>Dockerfile</code> to it, with the following content:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
-3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:7.4-fpm</span>
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm</span>
 
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql
 </pre></div>
@@ -651,7 +651,7 @@ character-set-server <span class="o">=</span> utf8mb4
 </td></tr></table>
 
 <div class="info">
-<p><span class="title">Password plugin error?</span> Some versions of PHP prior to 7.4 are incompatible with MySQL's new default password plugin introduced with version 8. If you require an older version of PHP, you might also need to add the following line to the configuration file:</p>
+<p><span class="title">Password plugin error?</span> Some older versions of PHP are incompatible with MySQL's new default password plugin introduced with version 8. If you require such a version, you might also need to add the following line to the configuration file:</p>
 <pre>default-authentication-plugin = mysql_native_password</pre>
 </div>
 
@@ -890,7 +890,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-01-29" pubdate>2021-01-29</time>
+          <time datetime="2021-02-05" pubdate>2021-02-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
