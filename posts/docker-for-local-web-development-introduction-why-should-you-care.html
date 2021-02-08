@@ -34,7 +34,7 @@
 
 
 
-    <meta name="description" contents="<p>The first version of Docker was released in 2013 and, since then, it has worked its way up to eventually becoming the industry standard for containers. Among developers, exposure to Docker ranges from having vaguely heard of the technology to using it on a daily basis, the latter category singing its praises while the former is sometimes still struggling with the sheer concept of containers.</p>" />
+    <meta name="description" contents="<p>Among developers, exposure to Docker ranges from having vaguely heard of the technology to using it on a daily basis, the latter category singing its praises while the former is sometimes still struggling with the sheer concept of containers.</p>" />
 
     <meta name="tags" contents="tutorial" />
     <meta name="tags" contents="docker" />
@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-06 ::
+          Last updated: 2021-02-08 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -151,9 +151,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       </form>
     </section>
 
-    <p class="info"><span class="title">Looking for a shorter, higher-level introduction to Docker?</span>Check my answer to <a href="https://www.quora.com/What-is-Docker-When-should-I-use-Docker/answer/Yannick-Chenot?ch=10&share=0aafa672&srid=IVi" title="What is Docker? When should I use Docker?">"What is Docker? When should I use Docker?"</a> on Quora, and come back here if you like what you read.</p>
-
-<p><img alt="Docker logo" src="/images/2020/03/04/docker-introduction-01.jpg" title="Docker logo" /></p>
+    <p><img alt="Docker logo" src="/images/2020/03/04/docker-introduction-01.jpg" title="Docker logo" /></p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
 <li>Introduction: why should you care? <strong>⬅️ you are here</strong></li>
@@ -187,40 +185,40 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Among developers, exposure to Docker ranges from having vaguely heard of the technology to using it on a daily basis, the latter category singing its praises while the former is sometimes still struggling with the sheer concept of containers.</p>
 <p>Wherever you are on your journey, as a developer there are many reasons why you might want to delve into this technology, including, but not limited to:</p>
 <blockquote>
-<p>"I read a few things about Docker and I am now looking for something more hands-on";</p>
-<p>"I use a Vagrant-based solution like Homestead and it starts to show its limits";</p>
-<p>"I already use a turnkey solution like Laradock and I want to understand how things work under the hood";</p>
-<p>"I want greater control over my development environment";</p>
-<p>"I want to better understand application architecture";</p>
-<p>"My current project uses microservices";</p>
+<p>"I read a few things about Docker and I am now looking for something more hands-on"</p>
+<p>"I use a Vagrant-based solution like Homestead and it starts to show its limits"</p>
+<p>"I already use a turnkey solution like Laradock and I want to understand how things work under the hood"</p>
+<p>"I want greater control over my development environment"</p>
+<p>"I want to better understand application architecture"</p>
+<p>"My current project uses microservices"</p>
 </blockquote>
 <p>Whatever your motive is, you might notice the emergence of a theme, revolving around <em>understanding</em> and <em>being in control</em>. In my opinion, Docker is about empowering the developer, from providing a safe environment to try out technologies easily – without messing up your local environment – to opening the gates to the world of Ops.</p>
 <p>The aim of this tutorial series is to demystify a technology that can feel daunting at times, all the while providing most of the tools a developer might need to build a web project locally with Docker. <strong>It strictly focuses on the development environment and does not cover deploying Docker applications whatsoever</strong>, even though it would only take a few tweaks to make the end result deployable.</p>
-<p>No prior knowledge of Docker is required, but being comfortable around a terminal will help, as well as being familiar with SSH connections.</p>
+<p>No prior knowledge of Docker is required, but being comfortable around a terminal will help, as well as being familiar with Git over SSH.</p>
 <p>We will start our journey with a very basic LEMP stack and gradually increase the environment's complexity as we go, covering more and more use cases along the way. While the focus is mostly put on PHP on the server side, the overall architecture can be adapted for any language.</p>
 <p>You might find yourself stopping at a certain point because all your needs have been covered already, only to come back later when you need more. Wherever that is, each part of the series comes with its own <a href="https://github.com/osteel/docker-tutorial">Git branch</a>, which you can fork or download and use as a starting point for your own projects.</p>
 <p>That's it for the elevator pitch. Convinced already? Great, let's move on to the <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">first part</a>. If not, let's try to address some of the doubts you might still have, starting with a little background check.</p>
 <h2 id="why-should-i-listen-to-you">"Why should I listen to you?"</h2>
 <p>I am a backend developer with more than a decade of experience, having worked with various types of companies in three different countries. I witnessed the evolution of the development environment landscape over time, from the early days of using <a href="http://www.wampserver.com">WAMP</a> and <a href="https://notepad-plus-plus.org">Notepad++</a> to migrating to full-fledged IDEs and custom virtual machines, before moving on to <a href="https://www.vagrantup.com">Vagrant</a> and eventually, <a href="https://laravel.com/docs/homestead">Homestead</a>.</p>
-<p>Back in 2015, I explored the possibility of using Docker locally as a development environment and <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development">wrote about it</a> in a couple of articles that were picked up by the <a href="https://www.docker.com/newsletter-subscription">Docker newsletter</a> at the time, but eventually left it on the side, mostly because of performance issues.</p>
-<p>I was forced to revisit the idea at the beginning of 2018, however, as Vagrant's limits started to show on a project I was working on (more on that in the next section). As I looked into Docker again, I realised progress had been made both in terms of performance and adoption.</p>
-<p>After tinkering about for a few days and successive iterations, I ended up with a decent development environment, capable of handling the application's complexity and greatly simplifying the onboarding of new developers.</p>
+<p>Back in 2015, I explored the possibility of using Docker locally as a development environment and <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development">wrote about it</a> in a couple of articles that were picked up by the <a href="https://www.docker.com/newsletter-subscription">Docker newsletter</a>, but eventually left this experiment on the side mostly because of performance issues.</p>
+<p>I was forced to revisit the idea at the beginning of 2018, however, as Vagrant started to show its limits on a project I was working on at the time (more on that in the next section). As I looked into Docker again, I realised progress had been made both in terms of performance and adoption.</p>
+<p>After tinkering about for a few days, I came up with a decent development environment capable of handling the application's complexity and, as we soon realised, greatly simplifying the onboarding of new developers.</p>
 <p>Since then, I successfully implemented and improved upon a similar setup in several companies.</p>
-<p>While the approach taken in this series is certainly not the only one and is most likely perfectible, it has proven to be reliable and a significant improvement compared to previous Vagrant-based setups.</p>
 <h2 id="i-already-use-vagranthomestead">"I already use Vagrant/Homestead"</h2>
-<p>Homestead is great. I used <a href="https://laravel.com">Laravel</a>'s pre-packaged virtual machine (VM) for years, both for personal and client projects. It features pretty much everything you need for a PHP application, and allows you to spin up new websites very quickly. So why did I make the switch?</p>
+<p>Homestead is great. I used <a href="https://laravel.com">Laravel</a>'s pre-packaged virtual machine (VM) for years, both for personal and client projects. It features pretty much everything you need for a PHP application, and allows you to spin up new websites very quickly.</p>
+<p>So why did I make the switch?</p>
 <p>The short answer is <em>microservices</em>.</p>
 <p>Back at the beginning of 2018, I was tasked with exposing an API from a legacy monolith to serve a new Single Page Application, and to progressively phase out the monolith by extracting all of its business logic into microservices. Happy days, I know.</p>
 <p>All of a sudden, I had to manage some legacy code running on PHP 5.x on the one hand, and some microservices running on PHP 7.x on the other.</p>
-<p>I initially got both versions of the language running on the same VM but it involved some dirty workarounds that made the overall user experience terrible. Besides, I would eventually need to add other microservices with different stacks, and managing them all under the same VM wasn't a realistic goal.</p>
+<p>I initially got both versions of the language running on the same VM but it involved some dirty workarounds that made the overall user experience terrible. Besides, I would eventually need to add other microservices with different stacks, and managing them all under the same VM wasn't a realistic endeavour.</p>
 <p>I briefly tried to run separate Vagrant boxes for each microservice, but running the whole setup was far too heavy for my machine and managing things like VM-to-VM communication felt very cumbersome.</p>
 <p>I needed something else, and that something else turned out to be Docker. But how does it help the situation?</p>
 <p>One of the promises of Docker is to provide isolated environments (<em>containers</em>) running on a single virtual machine, starting in a few seconds. In my case, that meant replacing all of my heavy Vagrant virtual machines with a single, super-fast virtual machine featuring Docker, and run all my microservices on top of it, each in its own isolated container.</p>
-<p>Using Docker's very own logo in an attempt to illustrate this, it would be like going from one whale per crate to a single whale carrying all the crates like shown on the picture.</p>
+<p>Using Docker's very own logo in an attempt to illustrate this, it would be like going from each crate having its own dedicated whale to carry it, to a single whale carrying all the crates like shown on the picture.</p>
 <p><img alt="Docker logo 2" src="/images/2020/03/04/docker-introduction-02.png" title="Docker logo 2" />
 <p class="caption">Imagine if every single crate in the logo needed its own whale: beyond the ridiculous amount of plankton that would require, would it look efficient?</p></p>
 <p>Now revisit the previous sentence and replace "whale" with "virtual machine" and "crate" with "microservice" - you should get the idea.</p>
-<p>While being an overly simplistic explanation, this right there is actually what made it click for me: as a developer, this use case made perfect sense and impacted the way I worked on a day-to-day basis, way more than trying to understand how virtualisation or shared operating systems work.</p>
+<p>While being an overly simplistic explanation, this right there is what made it click for me. As a developer, this use case made perfect sense and impacted the way I worked on a day-to-day basis, way more than trying to understand how virtualisation or shared operating systems work.</p>
 <p>Does that mean you should use Docker locally only if your application involves microservices?</p>
 <p>The answer is yes and no. The more complex the application – the more moving parts it is composed of – the more likely you will need a solution like Docker.</p>
 <p>But even if your application is rather simple, starting and stopping some containers is way faster than booting and halting a virtual machine, and in the eventuality of your application evolving in some unexpected ways (like they always do), adopting Docker from the get go gives you the confidence that your setup is future-proof.</p>
@@ -237,8 +235,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>I don't know what the future is made of. When it comes to technology, I like to consider myself a pragmatist: being a developer requires an awful lot of effort to stay up to date, and while I would love to explore the many technologies that arise pretty much on a daily basis, I simply don't have the time to do so. While the serverless movement has certainly been getting momentum, it is also still in its infancy, and I would like to see it mature further before I consider taking the plunge.</p>
 <p>If serverless somehow ends up "eating the stack" and that is where all the jobs go, fine, I will make the switch. But I don't see such a market shift happening for another few years, and for the time being I'd rather focus on what is likely to make my CV attractive <em>today</em>.</p>
 <p>Companies are already <a href="https://containerjournal.com/topics/container-ecosystems/4-reasons-container-adoption-remains-slowish/">slow to migrate to containers</a> despite high interest, and the industry only recently rallied behind Kubernetes, which is poised to become the standard of container orchestration. Serverless represents an even greater paradigm shift that is still maturing: thinking it will flip the market at the snap of a finger is foolish in my opinion.</p>
-<p>That doesn't mean I won't use a Lambda function where it seems relevant, or that serverless shouldn't be on your watchlist.</p>
-<p>In any case, serverless or not you will need a local environment to develop your projects, and Docker will fill that role perfectly.</p>
+<p>That doesn't mean I won't use a Lambda function where it seems relevant, however, nor that serverless shouldn't be on your watchlist.</p>
+<p>In any case, serverless or not you will need a local environment to build your projects, and Docker fills that role perfectly.</p>
 <h2 id="performance-is-terrible">"Performance is terrible"</h2>
 <p>It used to be terrible. Now it's just not great.</p>
 <p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance (and the recently introduced gRPC FUSE doesn't seem to make a big difference). There are ways to make it better, however, which are mentioned throughout this series.</p>
@@ -273,7 +271,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-06" pubdate>2021-02-06</time>
+          <time datetime="2021-02-08" pubdate>2021-02-08</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
