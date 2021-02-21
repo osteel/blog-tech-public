@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-05 ::
+          Last updated: 2021-02-21 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -183,7 +183,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="foreword">Foreword</h2>
 <p>In all honesty, what we've covered so far is pretty standard. Articles about LEMP stacks on Docker are legion, and while I hope to add some value through a beginner-friendly approach and a certain level of detail, there was hardly anything new (after all, I was already writing about this <a href="/posts/from-vagrant-to-docker-how-to-use-docker-for-local-web-development" title="From Vagrant to Docker: How to use Docker for local web development">back in 2015</a>).</p>
 <p>I believe this is about to change with today's article. There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all.</p>
-<p>In that sense, today's article is probably where things will start to get concrete for some of you. That is not to say the previous ones are negligible – they constitute a necessary introduction contributing to making this series comprehensive – but this is where the theory meets the practical complexity of modern web applications.</p>
+<p>In that sense, today's article is probably where the rubber meets the road for some of you. That is not to say the previous ones are negligible – they constitute a necessary introduction contributing to making this series comprehensive – but this is where the theory meets the practical complexity of modern web applications.</p>
 <p>The assumed starting point of this tutorial is where we left things at the end of the <a href="/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet" title="Docker for local web development, part 2: put your images on a diet">previous part</a>, corresponding to the repository's <a href="https://github.com/osteel/docker-tutorial/tree/part-2"><em>part-2</em> branch</a>.</p>
 <p>If you prefer, you can also directly <em>checkout</em> the <a href="https://github.com/osteel/docker-tutorial/tree/part-3"><em>part-3</em> branch</a>, which is the final result of today's article.</p>
 <p>Again, this is by no means the one and only approach, just one that has been successful for me and the companies I set it up for.</p>
@@ -611,6 +611,11 @@ nginx:
 
 
 <p>If all went well, you will find the application's files under <code>src/frontend</code> on your local machine.</p>
+<div class="info">
+<p><span class="title">Issues around <code>node_modules</code>?</span> A few readers have reported symlink issues related to the <code>node_modules</code> folder on Windows. To be honest I am not entirely sure what is going on here, but it seems that creating a <code>.dockerignore</code> file at the root of the project containing the line <code>node_modules</code> fixes it (you might need to delete that folder first). Again, not sure why is that, but you might find answers <a href="https://github.com/docker/compose/issues/5888#issuecomment-660578735">here</a>.</p>
+<p><code>.dockerignore</code> files are very similar to <code>.gitignore</code> files in that they allow us to specify files and folders that should be ignored when copying or adding content to a container. They are not really necessary in the context of this series and I only touch upon them in the <a href="/posts/docker-for-local-web-development-conclusion-where-to-go-from-here" title="Docker for local web development, conclusion: where to go from here">conclusion</a>, but you can read more about them <a href="https://docs.docker.com/engine/reference/builder/#dockerignore-file">here</a>.</p>
+</div>
+
 <p>We've already added <code>frontend.demo.test</code> to the <code>hosts</code> file earlier, so let's move on to creating the Nginx server configuration. Add a new <code>frontend.conf</code> file to <code>.docker/nginx/conf.d</code>, with the following content (most of the <code>location</code> block comes from <a href="https://medium.com/@robertz/nginx-vuejs-and-express-with-docker-4177cb506fbf">this article</a>):</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -867,7 +872,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-05" pubdate>2021-02-05</time>
+          <time datetime="2021-02-21" pubdate>2021-02-21</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

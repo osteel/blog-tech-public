@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-05 ::
+          Last updated: 2021-02-21 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -297,7 +297,7 @@ $ chmod +x demo
 </td></tr></table>
 
 <div class="info">
-<p><span class="title">"Wait. What?"</span> Each time you open a new terminal window, Bash will try and read the content of some files, if it can find them. These files contain commands and instructions you basically want Bash to run at start-up, such as updating the <code>$PATH</code> variable, running a script somewhere or, in our case, make a function available globally. Different files can be used, but to keep it simple we'll stick to updating or creating the <code>.bashrc</code> file in your home folder, and add the <code>demo</code> function above to it:</p>
+<p><span class="title">Wait. What?</span> Each time you open a new terminal window, Bash will try and read the content of some files, if it can find them. These files contain commands and instructions you basically want Bash to run at start-up, such as updating the <code>$PATH</code> variable, running a script somewhere or, in our case, make a function available globally. Different files can be used, but to keep it simple we'll stick to updating or creating the <code>.bashrc</code> file in your home folder, and add the <code>demo</code> function above to it:</p>
 <pre><code>$ vi ~/.bashrc</code></pre>
 <p>From then on, everytime you open a terminal window, this file will be read and the <code>demo</code> function made available globally. This will work whatever your operating system is (including Windows, as long as you do this from Git Bash, or from your terminal of choice).</p>
 </div>
@@ -328,6 +328,11 @@ $ chmod +x demo
 <p>If all went well, you should see something similar to this:</p>
 <p><img alt="Menu" src="/images/2020/04/13/docker-02.png" title="Menu" /></p>
 <p>Looks fancy, doesn't it? Yet, so far none of these commands is doing anything. Let's fix this!</p>
+<div class="info">
+<p><span class="title">Windows users: watch out for CRLF line endings!</span> Unix files and Windows files use different invisible characters for line endings – the former adds the LF character only, while the latter adds both CR and LF. Your Bash script won't work with the latter, so make sure you change the file's line endings for LF if necessary. If you are not sure how to proceed, simply search for your IDE followed by "line endings" online – most modern text editors offer an easy way to make the switch.</p>
+<p>More generally, it is a good practice to create a <code>.gitattributes</code> file at the root of your project containing the line <code>* text=auto</code>, which will automatically convert line endings at <em>checkout</em> and <em>commit</em> (see <a href="https://git-scm.com/docs/gitattributes#_checking_out_and_checking_in">here</a>).</p>
+</div>
+
 <h2 id="basic-commands">Basic commands</h2>
 <p>We will start with a simple command, to give you a taste. Update the switch in the <code>demo</code> file so it looks like this:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -1011,7 +1016,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-05" pubdate>2021-02-05</time>
+          <time datetime="2021-02-21" pubdate>2021-02-21</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
