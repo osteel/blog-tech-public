@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-05 ::
+          Last updated: 2021-02-27 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -654,6 +654,7 @@ character-set-server <span class="o">=</span> utf8mb4
 <div class="info">
 <p><span class="title">Password plugin error?</span> Some older versions of PHP are incompatible with MySQL's new default password plugin introduced with version 8. If you require such a version, you might also need to add the following line to the configuration file:</p>
 <pre>default-authentication-plugin = mysql_native_password</pre>
+<p>If the containers are already running, destroy them as well as the volumes with <code>docker-compose down -v</code> and run <code>docker-compose up -d</code> again.</p>
 </div>
 
 <p>The second volume looks a bit different than what we have seen so far: instead of pointing to a local folder, it refers to a named volume defined in a whole new <code>volumes</code> section which sits at the same level as <code>services</code>:</p>
@@ -891,7 +892,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-05" pubdate>2021-02-05</time>
+          <time datetime="2021-02-27" pubdate>2021-02-27</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
