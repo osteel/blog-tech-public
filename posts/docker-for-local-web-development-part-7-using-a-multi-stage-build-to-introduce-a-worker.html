@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-05 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -265,9 +265,9 @@ backend:
     target: backend
   working_dir: /var/www/backend
   volumes:
-    - ./src/backend:/var/www/backend:delegated
-    - ./.docker/backend/init:/opt/files/init:delegated,ro
-    - ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro
+    - ./src/backend:/var/www/backend
+    - ./.docker/backend/init:/opt/files/init
+    - ./.docker/nginx/certs:/usr/local/share/ca-certificates
   depends_on:
     - mysql
     <strong>- redis</strong>
@@ -450,7 +450,7 @@ CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
     <span class="nt">target</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">worker</span>
   <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/backend</span>
   <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend:/var/www/backend:delegated</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend:/var/www/backend</span>
   <span class="nt">depends_on</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">backend</span>
 </pre></div>
@@ -466,9 +466,9 @@ backend:
     target: backend</strong>
   working_dir: /var/www/backend
   volumes:
-    - ./src/backend:/var/www/backend:delegated
-    - ./.docker/backend/init:/opt/files/init:delegated,ro
-    - ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro
+    - ./src/backend:/var/www/backend
+    - ./.docker/backend/init:/opt/files/init
+    - ./.docker/nginx/certs:/usr/local/share/ca-certificates
   depends_on:
     - mysql
 </pre>
@@ -534,7 +534,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-05" pubdate>2021-02-05</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

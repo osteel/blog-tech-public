@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-21 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -799,8 +799,8 @@ backend:
   build: ./src/backend
   working_dir: /var/www/backend
   volumes:
-    - ./src/backend:/var/www/backend:delegated
-    <strong>- ./.docker/backend/init:/opt/files/init:delegated,ro</strong>
+    - ./src/backend:/var/www/backend
+    <strong>- ./.docker/backend/init:/opt/files/init</strong>
   depends_on:
     - mysql
 </pre>
@@ -1016,7 +1016,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-21" pubdate>2021-02-21</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

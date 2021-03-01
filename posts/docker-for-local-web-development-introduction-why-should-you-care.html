@@ -133,7 +133,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-08 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-introduction-why-should-you-care.html">history</a> ]
       </small>
@@ -239,8 +239,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In any case, serverless or not you will need a local environment to build your projects, and Docker fills that role perfectly.</p>
 <h2 id="performance-is-terrible">"Performance is terrible"</h2>
 <p>It used to be terrible. Now it's just not great.</p>
-<p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying osxfs filesystem offers only average performance (and the recently introduced gRPC FUSE doesn't seem to make a big difference). There are ways to make it better, however, which are mentioned throughout this series.</p>
-<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time: Windows now has <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a>, and there are <a href="https://github.com/docker/for-mac/issues/1592">ongoing discussions around performance on macOS</a>.</p>
+<p>This is the one real trade off to using Docker Desktop as a development environment, in my opinion (Docker on Linux is fine). This will be mostly felt on macOS, where the underlying file-sharing implementation (gRPC-FUSE) offers only average performance. There are ways to make it better, however, which are mentioned throughout this series.</p>
+<p>You're unlikely to get the same kind of speed as Homestead or something like <a href="https://laravel.com/docs/valet">Valet</a>, but it will be acceptable. And I trust it will only get better over time: Windows now has <a href="https://docs.docker.com/docker-for-windows/wsl/">Windows Subsystem for Linux version 2 (WSL 2)</a>, and <a href="https://github.com/docker/for-mac/issues/1592">discussions around performance on macOS</a> are ongoing.</p>
 <h2 id="it-is-not-my-job-to-deal-with-docker">"It is not my job to deal with Docker"</h2>
 <p>Finally, some developers simply dismiss Docker as not being their problem. This is a fair point, as Docker sits somewhere beyond the realm of pure application development. If anything, a sysadmin or DevOps engineer should set it up for you, right?</p>
 <p>While you are entitled to feel that way, DevOps not only refers to individuals with an interest for both system administration and coding, effectively acting as bridges between the two, but can also be viewed as people from both sides meeting halfway.</p>
@@ -271,7 +271,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-08" pubdate>2021-02-08</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

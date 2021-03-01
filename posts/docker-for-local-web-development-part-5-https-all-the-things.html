@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-05 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -219,10 +219,10 @@ nginx:
     - 80:80
     <strong>- 443:443</strong>
   volumes:
-    - ./src/backend:/var/www/backend:ro,delegated
-    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
-    <strong>- ./.docker/nginx/certs:/etc/nginx/certs:delegated</strong>
+    - ./src/backend:/var/www/backend
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    - phpmyadmindata:/var/www/phpmyadmin
+    <strong>- ./.docker/nginx/certs:/etc/nginx/certs</strong>
   depends_on:
     - backend
     - frontend
@@ -731,10 +731,10 @@ nginx:
       aliases:
         - frontend.demo.test</strong>
   volumes:
-    - ./src/backend:/var/www/backend:ro,delegated
-    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
-    - ./.docker/nginx/certs:/etc/nginx/certs:delegated,ro
+    - ./src/backend:/var/www/backend
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    - phpmyadmindata:/var/www/phpmyadmin
+    - ./.docker/nginx/certs:/etc/nginx/certs
   depends_on:
     - backend
     - frontend
@@ -783,9 +783,9 @@ backend:
   build: ./src/backend
   working_dir: /var/www/backend
   volumes:
-    - ./src/backend:/var/www/backend:delegated
-    - ./.docker/backend/init:/opt/files/init:delegated,ro
-    <strong>- ./.docker/nginx/certs:/usr/local/share/ca-certificates:delegated,ro</strong>
+    - ./src/backend:/var/www/backend
+    - ./.docker/backend/init:/opt/files/init
+    <strong>- ./.docker/nginx/certs:/usr/local/share/ca-certificates</strong>
   depends_on:
     - mysql
 </pre>
@@ -852,7 +852,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-05" pubdate>2021-02-05</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

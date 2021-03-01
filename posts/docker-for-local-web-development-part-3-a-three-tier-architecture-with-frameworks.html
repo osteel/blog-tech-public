@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-21 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -227,9 +227,9 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./src/backend:/var/www/backend:ro<strong>,delegated</strong>
-      - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-      - phpmyadmindata:/var/www/phpmyadmin:ro<strong>,delegated</strong>
+      - ./src/backend:/var/www/backend
+      - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+      - phpmyadmindata:/var/www/phpmyadmin
     depends_on:
       <strong>- backend</strong>
       - phpmyadmin
@@ -239,7 +239,7 @@ services:
     build: ./src/backend
     working_dir: /var/www/backend
     volumes:
-      - ./src/backend:/var/www/backend:delegated
+      - ./src/backend:/var/www/backend
     depends_on:
       - mysql</strong>
 
@@ -250,8 +250,8 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: demo
     volumes:
-      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
-      - mysqldata:/var/lib/mysql<strong>:delegated</strong>
+      - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - mysqldata:/var/lib/mysql
 
   # PhpMyAdmin Service
   phpmyadmin:
@@ -259,7 +259,7 @@ services:
     environment:
       PMA_HOST: mysql
     volumes:
-      - phpmyadmindata:/var/www/html<strong>:delegated</strong>
+      - phpmyadmindata:/var/www/html
     depends_on:
       - mysql
 
@@ -271,25 +271,7 @@ volumes:
   phpmyadmindata:
 </pre>
 
-<p>The biggest update is the removal of the PHP service in favour of the backend service, although they are very similar. The new service looks for a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is mounted as a volume on the container. The only real difference is the appearance of <code>:delegated</code> at the end of the volume declaration.</p>
-<p>This option improves <a href="https://docs.docker.com/docker-for-mac/osxfs-caching/">performance on macOS</a> by caching the content of the folder for a faster read access, which becomes necessary as the number of files grows (which is typically the case when a framework is involved). Three options are available: <code>consistent</code>, <code>cached</code> and <code>delegated</code>. I find the official documentation somewhat confusing on this, so here is another attempt at explaining them:</p>
-<ul>
-<li><code>consistent</code> is the option by default: it basically ensures perfect file synchronisation between the host (your local machine) and the container. This option performs poorly on macOS;</li>
-<li><code>cached</code> indicates that what's in the container is more important; in other words, changes occurring on the host might not be reflected immediately in the container;</li>
-<li><code>delegated</code> is the opposite of <code>cached</code>, in that the host takes precedence: changes in the container might not be reflected immediately on the host.</li>
-</ul>
-<p>In a development context, it is more important that our local changes are passed on to the container as soon as possible. Changes made on the host machine should therefore be prioritised, hence the <code>delegated</code> option is generally more appropriate.</p>
-<p>This superficial explanation is enough for the scope of this article, but more details are available on the <a href="https://www.docker.com/blog/user-guided-caching-in-docker-for-mac/">Docker blog</a> if you are interested.</p>
-<p>Note that on systems other than macOS, these options will simply be ignored, and <code>consistent</code> will be used instead.</p>
-<div class="info">
-<p><span class="title">Pump up that RAM!</span> If the response time still feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
-<img alt="Docker memory settings" src="/images/2020/03/30/docker-04.png" title="Docker memory settings">
-The default value is 2 GB; I doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
-<p>If you wish to explore further possibilities on macOS, more tips are laid out in <a href="https://engageinteractive.co.uk/blog/making-docker-faster-on-mac" title="Speeding up Docker on MacOS">this article</a>, or you could look into something like <a href="https://github.com/EugenMayer/docker-sync">docker-sync</a>, or the more recent <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen-based file synchronization</a>.</p>
-<p>If you're on Windows and not using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> yet, looking into it might be a good idea.</p>
-</div>
-
-<p>The rest of the changes brought to <code>docker-compose.yml</code> mostly consist of the <code>delegated</code> option being added where relevant.</p>
+<p>The main update is the removal of the PHP service in favour of the backend service, although they are very similar. The new service looks for a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is mounted as a volume on the container.</p>
 <p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -362,7 +344,10 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 </td></tr></table>
 
 <p>Mind the values for <code>server_name</code> and <code>fastcgi_pass</code> (now pointing to port 9000 of the backend container).</p>
-<p class="info"><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to this series' in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, as is the case in this series.</p>
+<div class="info">
+<p><span class="title">Why not use Laravel Sail?</span> If you're already a Laravel developer, you might have come across <a href="https://laravel.com/docs/sail">Sail</a>, Laravel's official Docker-based development environment. While their approach is similar to this series' in many ways, the main difference is that Sail is meant to cater for Laravel monoliths only. In other words, Sail is meant for applications that are fully encompassed within Laravel, as opposed to applications where the Laravel bit is only one component among others, as is the case in this series.</p>
+<p>If you're curious about Laravel Sail, I've published a <a href="/posts/you-dont-need-laravel-sail" title="A complete guide to Laravel Sail">comprehensive guide</a> that will teach you everything you need to know.</p>
+</div>
 
 <p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
 <div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.test
@@ -516,6 +501,14 @@ zlib
 
 <p>Once it is up, visit <a href="http://backend.demo.test">backend.demo.test</a>; if all went well, you should see Laravel's home page:</p>
 <p><img alt="Laravel home" src="/images/2020/03/30/docker-02.png" title="Laravel home" /></p>
+<div class="info">
+<p><span class="title">Pump up that RAM!</span> If the backend's response time feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
+<img alt="Docker memory settings" src="/images/2020/03/30/docker-04.png" title="Docker memory settings">
+The default value is 2 GB; I doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
+<p>If you wish to explore further possibilities on macOS, more tips are laid out in <a href="https://engageinteractive.co.uk/blog/making-docker-faster-on-mac" title="Speeding up Docker on MacOS">this article</a>, or you could look into something like <a href="https://github.com/EugenMayer/docker-sync">docker-sync</a>, or the more recent <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen-based file synchronization</a>.</p>
+<p>If you're on Windows and not using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> yet, looking into it might be a good idea.</p>
+</div>
+
 <p>Let's also verify our database settings by running Laravel's default migrations:</p>
 <div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend php artisan migrate
 </pre></div>
@@ -564,7 +557,7 @@ $ docker-compose run --rm backend composer
   <span class="nt">build</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./src/frontend</span>
   <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/frontend</span>
   <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/frontend:/var/www/frontend:delegated</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/frontend:/var/www/frontend</span>
   <span class="nt">depends_on</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">backend</span>
 </pre></div>
@@ -578,9 +571,9 @@ nginx:
   ports:
     - 80:80
   volumes:
-    - ./src/backend:/var/www/backend:ro,delegated
-    - ./.docker/nginx/conf.d:/etc/nginx/conf.d:ro
-    - phpmyadmindata:/var/www/phpmyadmin:ro,delegated
+    - ./src/backend:/var/www/backend
+    - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+    - phpmyadmindata:/var/www/phpmyadmin
   depends_on:
     - backend
     - phpmyadmin
@@ -872,7 +865,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-21" pubdate>2021-02-21</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

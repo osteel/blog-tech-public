@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-12-17 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-06-08
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-8-scheduled-tasks.html">history</a> ]
       </small>
@@ -216,7 +216,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <span class="nt">scheduler</span><span class="p">:</span>
   <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mcuadros/ofelia:latest</span>
   <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/run/docker.sock:/var/run/docker.sock:ro</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">/var/run/docker.sock:/var/run/docker.sock</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/scheduler/config.ini:/etc/ofelia/config.ini</span>
   <span class="nt">depends_on</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">backend</span>
@@ -254,7 +254,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-12-17" pubdate>2020-12-17</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

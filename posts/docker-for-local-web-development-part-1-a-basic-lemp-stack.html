@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-27 ::
+          Last updated: 2021-03-01 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -308,8 +308,8 @@ styles, `#sidebar-checkbox` for behavior. -->
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php:ro</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d</span>
     <span class="nt">depends_on</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
 
@@ -370,7 +370,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>As Nginx automatically reads files ending with <code>.conf</code> located in the <code>/etc/nginx/conf.d</code> directory, by mounting our own local <code>conf.d</code> directory in its place we make sure the configuration files it contains will be processed by Nginx on the container.</p>
-<p>You may have noticed the addition of <code>:ro</code> at the end of both volumes: this option stands for <em>read only</em> and indicates that the container shall not modify the content of these volumes in any way.</p>
 <p>Create the <code>.docker/nginx/conf.d</code> folder and add the following <code>php.conf</code> file to it:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -514,8 +513,8 @@ nginx_1 exited with code <span class="m">1</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php:ro</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/nginx/conf.d:/etc/nginx/conf.d</span>
     <span class="nt">depends_on</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">php</span>
 
@@ -535,7 +534,7 @@ nginx_1 exited with code <span class="m">1</span>
       <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
       <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
     <span class="nt">volumes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
 
 <span class="c1"># Volumes</span>
@@ -641,7 +640,7 @@ nginx_1 exited with code <span class="m">1</span>
 
 <p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet. Let's now have a look at the MySQL service in <code>docker-compose.yml</code>: the <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
 <p>In other words, a <code>demo</code> database will automatically be created for us when the container starts.</p>
-<p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file (in <em>read only</em> mode) we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
+<p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
 <p>Create the <code>.docker/mysql</code> folder and add the following <code>my.cnf</code> file to it:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -892,7 +891,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-27" pubdate>2021-02-27</time>
+          <time datetime="2021-03-01" pubdate>2021-03-01</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
