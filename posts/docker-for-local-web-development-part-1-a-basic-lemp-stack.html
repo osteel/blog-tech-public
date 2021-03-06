@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-01 ::
+          Last updated: 2021-03-06 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -502,7 +502,12 @@ nginx_1 exited with code <span class="m">1</span>
 36
 37
 38
-39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
+39
+40
+41
+42
+43
+44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
 
 <span class="c1"># Services</span>
 <span class="nt">services</span><span class="p">:</span>
@@ -525,7 +530,8 @@ nginx_1 exited with code <span class="m">1</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src:/var/www/php</span>
     <span class="nt">depends_on</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
+      <span class="nt">mysql</span><span class="p">:</span>
+        <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
 
   <span class="c1"># MySQL Service</span>
   <span class="nt">mysql</span><span class="p">:</span>
@@ -536,6 +542,10 @@ nginx_1 exited with code <span class="m">1</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
+    <span class="nt">healthcheck</span><span class="p">:</span>
+      <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD</span>
+      <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
+      <span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
 
 <span class="c1"># Volumes</span>
 <span class="nt">volumes</span><span class="p">:</span>
@@ -544,7 +554,7 @@ nginx_1 exited with code <span class="m">1</span>
 </pre></div>
 </td></tr></table>
 
-<p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started before PHP. But before we dive into its configuration, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
+<p>The Nginx service is still the same, but the PHP one was slightly updated. We are already familiar with <code>depends_on</code>: this time, we indicate that the new MySQL service should be started before PHP. The other difference is the presence of the <code>condition</code> option; but before I explain it all, let's take a look at the new <code>build</code> section of the PHP service, which seemingly replaced the <code>image</code> one. Instead of using the official PHP image as is, we tell Docker Compose to use the <em>Dockerfile</em> from <code>.docker/php</code> to build a new image.</p>
 <p>A Dockerfile is like the recipe to build an image: every image has one, even official ones (see for instance <a href="https://github.com/nginxinc/docker-nginx/blob/5971de30c487356d5d2a2e1a79e02b2612f9a72f/mainline/buster/Dockerfile">Nginx's</a>).</p>
 <p>Create the <code>.docker/php</code> folder and add a file named <code>Dockerfile</code> to it, with the following content:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -638,7 +648,37 @@ nginx_1 exited with code <span class="m">1</span>
 </pre></div>
 </td></tr></table>
 
-<p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet. Let's now have a look at the MySQL service in <code>docker-compose.yml</code>: the <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
+<p>The main change is the addition of a few lines of PHP code to connect to a database that does not exist yet.</p>
+<p>Let's now have a closer look at the MySQL service in <code>docker-compose.yml</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># MySQL Service</span>
+<span class="nt">mysql</span><span class="p">:</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql:8</span>
+  <span class="nt">environment</span><span class="p">:</span>
+    <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+    <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
+  <span class="nt">volumes</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
+  <span class="nt">healthcheck</span><span class="p">:</span>
+    <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD</span>
+    <span class="nt">interval</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
+    <span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">10</span>
+</pre></div>
+</td></tr></table>
+
+<p>The <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
 <p>In other words, a <code>demo</code> database will automatically be created for us when the container starts.</p>
 <p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
 <p>Create the <code>.docker/mysql</code> folder and add the following <code>my.cnf</code> file to it:</p>
@@ -668,13 +708,20 @@ character-set-server <span class="o">=</span> utf8mb4
 </td></tr></table>
 
 <p>We need such a volume because without it, every time the <code>mysql</code> service container is destroyed the database is destroyed with it. To make it persistent, we basically tell the MySQL container to use the <code>mysqldata</code> volume to store the data locally, <code>local</code> being the default driver (just like networks, volumes come with various drivers and options which you can learn about <a href="https://docs.docker.com/compose/compose-file/#volumes-for-services-swarms-and-stack-files">here</a>). As a result, a local directory is mounted onto the container, the difference being that instead of specifying which one, we let Docker Compose pick a location.</p>
+<p>The last section is a new one: <code>healthcheck</code>. It allows us to specify on which condition a container is <em>ready</em>, as opposed to just <em>started</em>. In this case, it is not enough to start the MySQL container – we also want to create the database before the PHP container tries to access it. In other words, without this heath check the PHP container might try to access the database even though it doesn't exist yet, causing connection errors.</p>
+<p>This is what these lines in the PHP service description were about:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">depends_on</span><span class="p">:</span>
+  <span class="nt">mysql</span><span class="p">:</span>
+    <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
+</pre></div>
+</td></tr></table>
+
+<p>By default, <code>depends_on</code> will just wait for the referenced containers to be started, unless we specify otherwise. This health check might not work on the first attempt, however; that's why we set it up to retry every 5 seconds up to 10 times, using the <code>interval</code> and <code>retries</code> keys respectively.</p>
+<p>The health check itself uses <a href="https://dev.mysql.com/doc/refman/8.0/en/mysqladmin.html">mysqladmin</a>, a MySQL server administration program, to ping the server until it gets a response. It does so using the <code>root</code> user and the value set in the <code>MYSQL_ROOT_PASSWORD</code> environment variable as the password (which also happens to be <code>root</code> in our case).</p>
 <p>Go back to your terminal and run <code>docker-compose up -d</code> again. Once it is done downloading the MySQL image and all of the containers are up and running, refresh <a href="http://localhost">localhost</a>. You should see this:</p>
 <p><img alt="Hello there" src="/images/2020/03/04/docker-part-1-07.png" title="Hello there" /></p>
-<div class="info">
-<p><span class="title">Connection error?</span> You might initially get the following error: <code>Fatal error: Uncaught PDOException: SQLSTATE[HY000] [2002] Connection refused</code>. The reason is that MySQL hasn't built the <code>demo</code> database just yet, even though we specifically instructed the MySQL container to be started before the PHP one. The problem is the MySQL container is indeed started first, but only then does it proceed with creating the database, which means the PHP container might be ready before the database is.</p>
-<p>Keep refreshing for a few seconds; the error will eventually disappear.</p>
-</div>
-
 <p>We now have Nginx serving PHP files that can connect to a MySQL database, meaning our LEMP stack is pretty much complete. The next steps are about improving our setup, starting with seeing how we can interact with the database in a user-friendly way.</p>
 <h3 id="phpmyadmin">phpMyAdmin</h3>
 <p>When it comes to dealing with a MySQL database, <a href="https://www.phpmyadmin.net/">phpMyAdmin</a> remains a popular choice; conveniently, they provide a <a href="https://hub.docker.com/r/phpmyadmin/phpmyadmin">Docker image</a> which is pretty straightforward to set up.</p>
@@ -691,15 +738,16 @@ character-set-server <span class="o">=</span> utf8mb4
 </div>
 
 <p>Open <code>docker-compose.yml</code> one last time and add the following service configuration after MySQL's:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># PhpMyAdmin Service</span>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># PhpMyAdmin Service</span>
 <span class="nt">phpmyadmin</span><span class="p">:</span>
   <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">phpmyadmin/phpmyadmin:5</span>
   <span class="nt">ports</span><span class="p">:</span>
@@ -707,11 +755,12 @@ character-set-server <span class="o">=</span> utf8mb4
   <span class="nt">environment</span><span class="p">:</span>
     <span class="nt">PMA_HOST</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
   <span class="nt">depends_on</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
+    <span class="nt">mysql</span><span class="p">:</span>
+      <span class="nt">condition</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">service_healthy</span>
 </pre></div>
 </td></tr></table>
 
-<p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate the MySQL container should be started first with <code>depends_on</code>, and set the host that phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned to the container).</p>
+<p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate that the MySQL container should be started and ready first with <code>depends_on</code>, and set the host that phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned to the container).</p>
 <p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded, then, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
 <p><img alt="phpMyAdmin" src="/images/2020/03/04/docker-part-1-08.png" title="phpMyAdmin" /></p>
 <p>Enter <code>root</code> / <code>root</code> as username and password, create a couple of tables under the <code>demo</code> database and refresh <a href="http://localhost">localhost</a> to confirm they are correctly listed.</p>
@@ -891,7 +940,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-01" pubdate>2021-03-01</time>
+          <time datetime="2021-03-06" pubdate>2021-03-06</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

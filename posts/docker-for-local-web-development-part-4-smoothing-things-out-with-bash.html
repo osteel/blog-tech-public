@@ -134,7 +134,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-01 ::
+          Last updated: 2021-03-06 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -802,7 +802,8 @@ backend:
     - ./src/backend:/var/www/backend
     <strong>- ./.docker/backend/init:/opt/files/init</strong>
   depends_on:
-    - mysql
+    mysql:
+      condition: service_healthy
 </pre>
 
 <p>Since the script will be run on the container, we need Bash to be installed on it, which is not the case by default on Alpine. We need to update the backend's Dockerfile accordingly (in <code>src/backend</code>):</p>
@@ -813,13 +814,12 @@ FROM php:8.0-fpm-alpine
 RUN docker-php-ext-install pdo_mysql bcmath
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-<strong># Install extra packages
-RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev</strong>
+<strong># Install Bash
+RUN apk --no-cache add bash</strong>
 </pre>
 
-<p>We've also added the <code>mysql-client</code> and <code>mariadb-connector-c-dev</code> packages as we're going to need them (more on that in a minute).</p>
 <p>Build the image:</p>
 <div class="highlight"><pre><span></span>$ demo build backend
 </pre></div>
@@ -861,20 +861,7 @@ RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev</strong>
 33
 34
 35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
+36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/bash</span>
 
 <span class="c1"># Install Composer dependencies</span>
 composer install -d <span class="s2">&quot;/var/www/backend&quot;</span>
@@ -908,33 +895,12 @@ composer install -d <span class="s2">&quot;/var/www/backend&quot;</span>
     php <span class="s2">&quot;/var/www/backend/artisan&quot;</span> key:generate --ansi
 <span class="k">fi</span>
 
-<span class="c1"># Make sure the MySQL database is available</span>
-<span class="nb">echo</span> <span class="s1">&#39;Waiting for MySQL to be available&#39;</span>
-<span class="nv">count</span><span class="o">=</span><span class="m">1</span>
-<span class="k">while</span> <span class="o">[</span> <span class="nv">$count</span> -le <span class="m">10</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> ! mysql -uroot -proot -hmysql -P3306 -e <span class="s1">&#39;exit&#39;</span> <span class="p">;</span> <span class="k">do</span>
-    sleep <span class="m">5</span>
-    <span class="o">((</span>count++<span class="o">))</span>
-<span class="k">done</span>
-<span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$count</span><span class="s2">&quot;</span> -ge <span class="m">10</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="nb">echo</span> &gt;<span class="p">&amp;</span><span class="m">2</span> <span class="s1">&#39;error: failed to connect to MySQL after 10 attempts&#39;</span>
-    <span class="nb">exit</span> <span class="m">1</span>
-<span class="k">fi</span>
-<span class="nb">echo</span> <span class="s1">&#39;MySQL connection successful!&#39;</span>
-
 <span class="c1"># Database</span>
 php <span class="s2">&quot;/var/www/backend/artisan&quot;</span> migrate
 </pre></div>
 </td></tr></table>
 
 <p>Let's break this down a bit. First, we install the Composer dependencies, specifying the folder to run <code>composer install</code> from with the <code>-d</code> option. We then check whether there's already a <code>.env</code> file, and if there isn't, we create one with some pre-configured settings matching our Docker setup. Notice that we leave the <code>APP_KEY</code> environment variable empty; that is why we run the command to generate the Laravel application key right after creating the <code>.env</code> file. We then move on to setting up the database.</p>
-<p>At the very beginning of the project's initialisation, there is no database. Even though we specified in <code>docker-compose.yml</code> that the MySQL container should be started before the backend container, being up and running doesn't mean it had the chance to create the <code>demo</code> database yet. In most situations, the corresponding delay isn't a problem, but in our case the <code>init</code> script will be executed almost immediately, meaning there may be a few seconds during which it won't be able to reach the database. For the script not to exit with an error, we periodically test the connection, using a loop trying to establish a connection every few seconds, using the MySQL CLI: this is what we installed the <code>mysql-client</code> package for. On top of that, we also need the <code>mariadb-connector-c-dev</code> package to make the <code>caching_sha2_password</code> authentication plugin available to the MySQL CLI.</p>
-<p>I don't want to linger on this too much, but if you're curious about this the info box below is there for you.</p>
-<div class="info">
-<p><span class="title">MySQL authentication plugin</span> With MySQL 8, the default authentication plugin changed for <code>caching_sha2_password</code>, and in some instances systems started to fail to connect to MySQL databases after the upgrade, since that plugin isn't available everywhere by default.</p>
-<p>A quick solution is to revert to the previous plugin, which one can do by setting <code>default-authentication-plugin</code> to <code>mysql_native_password</code> in  the MySQL configuration. The change was made for <a href="https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password">security reasons</a>, however, so using the new plugin is recommended whenever possible.</p>
-<p>On Alpine, the client-side plugin is <a href="https://dev.mysql.com/doc/refman/8.0/en/caching-sha2-pluggable-authentication.html#caching-sha2-pluggable-authentication-installation">built into the <code>libmysqlclient</code> library</a>, which comes with the <a href="https://pkgs.alpinelinux.org/contents?file=libmysqlclient.so&path=&name=&branch=edge"><code>mariadb-connector-c-dev</code> package</a>, hence we installed it along with <code>mysql-client</code>. This is actually a good example of the kind of research effort it sometimes takes to make something work.</p>
-</div>
-
 <p>Just like the <code>demo</code> file at the beginning of this article, we need to make the <code>init</code> file executable:</p>
 <div class="highlight"><pre><span></span>$ chmod +x .docker/backend/init
 </pre></div>
@@ -1016,7 +982,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-01" pubdate>2021-03-01</time>
+          <time datetime="2021-03-06" pubdate>2021-03-06</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

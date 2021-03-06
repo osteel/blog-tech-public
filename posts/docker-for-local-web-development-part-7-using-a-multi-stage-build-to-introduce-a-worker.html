@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-01 ::
+          Last updated: 2021-03-06 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -260,17 +260,17 @@ volumes:
 <pre>
 # Backend Service
 backend:
-  build:
-    context: ./src/backend
-    target: backend
+  build: ./src/backend
   working_dir: /var/www/backend
   volumes:
     - ./src/backend:/var/www/backend
     - ./.docker/backend/init:/opt/files/init
     - ./.docker/nginx/certs:/usr/local/share/ca-certificates
   depends_on:
-    - mysql
-    <strong>- redis</strong>
+    mysql:
+      condition: service_healthy
+    <strong>redis:
+      condition: service_started</strong>
 </pre>
 
 <p>Save <code>docker-compose.yml</code> and start the project to download the new image and create the corresponding container and volume:</p>
@@ -470,7 +470,10 @@ backend:
     - ./.docker/backend/init:/opt/files/init
     - ./.docker/nginx/certs:/usr/local/share/ca-certificates
   depends_on:
-    - mysql
+    mysql:
+      condition: service_healthy
+    redis:
+      condition: service_started
 </pre>
 
 <p>Save the file and build the corresponding images:</p>
@@ -534,7 +537,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-01" pubdate>2021-03-01</time>
+          <time datetime="2021-03-06" pubdate>2021-03-06</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

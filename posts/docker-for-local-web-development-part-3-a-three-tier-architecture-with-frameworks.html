@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-01 ::
+          Last updated: 2021-03-06 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -241,7 +241,8 @@ services:
     volumes:
       - ./src/backend:/var/www/backend
     depends_on:
-      - mysql</strong>
+      mysql:
+        condition: service_healthy</strong>
 
   # MySQL Service
   mysql:
@@ -252,6 +253,10 @@ services:
     volumes:
       - ./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
       - mysqldata:/var/lib/mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD
+      interval: 5s
+      retries: 10
 
   # PhpMyAdmin Service
   phpmyadmin:
@@ -261,7 +266,8 @@ services:
     volumes:
       - phpmyadmindata:/var/www/html
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
 # Volumes
 volumes:
@@ -865,7 +871,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-01" pubdate>2021-03-01</time>
+          <time datetime="2021-03-06" pubdate>2021-03-06</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
