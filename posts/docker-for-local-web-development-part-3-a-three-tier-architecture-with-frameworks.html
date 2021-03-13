@@ -135,7 +135,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-06 ::
+          Last updated: 2021-03-13 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -356,12 +356,17 @@ volumes:
 </div>
 
 <p>You also need to update your local <code>hosts</code> file with the new domain names (have a quick look <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack#domain-name" title="Docker for local web development, part 1: a basic LEMP stack">here</a> if you've forgotten how to do that):</p>
-<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.test
+<div class="highlight"><pre><span></span><span class="m">127</span>.0.0.1 backend.demo.test frontend.demo.test phpmyadmin.demo.test
 </pre></div>
 
 
-<p>Note that we've also added the frontend's domain to save us a trip later.</p>
-<p>Create the <code>src/backend</code> directory and add a Dockerfile with the following content to it:</p>
+<p>Note that we also added the frontend's domain to save us a trip later, and that we changed phpMyAdmin's from <code>phpmyadmin.test</code> to <code>phpmyadmin.demo.test</code> for consistency.</p>
+<p>You should open the <code>phpmyadmin.conf</code> file in the <code>.docker/nginx/conf.d</code> folder now and update the following line accordingly:</p>
+<div class="highlight"><pre><span></span><span class="k">server_name</span> <span class="s">phpmyadmin.demo.test</span>
+</pre></div>
+
+
+<p>Now create the <code>src/backend</code> directory and add a Dockerfile with this content:</p>
 <div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 </pre></div>
 
@@ -520,7 +525,7 @@ The default value is 2 GB; I doubled that and it made a world of difference (if 
 </pre></div>
 
 
-<p>You can log into <a href="http://phpmyadmin.test">phpmyadmin.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>failed_jobs</code>, <code>migrations</code>, <code>password_resets</code> and <code>users</code>).</p>
+<p>You can log into <a href="http://phpmyadmin.demo.test">phpmyadmin.demo.test</a> (with the <code>root</code> / <code>root</code> credentials) to confirm the presence of the <code>demo</code> database and its newly created tables (<code>failed_jobs</code>, <code>migrations</code>, <code>password_resets</code> and <code>users</code>).</p>
 <p>There is one last thing we need to do before moving on to the frontend application: since our aim is to have it interact with the backend, let's add the following endpoint to <code>routes/api.php</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
@@ -547,6 +552,8 @@ $ docker-compose <span class="nb">exec</span> backend composer
 $ docker-compose run --rm backend composer
 </pre></div>
 
+
+<p class="info"><span class="title">Using Xdebug?</span> I don't use it myself, but at this point you might want to add Xdebug to your setup. I won't cover it in detail because this is too PHP-specific, but <a href="https://matthewsetter.com/setup-step-debugging-php-xdebug3-docker/" title="Setup Step Debugging in PHP with Xdebug 3 and Docker Compose">this tutorial</a> will show you how to make it work with Docker and Docker Compose.</p>
 
 <h2 id="the-frontend-application">The frontend application</h2>
 <p>The third tier of our architecture is the frontend application, for which we will use the ever more popular <a href="https://vuejs.org">Vue.js</a>.</p>
@@ -871,7 +878,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-06" pubdate>2021-03-06</time>
+          <time datetime="2021-03-13" pubdate>2021-03-13</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
