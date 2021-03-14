@@ -246,6 +246,8 @@ styles, `#sidebar-checkbox` for behavior. -->
         <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
     <span class="nt">sailredis</span><span class="p">:</span>
         <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
+    <span class="nt">sailmeilisearch</span><span class="p">:</span>
+        <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
 </pre></div>
 
 
@@ -500,7 +502,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Next up: adding a Docker service for MongoDB.</p>
 <h3 id="adding-new-services">Adding new services</h3>
 <p>MongoDB is essentially another database; as a result, the corresponding service will be very similar to the ones of MySQL and Redis. A quick search on <a href="https://hub.docker.com">Docker Hub</a> reveals that there is <a href="https://hub.docker.com/_/mongo">an official image</a> for it, which we are going to use.</p>
-<p>Its documentation contains an example configuration for Docker Compose, which we can copy and adjust to our needs. Open <code>docker-compose.yml</code> and add the following service at the bottom, after the <code>mailhog</code> one:</p>
+<p>Its documentation contains an example configuration for Docker Compose, which we can copy and adjust to our needs. Open <code>docker-compose.yml</code> and add the following service at the bottom, after the other ones:</p>
 <div class="highlight"><pre><span></span><span class="nt">mongo</span><span class="p">:</span>
     <span class="nt">image</span><span class="p">:</span> <span class="s">&#39;mongo:4.4&#39;</span>
     <span class="nt">restart</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">always</span>
@@ -518,11 +520,13 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>The changes I've made are the following: first, I specified the tag <code>4.4</code> of the <code>mongo</code> image. If you don't specify one, Docker Compose will pull the <code>latest</code> tag by default, which is not good practice since it will refer to different versions of MongoDB over time, as new releases are available. The introduction of breaking changes could create instability in your Docker setup, so it's better to target a specific version, matching the production one whenever possible.</p>
 <p>Then, I declared a <code>MONGO_INITDB_DATABASE</code> environment variable for the container to create a database with the corresponding name at start-up, and I matched the value of each environment variable to one coming from the <code>.env</code> file (we'll come back to those in a minute).</p>
 <p>I also added a <code>volumes</code> section, mounting a Docker-managed volume onto the container's <code>/data/db</code> folder. The same principle as MySQL and Redis here applies: if you don't persist the data on your local machine, it will be lost every time the MongoDB container is destroyed. In other words, as the MongoDB data is stored in the container's <code>/data/db</code> folder, we persist that folder locally using a volume.</p>
-<p>As this volume doesn't exist yet, we need to declare it at the bottom of <code>docker-compose.yml</code>, after the two other ones:</p>
+<p>As this volume doesn't exist yet, we need to declare it at the bottom of <code>docker-compose.yml</code>, after the other ones:</p>
 <div class="highlight"><pre><span></span><span class="nt">volumes</span><span class="p">:</span>
     <span class="nt">sailmysql</span><span class="p">:</span>
         <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
     <span class="nt">sailredis</span><span class="p">:</span>
+        <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
+    <span class="nt">sailmeilisearch</span><span class="p">:</span>
         <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
     <span class="nt">sailmongo</span><span class="p">:</span>
         <span class="nt">driver</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">local</span>
