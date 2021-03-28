@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2020-11-14 ::
+          Last updated: 2021-03-28 ::
         Published: 11/11/2020
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example.html">history</a> ]
       </small>
@@ -309,7 +309,7 @@ $ composer require darkaonline/l5-swagger
 
 <span class="k">namespace</span> <span class="nx">Tests\Feature</span><span class="p">;</span>
 
-<span class="k">use</span> <span class="nx">Osteel\OpenApi\Testing\ResponseValidatorBuilder</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Osteel\OpenApi\Testing\Response\ResponseValidatorBuilder</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Tests\TestCase</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">ExampleTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
@@ -325,7 +325,7 @@ $ composer require darkaonline/l5-swagger
 
         <span class="nv">$validator</span> <span class="o">=</span> <span class="nx">ResponseValidatorBuilder</span><span class="o">::</span><span class="na">fromYaml</span><span class="p">(</span><span class="nx">storage_path</span><span class="p">(</span><span class="s1">&#39;api-docs/api-docs.yaml&#39;</span><span class="p">))</span><span class="o">-&gt;</span><span class="na">getValidator</span><span class="p">();</span>
 
-        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="s1">&#39;/test&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">,</span> <span class="nv">$response</span><span class="o">-&gt;</span><span class="na">baseResponse</span><span class="p">);</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$validator</span><span class="o">-&gt;</span><span class="na">validate</span><span class="p">(</span><span class="nv">$response</span><span class="o">-&gt;</span><span class="na">baseResponse</span><span class="p">,</span> <span class="s1">&#39;/test&#39;</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">);</span>
 
         <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">assertTrue</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
     <span class="p">}</span>
@@ -334,12 +334,15 @@ $ composer require darkaonline/l5-swagger
 </td></tr></table>
 
 <p>Let's unpack this a bit. For those unfamiliar with Laravel, <code>$this-&gt;get()</code> is a test method provided by the <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php"><code>MakesHttpRequests</code></a> trait that essentially performs a <code>GET</code> request on the provided endpoint, executing the request's lifecycle without leaving the application. It returns a response that is identical to the one we would obtain if we'd perform the same request from the outside.</p>
-<p>We then create a validator using the <code>Osteel\OpenApi\Testing\ResponseValidatorBuilder</code> class, to which we feed the YAML definition we wrote earlier via the <code>fromYaml</code> static method (the <code>storage_path</code> function is a helper returning the path to the <code>storage</code> folder, where we stored the definition).</p>
+<p>We then create a validator using the <code>Osteel\OpenApi\Testing\Response\ResponseValidatorBuilder</code> class, to which we feed the YAML definition we wrote earlier via the <code>fromYaml</code> static method (the <code>storage_path</code> function is a helper returning the path to the <code>storage</code> folder, where we stored the definition).</p>
 <p>Had we had a JSON definition instead, we could have used the <code>fromJson</code> method; also, both methods accept YAML and JSON strings respectively, as well as  files.</p>
-<p>The builder returns an instance of <code>Osteel\OpenApi\Testing\ResponseValidator</code>, on which we call the <code>get</code> method, passing the path and the response as parameters (<code>$response</code> is a <code>Illuminate\Testing\TestResponse</code> object here, which is a wrapper for the underlying HttpFoundation object, which can be retrieved through the <code>baseResponse</code> public property).</p>
-<p>The above is basically the equivalent of saying <em>I want to validate that this response conforms to the OpenAPI definition of a <code>GET</code> request on the <code>/test</code> path</em>.</p>
+<p>The builder returns an instance of <code>Osteel\OpenApi\Testing\Response\ResponseValidator</code>, on which we call the <code>get</code> method, passing the path and the response as parameters (<code>$response</code> is a <code>Illuminate\Testing\TestResponse</code> object here, which is a wrapper for the underlying HttpFoundation object, which can be retrieved through the <code>baseResponse</code> public property).</p>
+<p>The above is basically the equivalent of saying:</p>
+<blockquote>
+<p>I want to validate that this response conforms to the OpenAPI definition of a <code>GET</code> request on the <code>/test</code> path.</p>
+</blockquote>
 <p>It could also be written this way:</p>
-<div class="highlight"><pre><span></span><span class="x">$result = $validator-&gt;get(&#39;/test&#39;, $response-&gt;baseResponse);</span>
+<div class="highlight"><pre><span></span><span class="x">$result = $validator-&gt;get($response-&gt;baseResponse, &#39;/test&#39;);</span>
 </pre></div>
 
 
@@ -408,7 +411,7 @@ $ composer require darkaonline/l5-swagger
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2020-11-14" pubdate>2020-11-14</time>
+          <time datetime="2021-03-28" pubdate>2021-03-28</time>
           :: [
           <a href="https://tech.osteel.me/tag/openapi">openapi</a>
           <a href="https://tech.osteel.me/tag/laravel">laravel</a>
