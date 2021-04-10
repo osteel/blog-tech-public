@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-06 ::
+          Last updated: 2021-04-10 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -203,16 +203,28 @@ styles, `#sidebar-checkbox` for behavior. -->
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 
 <span class="c"># Import extension installer</span>
 <span class="k">COPY</span> --from<span class="o">=</span>mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
 <span class="c"># Install extensions</span>
-<span class="k">RUN</span> install-php-extensions bcmath pdo_mysql redis
+<span class="k">RUN</span> install-php-extensions pdo_mysql bcmath opcache redis
 
 <span class="c"># Install Composer</span>
 <span class="k">COPY</span> --from<span class="o">=</span>composer:latest /usr/bin/composer /usr/local/bin/composer
+
+<span class="c"># Configure PHP</span>
+<span class="k">COPY</span> .docker/php.ini <span class="nv">$PHP_INI_DIR</span>/conf.d/opcache.ini
+
+<span class="c"># Use the default development configuration</span>
+<span class="k">RUN</span> mv <span class="nv">$PHP_INI_DIR</span>/php.ini-development <span class="nv">$PHP_INI_DIR</span>/php.in
 
 <span class="c"># Install extra packages</span>
 <span class="k">RUN</span> apk --no-cache add bash mysql-client mariadb-connector-c-dev
@@ -398,10 +410,16 @@ FROM php:8.0-fpm-alpine <strong>as backend</strong>
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
 # Install extensions
-RUN install-php-extensions bcmath pdo_mysql redis
+RUN install-php-extensions bcmath pdo_mysql opcache redis
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
+# Configure PHP
+COPY .docker/php.ini $PHP_INI_DIR/conf.d/opcache.ini
+
+# Use the default development configuration
+RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 
 # Install extra packages
 RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
@@ -534,7 +552,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-06" pubdate>2021-03-06</time>
+          <time datetime="2021-04-10" pubdate>2021-04-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

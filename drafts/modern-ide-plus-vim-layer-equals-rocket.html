@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/year/month/day/" />
+    <meta property="og:image" content="https://tech.osteel.me/images/year/month/day/vim_01.jpg" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
@@ -140,18 +140,25 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>How do you generate a random string?
 Open a Vim editor, and try to exit!</p>
 </blockquote>
-<p>To a lot of people, this is what their experience of Vim looks like: some trying-to-exit Vim jokes, and sights of relief when they realise <a href="https://www.nano-editor.org/">Nano</a> is available on the system they're interacting with.</p>
-<p>Besides the fact that Nano is at least equally weird to exit to me, this reputation of being complicated precedes Vim in a way that drives most people away before they even tried, thus missing out on its great potential.</p>
+<p>To a lot of people, this is what their experience of Vim looks like – some trying-to-exit Vim jokes, and sights of relief when they realise <a href="https://www.nano-editor.org/">Nano</a> is available on the system they're interacting with.</p>
+<p>Besides the fact that Nano is at least equally weird to exit to me, this reputation of being overcomplicated precedes Vim so much that most people won't even open it, not realising they are missing out on its great potential.</p>
 <p>This is especially true for programmers.</p>
-<p>I am not necessarily talking about <a href="https://github.com/jez/vim-as-an-ide">using Vim as full-fledged IDE</a>, which is an approach I once tried before deciding that some pains are not worth living through (I may upset a few Vim purists here, although they are probably too busy fighting some Emacs-imalists somewhere).</p>
-<p>I'm talking about adding a Vim layer to your favourite IDE, which probably already exists as an extension: just type "Vim" in your extension manager and I'm sure you will get some results (and if your IDE does not support extensions, it might be time to consider a change).</p>
-<p>Here are some extensions for <a href="https://github.com/VSCodeVim/Vim">VSCode</a>, <a href="https://github.com/NeoVintageous/NeoVintageous">Sublime</a>, <a href="https://www.jetbrains.com/help/phpstorm/using-product-as-the-vim-editor.html">PHPStorm</a>, and <a href="https://atom.io/packages/vim-mode-plus">Atom</a>.</p>
-<p>But beyond this apparent complexity and occasional turf squabbles lies an important fact: Vim's approach to text editing is powerful in a way that can benefit most programmers.</p>
-<p>This post is not about how to use Vim, but a collection of examples that will hopefully make you want to dig further, and maybe start using it on a daily basis as well.</p>
-<p>If that's the case, you will find links to various learning resources at the end of the article.</p>
+<p>I am not necessarily advocating for the use of Vim as a <a href="https://github.com/jez/vim-as-an-ide">full-fledged IDE</a> here (an approach I once tried, before deciding that some pains are not worth living through).</p>
+<p>I'm talking about adding a Vim layer to your favourite IDE, which probably already exists in the form of an extension.</p>
+<p>Here are for instance some plugins for some of the most popular IDEs out there: <a href="https://github.com/VSCodeVim/Vim">VSCode</a>, <a href="https://github.com/NeoVintageous/NeoVintageous">Sublime Text</a>, <a href="https://www.jetbrains.com/help/phpstorm/using-product-as-the-vim-editor.html">PHPStorm</a>, and <a href="https://atom.io/packages/vim-mode-plus">Atom</a>.</p>
+<p>If yours is not in the list, go and search for "Vim" in its extension manager now – I'm sure some results will pop up (and if your editor does not support extensions, this may be your cue to consider a change).</p>
+<p>The point is that you don't need to give up on what you're familiar with, but that on the contrary you can keep your favourite features and add the power of Vim on top of them. This doesn't have to be a complete replacement for the way you interact with your text, either. In most cases, developers will be able to incorporate Vim shortcuts to their practice progressively, at their own pace.</p>
+<h2 id="tldr">TL;DR</h2>
+<ul>
+<li>Vim is not just an obscure, elitist text editor;</li>
+<li>It has a lot of features that can greatly speed up your coding;</li>
+<li>Most modern IDEs offer a decent Vim integration;</li>
+<li>This post intends to show you the basics and convice you to give it a try.</li>
+</ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
 <ul>
+<li><a href="#tldr">TL;DR</a></li>
 <li><a href="#in-this-post">In this post</a></li>
 </ul>
 </div>
@@ -161,9 +168,32 @@ Open a Vim editor, and try to exit!</p>
 
 ## Vim vs Vi
 
+First a little bit of disambiguation. 
 https://www.shell-tips.com/linux/vi-vs-vim/
 
 Introduce it briefly (Vim vs Vi?). Vim is the most commonly used implementation of the Vi standard, which is why most IDE extensions will refer to Vim rather than just Vi.
+
+## Normal mode and edit mode
+
+## Moving around
+
+Vim is first and foremost the art of moving around text without using the mouse.
+
+That doesn't mean you shouldn't use the mouse. That means you can _not_ use the mouse if you don't want to.
+
+Now if you've been doing this for a while, you've probably figured out a few ways other than the arrows to move around your code – option/alt + arrow to move word by word rather than character by character, command/... + arrow to move to the beginning or the end of a line or of the whole file, etc.
+
+![Moving around traditionally](/images/1/vim_02.gif "Moving around traditionally")
+
+So the first thing is to learn how to do the same using Vim shortcuts:
+
+![Moving around with Vim](/images/1/vim_02.gif "Moving around with Vim")
+
+## Basic edits
+
+i, a, I, A, o, O.
+
+## Combining it all
 
 ## Examples
 
@@ -179,9 +209,13 @@ A familiar one.
 
 ## Conlusion
 
-These are just a few examples – there are many more things you can do. In fact, I'm pretty sure I'm only using a small subset of Vim shortcuts myself.
+These are just a few examples – there are many more things you can do. In fact, I know that I'm only using a ridiculous subset of Vim shortcuts myself.
 
-Are you a Vim user yourself? What are you favourite shortcuts? Let us know in the comments!
+The way I approach it is when I find myself doing something that feels cumbersome, I look up whether there's a way to do it with Vim. More often than not, there is. And Vim has been out there for so long and is used by so many people that there is a vast amount of knowledge and experience one can rely on, available behind simple search engine queries.
+
+If you're curious about it and want to learn more, you will find a few useful resources in the next section.
+
+And if you already are a Vim user yourself, what are you favourite shortcuts? Let us know in the comments!
 
 ## Resources
 

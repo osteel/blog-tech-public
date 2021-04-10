@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-13 ::
+          Last updated: 2021-04-10 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -172,7 +172,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#in-this-post">In this post</a></li>
 <li><a href="#foreword">Foreword</a></li>
 <li><a href="#a-three-tier-architecture">A three-tier architecture?</a></li>
-<li><a href="#the-backend-application">The backend application</a></li>
+<li><a href="#the-backend-application">The backend application</a><ul>
+<li><a href="#opcache">OPcache</a></li>
+</ul>
+</li>
 <li><a href="#the-frontend-application">The frontend application</a></li>
 <li><a href="#conclusion">Conclusion</a></li>
 </ul>
@@ -512,9 +515,9 @@ zlib
 <div class="info">
 <p><span class="title">Pump up that RAM!</span> If the backend's response time feels slow, a quick and easy trick for Docker Desktop is to increase the amount of RAM it is allowed to use. Open the preferences and adjust the <em>Memory</em> slider under <em>Resources</em>:
 <img alt="Docker memory settings" src="/images/2020/03/30/docker-04.png" title="Docker memory settings">
-The default value is 2 GB; I doubled that and it made a world of difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
-<p>If you wish to explore further possibilities on macOS, more tips are laid out in <a href="https://engageinteractive.co.uk/blog/making-docker-faster-on-mac" title="Speeding up Docker on MacOS">this article</a>, or you could look into something like <a href="https://github.com/EugenMayer/docker-sync">docker-sync</a>, or the more recent <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen-based file synchronization</a>.</p>
-<p>If you're on Windows and not using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> yet, looking into it might be a good idea.</p>
+The default value is 2 GB; I doubled that and it made a notable difference (if you've got 8 GB or more, it will most likely not impact your machine's performance in any visible way).</p>
+<p>There are other things you could do to try and speed things up on macOS (e.g. <a href="https://docs.docker.com/docker-for-mac/mutagen/">Mutagen</a>) but they feel a bit hacky and I'm personally not a big fan of them. If PHP is your language of choice though, make sure to check out the OPcache section below.</p>
+<p>And if you're a Windows user and haven't given <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> a try yet, you should probably look into it.</p>
 </div>
 
 <p>Let's also verify our database settings by running Laravel's default migrations:</p>
@@ -551,6 +554,71 @@ $ docker-compose run --rm backend composer
 
 
 <p class="info"><span class="title">Using Xdebug?</span> I don't use it myself, but at this point you might want to add Xdebug to your setup. I won't cover it in detail because this is too PHP-specific, but <a href="https://matthewsetter.com/setup-step-debugging-php-xdebug3-docker/" title="Setup Step Debugging in PHP with Xdebug 3 and Docker Compose">this tutorial</a> will show you how to make it work with Docker and Docker Compose.</p>
+
+<h3 id="opcache">OPcache</h3>
+<p>You can skip this section if PHP is not the language you intend to use in the backend. If it is though, I strongly recommend you follow these steps because OPcache is a game changer when it comes to local performance, especially on macOS (but it will also improve your experience on other operating systems).</p>
+<p>I won't explain it in detail here and will simply quote the <a href="https://www.php.net/manual/en/book.opcache.php">official PHP documentation</a>:</p>
+<blockquote>
+<p>OPcache improves PHP performance by storing precompiled script bytecode in shared memory, thereby removing the need for PHP to load and parse scripts on each request.</p>
+</blockquote>
+<p>It's not enabled by default but we can easily do so by following a few steps borrowed from <a href="https://laravel-news.com/php-opcache-docker">this article</a> (which I invite you to read for more details on the various parameters).</p>
+<p>First, we need to introduce a custom configuration for PHP. Create a new <code>.docker</code> folder in <code>src/backend</code>, and add a <code>php.ini</code> file to it with the following content:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8
+9</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">[opcache]</span>
+<span class="na">opcache.enable</span><span class="o">=</span><span class="s">1</span>
+<span class="na">opcache.revalidate_freq</span><span class="o">=</span><span class="s">0</span>
+<span class="na">opcache.validate_timestamps</span><span class="o">=</span><span class="s">1</span>
+<span class="na">opcache.max_accelerated_files</span><span class="o">=</span><span class="s">10000</span>
+<span class="na">opcache.memory_consumption</span><span class="o">=</span><span class="s">192</span>
+<span class="na">opcache.max_wasted_percentage</span><span class="o">=</span><span class="s">10</span>
+<span class="na">opcache.interned_strings_buffer</span><span class="o">=</span><span class="s">16</span>
+<span class="na">opcache.fast_shutdown</span><span class="o">=</span><span class="s">1</span>
+</pre></div>
+</td></tr></table>
+
+<p>We place this file here and not at the very root of the project because this configuration is specific to the backend application, and we need to reference it from its Dockerfile.</p>
+<p>The Dockerfile is indeed where we can import this configuration from, and also where we will install the <code>opcache</code> extension. Replace its content with the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+
+<span class="c"># Install extensions</span>
+<span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath opcache
+
+<span class="c"># Install Composer</span>
+<span class="k">COPY</span> --from<span class="o">=</span>composer:latest /usr/bin/composer /usr/local/bin/composer
+
+<span class="c"># Configure PHP</span>
+<span class="k">COPY</span> .docker/php.ini <span class="nv">$PHP_INI_DIR</span>/conf.d/opcache.ini
+
+<span class="c"># Use the default development configuration</span>
+<span class="k">RUN</span> mv <span class="nv">$PHP_INI_DIR</span>/php.ini-development <span class="nv">$PHP_INI_DIR</span>/php.ini
+</pre></div>
+</td></tr></table>
+
+<p>We're simply copying the <code>php.ini</code> file over to the directory where custom configurations are expected to go in the container, and whose location is given by the <code>$PHP_INI_DIR</code> environment variable. And since we're here, we can also use the default development settings provided by the image's maintainers, which sets up error reporting parameters, among other things (that's what the last instruction is for).</p>
+<p>And that's it! Build the image again and restart the containers – you should notice some improvement around the backend's responsiveness:</p>
+<div class="highlight"><pre><span></span>$ docker-compose build backend
+$ docker-compose up -d
+</pre></div>
+
 
 <h2 id="the-frontend-application">The frontend application</h2>
 <p>The third tier of our architecture is the frontend application, for which we will use the ever more popular <a href="https://vuejs.org">Vue.js</a>.</p>
@@ -875,7 +943,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-13" pubdate>2021-03-13</time>
+          <time datetime="2021-04-10" pubdate>2021-04-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
