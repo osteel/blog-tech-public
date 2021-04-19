@@ -132,7 +132,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-04-10 ::
+          Last updated: 2021-04-19 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -227,7 +227,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - ./src/backend:/var/www/backend
+      <strong>- ./src/backend:/var/www/backend</strong>
       - ./.docker/nginx/conf.d:/etc/nginx/conf.d
       - phpmyadmindata:/var/www/phpmyadmin
     depends_on:
@@ -943,7 +943,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-04-10" pubdate>2021-04-10</time>
+          <time datetime="2021-04-19" pubdate>2021-04-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
