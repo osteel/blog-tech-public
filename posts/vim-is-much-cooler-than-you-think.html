@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2021/06/10/vim_01.jpg" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>Vim is much cooler than you think &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+    <meta name="description" contents="<p>To a large extent, Vim still has a bad rep. This needs to change. But Vim does need a little help to get started, so here's an article explaining the basics, with gifs. The best part? There's probably a Vim extension for your favourite code editor already, so you can start using it today.</p>" />
+
+    <meta name="tags" contents="vim" />
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2021
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Vim is much cooler than you think
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2021-06-10 ::
+        Published: 2021-06-10
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/vim-is-much-cooler-than-you-think.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><img alt="Amy Adams is holding a sign in an attempt to communicate with aliens in the film &quot;Arrival&quot;, but instead of showing the word &quot;Human&quot; it shows the command to exit Vim" src="/images/2021/06/10/vim_01.jpg" title="How to exit Vim" />
+<p class="caption"><a href="https://twitter.com/jovica/status/1370702904819126273">Source</a></p></p>
+<blockquote>
+<p>I've been using Vim for 5 years...<br />
+Mainly because I don't know how to exit it</p>
+</blockquote>
+<p>If you were to ask people about their experience of Vim, this is what their answer would look like – a joke about quitting the program, and a sigh of relief when Nano is present on the system.</p>
+<p>Besides the fact that <a href="https://www.nano-editor.org/">Nano</a> is at least equally weird to exit to me, Vim's esoteric reputation is so widespread that the public mostly stays away from it, largely unaware of its potential.</p>
+<p>Programmers, in particular, are missing out.</p>
+<p>I am not advocating for the use of Vim as a <a href="https://blog.jez.io/vim-as-an-ide/">full-fledged IDE</a> here. I am talking about bringing Vim to your favourite code editor, as an extra layer for which there's probably an extension already.</p>
+<p><a href="https://github.com/VSCodeVim/Vim">VSCode</a>, <a href="https://github.com/NeoVintageous/NeoVintageous">Sublime Text</a>, <a href="https://www.jetbrains.com/help/phpstorm/using-product-as-the-vim-editor.html">PHPStorm</a> and <a href="https://atom.io/packages/vim-mode-plus">Atom</a> all have Vim integrations, for instance. If you use a different program, open its extension manager now and search for "Vim" – I'm sure you'll get some results.</p>
+<p>The point is that you don't have to learn a new editor from scratch – you can keep your favourite software and sprinkle it with some Vim magic.</p>
+<p>Vim doesn't have to replace the way you interact with text entirely, either. In most cases, developers will be able to incorporate Vim commands into their coding practice progressively, alongside native ones.</p>
+<p>They will have the option to keep what they like and leave out the rest.</p>
+<h2 id="tldr">TL;DR</h2>
+<ul>
+<li>Vim doesn't have to be an obscure, elitist text editor;</li>
+<li>It's got plenty of features that can greatly speed up your coding;</li>
+<li>Most modern IDEs and code editors have decent Vim integrations;</li>
+<li>This post intends to show you the ropes and convince you to give it a try.</li>
+</ul>
+<h2 id="contents">Contents</h2>
+<div class="toc">
+<ul>
+<li><a href="#tldr">TL;DR</a></li>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#vim-or-vi">Vim or Vi?</a></li>
+<li><a href="#normal-mode-vs-insert-mode">Normal mode vs insert mode</a></li>
+<li><a href="#moving-around">Moving around</a></li>
+<li><a href="#copying-cutting-and-pasting">Copying, cutting and pasting</a></li>
+<li><a href="#editing">Editing</a></li>
+<li><a href="#searching-saving-and-exiting">Searching, saving and exiting</a></li>
+<li><a href="#undoing-and-redoing">Undoing and redoing</a></li>
+<li><a href="#combining-vim-shortcuts-with-native-features">Combining Vim shortcuts with native features</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+</div>
+<h2 id="vim-or-vi">Vim or Vi?</h2>
+<p>Let me start with a little bit of disambiguation. You may have come across both Vim and Vi on your developer journey, and be unsure as to what the difference is.</p>
+<p>Simply put, Vi is a standard, and Vim an implementation of that standard.</p>
+<p>In fact, Vim is the standard's most popular implementation, coming with most Linux distributions.</p>
+<p>This is also why the vast majority of IDE extensions will refer to Vim instead of Vi.</p>
+<h2 id="normal-mode-vs-insert-mode">Normal mode vs insert mode</h2>
+<p>This is usually the first thing that trips up new Vim users – the fact that the <em>insert</em> mode is not the default mode. They will place the cursor where they want to make changes, start to type some text, and then...</p>
+<p>Nothing.</p>
+<p>Worse yet, they accidentally trigger a Vim command that makes the text behave seemingly randomly, producing weird outcomes which they promptly try to revert. When they make things worse instead, they attempt to prevent further damage by closing the program but can't seem to find a way out, wondering how the hell they ended up trapped in this vicious escape game.</p>
+<p><img alt="The puppet from the &quot;Saw&quot; film franchise" src="/images/2021/06/10/vim_02.jpg" title="Saw" />
+<p class="caption">From the <a href="https://en.wikipedia.org/wiki/Saw_(franchise)">"Saw"</a> film franchise</p></p>
+<p>The most tenacious individuals will eventually figure out that they can make changes by pressing <code>i</code>, and then save their work and get out of there unharmed by pressing the <em>escape</em> key followed by <code>:wq</code>.</p>
+<p>The vast majority of people won't push their exploration further, confident that this is all the knowledge they need. And as far as quickly editing a file on a server goes, they're not wrong.</p>
+<p>But Vim can be used for much more than this. To get to that conclusion though, we need to explore some of its many features, starting with the different ways at our disposal to enter the insert mode.</p>
+<p>Here's the first one, which we've mentioned already: pressing <code>i</code> (for <em>insert</em>) will allow the user to makes changes at the current position:</p>
+<p><img alt="For text-only browsers: in a sequence, keys will be separated by dashes. Keys that need to be pressed simultaneously will be separated by a plus sign. Here is the first sequence, which is a single character: i" src="/images/2021/06/10/vim_03.gif" title="i" /></p>
+<p>To be more specific, it will place the cursor <em>before</em> the current character. If you wanted to place the cursor after instead, you'd go for <code>a</code> (for <em>append</em>):</p>
+<p><img alt="a" src="/images/2021/06/10/vim_04.gif" title="a" /></p>
+<p>You can also insert some text at the very beginning of a line with <code>I</code> (capital i):</p>
+<p><img alt="I" src="/images/2021/06/10/vim_05.gif" title="I" /></p>
+<p>Or at the end of a line with <code>A</code> (capital a):</p>
+<p><img alt="A" src="/images/2021/06/10/vim_06.gif" title="A" /></p>
+<p>You can also create a new line below the current one by pressing <code>o</code> (for <em>open</em>, although that one feels a bit like a stretch, but whatever):</p>
+<p><img alt="o" src="/images/2021/06/10/vim_07.gif" title="o" /></p>
+<p>And if you want to add a line above instead, that's <code>O</code> (capital o):</p>
+<p><img alt="O" src="/images/2021/06/10/vim_08.gif" title="O" /></p>
+<p>That's it for the basics of entering the insert mode. As mentioned earlier, press the <em>escape</em> key to return to the normal mode.</p>
+<p>While you may not be super impressed yet, in the long run the repeated use of these shortcuts can make for an improved user experience already.</p>
+<p>That said, most of them are only useful once the cursor is already close to where you want to make changes, which is not necessarily the case when you've just opened the file.</p>
+<p>Thankfully, Vim has a few ways to get us where we need to be – fast.</p>
+<h2 id="moving-around">Moving around</h2>
+<p>Vim is first and foremost the art of moving around without using the mouse.</p>
+<p>That doesn't mean you shouldn't use the mouse – I use it all the time.</p>
+<p>That means you can <em>not</em> use the mouse if you don't want to.</p>
+<p>Now if you've been doing this for a while, you've probably figured out a few ways besides the arrow keys to move around the code, like shifting the cursor's position word by word instead of character by character, or getting quickly to the beginning or the end of a line, or that of an entire file.</p>
+<p>Let's see how we can do the same with Vim.</p>
+<p>The first thing to remember is that you need to be in normal mode to use the following commands.</p>
+<p>Next, you might have heard that you're supposed to use the <code>h</code>, <code>j</code>, <code>k</code>, and <code>l</code> keys to move left, up, down, and right respectively. I don't. In practice, I find these shortcuts extremely inconvenient, so I just use the arrow keys instead. No hard feelings.</p>
+<p>With that out of the way, here is how you can move the cursor word by word using Vim – by pressing <code>w</code> (for <em>word</em>):</p>
+<p><img alt="w-w-w" src="/images/2021/06/10/vim_09.gif" title="w-w-w" /></p>
+<p>Note that it will get you to the <em>beginning</em> of the following word. If you wish to get to the end instead, press <code>e</code> (for <em>end</em>):</p>
+<p><img alt="e-e-e" src="/images/2021/06/10/vim_10.gif" title="e-e-e" /></p>
+<p>To go backwards, press <code>b</code>:</p>
+<p><img alt="b-b-b" src="/images/2021/06/10/vim_11.gif" title="b-b-b" /></p>
+<p>To go to the very beginning of the line (the <em>hard</em> beginning), press <code>0</code>:</p>
+<p><img alt="0" src="/images/2021/06/10/vim_12.gif" title="0" /></p>
+<p>To go to the end, press <code>$</code> (which appears as the <em>shift</em> key followed by the number 4 on the gif – sorry about that):</p>
+<p><img alt="$" src="/images/2021/06/10/vim_13.gif" title="$" /></p>
+<p>To get to the top of a file, press <code>gg</code>:</p>
+<p><img alt="g-g" src="/images/2021/06/10/vim_14.gif" title="g-g" /></p>
+<p>And to the last line, press <code>G</code> (capital g):</p>
+<p><img alt="G" src="/images/2021/06/10/vim_15.gif" title="G" /></p>
+<p>That should cover what you can normally do with a regular editor – let's now see how we can take things further with Vim.</p>
+<p>I demonstrated earlier how to go to the <em>hard</em> beginning of a line (with <code>0</code>), which implies the existence of a <em>soft</em> beginning.</p>
+<p>The soft beginning is the first non-blank character of a line, to which you can get by pressing <code>^</code> (which appears as the <em>shift</em> key followed by the number 6 on the gif):</p>
+<p><img alt="^" src="/images/2021/06/10/vim_16.gif" title="^" /></p>
+<p>The <code>^</code> and <code>$</code> characters are likely familiar – they usually mark the beginning and end of a regular expression.</p>
+<p>It is also possible to go to a specific line number, which is useful to find where an exception was thrown, for instance. This is achieved by pressing <code>#G</code>, where <code>#</code> is the line number:</p>
+<p><img alt="4-G" src="/images/2021/06/10/vim_17.gif" title="4-G" /></p>
+<p>Another couple of Vim shortcuts I use all the time are <code>f</code> and <code>t</code>. The former stands for <em>find</em> and allows us to place the cursor on the first matching character:</p>
+<p><img alt="f-z" src="/images/2021/06/10/vim_18.gif" title="f-z" /></p>
+<p><code>t</code> (for <em>till</em>) does the same thing, but places the cursor <em>before</em> the first matching character instead:</p>
+<p><img alt="t-z" src="/images/2021/06/10/vim_19.gif" title="t-z" /></p>
+<p>They also have their backwards counterparts – <code>F</code> (capital f) and <code>T</code> (capital t) – which I invite you to try by yourself.</p>
+<p>There are many other available shortcuts but these will do for this article. What I'd like to draw your attention to now is the fact that most of these commands can be combined with a number, the same way we associated <code>G</code> with a number to get to a specific line earlier.</p>
+<p>You can for instance skip four words by typing <code>4e</code> (remember that <code>e</code> gets you to the <em>end</em> of a word):</p>
+<p><img alt="4-e" src="/images/2021/06/10/vim_20.gif" title="4-e" /></p>
+<p>This also works for moving the cursor to the <em>nth</em> matching character. You could for instance type <code>3F,</code> to move backwards to the third comma:</p>
+<p><img alt="3-F-," src="/images/2021/06/10/vim_21.gif" title="3-F-," /></p>
+<p>Try this with some of the other shortcuts – it's pretty cool.</p>
+<p>This is just a glimpse of the way Vim allows us to combine different commands to achieve specific outcomes. Some might look hard to pick up at first, but with a little bit of practice, they all come naturally.</p>
+<p>Knowing how to move around with Vim is extremely important because it is the key to performing complex edits.</p>
+<p>But this is also useful for more common operations – let's see how.</p>
+<h2 id="copying-cutting-and-pasting">Copying, cutting and pasting</h2>
+<p>When it comes to copying and cutting, Vim has its own clipboard, separate from the operating system's. It's called the <em>unnamed register</em> and allows for some advanced operations that I won't get into here (mostly because I don't know how to use them myself).</p>
+<p>In other words, if you copy a value the regular way (with <code>cmd+c</code> on a Mac, for instance) and then copy another value using the Vim command, the latter doesn't overwrite the former – they're stored in different places.</p>
+<p>So how do we copy stuff?</p>
+<p>First, make sure you're in normal mode. Then, select the bit of text you're interested in. Finally, press <code>y</code> to copy the text into the register. That's it.</p>
+<p>The <code>y</code> command stands for <em>yanking</em>. Now I don't know why they called it that, but I find it kind of funny.</p>
+<p>Anyway, once you've done that place the cursor where you want to paste the text and press <code>p</code>:</p>
+<p><img alt="y-p" src="/images/2021/06/10/vim_22.gif" title="y-p" /></p>
+<p>That will paste the text <em>after</em> the cursor. If you'd rather paste it before, use <code>P</code> (capital p):</p>
+<p><img alt="P" src="/images/2021/06/10/vim_23.gif" title="P" /></p>
+<p>To paste over some text instead, select it first and then press <code>p</code>:</p>
+<p><img alt="p" src="/images/2021/06/10/vim_24.gif" title="p" /></p>
+<p>How about cutting some text? Select the portion of interest, then press <code>d</code> (for <em>delete</em>):</p>
+<p><img alt="d" src="/images/2021/06/10/vim_25.gif" title="d" /></p>
+<p>That's right, there's no difference between cutting and deleting, so long as you don't paste the corresponding text. If that's what you want to do though, the same shortcuts apply. For instance <code>p</code>:</p>
+<p><img alt="p" src="/images/2021/06/10/vim_26.gif" title="p" /></p>
+<p>Now the above is great but doesn't bring anything new to the table. Then again, things get more interesting when we start combining commands.</p>
+<p>I won't always show examples for both yanking and deleting below – you can assume that what works for one also works for the other.</p>
+<p>First, we can copy or delete/cut an entire line by pressing the corresponding key twice. E.g. to copy the entire line, press <code>yy</code> (and then <code>p</code> to paste below):</p>
+<p><img alt="y-y-p" src="/images/2021/06/10/vim_27.gif" title="y-y-p" /></p>
+<p>To paste above instead, press <code>P</code> (capital p – same as before):</p>
+<p><img alt="y-y-P" src="/images/2021/06/10/vim_28.gif" title="y-y-P" /></p>
+<p>How about copying or deleting multiple lines? Just squeeze a number in there – e.g. to delete two lines, type <code>d2d</code>:</p>
+<p><img alt="d-2-d" src="/images/2021/06/10/vim_29.gif" title="d-2-d" /></p>
+<p>Want to delete until a specific line number? That's <code>d#G</code>, where <code>#</code> is the line number:</p>
+<p><img alt="d-5-G" src="/images/2021/06/10/vim_30.gif" title="d-5-G" /></p>
+<p>This is another way to use the <code>G</code> shortcut we've seen earlier, in conjunction with yet another command.</p>
+<p>Now, remember the <code>f</code>, <code>F</code>, <code>t</code> and <code>T</code> commands to place the cursor at or before a specific character forwards and backwards? They work with copying and cutting, too.</p>
+<p>Here, we copy up to and including the full stop, and paste before the cursor with <code>P</code>:</p>
+<p><img alt="y-f-." src="/images/2021/06/10/vim_31.gif" title="y-f-." /></p>
+<p>But that's not all. One of my favourite features is the ability to yank and delete some text inside boundaries.</p>
+<p>Say we want to delete a section that's between double quotes. We can do so with <code>di"</code> (the double quotes appear as the <em>shift</em> key followed by a single quote on the gif):</p>
+<p><img alt="d-i-&quot;" src="/images/2021/06/10/vim_32.gif" title="d-i-\&quot;" /></p>
+<p>In the above command, <code>i</code> is for <em>inner</em>.</p>
+<p>This also works with parentheses, curly and square brackets, greater than and less than symbols – anything marking a beginning and an end.</p>
+<p>It applies to words, too:</p>
+<p><img alt="d-i-w" src="/images/2021/06/10/vim_33.gif" title="d-i-w" /></p>
+<p>In the above example, <code>diw</code> stands for <em>delete inner word</em>.</p>
+<p>You can also paste content inside boundaries (then again, the double quotes appear as the <em>shift</em> key followed by a single quote on the gif):</p>
+<p><img alt="v-i-&quot;-p" src="/images/2021/06/10/vim_34.gif" title="v-i-\&quot;-p" /></p>
+<p>The trick here is to use Vim's <em>visual mode</em>, which is different from the normal and insert modes (two other modes also exist – <em>command</em> and <em>replace</em> – but we'll stick to those three in this article).</p>
+<p>The visual mode is essentially a selection mode, which we briefly saw earlier when we covered <em>yanking</em>. To enter it, make sure you're in normal mode and press <code>v</code>. From there, the same shortcuts used to move around the text also apply to selecting it.</p>
+<p>In the example above, we've selected the text between double to paste some other text over it using the <code>vi"p</code> sequence, which roughly translates to <em>visual inner double quotes and paste</em>.</p>
+<p>Note that whenever you select some text using the mouse instead of the keyboard while in normal mode, you automatically enter the visual mode.</p>
+<h2 id="editing">Editing</h2>
+<p>There are several ways to go about editing, but in practice I only use a single command which I combine with others.</p>
+<p>Starting in normal mode, select a bunch of text and press <code>c</code> (for <em>change</em>):</p>
+<p><img alt="c" src="/images/2021/06/10/vim_35.gif" title="c" /></p>
+<p>This is basically a shortcut for <code>di</code> – <em>delete and insert</em>.</p>
+<p>Like the other commands, it can be associated with different shortcuts to achieve various outcomes.</p>
+<p>You can for instance change the current word with <code>ciw</code> (for <em>change inner word</em>):</p>
+<p><img alt="c-i-w" src="/images/2021/06/10/vim_36.gif" title="c-i-w" /></p>
+<p>Or replace the next three words with <code>c3w</code> (for <em>change 3 words</em>):</p>
+<p><img alt="c-3-w" src="/images/2021/06/10/vim_37.gif" title="c-3-w" /></p>
+<p>Or until the next exclamation mark (which appears as the <em>shift</em> key followed by the number 1 on the gif):</p>
+<p><img alt="c-t-!" src="/images/2021/06/10/vim_38.gif" title="c-t-!" /></p>
+<p>In the above example, <code>ct!</code> stands for <em>change till exclamation mark</em>.</p>
+<p>You can also replace the entire line with <code>cc</code>:</p>
+<p><img alt="c-c" src="/images/2021/06/10/vim_39.gif" title="c-c" /></p>
+<p>Or change till the end of the line with <code>C</code> (capital c):</p>
+<p><img alt="C" src="/images/2021/06/10/vim_40.gif" title="C" /></p>
+<p>There is more to editing, but as the above covers 99% of what I use daily, I'll leave it at that. Should you be interested though, you'll find more information in the resources listed at the end of this article.</p>
+<h2 id="searching-saving-and-exiting">Searching, saving and exiting</h2>
+<p>As Vim is originally a text editor in its own right, it also has commands for searching/replacing, saving and – infamously – exiting.</p>
+<p>But since the premise of this article is to use it within your editor of choice, you're probably comfortable with the way those are handled already.</p>
+<p>While nothing prevents you from using the Vim way instead, you wouldn't miss out too much by sticking to what you already know. Then again, if you want to know more the resources listed further down will help.</p>
+<h2 id="undoing-and-redoing">Undoing and redoing</h2>
+<p>While undoing and redoing are also standard IDE features, you might want to learn the Vim shortcuts for these because they don't necessarily mean the same thing.</p>
+<p>When you undo something in Vim, you revert everything you've done since the last time you were in normal mode. Conversely, when you redo something, you restore the changes until the point you switched back to normal mode.</p>
+<p>Your code editor may not have the same notions of previous and next changes, which is why you should probably learn the Vim way for these.</p>
+<p>Thankfully, it isn't complicated at all.</p>
+<p>You can undo some changes by pressing <code>u</code>:</p>
+<p><img alt="u" src="/images/2021/06/10/vim_41.gif" title="u" /></p>
+<p>Note that I pressed the <em>escape</em> key to return to normal mode first.</p>
+<p>You can redo the changes by pressing <code>^r</code> (the <em>control</em> key followed by lower case r):</p>
+<p><img alt="ctrl+r" src="/images/2021/06/10/vim_42.gif" title="ctrl+r" /></p>
+<p>Another useful thing to know is that when you start typing a Vim sequence and realise you've got it wrong, pressing the <em>escape</em> key will cancel it.</p>
+<h2 id="combining-vim-shortcuts-with-native-features">Combining Vim shortcuts with native features</h2>
+<p>This is the last thing I wanted to broach today. In the introduction to this article, I mentioned that developers would be able to use Vim features alongside native IDE ones. Here is an example of this, taken from my own practice.</p>
+<p>I really like VSCode's way of handling multiple cursors, and while it's <a href="https://medium.com/@schtoeffel/you-don-t-need-more-than-one-cursor-in-vim-2c44117d51db" title="You don’t need more than one cursor in vim">possible</a> to achieve a somewhat similar result with native Vim features, I use VSCode's implementation all the time (<code>cmd+d</code> on a Mac):</p>
+<p><img alt="cmd+d-cmd+d-cmd+d" src="/images/2021/06/10/vim_43.gif" title="cmd+d-cmd+d-cmd+d" /></p>
+<p>What I often do is I copy a value in the regular clipboard, select the instances of a bit of text I want to replace using VSCode's multi-cursor feature, then press <code>c</code> and paste the text the regular way (with <code>cmd+v</code>):</p>
+<p><img alt="cmd+d-cmd+d-cmd+d-c-cmd+v" src="/images/2021/06/10/vim_44.gif" title="cmd+d-cmd+d-cmd+d-c-cmd+v" /></p>
+<p>This is a weird combo that ultimately only uses a single Vim command (<code>c</code>), but one that works for me.</p>
+<p>The point is that nothing forces you to embrace Vim fully. Try different approaches, see what works for you and ignore the rest.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>It may have occurred to you in light of this article that Vim is pretty much its own language.</p>
+<p>You've got to learn some vocabulary first, then some grammar and make sure you've got the syntax right. Eventually, you start forming whole sentences allowing you to achieve increasingly complex results, in a way that almost feels natural.</p>
+<p>There's undoubtedly a learning curve to Vim, but it's a small price to pay to leverage its potential in my opinion. Besides, this initial hurdle is further mitigated by its integration into popular code editors, allowing users to experiment within familiar surroundings.</p>
+<p>Vim has many features to offer, and while this article is a collection of rather basic examples they can get you a long way already.</p>
+<p>The resources listed in the next section will give you some pointers if you want to explore the topic further. I find this <a href="https://www.reddit.com/r/vim/comments/a1z6lb/vim_wallpaper_to_quickly_peek_at_with_show/" title="Vim cheat sheet">cheat sheet</a> to be particularly helpful, for instance. In any case, Vim has been around for a long time and is used by many people; as a result, there's a vast amount of readily accessible knowledge out there.</p>
+<p>I hope this post will encourage you to give it a go, and if you're a Vim veteran already, I'd love to know about your favourite commands in the comments.</p>
+<h2 id="resources">Resources</h2>
+<ul>
+<li><a href="https://www.vim.org/" title="Vim.org">Vim.org</a></li>
+<li><a href="https://vim-adventures.com/" title="Vim Adventures">Vim Adventures</a></li>
+<li><a href="https://github.com/iggredible/Learn-Vim" title="Learn Vim (the Smart Way)">Learn Vim (the Smart Way)</a></li>
+<li><a href="https://www.reddit.com/r/vim/comments/a1z6lb/vim_wallpaper_to_quickly_peek_at_with_show/" title="Vim cheat sheet">Vim cheat sheet</a></li>
+<li><a href="https://www.shell-tips.com/linux/vi-vs-vim/" title="What are the Differences Between Vi and Vim?">Vi vs Vim</a></li>
+<li><a href="https://github.com/VSCodeVim/Vim" title="VSCode extension">VSCode extension</a></li>
+<li><a href="https://github.com/NeoVintageous/NeoVintageous" title="Sublime Text extension">Sublime Text extension</a></li>
+<li><a href="https://www.jetbrains.com/help/phpstorm/using-product-as-the-vim-editor.html" title="PHPStorm extension">PHPStorm extension</a></li>
+<li><a href="https://atom.io/packages/vim-mode-plus" title="Atom extension">Atom extension</a></li>
+<li>You may have recognised some quotes from <a href="https://heisenbergipsum.com/" title="Heisenberg Ipsum">Breaking Bad</a></li>
+<li>Gifs were made with <a href="https://github.com/keycastr/keycastr" title="Keycastr on GitHub">Keycastr</a>, <a href="https://support.apple.com/kb/DL837" title="Download QuickTime">QuickTime</a>, <a href="https://www.ffmpeg.org/" title="FFmpeg">FFmpeg</a> and <a href="https://www.lcdf.org/gifsicle/" title="Gifsicle">Gifsicle</a> (<a href="https://gist.github.com/dergachev/4627207" title="OS X Screencast to animated GIF">tutorial</a>)</li>
+</ul>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="2021-06-10" pubdate>2021-06-10</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/vim">vim</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/vim-is-much-cooler-than-you-think";
+              var disqus_url = "https://tech.osteel.me/posts/vim-is-much-cooler-than-you-think";
+              var disqus_title = "Vim is much cooler than you think";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
