@@ -34,12 +34,12 @@
 
 
 
-    <meta name="description" contents="This post is about what to expect from Laravel Sail, how it works and how to make the most of it; it is also a plea to developers to break away from it, in favour of their own, tailored solution." />
-    <meta name="twitter:description" content="This post is about what to expect from Laravel Sail, how it works and how to make the most of it; it is also a plea to developers to break away from it, in favour of their own, tailored solution.">
+  <meta name="description" contents="This post is about what to expect from Laravel Sail, how it works and how to make the most of it; it is also a plea to developers to break away from it, in favour of their own, tailored solution." />
+  <meta name="twitter:description" content="This post is about what to expect from Laravel Sail, how it works and how to make the most of it; it is also a plea to developers to break away from it, in favour of their own, tailored solution.">
 
-    <meta name="tags" contents="laravel" />
-    <meta name="tags" contents="docker" />
-    <meta name="tags" contents="sail" />
+  <meta name="tags" contents="laravel" />
+  <meta name="tags" contents="docker" />
+  <meta name="tags" contents="sail" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-02-27 ::
+          Last updated: 2021-07-11 ::
         Published: 05/01/2021
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/you-dont-need-laravel-sail.html">history</a> ]
       </small>
@@ -363,14 +363,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In other words, when we run the <code>./vendor/bin/sail up</code> command, we call the <code>sail</code> script with the <code>up</code> argument, and the execution gets inside the big <code>if</code> statement where it looks for a condition matching the <code>up</code> argument. Since there is none, the script goes all the way down to the end of the big <code>if</code>, in the sort of catch-all <code>else</code> we can find there:</p>
 <div class="highlight"><pre><span></span><span class="c1"># Pass unknown commands to the &quot;docker-compose&quot; binary...</span>
 <span class="k">else</span>
-    docker-compose <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
+    docker compose <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
 <span class="k">fi</span>
 </pre></div>
 
 
-<p>The comment already describes what's going on – the script passes the <code>up</code> argument on to the <code>docker-compose</code> binary. In other words, when we run <code>./vendor/bin/sail up</code> we actually run <code>docker-compose up</code>, which is the <a href="https://docs.docker.com/compose/reference/up/">standard Docker Compose command</a> to start the containers for the services listed in <code>docker-compose.yml</code>.</p>
+<p>The comment already describes what's going on – the script passes the <code>up</code> argument on to the <code>docker-compose</code> binary. In other words, when we run <code>./vendor/bin/sail up</code> we actually run <code>docker compose up</code>, which is the <a href="https://docs.docker.com/compose/reference/up/">standard Docker Compose command</a> to start the containers for the services listed in <code>docker-compose.yml</code>.</p>
 <p>This command downloads the corresponding images first if necessary, and builds the Laravel image based on the Dockerfile as we talked about earlier.</p>
-<p>Give it a try! Run <code>./vendor/bin/sail up</code> then <code>docker-compose up</code> – they do the same thing.</p>
+<p>Give it a try! Run <code>./vendor/bin/sail up</code> then <code>docker compose up</code> – they do the same thing.</p>
 <p>Let's now look at a more complicated example, one involving Composer, which is among the packages installed by the application's Dockerfile. But before we do that, let's start Sail in <a href="https://laravel.com/docs/sail#starting-and-stopping-sail">detached mode</a> to run the containers in the background:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up -d
 </pre></div>
@@ -389,7 +389,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <span class="nb">shift</span> <span class="m">1</span>
 
     <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$EXEC</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-        docker-compose <span class="nb">exec</span> <span class="se">\</span>
+        docker compose <span class="nb">exec</span> <span class="se">\</span>
             -u sail <span class="se">\</span>
             <span class="s2">&quot;</span><span class="nv">$APP_SERVICE</span><span class="s2">&quot;</span> <span class="se">\</span>
             composer <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
@@ -401,7 +401,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>The first line of the condition starts with <code>shift</code>, which is a Bash <em>built-in</em> that skips as many arguments as the number it is followed by. In this case, <code>shift 1</code> skips the <code>composer</code> argument, making <code>--version</code> the new first argument. The program then makes sure that Sail is running, before executing a weird command split over four lines, which I break down below:</p>
-<div class="highlight"><pre><span></span>docker-compose <span class="nb">exec</span> <span class="se">\</span>
+<div class="highlight"><pre><span></span>docker compose <span class="nb">exec</span> <span class="se">\</span>
     -u sail <span class="se">\</span>
     <span class="s2">&quot;</span><span class="nv">$APP_SERVICE</span><span class="s2">&quot;</span> <span class="se">\</span>
     composer <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
@@ -415,7 +415,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>The command that is executed behind the scenes is the following:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> -u sail <span class="s2">&quot;laravel.test&quot;</span> composer <span class="s2">&quot;--version&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> -u sail <span class="s2">&quot;laravel.test&quot;</span> composer <span class="s2">&quot;--version&quot;</span>
 </pre></div>
 
 
@@ -609,7 +609,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Let's add the latter to our setup.</p>
 <h3 id="custom-sail-commands">Custom <code>sail</code> commands</h3>
 <p>The good news is the Mongo shell is already available, as long as we know the right formula to summon it. Here it is, along with some extra commands to log into the database and list the users (run the first command from the project's root):</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> mongo mongo
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> mongo mongo
 
 MongoDB shell version v4.4.2
 connecting to: mongodb://127.0.0.1:27017/?compressors<span class="o">=</span>disabled<span class="p">&amp;</span><span class="nv">gssapiServiceName</span><span class="o">=</span>mongodb
@@ -631,7 +631,7 @@ switched to db laravel_sail
 </pre></div>
 
 
-<p>The <code>docker-compose exec mongo mongo</code> command should look familiar; earlier in the article, we looked at what the <code>sail</code> script does behind the scenes, which mostly consists of translating simple <code>sail</code> commands into more complex <code>docker-compose</code> ones. Here, we're telling the <code>docker-compose</code> binary to execute the <code>mongo</code> command on the <code>mongo</code> container.</p>
+<p>The <code>docker compose exec mongo mongo</code> command should look familiar; earlier in the article, we looked at what the <code>sail</code> script does behind the scenes, which mostly consists of translating simple <code>sail</code> commands into more complex <code>docker-compose</code> ones. Here, we're telling the <code>docker-compose</code> binary to execute the <code>mongo</code> command on the <code>mongo</code> container.</p>
 <p>To be fair, this command isn't too bad and we could easily remember it; but for consistency, it would be nice to have a simpler <code>sail</code> equivalent, like the following:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail mongo
 </pre></div>
@@ -661,7 +661,7 @@ switched to db laravel_sail
     <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;mongo&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 
         <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$EXEC</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-            docker-compose <span class="nb">exec</span> mongo mongo
+            docker compose <span class="nb">exec</span> mongo mongo
         <span class="k">else</span>
             sail_is_not_running
         <span class="k">fi</span>
@@ -793,7 +793,7 @@ switched to db laravel_sail
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-02-27" pubdate>2021-02-27</time>
+          <time datetime="2021-07-11" pubdate>2021-07-11</time>
           :: [
           <a href="https://tech.osteel.me/tag/laravel">laravel</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

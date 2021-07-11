@@ -34,12 +34,12 @@
 
 
 
-    <meta name="description" contents="As our development environment is taking shape, the number of commands we need to remember starts to build up. With little effort, Bash will allow us to add a layer on top of Docker to abstract away most of the complexity, and introduce a standardised, user-friendly interface instead." />
-    <meta name="twitter:description" content="As our development environment is taking shape, the number of commands we need to remember starts to build up. With little effort, Bash will allow us to add a layer on top of Docker to abstract away most of the complexity, and introduce a standardised, user-friendly interface instead.">
+  <meta name="description" contents="As our development environment is taking shape, the number of commands we need to remember starts to build up. With little effort, Bash will allow us to add a layer on top of Docker to abstract away most of the complexity, and introduce a standardised, user-friendly interface instead." />
+  <meta name="twitter:description" content="As our development environment is taking shape, the number of commands we need to remember starts to build up. With little effort, Bash will allow us to add a layer on top of Docker to abstract away most of the complexity, and introduce a standardised, user-friendly interface instead.">
 
-    <meta name="tags" contents="tutorial" />
-    <meta name="tags" contents="docker" />
-    <meta name="tags" contents="bash" />
+  <meta name="tags" contents="tutorial" />
+  <meta name="tags" contents="docker" />
+  <meta name="tags" contents="bash" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-04-10 ::
+          Last updated: 2021-07-11 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -189,10 +189,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="introduction">Introduction</h2>
 <p>As our development environment is taking shape, the number of commands we need to remember starts to build up. Here are a few of them, as a reminder:</p>
 <ul>
-<li><code>docker-compose up -d</code> to start the containers;</li>
-<li><code>docker-compose logs -f nginx</code> to watch the logs of Nginx;</li>
-<li><code>docker-compose exec backend php artisan</code> to run Artisan commands (or with <code>run --rm</code> if the container isn't running);</li>
-<li><code>docker-compose exec frontend yarn</code> to run Yarn commands (ditto);</li>
+<li><code>docker compose up -d</code> to start the containers;</li>
+<li><code>docker compose logs -f nginx</code> to watch the logs of Nginx;</li>
+<li><code>docker compose exec backend php artisan</code> to run Artisan commands (or with <code>run --rm</code> if the container isn't running);</li>
+<li><code>docker compose exec frontend yarn</code> to run Yarn commands (ditto);</li>
 <li>etc.</li>
 </ul>
 <p>Clearly, none of the examples above is impossible to remember and, with some practice, anyone would eventually know them by heart. Yet that is a lot of text to type, repeatedly, and if you haven't used a specific command for a while, looking for the right syntax can end up taking a significant amount of time.</p>
@@ -363,18 +363,18 @@ $ chmod +x demo
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Create and start the containers and volumes</span>
 start <span class="o">()</span> <span class="o">{</span>
-    docker-compose up -d
+    docker compose up -d
 <span class="o">}</span>
 </pre></div>
 </td></tr></table>
 
-<p>This short function simply runs the now familiar <code>docker-compose up -d</code>, which starts the containers in the background. Notice that we don't need to change the current directory, as when we invoke the <code>demo</code> function, we are automatically taken to the folder where the <code>demo</code> file is, which is also where <code>docker-compose.yml</code> resides.</p>
+<p>This short function simply runs the now familiar <code>docker compose up -d</code>, which starts the containers in the background. Notice that we don't need to change the current directory, as when we invoke the <code>demo</code> function, we are automatically taken to the folder where the <code>demo</code> file is, which is also where <code>docker-compose.yml</code> resides.</p>
 <p>Save the file and try out the new command (it doesn't matter whether the containers are already running):</p>
 <div class="highlight"><pre><span></span>$ demo start
 </pre></div>
 
 
-<p>That's it! You can now start your project from anywhere in a console using the command above, which is much simpler to type and remember than <code>docker-compose up -d</code>.</p>
+<p>That's it! You can now start your project from anywhere in a console using the command above, which is much simpler to type and remember than <code>docker compose up -d</code>.</p>
 <p>Let's give this another go, this time to display the logs. Add another case to the structure:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -404,7 +404,7 @@ start <span class="o">()</span> <span class="o">{</span>
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Display and tail the logs</span>
 logs <span class="o">()</span> <span class="o">{</span>
-    docker-compose logs -f
+    docker compose logs -f
 <span class="o">}</span>
 </pre></div>
 </td></tr></table>
@@ -445,7 +445,7 @@ logs <span class="o">()</span> <span class="o">{</span>
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Display and tail the logs</span>
 logs <span class="o">()</span> <span class="o">{</span>
-    docker-compose logs -f <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose logs -f <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 </pre></div>
 </td></tr></table>
@@ -589,34 +589,34 @@ logs <span class="o">()</span> <span class="o">{</span>
 
 <span class="c1"># Run an Artisan command</span>
 artisan <span class="o">()</span> <span class="o">{</span>
-    docker-compose run --rm backend php artisan <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose run --rm backend php artisan <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 <span class="c1"># Build all of the images or the specified one</span>
 build <span class="o">()</span> <span class="o">{</span>
-    docker-compose build <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose build <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 <span class="c1"># Run a Composer command</span>
 composer <span class="o">()</span> <span class="o">{</span>
-    docker-compose run --rm backend composer <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose run --rm backend composer <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 <span class="c1"># Remove the entire Docker environment</span>
 destroy <span class="o">()</span> <span class="o">{</span>
     <span class="nb">read</span> -p <span class="s2">&quot;This will delete containers, volumes and images. Are you sure? [y/N]: &quot;</span> -r
     <span class="k">if</span> <span class="o">[[</span> ! <span class="nv">$REPLY</span> <span class="o">=</span>~ ^<span class="o">[</span>Yy<span class="o">]</span>$ <span class="o">]]</span><span class="p">;</span> <span class="k">then</span> exit<span class="p">;</span> <span class="k">fi</span>
-    docker-compose down -v --rmi all --remove-orphans
+    docker compose down -v --rmi all --remove-orphans
 <span class="o">}</span>
 
 <span class="c1"># Stop and destroy all containers</span>
 down <span class="o">()</span> <span class="o">{</span>
-    docker-compose down <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose down <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 <span class="c1"># Display and tail the logs of all containers or the specified one&#39;s</span>
 logs <span class="o">()</span> <span class="o">{</span>
-    docker-compose logs -f <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose logs -f <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 <span class="c1"># Restart the containers</span>
@@ -626,17 +626,17 @@ restart <span class="o">()</span> <span class="o">{</span>
 
 <span class="c1"># Start the containers</span>
 start <span class="o">()</span> <span class="o">{</span>
-    docker-compose up -d
+    docker compose up -d
 <span class="o">}</span>
 
 <span class="c1"># Stop the containers</span>
 stop <span class="o">()</span> <span class="o">{</span>
-    docker-compose stop
+    docker compose stop
 <span class="o">}</span>
 
 <span class="c1"># Run a Yarn command</span>
 yarn <span class="o">()</span> <span class="o">{</span>
-    docker-compose run --rm frontend yarn <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+    docker compose run --rm frontend yarn <span class="s2">&quot;</span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
 <span class="o">}</span>
 
 
@@ -707,8 +707,8 @@ yarn <span class="o">()</span> <span class="o">{</span>
 </td></tr></table>
 
 <p>Mind the fact that <code>run --rm</code> is used to execute Artisan, Composer and Yarn commands on the backend and frontend containers respectively, basically allowing us to do so whether the containers are running or not.</p>
-<p>Also, you'll notice that the <code>restart</code> command is essentially a shortcut for <code>demo stop</code> followed by <code>demo start</code>, even though <code>docker-compose restart</code> is also an option. The reason for that is that the latter is only truly useful to restart the containers' processes (e.g. Nginx, so it picks up a server configuration's changes, for instance). But say you've updated and rebuilt an image: running <code>docker-compose restart</code> won't recreate the corresponding container based on the image's new version, but reuse the old container instead.</p>
-<p>Essentially, in most cases stopping and starting (<code>up</code>) the containers is more likely to achieve the desired effect than a simple <code>docker-compose restart</code>, even if it takes a few more seconds.</p>
+<p>Also, you'll notice that the <code>restart</code> command is essentially a shortcut for <code>demo stop</code> followed by <code>demo start</code>, even though <code>docker compose restart</code> is also an option. The reason for that is that the latter is only truly useful to restart the containers' processes (e.g. Nginx, so it picks up a server configuration's changes, for instance). But say you've updated and rebuilt an image: running <code>docker compose restart</code> won't recreate the corresponding container based on the image's new version, but reuse the old container instead.</p>
+<p>Essentially, in most cases stopping and starting (<code>up</code>) the containers is more likely to achieve the desired effect than a simple <code>docker compose restart</code>, even if it takes a few more seconds.</p>
 <p>Finally, as the <code>destroy</code> function's job is to delete all of the containers, volumes and images, it would be quite a pain to run it by mistake, so I made it failsafe by adding a confirmation prompt.</p>
 <p>Most of the commands are now covered, but you might have noticed that a couple of them are still missing: <code>init</code> and <code>update</code>. These are a bit special, so the next section is dedicated to them.</p>
 <h2 id="initialising-and-updating-the-project">Initialising and updating the project</h2>
@@ -779,7 +779,7 @@ init <span class="o">()</span> <span class="o">{</span>
     env <span class="se">\</span>
         <span class="o">&amp;&amp;</span> down -v <span class="se">\</span>
         <span class="o">&amp;&amp;</span> build <span class="se">\</span>
-        <span class="o">&amp;&amp;</span> docker-compose run --rm --entrypoint<span class="o">=</span><span class="s2">&quot;//opt/files/init&quot;</span> backend <span class="se">\</span>
+        <span class="o">&amp;&amp;</span> docker compose run --rm --entrypoint<span class="o">=</span><span class="s2">&quot;//opt/files/init&quot;</span> backend <span class="se">\</span>
         <span class="o">&amp;&amp;</span> yarn install <span class="se">\</span>
         <span class="o">&amp;&amp;</span> start
 <span class="o">}</span>
@@ -930,7 +930,7 @@ php <span class="s2">&quot;/var/www/backend/artisan&quot;</span> migrate
 <div class="info">
 <p><span class="title">Why the double slash?</span> You might have noticed that, in the <code>init</code> function, the path to the <code>init</code> file is preceded with a double slash:</p>
 <pre>...
-docker-compose run --rm --entrypoint="<strong>//opt/files/init</strong>" backend
+docker compose run --rm --entrypoint="<strong>//opt/files/init</strong>" backend
 ...</pre>
 <p>This is not a typo. For some reason, when there's only one slash Windows will prepend the current local path to the script's, consequently complaining that the file cannot be found (duh). Adding another slash prevents that behaviour, while being ignored on other platforms.</p>
 </div>
@@ -995,7 +995,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-04-10" pubdate>2021-04-10</time>
+          <time datetime="2021-07-11" pubdate>2021-07-11</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

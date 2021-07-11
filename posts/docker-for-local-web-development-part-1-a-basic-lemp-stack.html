@@ -34,12 +34,12 @@
 
 
 
-    <meta name="description" contents="I trust you already read the introduction to this series and are now ready for some action. The first thing to do is to head over to the Docker website and download and install Docker Desktop for Mac or PC, or head over here for installation instructions on various Linux distributions." />
-    <meta name="twitter:description" content="I trust you already read the introduction to this series and are now ready for some action. The first thing to do is to head over to the Docker website and download and install Docker Desktop for Mac or PC, or head over here for installation instructions on various Linux distributions.">
+  <meta name="description" contents="I trust you already read the introduction to this series and are now ready for some action. The first thing to do is to head over to the Docker website and download and install Docker Desktop for Mac or PC, or head over here for installation instructions on various Linux distributions." />
+  <meta name="twitter:description" content="I trust you already read the introduction to this series and are now ready for some action. The first thing to do is to head over to the Docker website and download and install Docker Desktop for Mac or PC, or head over here for installation instructions on various Linux distributions.">
 
-    <meta name="tags" contents="tutorial" />
-    <meta name="tags" contents="docker" />
-    <meta name="tags" contents="lemp" />
+  <meta name="tags" contents="tutorial" />
+  <meta name="tags" contents="docker" />
+  <meta name="tags" contents="lemp" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
@@ -253,24 +253,24 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p class="caption">Note the "Verified Content" at the top</p></p>
 <p>Back to <code>docker-compose.yml</code>: under <code>ports</code>, <code>80:80</code> indicates that we want to map our local machine's port 80 (used by HTTP) to the container's. In other words, when we will access port 80 on our local machine (i.e. your computer), we will be forwarded to the port 80 of the Nginx container.</p>
 <p>Let's test this out. Save the <code>docker-compose.yml</code> file, open a terminal and change the current directory to your project's before running the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose up -d
 </pre></div>
 
 
 <p>It might take a little while as the Nginx image will first be downloaded from Docker Hub. When it is done, open <a href="http://localhost">localhost</a> in your browser, which should display Nginx's welcome page:</p>
 <p><img alt="Nginx" src="/images/2020/03/04/docker-part-1-03.png" title="Nginx" /></p>
-<p>Congratulations: you have just created your first Docker container.</p>
+<p>Congratulations! You have just created your first Docker container.</p>
 <p><img alt="Approval" src="/images/2020/03/04/docker-part-1-04.gif" title="Approval" /></p>
-<p>Let's break down that command: by running <code>docker-compose up -d</code>, we essentially asked Docker Compose to build and start the containers described in <code>docker-compose.yml</code>; the <code>-d</code> option indicates that we want to run the containers in the background and get our terminal back.</p>
+<p>Let's break down that command: by running <code>docker compose up -d</code>, we essentially asked Docker Compose to build and start the containers described in <code>docker-compose.yml</code>; the <code>-d</code> option indicates that we want to run the containers in the background and get our terminal back.</p>
 <p>You can see which containers are currently running by executing the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose ps
+<div class="highlight"><pre><span></span>$ docker compose ps
 </pre></div>
 
 
 <p>Which should display something similar to this:</p>
-<p><img alt="docker-compose ps" src="/images/2020/03/04/docker-part-1-05.png" title="docker-compose ps" /></p>
+<p><img alt="docker compose ps" src="/images/2020/03/04/docker-part-1-05.png" title="docker compose ps" /></p>
 <p>To stop the containers, simply run:</p>
-<div class="highlight"><pre><span></span>$ docker-compose stop
+<div class="highlight"><pre><span></span>$ docker compose stop
 </pre></div>
 
 
@@ -445,28 +445,28 @@ nginx_1 exited with code <span class="m">1</span>
 
 
 <p>We are ready for another test. Go back to your terminal and run the same command again (this time, the PHP image will be downloaded):</p>
-<div class="highlight"><pre><span></span>$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose up -d
 </pre></div>
 
 
 <p>Refresh <a href="http://localhost">localhost</a>: if everything went well you will be greeted by the man who can disappear in a bathrobe.</p>
 <p>Update <code>index.php</code> (modify the content of the <code>&lt;title&gt;</code> tag, for instance) and reload the page: the change should appear immediately.</p>
-<p>If you run <code>docker-compose ps</code> you will observe that you now have two containers running: <code>nginx_1</code> and <code>php_1</code>.</p>
+<p>If you run <code>docker compose ps</code> you will observe that you now have two containers running: <code>nginx_1</code> and <code>php_1</code>.</p>
 <p>Let's inspect the PHP container:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> php bash
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> php bash
 </pre></div>
 
 
 <p>By running this command, we ask Docker Compose to execute Bash on the PHP container. You should get a new prompt indicating that you are currently under <code>/var/www/php</code>: this is what the <code>working_directory</code> configuration we ran into earlier is for. Run a simple <code>ls</code> to list the content of the directory: you should see <code>index.php</code>, which is expected as we mounted our local <code>src</code> folder onto the container's <code>/var/www/php</code> folder.</p>
 <p>Run <code>exit</code> to leave the container.</p>
 <p>Before we move on to the next section, let me show you one last trick. Go back to your terminal and run the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose logs -f
+<div class="highlight"><pre><span></span>$ docker compose logs -f
 </pre></div>
 
 
 <p>Wait for a few logs to display, and hit the <em>return</em> key a few times to add some empty lines. Refresh <a href="http://localhost">localhost</a> again and take another look at your terminal, which should have printed some new lines:</p>
-<p><img alt="docker-compose logs" src="/images/2020/03/04/docker-part-1-06.png" title="docker-compose logs" /></p>
-<p>This command aggregates the logs of every container, which is extremely useful for debugging: if anything goes wrong, your first reflex should always be to look at the logs. It is also possible to display the information of a specific container simply by appending the name of the service (e.g. <code>docker-compose logs -f nginx</code>).</p>
+<p><img alt="docker compose logs" src="/images/2020/03/04/docker-part-1-06.png" title="docker compose logs" /></p>
+<p>This command aggregates the logs of every container, which is extremely useful for debugging: if anything goes wrong, your first reflex should always be to look at the logs. It is also possible to display the information of a specific container simply by appending the name of the service (e.g. <code>docker compose logs -f nginx</code>).</p>
 <p>Hit <code>ctrl+c</code> to get your terminal back.</p>
 <h3 id="mysql">MySQL</h3>
 <p>The last key component of our LEMP stack is MySQL. Let's update <code>docker-compose.yml</code> again:</p>
@@ -699,7 +699,7 @@ character-set-server <span class="o">=</span> utf8mb4
 <div class="info">
 <p><span class="title">Password plugin error?</span> Some older versions of PHP are incompatible with MySQL's new default password plugin introduced with version 8. If you require such a version, you might also need to add the following line to the configuration file:</p>
 <pre>default-authentication-plugin = mysql_native_password</pre>
-<p>If the containers are already running, destroy them as well as the volumes with <code>docker-compose down -v</code> and run <code>docker-compose up -d</code> again.</p>
+<p>If the containers are already running, destroy them as well as the volumes with <code>docker compose down -v</code> and run <code>docker compose up -d</code> again.</p>
 </div>
 
 <p>The second volume looks a bit different than what we have seen so far: instead of pointing to a local folder, it refers to a named volume defined in a whole new <code>volumes</code> section which sits at the same level as <code>services</code>:</p>
@@ -726,7 +726,7 @@ character-set-server <span class="o">=</span> utf8mb4
 
 <p>By default, <code>depends_on</code> will just wait for the referenced containers to be started, unless we specify otherwise. This health check might not work on the first attempt, however; that's why we set it up to retry every 5 seconds up to 10 times, using the <code>interval</code> and <code>retries</code> keys respectively.</p>
 <p>The health check itself uses <a href="https://dev.mysql.com/doc/refman/8.0/en/mysqladmin.html">mysqladmin</a>, a MySQL server administration program, to ping the server until it gets a response. It does so using the <code>root</code> user and the value set in the <code>MYSQL_ROOT_PASSWORD</code> environment variable as the password (which also happens to be <code>root</code> in our case).</p>
-<p>Go back to your terminal and run <code>docker-compose up -d</code> again. Once it is done downloading the MySQL image and all of the containers are up and running, refresh <a href="http://localhost">localhost</a>. You should see this:</p>
+<p>Go back to your terminal and run <code>docker compose up -d</code> again. Once it is done downloading the MySQL image and all of the containers are up and running, refresh <a href="http://localhost">localhost</a>. You should see this:</p>
 <p><img alt="Hello there" src="/images/2020/03/04/docker-part-1-07.png" title="Hello there" /></p>
 <p>We now have Nginx serving PHP files that can connect to a MySQL database, meaning our LEMP stack is pretty much complete. The next steps are about improving our setup, starting with seeing how we can interact with the database in a user-friendly way.</p>
 <h3 id="phpmyadmin">phpMyAdmin</h3>
@@ -767,7 +767,7 @@ character-set-server <span class="o">=</span> utf8mb4
 </td></tr></table>
 
 <p>We start from version 5 of the image and we map the local machine's port 8080 to the container's port 80. We indicate that the MySQL container should be started and ready first with <code>depends_on</code>, and set the host that phpMyAdmin should connect to using the <code>PMA_HOST</code> environment variable (remember that Docker Compose will automatically resolve <code>mysql</code> to the private IP address it assigned to the container).</p>
-<p>Save the changes and run <code>docker-compose up -d</code> again. The image will be downloaded, then, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
+<p>Save the changes and run <code>docker compose up -d</code> again. The image will be downloaded, then, once everything is up, visit <a href="http://localhost:8080">localhost:8080</a>:</p>
 <p><img alt="phpMyAdmin" src="/images/2020/03/04/docker-part-1-08.png" title="phpMyAdmin" /></p>
 <p>Enter <code>root</code> / <code>root</code> as username and password, create a couple of tables under the <code>demo</code> database and refresh <a href="http://localhost">localhost</a> to confirm they are correctly listed.</p>
 <p>And that's it! That one was easy, right?</p>
@@ -814,8 +814,8 @@ character-set-server <span class="o">=</span> utf8mb4
 </pre></div>
 
 
-<p>Since we haven't updated <code>docker-compose.yml</code> nor any Dockerfile, this time a simple <code>docker-compose up -d</code> won't be enough for Docker Compose to pick up the changes. We need to explicitly tell it to restart the containers so the Nginx process is restarted and the new configuration is taken into account:</p>
-<div class="highlight"><pre><span></span>$ docker-compose restart
+<p>Since we haven't updated <code>docker-compose.yml</code> nor any Dockerfile, this time a simple <code>docker compose up -d</code> won't be enough for Docker Compose to pick up the changes. We need to explicitly tell it to restart the containers so the Nginx process is restarted and the new configuration is taken into account:</p>
+<div class="highlight"><pre><span></span>$ docker compose restart
 </pre></div>
 
 
@@ -823,14 +823,14 @@ character-set-server <span class="o">=</span> utf8mb4
 <h2 id="environment-variables">Environment variables</h2>
 <p>We are almost there, folks! The last thing I want to show you today is how to set environment variables for the whole Docker Compose project, rather than for a specific service like we have been doing so far (using the <code>environment</code> section in <code>docker-compose.yml</code>).</p>
 <p>Before we do that, I would like you to list the current containers:</p>
-<div class="highlight"><pre><span></span>$ docker-compose ps
+<div class="highlight"><pre><span></span>$ docker compose ps
 </pre></div>
 
 
 <p>Notice how each container is prefixed by the name of your project directory (which would be <code>docker-tutorial</code> if you cloned the <a href="https://github.com/osteel/docker-tutorial/tree/part-1">repository</a>):</p>
-<p><img alt="docker-compose ps with prefix" src="/images/2020/03/04/docker-part-1-09.png" title="docker-compose ps with prefix" /></p>
+<p><img alt="docker compose ps with prefix" src="/images/2020/03/04/docker-part-1-09.png" title="docker compose ps with prefix" /></p>
 <p>Now, before we proceed further, let's destroy our containers and volumes so we can start afresh:</p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v
+<div class="highlight"><pre><span></span>$ docker compose down -v
 </pre></div>
 
 
@@ -839,7 +839,7 @@ character-set-server <span class="o">=</span> utf8mb4
 </pre></div>
 
 
-<p>Save the file and run <code>docker-compose up -d</code> again, followed by <code>docker-compose ps</code>: each container is now prefixed with <code>demo_</code>.</p>
+<p>Save the file and run <code>docker compose up -d</code> again, followed by <code>docker compose ps</code>: each container is now prefixed with <code>demo_</code>.</p>
 <p>Why is this important? By assigning a unique name to your project, you ensure that no name collision will happen with other ones. If there are multiple Docker-based projects on your system that share the same name or directory name, and more than one use a service called <code>nginx</code>, Docker may complain that another container named <code>xxx_nginx</code> already exists when you bring up a Docker environment.</p>
 <p>While this might not seem essential, it is an easy way to avoid potential hassle in the future, and provides some consistency across the team. Speaking of which: if you've dealt with <code>.env</code> files before, you probably know that they are not supposed to be versioned and pushed to a code repository. Assuming you are using Git, you should add <code>.env</code> to a <code>.gitignore</code> file, and create a <code>.env.example</code> file that will be shared with your coworkers.</p>
 <p>Here is what the final directory and file structure should look like:</p>
@@ -866,45 +866,45 @@ character-set-server <span class="o">=</span> utf8mb4
 <p>Before we wrap up, I'd like to summarise all of the commands we have been using so far, and throw a few more in so you can clean up your environment if you wish to. This can be used as a reference you can easily come back to if need be, especially in the beginning.</p>
 <p>Remember that they need to be run from your project's directory.</p>
 <p><em>Start and run the containers in the background</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose up -d
 </pre></div>
 
 
 <p>If you update <code>docker-compose.yml</code>, an image or a Dockerfile, running this command again will pick up the changes automatically.</p>
 <p><em>Restart the containers</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose restart
+<div class="highlight"><pre><span></span>$ docker compose restart
 </pre></div>
 
 
 <p>Useful when some changes require a process to restart, e.g. restart Nginx to pick up some server configuration changes.</p>
 <p><em>List the containers</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose ps
+<div class="highlight"><pre><span></span>$ docker compose ps
 </pre></div>
 
 
 <p><em>Tail the containers' logs</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose logs <span class="o">[</span>service<span class="o">]</span>
+<div class="highlight"><pre><span></span>$ docker compose logs <span class="o">[</span>service<span class="o">]</span>
 </pre></div>
 
 
 <p>Replace <code>[service]</code> with a service name (e.g. <code>nginx</code>) to display this service's logs only.</p>
 <p><em>Stop the containers</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose stop
+<div class="highlight"><pre><span></span>$ docker compose stop
 </pre></div>
 
 
 <p><em>Stop and/or destroy the containers</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose down
+<div class="highlight"><pre><span></span>$ docker compose down
 </pre></div>
 
 
 <p><em>Stop and/or destroy the containers and their volumes (including named volumes)</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v
+<div class="highlight"><pre><span></span>$ docker compose down -v
 </pre></div>
 
 
 <p><em>Delete everything, including images and orphan containers</em></p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all --remove-orphans
+<div class="highlight"><pre><span></span>$ docker compose down -v --rmi all --remove-orphans
 </pre></div>
 
 

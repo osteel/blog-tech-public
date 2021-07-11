@@ -34,13 +34,13 @@
 
 
 
-    <meta name="description" contents="There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all." />
-    <meta name="twitter:description" content="There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all.">
+  <meta name="description" contents="There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all." />
+  <meta name="twitter:description" content="There are many ways to manage a multitiered project with Docker, and while the approach I am about to describe certainly isn't the only one, I also think this is a subject that doesn't get much coverage at all.">
 
-    <meta name="tags" contents="tutorial" />
-    <meta name="tags" contents="docker" />
-    <meta name="tags" contents="laravel" />
-    <meta name="tags" contents="vuejs" />
+  <meta name="tags" contents="tutorial" />
+  <meta name="tags" contents="docker" />
+  <meta name="tags" contents="laravel" />
+  <meta name="tags" contents="vuejs" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-04-19 ::
+          Last updated: 2021-07-11 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -202,7 +202,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In such a setup, it is common for the backend and frontend applications to each have their own repository. For simplicity's sake, however, we'll stick to a single repository in this tutorial.</p>
 <h2 id="the-backend-application">The backend application</h2>
 <p>Before anything else, let's get rid of the previous containers and volumes (not the images, as we still need them) by running the following command from the project's root directory:</p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v
+<div class="highlight"><pre><span></span>$ docker compose down -v
 </pre></div>
 
 
@@ -400,7 +400,7 @@ volumes:
 
 
 <p>Laravel requires <a href="https://laravel.com/docs/installation#server-requirements">a few PHP extensions</a> to function properly, so we need to ensure those are installed. The Alpine version of the PHP image comes with a number of pre-installed extensions which we can list by running the following command (from the project's root, as usual):</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm backend php -m
+<div class="highlight"><pre><span></span>$ docker compose run --rm backend php -m
 </pre></div>
 
 
@@ -467,23 +467,23 @@ zlib
 
 <p>Here we're leveraging <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds">multi-stage builds</a> (more specifically, <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-an-external-image-as-a-stage">using an external image as a stage</a>) to get Composer's latest version from the <a href="https://hub.docker.com/_/composer">Composer Docker image</a> directly (we'll talk more about multi-stage builds in <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">part 7</a>).</p>
 <p>Updating the Dockerfile means we need to rebuild the image:</p>
-<div class="highlight"><pre><span></span>$ docker-compose build backend
+<div class="highlight"><pre><span></span>$ docker compose build backend
 </pre></div>
 
 
 <p>Once this is done, run the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp <span class="s2">&quot;8.*&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp <span class="s2">&quot;8.*&quot;</span>
 </pre></div>
 
 
 <p>This will use the version of Composer installed on the backend container (no need to install Composer locally!) to create a new Laravel 8 project in the container's <code>/var/www/backend/tmp</code> folder.</p>
 <p>As per <code>docker-compose.yml</code>, the container's working directory is <code>/var/www/backend</code>, onto which the local folder <code>src/backend</code> was mounted – if you look into that directory now on your local machine, you will find a new <code>tmp</code> folder containing the files of a fresh Laravel application. But why did we not create the project in <code>backend</code> directly?</p>
 <p>Behind the scenes, <code>composer create-project</code> performs a <code>git clone</code>, and that won't work if the target directory is not empty. In our case, <code>backend</code> already contains the Dockerfile, which is necessary to run the command in the first place. We essentially created the <code>tmp</code> folder as a temporary home for our project, and we now need to move back the files to their final location:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm backend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose run --rm backend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
 </pre></div>
 
 
-<p>This will run the content between the double quotes on the container, <code>sh -c</code> basically being a trick allowing us to run more than a single command at once (if we ran <code>docker-compose run --rm backend mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp</code> instead, only the first <code>mv</code> instruction would be executed on the container, and the rest would be run on the local machine).</p>
+<p>This will run the content between the double quotes on the container, <code>sh -c</code> basically being a trick allowing us to run more than a single command at once (if we ran <code>docker compose run --rm backend mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp</code> instead, only the first <code>mv</code> instruction would be executed on the container, and the rest would be run on the local machine).</p>
 <div class="info">
 <p><span class="title">Shouldn't Composer be in its own container?</span> A popular way to deal with package managers is to isolate them into their own containers, the main reason being that they are external tools mostly used during development and that they've got no business shipping with the application itself (which is all correct).</p>
 <p>I actually used this approach for a while, but it comes with downsides that are often overlooked: as Composer allows developers to specify a package's requirements (necessary PHP extensions, PHP's minimum version, etc.), by default it will check the system on which it installs the application's dependencies to make sure it meets those criteria. In practice, this means the configuration of the container hosting Composer must be as close as possible to the application's, which often means doubling the work for the maintainer. As a result, some people choose to run Composer with the <code>--ignore-platform-reqs</code> flag instead, ensuring dependencies will always install regardless of the system's configuration.</p>
@@ -515,7 +515,7 @@ zlib
 
 <p>Not much to see here, apart from the database configuration (mind the value of <code>DB_HOST</code>) and some standard application settings.</p>
 <p>Let's try out our new setup:</p>
-<div class="highlight"><pre><span></span>$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose up -d
 </pre></div>
 
 
@@ -530,7 +530,7 @@ The default value is 2 GB; I doubled that and it made a notable difference (if y
 </div>
 
 <p>Let's also verify our database settings by running Laravel's default migrations:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend php artisan migrate
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> backend php artisan migrate
 </pre></div>
 
 
@@ -551,14 +551,14 @@ The default value is 2 GB; I doubled that and it made a notable difference (if y
 <p>Try it out by accessing <a href="http://backend.demo.test/api/hello-there">backend.demo.test/api/hello-there</a>, which should display "General Kenobi".</p>
 <p>Our API is ready!</p>
 <p>We are done for this section but, if you wish to experiment further, while the backend's container is up you can run Artisan and Composer commands like this:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> backend php artisan
-$ docker-compose <span class="nb">exec</span> backend composer
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> backend php artisan
+$ docker compose <span class="nb">exec</span> backend composer
 </pre></div>
 
 
 <p>And if it's not running:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm backend php artisan
-$ docker-compose run --rm backend composer
+<div class="highlight"><pre><span></span>$ docker compose run --rm backend php artisan
+$ docker compose run --rm backend composer
 </pre></div>
 
 
@@ -624,8 +624,8 @@ $ docker-compose run --rm backend composer
 
 <p>We're simply copying the <code>php.ini</code> file over to the directory where custom configurations are expected to go in the container, and whose location is given by the <code>$PHP_INI_DIR</code> environment variable. And since we're here, we can also use the default development settings provided by the image's maintainers, which sets up error reporting parameters, among other things (that's what the last instruction is for).</p>
 <p>And that's it! Build the image again and restart the containers – you should notice some improvement around the backend's responsiveness:</p>
-<div class="highlight"><pre><span></span>$ docker-compose build backend
-$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose build backend
+$ docker compose up -d
 </pre></div>
 
 
@@ -674,19 +674,19 @@ nginx:
 
 <p>We simply pull the Alpine version of <a href="https://hub.docker.com/_/node">Node.js' official image</a> for now, which ships with both <a href="https://yarnpkg.com/">Yarn</a> and <a href="https://www.npmjs.com/">npm</a> (which are package managers like Composer, but for JavaScript). I will be using Yarn, as I am told this is what the cool kids use nowadays.</p>
 <p>Let's build the image:</p>
-<div class="highlight"><pre><span></span>$ docker-compose build frontend
+<div class="highlight"><pre><span></span>$ docker compose build frontend
 </pre></div>
 
 
 <p>Once the image is ready, create a fresh Vue.js project with the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm frontend sh -c <span class="s2">&quot;yarn global add @vue/cli &amp;&amp; vue create tmp --default --force&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose run --rm frontend sh -c <span class="s2">&quot;yarn global add @vue/cli &amp;&amp; vue create tmp --default --force&quot;</span>
 </pre></div>
 
 
 <p>By using the same <code>sh -c</code> trick as earlier in order to run multiple commands at once on the container, we install <a href="https://cli.vuejs.org/">Vue CLI</a> (<code>yarn global add @vue/cli</code>) and use it straight away to <a href="https://cli.vuejs.org/guide/creating-a-project.html#vue-create">create a new Vue.js project</a> with some default presets, in the <code>tmp</code> directory (<code>vue create tmp --default --force</code>). This directory is located under <code>/var/www/frontend</code> , which is the container's working directory as per <code>docker-compose.yml</code>.</p>
 <p>We don't install Vue CLI via the Dockerfile here, because the only use we have for it is to create the project. Once that's done, there's no need to keep it around.</p>
 <p>Just like the backend, let's move the files out of <code>tmp</code> and back to the parent directory:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm frontend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose run --rm frontend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
 </pre></div>
 
 
@@ -766,25 +766,25 @@ nginx:
 </td></tr></table>
 
 <p>Rebuild the image:</p>
-<div class="highlight"><pre><span></span>$ docker-compose build frontend
+<div class="highlight"><pre><span></span>$ docker compose build frontend
 </pre></div>
 
 
 <p>And start the project so Docker picks up the image changes (for some reason, the <code>restart</code> command won't do that):</p>
-<div class="highlight"><pre><span></span>$ docker-compose up -d
+<div class="highlight"><pre><span></span>$ docker compose up -d
 </pre></div>
 
 
 <p>Once everything is up and running, access <a href="http://frontend.demo.test">frontend.demo.test</a> and you should see Vue.js' welcome page:</p>
 <p><img alt="Vue.js home" src="/images/2020/03/30/docker-03.png" title="Vue.js home" /></p>
 <p>Give it a minute if it doesn't show up immediately, as the server takes some time to start. If need be, you can monitor it with the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose logs -f frontend
+<div class="highlight"><pre><span></span>$ docker compose logs -f frontend
 </pre></div>
 
 
 <p>Open <code>src/frontend/src/components/HelloWorld.vue</code> and update some content (one of the <code>&lt;h3&gt;</code> tags, for example). Go back to your browser and you should see the change happen in real time: this is hot-reload doing its magic!</p>
 <p>To make sure our setup is complete, all we've got left to do is to query the API endpoint we defined earlier in the backend, with the help of <a href="https://github.com/axios/axios">Axios</a>. Let's install the package with the following command:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> frontend yarn add axios
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> frontend yarn add axios
 </pre></div>
 
 
@@ -915,12 +915,12 @@ nginx:
 <p>Save the file and go back to your browser: the content of our API endpoint's response should now display at the bottom of the page.</p>
 <p><img alt="Hello There" src="/images/2020/03/30/docker-05.png" title="Hello There" /></p>
 <p>If you want to experiment further, while the frontend's container is up you can run Yarn commands like this:</p>
-<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> frontend yarn
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> frontend yarn
 </pre></div>
 
 
 <p>And if it's not running:</p>
-<div class="highlight"><pre><span></span>$ docker-compose run --rm frontend yarn
+<div class="highlight"><pre><span></span>$ docker compose run --rm frontend yarn
 </pre></div>
 
 
@@ -953,7 +953,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-04-19" pubdate>2021-04-19</time>
+          <time datetime="2021-07-11" pubdate>2021-07-11</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

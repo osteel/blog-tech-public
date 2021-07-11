@@ -34,12 +34,12 @@
 
 
 
-    <meta name="description" contents="By using standard Linux distributions, we embark a lot of tools and services we don't always need, unnecessarily increasing the size of the images in the process. In turn, this has an impact on performance, security and, sometimes, the cost of deployment." />
-    <meta name="twitter:description" content="By using standard Linux distributions, we embark a lot of tools and services we don't always need, unnecessarily increasing the size of the images in the process. In turn, this has an impact on performance, security and, sometimes, the cost of deployment.">
+  <meta name="description" contents="By using standard Linux distributions, we embark a lot of tools and services we don't always need, unnecessarily increasing the size of the images in the process. In turn, this has an impact on performance, security and, sometimes, the cost of deployment." />
+  <meta name="twitter:description" content="By using standard Linux distributions, we embark a lot of tools and services we don't always need, unnecessarily increasing the size of the images in the process. In turn, this has an impact on performance, security and, sometimes, the cost of deployment.">
 
-    <meta name="tags" contents="tutorial" />
-    <meta name="tags" contents="docker" />
-    <meta name="tags" contents="alpine" />
+  <meta name="tags" contents="tutorial" />
+  <meta name="tags" contents="docker" />
+  <meta name="tags" contents="alpine" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-06 ::
+          Last updated: 2021-07-11 ::
         Published: 2020-03-16
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-2-put-your-images-on-a-diet.html">history</a> ]
       </small>
@@ -191,7 +191,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In <a href="/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack" title="Docker for local web development, part 1: a basic LEMP stack">part 1</a> of this series, we went through the steps of creating a simple but functional LEMP stack running on Docker and orchestrated by Docker Compose, resulting in four containers running simultaneously.</p>
 <p>These containers are based on images that were downloaded from <a href="https://hub.docker.com/">Docker Hub</a>, each of these images having a different weight. But how much space are we talking about?</p>
 <p>Let's find out with this simple command, to be run from the root of our project:</p>
-<div class="highlight"><pre><span></span>$ docker-compose images
+<div class="highlight"><pre><span></span>$ docker compose images
 </pre></div>
 
 
@@ -204,7 +204,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="alpine-linux">Alpine Linux</h2>
 <p><a href="https://alpinelinux.org/">Alpine</a> is a Linux distribution that takes the opposite approach: focused on security and with a small footprint, it features the bare minimum by default and lets you install what you actually need for your application. The <em>dockerised</em> version of Alpine is as small as 4 MB, and most official Docker images provide a version based on this distribution.</p>
 <p>Before we modify our setup, let's get rid of the current one:</p>
-<div class="highlight"><pre><span></span>$ docker-compose down -v --rmi all --remove-orphans
+<div class="highlight"><pre><span></span>$ docker compose down -v --rmi all --remove-orphans
 </pre></div>
 
 
@@ -329,7 +329,7 @@ volumes:
 
 <p>Just like Nginx, the only difference is we appended <code>-alpine</code> at the end of the image tag to get the Alpine-based version instead.</p>
 <p>That leaves us with the MySQL service, which hasn't changed at all. The reason is that at the time of writing, there is simply no available Alpine version for the MySQL image, for reasons laid out in this <a href="https://github.com/docker-library/mysql/issues/179">GitHub issue</a>.</p>
-<p>We are now ready to test out our new setup. Run the now familiar <code>docker-compose up -d</code> again, followed by <code>docker-compose images</code>:</p>
+<p>We are now ready to test out our new setup. Run the now familiar <code>docker compose up -d</code> again, followed by <code>docker compose images</code>:</p>
 <p><img alt="Docker Alpine images" src="/images/2020/03/16/docker-03.png" title="Docker Alpine images" /></p>
 <p>The total size of our images now amounts to around 700 MB, which is less than half the initial weight.</p>
 <p>And, as a bonus, you can now access phpMyAdmin at <a href="http://phpmyadmin.test">phpmyadmin.test</a>, instead of <em>localhost:8080</em>.</p>
@@ -361,7 +361,7 @@ volumes:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-06" pubdate>2021-03-06</time>
+          <time datetime="2021-07-11" pubdate>2021-07-11</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
