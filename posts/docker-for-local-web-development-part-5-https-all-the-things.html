@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-07-11 ::
+          Last updated: 2021-08-25 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -782,7 +782,7 @@ $ ping frontend.demo.test
 </pre></div>
 
 
-<p>While this solution works, it is not recommended for obvious reasons, and you won't always have the luxury of setting the options as you see fit (especially if the call is made by a third-party package).</p>
+<p>While this solution works, it is not recommended for obvious security reasons, and you won't always have the luxury of setting the options as you see fit (especially if the call is made by a third-party package).</p>
 <p>What we need to do, really, is to install the certificate on the backend container as well, so it can recognise it and trust it the way our local machine does.</p>
 <p>To do that, we need to mount the directory containing the self-signed certificate onto the backend container. Exit the container (by running <code>exit</code> or by hitting <code>ctrl + d</code>) and update <code>docker-compose.yml</code>:</p>
 <pre>
@@ -805,11 +805,12 @@ backend:
 
 
 <p>Access the backend container once again, and install the new certificate (you can ignore the warning):</p>
-<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> backend sh
+<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> -u root backend sh
 $ update-ca-certificates
 </pre></div>
 
 
+<p>Note the <code>-u</code> option in the first command above – <code>update-ca-certificates</code> necessitates <em>root</em> privileges, which the container's default user (<code>demo</code>) doesn't have. The <code>-u</code> option allows us to access the container as a different user – here, <code>root</code> – so we can run <code>update-ca-certificates</code> with the right permissions.</p>
 <p>Try the cURL command one more time:</p>
 <div class="highlight"><pre><span></span>$ curl https://frontend.demo.test
 </pre></div>
@@ -829,7 +830,7 @@ cert_install () {
       echo "Could not install the certificate on the host machine, please do it manually"
   fi
 
-  <strong>docker compose exec backend update-ca-certificates</strong>
+  <strong>docker compose exec -u root backend update-ca-certificates</strong>
 }
 </pre>
 
@@ -862,7 +863,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-07-11" pubdate>2021-07-11</time>
+          <time datetime="2021-08-25" pubdate>2021-08-25</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

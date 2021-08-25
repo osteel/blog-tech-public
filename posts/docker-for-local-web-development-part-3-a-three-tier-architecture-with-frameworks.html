@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-07-11 ::
+          Last updated: 2021-08-25 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -182,6 +182,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#foreword">Foreword</a></li>
 <li><a href="#a-three-tier-architecture">A three-tier architecture?</a></li>
 <li><a href="#the-backend-application">The backend application</a><ul>
+<li><a href="#the-new-backend-service">The new backend service</a></li>
+<li><a href="#non-root-user">Non-root user</a></li>
+<li><a href="#creating-a-new-laravel-project">Creating a new Laravel project</a></li>
 <li><a href="#opcache">OPcache</a></li>
 </ul>
 </li>
@@ -223,6 +226,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
+<h3 id="the-new-backend-service">The new backend service</h3>
 <p>Replace the content of <code>docker-compose.yml</code> with this one (changes have been highlighted in bold):</p>
 <pre>
 version: '3.8'
@@ -245,7 +249,10 @@ services:
 
   <strong># Backend Service
   backend:
-    build: ./src/backend
+    build:
+      context: ./src/backend
+      args:
+        UID: $UID
     working_dir: /var/www/backend
     volumes:
       - ./src/backend:/var/www/backend
@@ -286,7 +293,7 @@ volumes:
   phpmyadmindata:
 </pre>
 
-<p>The main update is the removal of the PHP service in favour of the backend service, although they are very similar. The new service looks for a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is mounted as a volume on the container.</p>
+<p>The main update is the removal of the PHP service in favour of the backend service, although they are quite similar. The new service has a slightly more complex <code>build</code> section, now comprising a <code>context</code> key pointing to a Dockerfile located in the backend application's directory (<code>src/backend</code>), and an <code>args</code> section that we'll leave aside for the time being. The <code>src/backend</code> directory is also mounted as a volume on the container.</p>
 <p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -466,12 +473,75 @@ zlib
 </td></tr></table>
 
 <p>Here we're leveraging <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds">multi-stage builds</a> (more specifically, <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-an-external-image-as-a-stage">using an external image as a stage</a>) to get Composer's latest version from the <a href="https://hub.docker.com/_/composer">Composer Docker image</a> directly (we'll talk more about multi-stage builds in <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">part 7</a>).</p>
-<p>Updating the Dockerfile means we need to rebuild the image:</p>
+<h3 id="non-root-user">Non-root user</h3>
+<p>There's one last thing we need to add to the Dockerfile before proceeding further.</p>
+<p>Update it again so it looks like this:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+
+<span class="c"># Install extensions</span>
+<span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath
+
+<span class="c"># Install Composer</span>
+<span class="k">COPY</span> --from<span class="o">=</span>composer:latest /usr/bin/composer /usr/local/bin/composer
+
+<span class="c"># Create user based on provided user ID</span>
+<span class="k">ARG</span> UID
+<span class="k">RUN</span> adduser --disabled-password --gecos <span class="s2">&quot;&quot;</span> --uid <span class="nv">$UID</span> demo
+
+<span class="c"># Switch to that user</span>
+<span class="k">USER</span><span class="s"> demo</span>
+</pre></div>
+</td></tr></table>
+
+<p>An important thing to know is that unless stated otherwise, containers will use the <code>root</code> user by default.</p>
+<p>While this is arguably fine for a local setup, it sometimes leads to permission issues in certain situations, like when trying to access or update a file on the host machine that was created by the container (which is often the case for the <code>laravel.log</code> file, for instance).</p>
+<p>This happens because the user and group IDs used by the container to create the file don't necessarily match that of the host machine, in which case the operation is not permitted (I don't want to linger on this for too long, but I invite you to read <a href="https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf" title="Understanding how uid and gid work in Docker containers">this great post</a> to better understand what's going on).</p>
+<p>Users of Docker Desktop for Mac typically don't need to worry about this because it's doing some magic under the hood to avoid this kind of problems (unfortunately I couldn't find a proper description of the corresponding mechanism, other than <a href="https://github.com/docker/for-mac/issues/2657#issuecomment-371210749">this GitHub issue from 2018</a> refering to a section of the Docker documentation that doesn't exist anymore).</p>
+<p>On the other hand, Linux and WSL 2 users are usually affected, and as the latter is getting more traction, there is suddenly a lot more people facing file permission issues.</p>
+<p>So what do these extra Dockerfile instructions do? The first one indicates that there will be a <code>UID</code> <em>build-time</em> variable available while building the image (once again, I don't want to spend too much time on this, but <a href="https://vsupalov.com/docker-arg-env-variable-guide" title="Docker ARG, ENV and .env - a Complete Guide">this excellent article</a> will tell you everything you need to know about Dockerfile variables). The corresponding value will come from the <code>args</code> section we added to the <code>docker-compose.yml</code> file earlier, which will contain the host machine's current user ID (more on this in a minute).</p>
+<p>We then create a user with the same ID in the container, using Alpine's <code>adduser</code> command (please refer to the <a href="https://wiki.alpinelinux.org/wiki/Setting_up_a_new_user">documentation</a> for details). We name that user <code>demo</code>.</p>
+<p>Finally, we tell Docker to switch to that user using the <code>USER</code> instruction, meaning that from then on, <code>demo</code> will be the container's default user.</p>
+<p>There's one last thing we need to do, and that is to pass the user ID from the host machine to the <code>docker-compose.yml</code> file.</p>
+<p>First, let's find out what this value is by running the following command in a terminal on the host machine:</p>
+<div class="highlight"><pre><span></span>$ id -u
+</pre></div>
+
+
+<p>On macOS for instance, that value might be <code>501</code>.</p>
+<p>Now open the <code>.env</code> file at the root of the project and add the following line to it:</p>
+<div class="highlight"><pre><span></span><span class="nv">UID</span><span class="o">=</span><span class="m">501</span>
+</pre></div>
+
+
+<p>Change the value for the one obtained with the previous command if different. We're done!</p>
+<p>With this setup, we now have the guarantee that files shared between the host machine and the containers always belong to the same user ID, no matter which side they were created from. This solution also has the huge advantage of working across operating systems.</p>
+<p>I know I went through this quite quickly, but I don't want to drown you in details in the middle of a post which is already quite dense. My advice to you is to bookmark the few URLs I provided in this section and to come back to them once you've completed this tutorial.</p>
+<div class="info">
+<p><span class="title">How about the group ID?</span> While researching this issue, most of the resources I found also featured the creation of a group with the same ID as the user's group on the host machine. I initially intended to do the same, but it was causing all sorts of conflicts with no easy way to work around them.</p>
+<p>That being said, it seems that having the same user ID on both sides is enough to avoid those file permission issues anyway, which lead me to the conclusion that creating a group with the same ID as well was unnecessary. If you think this is a mistake though, please let me know why in the comments.</p>
+<p>By the way, that doesn't mean that the user created in the container doesn't belong to any group – if none is specified, <code>adduser</code> will create one with the same ID as the user's by default, and assign it to it.</p>
+</div>
+
+<p>We now need to rebuild the image to apply the changes:</p>
 <div class="highlight"><pre><span></span>$ docker compose build backend
 </pre></div>
 
 
-<p>Once this is done, run the following command:</p>
+<h3 id="creating-a-new-laravel-project">Creating a new Laravel project</h3>
+<p>Once the new version of the image is ready, run the following command:</p>
 <div class="highlight"><pre><span></span>$ docker compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp <span class="s2">&quot;8.*&quot;</span>
 </pre></div>
 
@@ -606,7 +676,14 @@ $ docker compose run --rm backend composer
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
 
 <span class="c"># Install extensions</span>
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath opcache
@@ -619,10 +696,17 @@ $ docker compose run --rm backend composer
 
 <span class="c"># Use the default development configuration</span>
 <span class="k">RUN</span> mv <span class="nv">$PHP_INI_DIR</span>/php.ini-development <span class="nv">$PHP_INI_DIR</span>/php.ini
+
+<span class="c"># Create user based on provided user ID</span>
+<span class="k">ARG</span> UID
+<span class="k">RUN</span> adduser --disabled-password --gecos <span class="s2">&quot;&quot;</span> --uid <span class="nv">$UID</span> demo
+
+<span class="c"># Switch to that user</span>
+<span class="k">USER</span><span class="s"> demo</span>
 </pre></div>
 </td></tr></table>
 
-<p>We're simply copying the <code>php.ini</code> file over to the directory where custom configurations are expected to go in the container, and whose location is given by the <code>$PHP_INI_DIR</code> environment variable. And since we're here, we can also use the default development settings provided by the image's maintainers, which sets up error reporting parameters, among other things (that's what the last instruction is for).</p>
+<p>Note that we've added an instruction to copy the <code>php.ini</code> file over to the directory where custom configurations are expected to go in the container, and whose location is given by the <code>$PHP_INI_DIR</code> environment variable. And as we were at it, we also used the default development settings provided by the image's maintainers, which sets up error reporting parameters, among other things (that's what the following <code>RUN</code> instruction is for).</p>
 <p>And that's it! Build the image again and restart the containers – you should notice some improvement around the backend's responsiveness:</p>
 <div class="highlight"><pre><span></span>$ docker compose build backend
 $ docker compose up -d
@@ -953,7 +1037,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-07-11" pubdate>2021-07-11</time>
+          <time datetime="2021-08-25" pubdate>2021-08-25</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

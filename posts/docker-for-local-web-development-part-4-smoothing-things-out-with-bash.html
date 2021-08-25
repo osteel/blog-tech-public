@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-07-11 ::
+          Last updated: 2021-08-25 ::
         Published: 2020-04-13
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-4-smoothing-things-out-with-bash.html">history</a> ]
       </small>
@@ -320,7 +320,20 @@ $ chmod +x demo
 
 
 <p>The last instruction of the function (<code>cd -</code>) simply changes the current directory back to the previous one. In other words, you can run <code>demo</code> from anywhere – you will always be taken back to the directory the command was initially run from.</p>
-<p>Save the changes and open a new console window or <code>source</code> the file for them to take effect:</p>
+<p>Before we move on, there's something else we need to add to this file:</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">UID</span><span class="o">=</span><span class="k">$(</span>id -u<span class="k">)</span>
+</pre></div>
+
+
+<p>Remember when we set a non-root user in the <a href="/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks#non-root-user" title="Docker for local web development, part 3: a three-tier architecture with frameworks">previous part</a> to avoid file permission issues? We had to pass the host machine's current user ID to the <code>docker-compose.yml</code> file, and we did so using the <code>.env</code> file at the root of the project.</p>
+<p>The line above allows us to <em>export</em> that value as an environment variable instead, that is directly accessible by the <code>docker-compose.yml</code> file.</p>
+<p>That means you can now remove this line from the <code>.env</code> file (your value for <code>UID</code> might be a different one):</p>
+<div class="highlight"><pre><span></span><span class="nv">UID</span><span class="o">=</span><span class="m">501</span>
+</pre></div>
+
+
+<p>This export will automatically happen any time you open a terminal window, meaning there is no need to manually set the user ID anymore.</p>
+<p>Save the changes and open a new terminal window or <code>source</code> the file for them to take effect:</p>
 <div class="highlight"><pre><span></span>$ <span class="nb">source</span> ~/.bashrc
 </pre></div>
 
@@ -374,7 +387,7 @@ start <span class="o">()</span> <span class="o">{</span>
 </pre></div>
 
 
-<p>That's it! You can now start your project from anywhere in a console using the command above, which is much simpler to type and remember than <code>docker compose up -d</code>.</p>
+<p>That's it! You can now start your project from anywhere in a terminal using the command above, which is much simpler to type and remember than <code>docker compose up -d</code>.</p>
 <p>Let's give this another go, this time to display the logs. Add another case to the structure:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -830,6 +843,13 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 
 <strong># Install Bash
 RUN apk --no-cache add bash</strong>
+
+# Create user based on provided user ID
+ARG UID
+RUN adduser --disabled-password --gecos "" --uid $UID demo
+
+# Switch to that user
+USER demo
 </pre>
 
 <p>Build the image:</p>
@@ -995,7 +1015,7 @@ repositories () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-07-11" pubdate>2021-07-11</time>
+          <time datetime="2021-08-25" pubdate>2021-08-25</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
