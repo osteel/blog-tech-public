@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-08-25 ::
+          Last updated: 2021-09-25 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -246,8 +246,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <span class="k">RUN</span> apk --no-cache add bash mysql-client mariadb-connector-c-dev
 
 <span class="c"># Create user based on provided user ID</span>
-<span class="k">ARG</span> UID
-<span class="k">RUN</span> adduser --disabled-password --gecos <span class="s2">&quot;&quot;</span> --uid <span class="nv">$UID</span> demo
+<span class="k">ARG</span> HOST_UID
+<span class="k">RUN</span> adduser --disabled-password --gecos <span class="s2">&quot;&quot;</span> --uid <span class="nv">$HOST_UID</span> demo
 
 <span class="c"># Switch to that user</span>
 <span class="k">USER</span><span class="s"> demo</span>
@@ -448,8 +448,8 @@ RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
 RUN apk --no-cache add bash mysql-client mariadb-connector-c-dev
 
 # Create user based on provided user ID
-ARG UID
-RUN adduser --disabled-password --gecos "" --uid $UID demo
+ARG HOST_UID
+RUN adduser --disabled-password --gecos "" --uid $HOST_UID demo
 
 # Switch to that user
 USER demo
@@ -583,7 +583,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-08-25" pubdate>2021-08-25</time>
+          <time datetime="2021-09-25" pubdate>2021-09-25</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
