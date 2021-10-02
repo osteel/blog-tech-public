@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-09-25 ::
+          Last updated: 2021-10-02 ::
         Published: 2020-05-25
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker.html">history</a> ]
       </small>
@@ -292,7 +292,10 @@ volumes:
 <pre>
 # Backend Service
 backend:
-  build: ./src/backend
+  build:
+    context: ./src/backend
+    args:
+      HOST_UID: $HOST_UID
   working_dir: /var/www/backend
   volumes:
     - ./src/backend:/var/www/backend
@@ -488,11 +491,15 @@ CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
  7
  8
  9
-10</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Worker Service</span>
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Worker Service</span>
 <span class="nt">worker</span><span class="p">:</span>
   <span class="nt">build</span><span class="p">:</span>
     <span class="nt">context</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend</span>
     <span class="nt">target</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">worker</span>
+    <span class="nt">args</span><span class="p">:</span>
+      <span class="nt">HOST_UID</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">$HOST_UID</span>
   <span class="nt">working_dir</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">/var/www/backend</span>
   <span class="nt">volumes</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./src/backend:/var/www/backend</span>
@@ -501,14 +508,16 @@ CMD ["php", "/var/www/backend/artisan", "queue:work"]</strong>
 </pre></div>
 </td></tr></table>
 
-<p>This all looks familiar already, except for the <code>build</code> section which now has a couple of properties: <code>context</code> and <code>target</code>. The former points to the folder where the Dockerfile shall be found, and the latter allows us to specify which stage should be used as the base image for the service's containers.</p>
+<p>This all looks familiar already, except for the <code>build</code> section which now has an extra property: <code>target</code>. This property allows us to specify which stage should be used as the base image for the service's containers.</p>
 <p>We're almost done with <code>docker-compose.yml</code> – we just need to update the definition of the <code>backend</code> service to tell it to target the <code>backend</code> stage:</p>
 <pre>
 # Backend Service
 backend:
-  <strong>build:
+  build:
     context: ./src/backend
-    target: backend</strong>
+    <strong>target: backend</strong>
+    args:
+      HOST_UID: $HOST_UID
   working_dir: /var/www/backend
   volumes:
     - ./src/backend:/var/www/backend
@@ -583,7 +592,7 @@ $ demo build worker
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-09-25" pubdate>2021-09-25</time>
+          <time datetime="2021-10-02" pubdate>2021-10-02</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
