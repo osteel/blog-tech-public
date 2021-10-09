@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-09-25 ::
+          Last updated: 2021-10-09 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -249,10 +249,7 @@ services:
 
   <strong># Backend Service
   backend:
-    build:
-      context: ./src/backend
-      args:
-        HOST_UID: $HOST_UID
+    build: ./src/backend
     working_dir: /var/www/backend
     volumes:
       - ./src/backend:/var/www/backend
@@ -293,7 +290,7 @@ volumes:
   phpmyadmindata:
 </pre>
 
-<p>The main update is the removal of the PHP service in favour of the backend service, although they are quite similar. The new service has a slightly more complex <code>build</code> section, now comprising a <code>context</code> key pointing to a Dockerfile located in the backend application's directory (<code>src/backend</code>), and an <code>args</code> section that we'll leave aside for the time being. The <code>src/backend</code> directory is also mounted as a volume on the container.</p>
+<p>The main update is the removal of the PHP service in favour of the backend service, although they are quite similar. The <code>build</code> key now points to a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is also mounted as a volume on the container.</p>
 <p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -474,8 +471,25 @@ zlib
 
 <p>Here we're leveraging <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds">multi-stage builds</a> (more specifically, <a href="https://docs.docker.com/develop/develop-images/multistage-build/#use-an-external-image-as-a-stage">using an external image as a stage</a>) to get Composer's latest version from the <a href="https://hub.docker.com/_/composer">Composer Docker image</a> directly (we'll talk more about multi-stage builds in <a href="/posts/docker-for-local-web-development-part-7-using-a-multi-stage-build-to-introduce-a-worker" title="Docker for local web development, part 7: using a multi-stage build to introduce a worker">part 7</a>).</p>
 <h3 id="non-root-user">Non-root user</h3>
-<p>There's one last thing we need to add to the Dockerfile before proceeding further.</p>
-<p>Update it again so it looks like this:</p>
+<p>There's one last thing we need to cover before proceeding further.</p>
+<p>First, modify the backend service's <code>build</code> section in <code>docker-compose.yml</code>:</p>
+<pre>
+  # Backend Service
+  backend:
+    <strong>build:
+      context: ./src/backend
+      args:
+        HOST_UID: $HOST_UID</strong>
+    working_dir: /var/www/backend
+    volumes:
+      - ./src/backend:/var/www/backend
+    depends_on:
+      mysql:
+        condition: service_healthy
+</pre>
+
+<p>The section now comprises a <code>context</code> key pointing to the backend's Dockerfile like before, but also an <code>args</code> section that we'll cover in a minute.</p>
+<p>Next, update the backend's Dockerfile again so it looks like this:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -506,12 +520,13 @@ zlib
 </pre></div>
 </td></tr></table>
 
-<p>An important thing to know is that unless stated otherwise, containers will use the <code>root</code> user by default.</p>
-<p>While this is arguably fine for a local setup, it sometimes leads to permission issues in certain situations, like when trying to access or update a file on the host machine that was created by the container (which is often the case for the <code>laravel.log</code> file, for instance).</p>
+<p>Why do we need to do this?</p>
+<p>An important thing to understand is that, unless stated otherwise, containers will use the <code>root</code> user by default.</p>
+<p>While this is arguably fine for a local setup, it sometimes leads to permission issues, like when trying to access or update a file on the host machine that was created by the container (which is often the case for the <code>laravel.log</code> file, for instance).</p>
 <p>This happens because the user and group IDs used by the container to create the file don't necessarily match that of the host machine, in which case the operation is not permitted (I don't want to linger on this for too long, but I invite you to read <a href="https://medium.com/@mccode/understanding-how-uid-and-gid-work-in-docker-containers-c37a01d01cf" title="Understanding how uid and gid work in Docker containers">this great post</a> to better understand what's going on).</p>
-<p>Users of Docker Desktop for Mac typically don't need to worry about this because it's doing some magic under the hood to avoid this kind of problems (unfortunately I couldn't find a proper description of the corresponding mechanism, other than <a href="https://github.com/docker/for-mac/issues/2657#issuecomment-371210749">this GitHub issue from 2018</a> refering to a section of the Docker documentation that doesn't exist anymore).</p>
+<p>Users of Docker Desktop for Mac typically don't need to worry about this because it's doing some magic under the hood to avoid the problem altogether (unfortunately I couldn't find a proper description of the corresponding mechanism, other than <a href="https://github.com/docker/for-mac/issues/2657#issuecomment-371210749">this GitHub issue from 2018</a> refering to a section of the Docker documentation that doesn't exist anymore).</p>
 <p>On the other hand, Linux and WSL 2 users are usually affected, and as the latter is getting more traction, there is suddenly a lot more people facing file permission issues.</p>
-<p>So what do these extra Dockerfile instructions do? The first one indicates that there will be a <code>HOST_UID</code> <em>build-time</em> variable available while building the image (once again, I don't want to spend too much time on this, but <a href="https://vsupalov.com/docker-arg-env-variable-guide" title="Docker ARG, ENV and .env - a Complete Guide">this excellent article</a> will tell you everything you need to know about Dockerfile variables). The corresponding value will come from the <code>args</code> section we added to the <code>docker-compose.yml</code> file earlier, which will contain the host machine's current user ID (more on this in a minute).</p>
+<p>So what do the extra Dockerfile instructions do? The first one indicates that there will be a <code>HOST_UID</code> <em>build-time</em> variable available while building the image (once again, I don't want to spend too much time on this, but <a href="https://vsupalov.com/docker-arg-env-variable-guide" title="Docker ARG, ENV and .env - a Complete Guide">this excellent article</a> will tell you everything you need to know about Dockerfile variables). The corresponding value will come from the <code>args</code> section we also added to the <code>docker-compose.yml</code> file earlier, which will contain the host machine's current user ID (more on this in a minute).</p>
 <p>We then create a user with the same ID in the container, using Alpine's <code>adduser</code> command (please refer to the <a href="https://wiki.alpinelinux.org/wiki/Setting_up_a_new_user">documentation</a> for details). We name that user <code>demo</code>.</p>
 <p>Finally, we tell Docker to switch to that user using the <code>USER</code> instruction, meaning that from then on, <code>demo</code> will be the container's default user.</p>
 <p>There's one last thing we need to do, and that is to pass the user ID from the host machine to the <code>docker-compose.yml</code> file.</p>
@@ -767,7 +782,8 @@ nginx:
 </pre></div>
 
 
-<p>By using the same <code>sh -c</code> trick as earlier in order to run multiple commands at once on the container, we install <a href="https://cli.vuejs.org/">Vue CLI</a> (<code>yarn global add @vue/cli</code>) and use it straight away to <a href="https://cli.vuejs.org/guide/creating-a-project.html#vue-create">create a new Vue.js project</a> with some default presets, in the <code>tmp</code> directory (<code>vue create tmp --default --force</code>). This directory is located under <code>/var/www/frontend</code> , which is the container's working directory as per <code>docker-compose.yml</code>.</p>
+<p>By using the same <code>sh -c</code> trick as earlier in order to run multiple commands at once on the container, we install <a href="https://cli.vuejs.org/">Vue CLI</a> (<code>yarn global add @vue/cli</code>) and use it straight away to <a href="https://cli.vuejs.org/guide/creating-a-project.html#vue-create">create a new Vue.js project</a> with some default presets, in the <code>tmp</code> directory (<code>vue create tmp --default --force</code>). This directory is located under <code>/var/www/frontend</code>, which is the container's working directory as per <code>docker-compose.yml</code>.</p>
+<p>Note that if you'd rather select your own presets (such as the Vue.js version to use), you can simply remove <code>--default</code> from the command.</p>
 <p>We don't install Vue CLI via the Dockerfile here, because the only use we have for it is to create the project. Once that's done, there's no need to keep it around.</p>
 <p>Just like the backend, let's move the files out of <code>tmp</code> and back to the parent directory:</p>
 <div class="highlight"><pre><span></span>$ docker compose run --rm frontend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
@@ -1037,7 +1053,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-09-25" pubdate>2021-09-25</time>
+          <time datetime="2021-10-09" pubdate>2021-10-09</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
