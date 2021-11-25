@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-03-06 ::
+          Last updated: 2021-11-25 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -513,7 +513,8 @@ nginx_1 exited with code <span class="m">1</span>
 41
 42
 43
-44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
+44
+45</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span> <span class="s">&#39;3.8&#39;</span>
 
 <span class="c1"># Services</span>
 <span class="nt">services</span><span class="p">:</span>
@@ -541,9 +542,10 @@ nginx_1 exited with code <span class="m">1</span>
 
   <span class="c1"># MySQL Service</span>
   <span class="nt">mysql</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql:8</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql/mysql-server:8.0</span>
     <span class="nt">environment</span><span class="p">:</span>
       <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+      <span class="nt">MYSQL_ROOT_HOST</span><span class="p">:</span> <span class="s">&quot;%&quot;</span>
       <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
     <span class="nt">volumes</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
@@ -668,11 +670,13 @@ nginx_1 exited with code <span class="m">1</span>
 10
 11
 12
-13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># MySQL Service</span>
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># MySQL Service</span>
 <span class="nt">mysql</span><span class="p">:</span>
-  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql:8</span>
+  <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysql/mysql-server:8.0</span>
   <span class="nt">environment</span><span class="p">:</span>
     <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">root</span>
+    <span class="nt">MYSQL_ROOT_HOST</span><span class="p">:</span> <span class="s">&quot;%&quot;</span>
     <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
   <span class="nt">volumes</span><span class="p">:</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
@@ -684,8 +688,13 @@ nginx_1 exited with code <span class="m">1</span>
 </pre></div>
 </td></tr></table>
 
-<p>The <code>image</code> section points to MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> for version 8, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains a couple of keys, <code>MYSQL_ROOT_PASSWORD</code> and <code>MYSQL_DATABASE</code>, which are environment variables that will be set on the container upon creation. They are documented in the <a href="https://hub.docker.com/_/mysql">image's description</a> and essentially allow us to set the root password and create a default database respectively.</p>
+<p>The <code>image</code> section points to MySQL Server's <a href="https://hub.docker.com/r/mysql/mysql-server">image</a> for version 8.0, and it is followed by a section we haven't come across yet: <code>environment</code>. It contains three keys – <code>MYSQL_ROOT_PASSWORD</code>, <code>MYSQL_ROOT_HOST</code> and <code>MYSQL_DATABASE</code> – which are environment variables that will be set on the container upon creation. They allow us to set the root password, authorise connections from any IP address, and create a default database respectively.</p>
 <p>In other words, a <code>demo</code> database will automatically be created for us when the container starts.</p>
+<div class="info">
+<p><span class="title">Why MySQL Server?</span> At the time of writing, containers based on MySQL's <a href="https://hub.docker.com/_/mysql">official image</a> don't run on Macs with M1 chips. This is because the M1 is ARM-based and the official MySQL image isn't compatible with it, whereas the MySQL Server one is. Using the latter for our Docker-based environment will thus ensure maximum compatibility.</p>
+<p>There are other specifities to be aware of when using Docker on M1 machines, some of which you can read about <a href="https://gist.github.com/ciaranmcnulty/f82e710668ee285473ea724c83dd51ec">here</a>.</p>
+</div>
+
 <p>After the <code>environment</code> key is the now familiar <code>volumes</code>. The first volume is a configuration file we will be using to set the character set to <code>utf8mb4_unicode_ci</code> by default, which is pretty standard nowadays.</p>
 <p>Create the <code>.docker/mysql</code> folder and add the following <code>my.cnf</code> file to it:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -947,7 +956,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-03-06" pubdate>2021-03-06</time>
+          <time datetime="2021-11-25" pubdate>2021-11-25</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
