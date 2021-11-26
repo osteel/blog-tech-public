@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-07-11 ::
+          Last updated: 2021-11-26 ::
         Published: 05/01/2021
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/you-dont-need-laravel-sail.html">history</a> ]
       </small>
@@ -167,8 +167,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">📸 If you missed my stream walking through Laravel Sail and chatting about some of the documentation improvements, you can watch it here! Stream really starts at the timestamp in this link: <a href="https://t.co/U0otoNHg8U">https://t.co/U0otoNHg8U</a> 📸</p>&mdash; Taylor Otwell ⛵️ (@taylorotwell) <a href="https://twitter.com/taylorotwell/status/1336357588791947264?ref_src=twsrc%5Etfw">December 8, 2020</a></blockquote>
 
 <p><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></p>
-<p>The announcement caused a wave of excitement across the community, as a lot of people identified the new environment as a way to finally get into Docker; but it also left some confusion in its wake, as Sail introduces an approach to development that is quite different from its predecessors and isn't exactly a guide to becoming a Docker expert.</p>
-<p>This post is about what to expect from Laravel Sail, how it works and how to make the most of it; it is also a plea to developers to break away from it, in favour of their own, tailored solution.</p>
+<p>The announcement caused a wave of excitement across the community, as a lot of people identified the new environment as an opportunity to finally get into Docker. But it also left some confusion in its wake, as Sail isn't exactly a guide to becoming a Docker expert, and it introduces an approach to development that is quite different from its predecessors.</p>
+<p>This post is about what to expect from Laravel Sail, how it works and how to make the most of it. It is also a plea to developers to break away from it, in favour of their own, tailored solution.</p>
 <p>But before we get there, we need to take a look under the deck, starting with a high-level explanation of what Sail is.</p>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -201,50 +201,54 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="what-is-laravel-sail">What is Laravel Sail?</h2>
-<p>Sail is Laravel's latest development environment. It is the most recent addition to a long list featuring official solutions like <a href="https://laravel.com/docs/homestead">Homestead</a> and <a href="https://laravel.com/docs/valet">Valet</a> on the one hand, and community efforts like <a href="https://laragon.org">Laragon</a>, <a href="http://laradock.io">Laradock</a>, <a href="https://github.com/tighten/takeout">Takeout</a> and <a href="https://vessel.shippingdocker.com/">Vessel</a> on the other (according to the <a href="https://github.com/laravel/sail#inspiration">GitHub repository</a>, Sail is largely inspired by the latter).</p>
+<p>Sail is Laravel's latest development environment. It is the most recent addition to an already long list featuring official solutions like <a href="https://laravel.com/docs/homestead">Homestead</a> and <a href="https://laravel.com/docs/valet">Valet</a> on the one hand, and community efforts like <a href="https://laragon.org">Laragon</a>, <a href="http://laradock.io">Laradock</a>, <a href="https://github.com/tighten/takeout">Takeout</a> and <a href="https://vessel.shippingdocker.com/">Vessel</a> on the other (according to the <a href="https://github.com/laravel/sail#inspiration">GitHub repository</a>, Sail is largely inspired by the latter).</p>
 <p>Laravel Sail is based on <a href="https://www.docker.com">Docker</a>, a technology leveraging <a href="https://www.docker.com/resources/what-container">containers</a> to essentially package up applications so they can run quickly and easily on any operating system.</p>
-<p>The future of Sail appears to be bright, as the Laravel documentation already features it as the <a href="https://laravel.com/docs/installation#your-first-laravel-project">preferred way</a> to instal and run Laravel projects locally, a spot that Homestead and Valet occupied for years.</p>
+<p>The future of Sail appears to be bright, as the Laravel documentation immediately featured it as the <a href="https://laravel.com/docs/installation#your-first-laravel-project">preferred way</a> to instal and run Laravel projects locally, a spot that Homestead and Valet had occupied for a long time.</p>
 <h2 id="how-does-it-compare-to-its-predecessors">How does it compare to its predecessors?</h2>
-<p>As a refresher, Homestead is a <a href="https://www.vagrantup.com">Vagrant</a> box (a virtual machine) pre-packaged with everything most Laravel applications need, including essential components like PHP, MySQL and a web server (Nginx), but also less-often used technologies like PostgreSQL, Redis or Memcached.</p>
-<p>Valet, on the other hand, is a lightweight environment for macOS focused on performance, relying on a local installation of PHP instead of a virtual machine, and intended to be used along with other services like <a href="https://dbngin.com">DBngin</a> or Takeout to manage other dependencies like databases.</p>
-<p>While Homestead and Valet look quite different on paper, they promote the same general approach to local development, which is also shared by most of the aforementioned solutions: they try to be one-size-fits-all environments for Laravel projects and to manage them all under one roof.</p>
-<p>Sail's approach is different, in that the development environment's description is included with the rest of the codebase. Instead of relying on the presence of a third-party solution on the developer's machine, the project comes with a set of instructions for Docker to pick up and build the corresponding environment.</p>
-<p>The application comes with batteries included, only requiring a single command to spin up its development environment, regardless of the developer's operating system so long as Docker is installed on it. It also introduces the notion of a bespoke development environment for the application, which, in my opinion, is Laravel Sail's real kicker.</p>
+<p>As a refresher, <a href="https://laravel.com/docs/homestead">Homestead</a> is a <a href="https://www.vagrantup.com">Vagrant</a> box (a virtual machine) featuring everything most Laravel applications need. That includes essential components like PHP, MySQL and a web server (Nginx), but also other technologies like PostgreSQL, Redis or Memcached.</p>
+<p><a href="https://laravel.com/docs/valet">Valet</a>, on the other hand, is a lightweight environment for macOS focussed on performance. It relies on a local installation of PHP instead of a virtual machine, and is intended to be used alongside other services like <a href="https://dbngin.com">DBngin</a> or <a href="https://github.com/tighten/takeout">Takeout</a> to manage other dependencies like databases.</p>
+<p>While Homestead and Valet look quite different on paper, they promote the same general approach to local development, which is also shared by most of the aforementioned solutions: they try to be one-size-fits-all environments for Laravel projects and aim at managing them all under one roof.</p>
+<p>Sail's approach is different, in that the instructions to build the development environment come with the project's source code. Instead of relying on the presence of a third-party solution like Homestead on the developer's machine, Docker will read the set of instructions and build the corresponding environment from scratch.</p>
+<p>In other words, the application comes with batteries included and a single command will spin up and configure its dependencies. It will work regardless of the developer's operating system, so long as Docker is installed on it.</p>
+<p>Laravel Sail introduces the notion of a bespoke development environment for the application, which, in my opinion, is the technology's real kicker.</p>
 <p>While this approach is a major departure from traditional solutions, Sail still bears some resemblance to them around the tools it comes with, some of which are essential, others not.</p>
-<p>Let's review the most important ones and the way they're implemented.</p>
+<p>Let's review the most important ones and how they are implemented.</p>
 <h2 id="how-does-it-work">How does it work?</h2>
-<p>From here on, it will be easier to follow along with a fresh installation of Laravel, although the files I refer to come with links to the <a href="https://github.com/laravel/sail">official GitHub repository</a>. If you've got a little bit of time, go follow the <a href="https://laravel.com/docs/installation#your-first-laravel-project">instructions for your operating system</a> now and come back here when you're done.</p>
-<p>While Sail allows us to <a href="https://laravel.com/docs/#choosing-your-sail-services">pick the services</a> we're interested in when creating a new Laravel application, by default it is composed of three main components: PHP, MySQL and Redis. As per the <a href="https://laravel.com/docs/sail#introduction">documentation</a>, the whole setup gravitates around two files: <code>docker-compose.yml</code> [<a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.stub">link</a>] (which you will find at the project's root after a fresh installation) and the <code>sail</code> script [<a href="https://github.com/laravel/sail/blob/1.x/bin/sail">link</a>] (found under <code>vendor/bin</code>).</p>
+<p>From here on, it will be easier to follow along with a fresh installation of Laravel, although the files I refer to always point to the <a href="https://github.com/laravel/sail">official GitHub repository</a>. If you've got a little bit of time, go follow the <a href="https://laravel.com/docs/installation#your-first-laravel-project">instructions for your operating system</a> now and come back once you've successfully run <code>./vendor/bin/sail up</code> – I'll take it from there.</p>
+<p>While Sail allows us to <a href="https://laravel.com/docs/#choosing-your-sail-services">pick the services</a> we're interested in when creating a new Laravel application, by default it is composed of three main components – PHP, MySQL and Redis. As per the <a href="https://laravel.com/docs/sail#introduction">documentation</a>, the whole setup gravitates around two files – <a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.stub">docker-compose.yml</a> (located at the root of the project after a fresh installation) and the <a href="https://github.com/laravel/sail/blob/1.x/bin/sail">sail script</a> (under <code>vendor/bin</code>).</p>
 <h3 id="the-docker-composeyml-file">The <code>docker-compose.yml</code> file</h3>
-<p>As mentioned earlier, Laravel Sail is based on Docker, which is a technology leveraging containers. As a rule of thumb, each container should only run one process; roughly translated, that means that each container should only run a single piece of software. If we apply this rule to the above setup, we'll need one container for PHP, another one for MySQL, and a third one for Redis.</p>
-<p>These containers make up your application, and they need to be <em>orchestrated</em> for it to function properly. There are several ways to do this, but Laravel Sail relies on <a href="https://docs.docker.com/compose/">Docker Compose</a> to do the job, which is the easiest and most used solution for local setups.</p>
-<p>Docker Compose expects us to describe the various components of our application in a <code>docker-compose.yml</code> file, in YAML format. If you open the one at the root of the project, you will see a <code>version</code> parameter at the top, under which there is a  <code>services</code> section containing a list of components comprising the ones we've just mentioned: <code>laravel.test</code>, <code>mysql</code> and <code>redis</code>.</p>
-<p>I'll describe the <code>mysql</code> and <code>redis</code> services first, as they are simpler than <code>laravel.test</code>; I'll then briefly cover the other, smaller ones that also come by default with a new instal.</p>
+<p>As mentioned already, Laravel Sail is based on Docker, which is a technology leveraging containers. The rule of thumb is that each container should only run one process, which roughly translates to each container running a single piece of software. Applying this rule to the above setup means we'll need a container for PHP, one for MySQL, and a third one for Redis.</p>
+<p>These containers make up your application, and for it to function properly, they need to be <em>orchestrated</em>. There are several ways to do this, but Laravel Sail relies on <a href="https://docs.docker.com/compose/">Docker Compose</a> for the job, which is the preferred solution for local setups.</p>
+<p>Docker Compose expects us to describe the various components of our application in a <code>docker-compose.yml</code> file, in YAML format. If you open the one at the root of the project, you will see a <code>version</code> parameter at the top, followed by a <code>services</code> section containing a list of components comprising the ones I've just mentioned – <code>laravel.test</code>, <code>mysql</code> and <code>redis</code> (and some other ones I'll briefly cover later).</p>
+<p>I'll describe the <code>mysql</code>, <code>redis</code> and <code>laravel.test</code> services in that order, as the two first ones are simpler than the last.</p>
 <h4 id="the-mysql-service">The <code>mysql</code> service</h4>
 <p>As the name suggests, the <code>mysql</code> service handles the MySQL database:</p>
 <div class="highlight"><pre><span></span><span class="nt">mysql</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="s">&#39;mysql:8.0&#39;</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="s">&#39;mysql/mysql-server:8.0&#39;</span>
     <span class="nt">ports</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="s">&#39;${FORWARD_DB_PORT:-3306}:3306&#39;</span>
     <span class="nt">environment</span><span class="p">:</span>
         <span class="nt">MYSQL_ROOT_PASSWORD</span><span class="p">:</span> <span class="s">&#39;${DB_PASSWORD}&#39;</span>
+        <span class="nt">MYSQL_ROOT_HOST</span><span class="p">:</span> <span class="s">&quot;%&quot;</span>
         <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="s">&#39;${DB_DATABASE}&#39;</span>
         <span class="nt">MYSQL_USER</span><span class="p">:</span> <span class="s">&#39;${DB_USERNAME}&#39;</span>
         <span class="nt">MYSQL_PASSWORD</span><span class="p">:</span> <span class="s">&#39;${DB_PASSWORD}&#39;</span>
-        <span class="nt">MYSQL_ALLOW_EMPTY_PASSWORD</span><span class="p">:</span> <span class="s">&#39;yes&#39;</span>
+        <span class="nt">MYSQL_ALLOW_EMPTY_PASSWORD</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
     <span class="nt">volumes</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="s">&#39;sailmysql:/var/lib/mysql&#39;</span>
     <span class="nt">networks</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">sail</span>
     <span class="nt">healthcheck</span><span class="p">:</span>
-      <span class="nt">test</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;mysqladmin&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;ping&quot;</span><span class="p p-Indicator">]</span>
+        <span class="nt">test</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;mysqladmin&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;ping&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;-p${DB_PASSWORD}&quot;</span><span class="p p-Indicator">]</span>
+        <span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+        <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
 </pre></div>
 
 
-<p>The <code>image</code> parameter indicates which <em>image</em> should be used for this container. An easy way to understand images and the difference with containers is to borrow from Object-Oriented Programming concepts: an image is akin to a class and a container to an instance of that class.</p>
-<p>Here, we specify that we want to use the tag <code>8.0</code> of the <code>mysql</code> image, corresponding to MySQL version 8.0. By default, images are downloaded from <a href="https://hub.docker.com">Docker Hub</a>, which is the largest image registry. Have a look at <a href="https://hub.docker.com/_/mysql">the page for MySQL</a> – most images come with simple documentation explaining how to use it.</p>
-<p>The <code>ports</code> key allows us to map local ports to container ports, following the <code>local:container</code> format. In the code snippet above, the value of the <code>FORWARD_DB_PORT</code> environment variable (or <code>3306</code> if that value is empty) is mapped to the container's <code>3306</code> port. This is mostly useful to connect third-party software to the database, like <a href="https://www.mysql.com/products/workbench/">MySQL Workbench</a> or <a href="https://sequel-ace.com/">Sequel Ace</a>; the setup would also work without it.</p>
-<p><code>environments</code> is for defining environment variables for the container. Here, most of them receive the value of existing environment variables, which are loaded from the <code>.env</code> file at the root of the project – <code>docker-compose.yml</code> automatically detects and imports the content of this file. For instance, in the <code>MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'</code> line, the container's <code>MYSQL_ROOT_PASSWORD</code> environment variable will receive the value of <code>DB_PASSWORD</code> from the <code>.env</code> file.</p>
+<p>The <code>image</code> parameter indicates which <em>image</em> should be used for this container. An easy way to understand the difference between images and containers is to borrow from Object-Oriented Programming concepts – an image is akin to a class and a container to an instance of that class.</p>
+<p>Here, we specify that we want to use the tag <code>8.0</code> of the <code>mysql/mysql-server</code> image, corresponding to MySQL Server version 8.0. By default, images are downloaded from <a href="https://hub.docker.com">Docker Hub</a>, which is the largest Docker image registry. Have a look at <a href="https://hub.docker.com/r/mysql/mysql-server">the page for MySQL Server</a> – most images come with simple documentation explaining how to use them.</p>
+<p>The <code>ports</code> section allows us to map local ports to container ports, following the <code>local:container</code> notation. In the code snippet above, the value of the <code>FORWARD_DB_PORT</code> environment variable (or <code>3306</code> if that value is empty) is mapped to the container's <code>3306</code> port. This is mostly useful to connect third-party software to the database, like <a href="https://www.mysql.com/products/workbench/">MySQL Workbench</a> or <a href="https://sequel-ace.com/">Sequel Ace</a> (the setup would also work without it).</p>
+<p><code>environments</code> is where we define environment variables for the container. Here, most of them receive the value of existing environment variables, which are loaded from the <code>.env</code> file at the root of the project – <code>docker-compose.yml</code> automatically detects and imports the content of this file. For instance, in the <code>MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'</code> line, the container's <code>MYSQL_ROOT_PASSWORD</code> environment variable will receive the value of <code>DB_PASSWORD</code> from the <code>.env</code> file.</p>
 <p><code>volumes</code> is to declare some of the container's files or folders as <em>volumes</em>, either by mapping specific local files or folders to them or by letting Docker deal with it.</p>
 <p>Here, a single Docker-managed volume is defined: <code>sailmysql</code>. This type of volume must be declared in a separate <code>volumes</code> section, at the same level as <code>services</code>. We can find it at the bottom of the <code>docker-compose.yml</code> file:</p>
 <div class="highlight"><pre><span></span><span class="nt">volumes</span><span class="p">:</span>
@@ -257,7 +261,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The <code>sailmysql</code> volume is mapped to the container's <code>/var/lib/mysql</code> folder, which is where the MySQL data is stored. This volume ensures that the data is persisted even when the container is destroyed, which is the case when we run the <code>sail down</code> command.</p>
+<p>The <code>sailmysql</code> volume is mapped to the container's <code>/var/lib/mysql</code> folder, which is where the MySQL data is stored. This volume ensures that the data is persisted even when the container is destroyed, which is the case when we run the <code>./vendor/bin/sail down</code> command.</p>
 <p>The <code>networks</code> section allows us to specify which internal networks the container should be available on. Here, all services are connected to the same <code>sail</code> network, which is also defined at the bottom of <code>docker-compose.yml</code>, in the <code>networks</code> section above the <code>volumes</code> one:</p>
 <div class="highlight"><pre><span></span><span class="nt">networks</span><span class="p">:</span>
     <span class="nt">sail</span><span class="p">:</span>
@@ -265,7 +269,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>Finally, <code>healthcheck</code> is a way to indicate which conditions need to be true for the service to be <em>ready</em>, as opposed to just be <em>started</em>. I'll go back to this soon.</p>
+<p>Finally, <code>healthcheck</code> is a way to indicate which conditions need to be true for the service to be <em>ready</em>, as opposed to just be <em>started</em>. I'll get back to this soon.</p>
 <h4 id="the-redis-service">The <code>redis</code> service</h4>
 <p>The <code>redis</code> service is very similar to the <code>mysql</code> one:</p>
 <div class="highlight"><pre><span></span><span class="nt">redis</span><span class="p">:</span>
@@ -277,13 +281,15 @@ styles, `#sidebar-checkbox` for behavior. -->
     <span class="nt">networks</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">sail</span>
     <span class="nt">healthcheck</span><span class="p">:</span>
-      <span class="nt">test</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;redis-cli&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;ping&quot;</span><span class="p p-Indicator">]</span>
+        <span class="nt">test</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="s">&quot;CMD&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;redis-cli&quot;</span><span class="p p-Indicator">,</span> <span class="s">&quot;ping&quot;</span><span class="p p-Indicator">]</span>
+        <span class="nt">retries</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">3</span>
+        <span class="nt">timeout</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">5s</span>
 </pre></div>
 
 
-<p>We pull the <code>alpine</code> tag of the <a href="https://hub.docker.com/_/redis">official image</a> for Redis (<a href="https://alpinelinux.org/">Alpine is a lightweight Linux distribution</a>) and we define which port to forward; we then declare a volume to make the data persistent, connect the container to the <code>sail</code> network, and define the check to perform in order to consider the service ready.</p>
+<p>We pull the <code>alpine</code> tag of the <a href="https://hub.docker.com/_/redis">official image</a> for Redis (<a href="https://alpinelinux.org/">Alpine</a> is a lightweight Linux distribution) and we define which port to forward. We then declare a volume to persist the data, connect the container to the <code>sail</code> network, and define the health check to perform to ensure the service is ready.</p>
 <h4 id="the-laraveltest-service">The <code>laravel.test</code> service</h4>
-<p>The <code>laravel.test</code> service is more complex:</p>
+<p>The <code>laravel.test</code> service is slightly more complex:</p>
 <div class="highlight"><pre><span></span><span class="nt">laravel.test</span><span class="p">:</span>
     <span class="nt">build</span><span class="p">:</span>
         <span class="nt">context</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./vendor/laravel/sail/runtimes/8.0</span>
@@ -291,11 +297,15 @@ styles, `#sidebar-checkbox` for behavior. -->
         <span class="nt">args</span><span class="p">:</span>
             <span class="nt">WWWGROUP</span><span class="p">:</span> <span class="s">&#39;${WWWGROUP}&#39;</span>
     <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">sail-8.0/app</span>
+    <span class="nt">extra_hosts</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="s">&#39;host.docker.internal:host-gateway&#39;</span>
     <span class="nt">ports</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="s">&#39;${APP_PORT:-80}:80&#39;</span>
     <span class="nt">environment</span><span class="p">:</span>
         <span class="nt">WWWUSER</span><span class="p">:</span> <span class="s">&#39;${WWWUSER}&#39;</span>
         <span class="nt">LARAVEL_SAIL</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">1</span>
+        <span class="nt">XDEBUG_MODE</span><span class="p">:</span> <span class="s">&#39;${SAIL_XDEBUG_MODE:-off}&#39;</span>
+        <span class="nt">XDEBUG_CONFIG</span><span class="p">:</span> <span class="s">&#39;${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}&#39;</span>
     <span class="nt">volumes</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="s">&#39;.:/var/www/html&#39;</span>
     <span class="nt">networks</span><span class="p">:</span>
@@ -303,19 +313,20 @@ styles, `#sidebar-checkbox` for behavior. -->
     <span class="nt">depends_on</span><span class="p">:</span>
         <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysql</span>
         <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">redis</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">meilisearch</span>
         <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">selenium</span>
 </pre></div>
 
 
 <p>For starters, the name is a bit confusing, but this service is the one handling PHP (i.e. the one serving the Laravel application).</p>
-<p>Next, it has a <code>build</code> key that we haven't seen before, which points to the <code>Dockerfile</code> [<a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/Dockerfile">link</a>] that is present under the <code>vendor/laravel/sail/runtimes/8.0</code> folder.</p>
-<p><a href="https://docs.docker.com/engine/reference/builder/">Dockerfiles</a> are text documents containing instructions to build images. Instead of pulling and using an existing image from Docker Hub as-is, the Laravel team chose to describe their own in a Dockerfile. The first time we ran the <code>sail up</code> command, we built that image and created a container based on it.</p>
+<p>Next, it has a <code>build</code> section that we haven't seen before, which points to the <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/Dockerfile">Dockerfile</a> that is present under the <code>vendor/laravel/sail/runtimes/8.0</code> folder.</p>
+<p><a href="https://docs.docker.com/engine/reference/builder/">Dockerfiles</a> are text documents containing instructions to build images. Instead of using an existing image <em>as-is</em> from Docker Hub, the Laravel team described their own in a Dockerfile. The first time we run the <code>./vendor/bin/sail up</code> command, we build that image and create a container based on it.</p>
 <p>Open the Dockerfile and take a look at the first line:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> ubuntu:20.04</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> ubuntu:21.04</span>
 </pre></div>
 
 
-<p>This means that the tag <code>20.04</code> of the <a href="https://hub.docker.com/_/ubuntu"><code>ubuntu</code> image</a> is used as a starting point for the custom image; the rest of the file is essentially a list of instructions to build upon it, installing everything a standard Laravel application needs. That includes PHP, various extensions, and other packages like Git or Supervisor, as well as Composer.</p>
+<p>This means that the tag <code>21.04</code> of <a href="https://hub.docker.com/_/ubuntu">Ubuntu's image</a> is used as a starting point for the custom image; the rest of the file is essentially a list of instructions to build upon it, installing everything a standard Laravel application needs. That includes PHP, various extensions, and other packages like Git or Supervisor, as well as Composer.</p>
 <p>The end of the file also deserves a quick explanation:</p>
 <div class="highlight"><pre><span></span><span class="k">COPY</span> start-container /usr/local/bin/start-container
 <span class="k">COPY</span> supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -330,32 +341,31 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 <p>We can see that a bunch of local files are copied over to the container:</p>
 <ul>
-<li>the <code>php.ini</code> file [<a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/php.ini">link</a>] is some custom configuration for PHP;</li>
-<li>the <code>supervisord.conf</code> file [<a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/supervisord.conf">link</a>] is a configuration file for <a href="http://supervisord.org/">Supervisor</a>, a process manager here responsible for starting the PHP process;</li>
-<li>the <code>start-container</code> file [<a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/start-container">link</a>] is a Bash script that will do a few things every time the container starts, because it is defined as the container's <a href="https://docs.docker.com/engine/reference/builder/#entrypoint">ENTRYPOINT</a>. We can see that it's made executable by the <code>RUN chmod +x</code> instruction;</li>
+<li>the <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/php.ini">php.ini file</a> is some custom configuration for PHP;</li>
+<li>the <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/supervisord.conf">supervisord.conf file</a> is a configuration file for <a href="http://supervisord.org/">Supervisor</a>, a process manager here responsible for starting the PHP process;</li>
+<li>the <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/start-container">start-container file</a> is a Bash script that will do a few things every time the container starts, because it is defined as the container's <a href="https://docs.docker.com/engine/reference/builder/#entrypoint">ENTRYPOINT</a>. We can see that it's made executable by the <code>RUN chmod +x</code> instruction;</li>
 <li>finally, <code>EXPOSE 8000</code> doesn't do anything, apart from informing the reader that this container listens on the specified port at runtime (which actually seems wrong here, since the application is served on port 80, not 8000).</li>
 </ul>
-<p>Other things are happening in this Dockerfile, but the above is the gist of it. Note that this one pertains to PHP 8.0, but Laravel Sail also comes with a <a href="https://github.com/laravel/sail/blob/1.x/runtimes/7.4/Dockerfile">7.4 version</a> you can point to from the <code>laravel.test</code> service in <code>docker-compose.yml</code> instead.</p>
-<p>The service also has a <code>depends_on</code> section containing the list of services whose containers should be ready prior to the Laravel application's. Since the latter references MySQL, Redis and Selenium, theirs should be started and ready first to avoid connection errors.</p>
-<p>This is where the health checks described earlier are useful: by default <code>depends_on</code> will wait for the specified services to be <em>started</em>, which doesn't necessarily mean they are <em>ready</em>. By specifying on which conditions these services are deemed ready, we ensure they are in the right state prior to starting the Laravel application.</p>
+<p>Other things are happening in this Dockerfile, but the above is the gist of it. Note that this one pertains to PHP 8.0, but Laravel Sail also supports <a href="https://github.com/laravel/sail/blob/1.x/runtimes">other versions</a> whose Dockerfiles you can point to from the <code>laravel.test</code> service in <code>docker-compose.yml</code>, instead of that of PHP 8.0.</p>
+<p>Bringing our attention back to <code>docker-compose.yml</code>, we can see that there is an <code>extra_hosts</code> section we haven't encountered before. I won't get into too much detail, but it's here to ensure <a href="https://xdebug.org/">Xdebug</a> runs smoothly <a href="https://github.com/laravel/sail/pull/222">across operating systems</a>.</p>
+<p>The service also has a <code>depends_on</code> section containing the list of services that should be available before the Laravel application starts. Here, we need MySQL, Redis, Meilisearch and Selenium to be up and running first to avoid connection errors.</p>
+<p>This is where the health checks described earlier are useful. By default, <code>depends_on</code> will wait for the specified services to be <em>started</em>, which doesn't necessarily mean they are <em>ready</em>. By specifying on which conditions these services are deemed ready, we ensure they are in the required state prior to starting the Laravel application.</p>
 <p>The rest of the settings should be familiar by now, so I'll skip them.</p>
 <h4 id="the-meilisearch-mailhog-and-selenium-services">The <code>meilisearch</code>, <code>mailhog</code> and <code>selenium</code> services</h4>
 <p>These are the smaller services I referred to earlier; they are already documented <a href="https://laravel.com/docs/sail#meilisearch">here</a>, <a href="https://laravel.com/docs/sail#previewing-emails">here</a> and <a href="https://laravel.com/docs/sail#laravel-dusk">here</a>. The point is they work the same way as the other ones: they pull existing images from Docker Hub and use them as-is, with minimal configuration.</p>
 <h3 id="the-sail-script">The <code>sail</code> script</h3>
-<p>If you followed <a href="https://laravel.com/docs/installation#your-first-laravel-project">Laravel's installation instructions</a> for your operating system, you must have run the following command at some point:</p>
+<p>If you followed <a href="https://laravel.com/docs/installation#your-first-laravel-project">Laravel's installation instructions</a> earlier, you must have run the following command at some point:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up
 </pre></div>
 
 
-<p>The <code>sail</code> file [<a href="https://github.com/laravel/sail/blob/1.x/bin/sail">link</a>] that we call here is a Bash script essentially adding a more user-friendly layer on top of sometimes long-winded Docker commands.</p>
+<p>The <a href="https://github.com/laravel/sail/blob/1.x/bin/sail">sail file</a> that we call here is a Bash script whose function is to present a user-friendly interface to interact with Sail, saving us the pain to run and remember sometimes long-winded Docker commands.</p>
 <p>Let's open it now for closer inspection (don't worry if you're not familiar with Bash – it's pretty straightforward).</p>
-<p>We can ignore the whole first part of the file and focus on the big <code>if</code> statement that starts like this:</p>
+<p>We can ignore the whole first part of the file and focus on the big <code>if</code> statement which starts like this:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -gt <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="c1"># Source the &quot;.env&quot; file so Laravel&#39;s environment variables are available...</span>
-    <span class="k">if</span> <span class="o">[</span> -f ./.env <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-        <span class="nb">source</span> ./.env
-    <span class="k">fi</span>
-    <span class="c1"># ...</span>
+    <span class="c1"># Proxy PHP commands to the &quot;php&quot; binary on the application container...</span>
+    <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;php&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="c1"># ...</span>
 </pre></div>
 
 
@@ -368,9 +378,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The comment already describes what's going on – the script passes the <code>up</code> argument on to the <code>docker-compose</code> binary. In other words, when we run <code>./vendor/bin/sail up</code> we actually run <code>docker compose up</code>, which is the <a href="https://docs.docker.com/compose/reference/up/">standard Docker Compose command</a> to start the containers for the services listed in <code>docker-compose.yml</code>.</p>
-<p>This command downloads the corresponding images first if necessary, and builds the Laravel image based on the Dockerfile as we talked about earlier.</p>
-<p>Give it a try! Run <code>./vendor/bin/sail up</code> then <code>docker compose up</code> – they do the same thing.</p>
+<p>The comment already tells us what's going on – the script passes the <code>up</code> argument on to the <code>docker-compose</code> binary. In other words, when we run <code>./vendor/bin/sail up</code> we actually run <code>docker-compose up</code>, which is the <a href="https://docs.docker.com/compose/reference/up/">standard Docker Compose command</a> to start the containers for the services listed in <code>docker-compose.yml</code>.</p>
+<p>This command downloads the corresponding images once if necessary, and builds the Laravel image based on the Dockerfile we talked about earlier.</p>
+<p>Give it a try! Run <code>./vendor/bin/sail up</code> first, then <code>docker compose up</code> – they do the same thing.</p>
 <p>Let's now look at a more complicated example, one involving Composer, which is among the packages installed by the application's Dockerfile. But before we do that, let's start Sail in <a href="https://laravel.com/docs/sail#starting-and-stopping-sail">detached mode</a> to run the containers in the background:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up -d
 </pre></div>
@@ -382,14 +392,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>The above calls the <code>sail</code> script with <code>composer</code> and <code>--version</code> as arguments, meaning the execution will enter that big <code>if</code> statement again.</p>
-<p>Let's search for the condition dealing with Composer:</p>
+<p>Let's look for the condition dealing with Composer:</p>
 <div class="highlight"><pre><span></span><span class="c1"># ...</span>
 <span class="c1"># Proxy Composer commands to the &quot;composer&quot; binary on the application container...</span>
 <span class="k">elif</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;composer&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
     <span class="nb">shift</span> <span class="m">1</span>
 
     <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$EXEC</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-        docker compose <span class="nb">exec</span> <span class="se">\</span>
+        docker-compose <span class="nb">exec</span> <span class="se">\</span>
             -u sail <span class="se">\</span>
             <span class="s2">&quot;</span><span class="nv">$APP_SERVICE</span><span class="s2">&quot;</span> <span class="se">\</span>
             composer <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
@@ -401,14 +411,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>The first line of the condition starts with <code>shift</code>, which is a Bash <em>built-in</em> that skips as many arguments as the number it is followed by. In this case, <code>shift 1</code> skips the <code>composer</code> argument, making <code>--version</code> the new first argument. The program then makes sure that Sail is running, before executing a weird command split over four lines, which I break down below:</p>
-<div class="highlight"><pre><span></span>docker compose <span class="nb">exec</span> <span class="se">\</span>
+<div class="highlight"><pre><span></span>docker-compose <span class="nb">exec</span> <span class="se">\</span>
     -u sail <span class="se">\</span>
     <span class="s2">&quot;</span><span class="nv">$APP_SERVICE</span><span class="s2">&quot;</span> <span class="se">\</span>
     composer <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
 </pre></div>
 
 
-<p><code>exec</code> is the way Docker Compose allows us to execute commands on already running containers. <code>-u</code> is an option indicating which user we want to execute the command as, and <code>$APP_SERVICE</code> is the container on which we want to run it all. Here, its value is <code>laravel.test</code>, which is the service's name in <code>docker-compose.yml</code> as explained in a previous section. It is followed by the command we want to run once we're in the container, namely <code>composer</code> followed by all the script's arguments. These now only comprise <code>--version</code>, since we've skipped the first argument.</p>
+<p><code>exec</code> is the way Docker Compose allows us to execute commands on a container which is already running. <code>-u</code> is an option indicating which user we want to execute the command as, and <code>$APP_SERVICE</code> is the container on which we want to run it all. Here, its value is <code>laravel.test</code>, which is the service's name in <code>docker-compose.yml</code> as explained in a previous section. It is followed by the command we want to run once we're in the container, namely <code>composer</code> followed by all the script's arguments. These now only comprise <code>--version</code>, since we've skipped the first argument.</p>
 <p>In other words, when we run:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail composer --version
 </pre></div>
@@ -420,7 +430,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>It would be quite cumbersome to type this kind of command every single time; that's why the <code>sail</code> script provides shortcuts for them, making the user experience much smoother.</p>
-<p>Have a look at the rest of the smaller <code>if</code> statements inside the big one to see what else is covered – you'll see that roughly the same principle applies everywhere.</p>
+<p>Have a look at the rest of the smaller <code>if</code> statements inside the big one to see what else is covered – you'll see that the same principle is always more or less applied.</p>
 <hr />
 <p>There are a few other features available out of the box (like <a href="https://laravel.com/docs/sail#sharing-your-site">making local containers public</a>), but we've now covered the substance of what Laravel Sail currently offers. While this is a pretty good start already, it is somewhat limited, even for a basic application.</p>
 <p>The good news is that the Laravel team is aware of this, and built the environment with extension in mind:</p>
@@ -430,8 +440,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Let's see what that means in practice.</p>
 <h2 id="extending-laravel-sail">Extending Laravel Sail</h2>
 <p>The code covered in this section is also available as a <a href="https://github.com/osteel/laravel-sail-extended">GitHub repository</a> you can refer to at any moment.</p>
-<p>We're going to explore three ways to extend Laravel Sail, using <a href="https://www.mongodb.com">MongoDB</a> as a pretext; but before we proceed, let's make sure we get our hands on as many files as we can.</p>
-<p>The only thing we've got access to initially is the <code>docker-compose.yml</code> file [<a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.stub">link</a>], but we can publish more assets with the following command, which will create a new <code>docker</code> folder at the root of the project:</p>
+<p>We're going to explore three ways to extend Laravel Sail, using <a href="https://www.mongodb.com">MongoDB</a> as a test subject. But before we proceed, let's make sure we get our hands on as many configuration files as possible.</p>
+<p>The only thing we've got access to initially is the <a href="https://github.com/laravel/sail/blob/1.x/stubs/docker-compose.stub">docker-compose.yml file</a>, but we can publish more assets with the following command, which will create a new <code>docker</code> folder at the root of the project:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail artisan sail:publish
 </pre></div>
 
@@ -442,13 +452,15 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>Unfortunately, Composer is complaining about some missing extension:</p>
-<div class="highlight"><pre><span></span>mongodb/mongodb<span class="o">[</span>dev-master, <span class="m">1</span>.8.0-RC1, ..., v1.8.x-dev<span class="o">]</span> require ext-mongodb ^1.8.1 -&gt; it is missing from your system. Install or <span class="nb">enable</span> PHP<span class="err">&#39;</span>s mongodb extension
+<div class="highlight"><pre><span></span>...
+- mongodb/mongodb<span class="o">[</span>dev-master, <span class="m">1</span>.10.0, ..., v1.10.x-dev<span class="o">]</span> require ext-mongodb ^1.11.0 -&gt; it is missing from your system. Install or <span class="nb">enable</span> PHP<span class="err">&#39;</span>s mongodb extension.
+...
 </pre></div>
 
 
 <p>Let's fix this!</p>
 <h3 id="installing-extra-extensions">Installing extra extensions</h3>
-<p>Earlier in this post, we talked about the way Sail uses Dockerfiles to build images matching Laravel's requirements for both PHP 7.4 and PHP 8.0. These files were published with the command we ran at the beginning of this section – all we need to do to add extensions is to edit them and rebuild the corresponding images.</p>
+<p>Earlier in this post, we talked about the way Sail uses Dockerfiles to build images matching Laravel's requirements for various PHP versions. These files were published with the command we ran at the beginning of this section – all we need to do is edit them to add the extensions we need, and to rebuild the corresponding images.</p>
 <p>Many extensions are available out of the box and we can list them with the following command:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail php -m
 </pre></div>
@@ -456,58 +468,72 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 <p>MongoDB is not part of them; to add it, open the <code>docker/8.0/Dockerfile</code> file and spot the <code>RUN</code> instruction installing the various packages:</p>
 <div class="highlight"><pre><span></span><span class="k">RUN</span> apt-get update <span class="se">\</span>
-    <span class="o">&amp;&amp;</span> apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> apt-get install -y gnupg gosu curl ca-certificates zip unzip git supervisor sqlite3 libcap2-bin libpng-dev python2 <span class="se">\</span>
     <span class="o">&amp;&amp;</span> mkdir -p ~/.gnupg <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> chmod <span class="m">600</span> ~/.gnupg <span class="se">\</span>
     <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;disable-ipv6&quot;</span> &gt;&gt; ~/.gnupg/dirmngr.conf <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E5267A6C <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-key adv --homedir ~/.gnupg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C300EE8C <span class="se">\</span>
-    <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://ppa.launchpad.net/ondrej/php/ubuntu focal main&quot;</span> &gt; /etc/apt/sources.list.d/ppa_ondrej_php.list <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;deb http://ppa.launchpad.net/ondrej/php/ubuntu hirsute main&quot;</span> &gt; /etc/apt/sources.list.d/ppa_ondrej_php.list <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-get update <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-get install -y php8.0-cli php8.0-dev <span class="se">\</span>
-       php8.0-pgsql php8.0-sqlite3 php8.0-gd <span class="se">\</span>
-       php8.0-curl php8.0-memcached <span class="se">\</span>
-       php8.0-imap php8.0-mysql php8.0-mbstring <span class="se">\</span>
-       php8.0-xml php8.0-zip php8.0-bcmath php8.0-soap <span class="se">\</span>
-       php8.0-intl php8.0-readline <span class="se">\</span>
-       php8.0-msgpack php8.0-igbinary php8.0-ldap <span class="se">\</span>
-       php8.0-redis <span class="se">\</span>
+        php8.0-pgsql php8.0-sqlite3 php8.0-gd <span class="se">\</span>
+        php8.0-curl php8.0-memcached <span class="se">\</span>
+        php8.0-imap php8.0-mysql php8.0-mbstring <span class="se">\</span>
+        php8.0-xml php8.0-zip php8.0-bcmath php8.0-soap <span class="se">\</span>
+        php8.0-intl php8.0-readline php8.0-pcov <span class="se">\</span>
+        php8.0-msgpack php8.0-igbinary php8.0-ldap <span class="se">\</span>
+        php8.0-redis php8.0-swoole php8.0-xdebug <span class="se">\</span>
     <span class="o">&amp;&amp;</span> php -r <span class="s2">&quot;readfile(&#39;http://getcomposer.org/installer&#39;);&quot;</span> <span class="p">|</span> php -- --install-dir<span class="o">=</span>/usr/bin/ --filename<span class="o">=</span>composer <span class="se">\</span>
-    <span class="o">&amp;&amp;</span> curl -sL https://deb.nodesource.com/setup_15.x <span class="p">|</span> bash - <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> curl -sL https://deb.nodesource.com/setup_<span class="nv">$NODE_VERSION</span>.x <span class="p">|</span> bash - <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-get install -y nodejs <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> npm install -g npm <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg <span class="p">|</span> apt-key add - <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&quot;deb https://dl.yarnpkg.com/debian/ stable main&quot;</span> &gt; /etc/apt/sources.list.d/yarn.list <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> apt-get update <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> apt-get install -y yarn <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> apt-get install -y mysql-client <span class="se">\</span>
+    <span class="o">&amp;&amp;</span> apt-get install -y postgresql-client <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-get -y autoremove <span class="se">\</span>
     <span class="o">&amp;&amp;</span> apt-get clean <span class="se">\</span>
-    <span class="o">&amp;&amp;</span> rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/
+    <span class="o">&amp;&amp;</span> rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 </pre></div>
 
 
-<p>It's easy to identify the block related to PHP extensions since they all start with <code>php8.0</code>. Amend the end of the list so it looks like this:</p>
-<div class="highlight"><pre><span></span>php8.0-redis php8.0-mongodb <span class="se">\</span>
+<p>It's easy to identify the block related to PHP extensions since they all start with <code>php8.0</code>. Add the MongoDB extension at the end of the list:</p>
+<div class="highlight"><pre><span></span>php8.0-redis php8.0-swoole php8.0-xdebug php8.0-mongodb <span class="se">\</span>
 </pre></div>
 
 
-<p>You can see the detail of the available PHP extensions for Ubuntu 20.04 <a href="https://packages.ubuntu.com/focal/php/">here</a>.</p>
+<p>You can see the detail of available PHP extensions for Ubuntu 21.04 <a href="https://packages.ubuntu.com/hirsute/php/">here</a>.</p>
 <p>Save the file and run the following command:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail build
 </pre></div>
 
 
-<p>This will go through all the services listed in the <code>docker-compose.yml</code> file and build the corresponding images if they have changed, including the <code>laravel.test</code> service's, whose Dockerfile we've just updated.</p>
+<p>This will go through all the services listed in <code>docker-compose.yml</code> and build the corresponding images if they have changed, including the <code>laravel.test</code> service's, whose Dockerfile we've just updated.</p>
 <p>Once it's done, start the containers again:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up -d
 </pre></div>
 
 
 <p>The command will detect that the image corresponding to the <code>laravel.test</code> service has changed, and recreate the container:</p>
-<p><img alt="Container recreation" src="/images/2021/01/05/sail_02.png" title="Container recreation" /></p>
-<p>That's it! The MongoDB extension for PHP is now installed and enabled. We've only done it for the PHP 8.0 image, but you can apply the same process to PHP 7.4's by updating the <code>docker/7.4/Dockerfile</code> file instead, with<code>php7.4-mongodb</code> as the extension name.</p>
-<p>We can now safely import the Laravel package:</p>
+<div class="highlight"><pre><span></span>...
+laravel-sail-extended_mailhog_1 is up-to-date
+laravel-sail-extended_meilisearch_1 is up-to-date
+Recreating laravel-sail-extended_laravel.test_1 ... <span class="k">done</span>
+</pre></div>
+
+
+<p>That's it! The MongoDB extension for PHP is now installed and enabled. We've only done it for the PHP 8.0 image, but you can apply the same process to <a href="https://github.com/laravel/sail/tree/1.x/runtimes">other PHP versions</a> by updating their own Dockerfile, with the right extension name (e.g. <code>php7.4-mongodb</code>).</p>
+<p>We can now safely import the Laravel MongoDB package:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail composer require jenssegers/mongodb
 </pre></div>
 
 
 <p>Next up: adding a Docker service for MongoDB.</p>
 <h3 id="adding-new-services">Adding new services</h3>
-<p>MongoDB is essentially another database; as a result, the corresponding service will be very similar to the ones of MySQL and Redis. A quick search on <a href="https://hub.docker.com">Docker Hub</a> reveals that there is <a href="https://hub.docker.com/_/mongo">an official image</a> for it, which we are going to use.</p>
+<p>MongoDB is essentially another database, meaning the corresponding service will be very similar to that of MySQL and Redis. A quick search on <a href="https://hub.docker.com">Docker Hub</a> reveals that there is <a href="https://hub.docker.com/_/mongo">an official image</a> for it, which we are going to use.</p>
 <p>Its documentation contains an example configuration for Docker Compose, which we can copy and adjust to our needs. Open <code>docker-compose.yml</code> and add the following service at the bottom, after the other ones:</p>
 <div class="highlight"><pre><span></span><span class="nt">mongo</span><span class="p">:</span>
     <span class="nt">image</span><span class="p">:</span> <span class="s">&#39;mongo:4.4&#39;</span>
@@ -523,9 +549,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The changes I've made are the following: first, I specified the tag <code>4.4</code> of the <code>mongo</code> image. If you don't specify one, Docker Compose will pull the <code>latest</code> tag by default, which is not good practice since it will refer to different versions of MongoDB over time, as new releases are available. The introduction of breaking changes could create instability in your Docker setup, so it's better to target a specific version, matching the production one whenever possible.</p>
+<p>The changes I've made are the following: first, I specified the tag <code>4.4</code> of the <code>mongo</code> image. If you don't specify one, Docker Compose will pull the <code>latest</code> tag by default, which is not a good practice since it will refer to different versions of MongoDB over time, as new releases are available. The introduction of breaking changes could create instability in your Docker setup, so it's better to target a specific version, ideally matching the production one.</p>
 <p>Then, I declared a <code>MONGO_INITDB_DATABASE</code> environment variable for the container to create a database with the corresponding name at start-up, and I matched the value of each environment variable to one coming from the <code>.env</code> file (we'll come back to those in a minute).</p>
-<p>I also added a <code>volumes</code> section, mounting a Docker-managed volume onto the container's <code>/data/db</code> folder. The same principle as MySQL and Redis here applies: if you don't persist the data on your local machine, it will be lost every time the MongoDB container is destroyed. In other words, as the MongoDB data is stored in the container's <code>/data/db</code> folder, we persist that folder locally using a volume.</p>
+<p>I also added a <code>volumes</code> section, mounting a Docker-managed volume in the container's <code>/data/db</code> folder. The same principle as MySQL and Redis here applies – if you don't persist the data on your local machine, it will be lost every time the MongoDB container is destroyed. In other words, as the MongoDB data is stored in the container's <code>/data/db</code> folder, we persist that folder locally using a volume.</p>
 <p>As this volume doesn't exist yet, we need to declare it at the bottom of <code>docker-compose.yml</code>, after the other ones:</p>
 <div class="highlight"><pre><span></span><span class="nt">volumes</span><span class="p">:</span>
     <span class="nt">sailmysql</span><span class="p">:</span>
@@ -565,8 +591,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>The above makes MongoDB the main database connection; in a real case scenario, you might want to make it a secondary database like Redis, but for demonstration purposes, this will do.</p>
-<p><code>DB_HOST</code> is the name of the MongoDB service from <code>docker-compose.yml</code>; behind the scenes, Docker Compose resolves the service's name to the container's IP on the networks it manages (in our case, that's the single <code>sail</code> network defined at the end of <code>docker-compose.yml</code>).</p>
+<p>The above makes MongoDB the main database connection. In a real case scenario, you might want to make it a secondary database like Redis, but for demonstration purposes, this will do.</p>
+<p><code>DB_HOST</code> is the name of the MongoDB service from <code>docker-compose.yml</code>. Behind the scenes, Docker Compose resolves the service's name to the container's IP on the networks it manages (in our case, that's the single <code>sail</code> network defined at the end of <code>docker-compose.yml</code>).</p>
 <p><code>DB_PORT</code> is the port MongoDB is available on, which is <code>27017</code> by default, as per the <a href="https://hub.docker.com/_/mongo">image's description</a>.</p>
 <p>We're ready for a test! Run the following command again:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail up -d
@@ -574,7 +600,15 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>It will download MongoDB's image, create the new volume and start the new container, which will also create the <code>laravel_sail</code> database:</p>
-<p><img alt="Pulling MongoDB" src="/images/2021/01/05/sail_03.png" title="Pulling MongoDB" /></p>
+<div class="highlight"><pre><span></span>➜  ./vendor/bin/sail up -d
+Pulling mongo <span class="o">(</span>mongo:4.4<span class="o">)</span>...
+<span class="m">4</span>.4: Pulling from library/mongo
+7b1a6ab2e44d: Pull <span class="nb">complete</span>
+90eb44ebc60b: Pull <span class="nb">complete</span>
+...
+</pre></div>
+
+
 <p>Let's make sure of that by running Laravel's default migrations:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail artisan migrate
 </pre></div>
@@ -589,6 +623,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Factories\HasFactory</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Illuminate\Notifications\Notifiable</span><span class="p">;</span>
 <span class="k">use</span> <span class="nx">Jenssegers\Mongodb\Auth\User</span> <span class="k">as</span> <span class="nx">Authenticatable</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Laravel\Sanctum\HasApiTokens</span><span class="p">;</span>
 
 <span class="k">class</span> <span class="nc">User</span> <span class="k">extends</span> <span class="nx">Authenticatable</span>
 <span class="p">{</span>
@@ -609,12 +644,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Let's add the latter to our setup.</p>
 <h3 id="custom-sail-commands">Custom <code>sail</code> commands</h3>
 <p>The good news is the Mongo shell is already available, as long as we know the right formula to summon it. Here it is, along with some extra commands to log into the database and list the users (run the first command from the project's root):</p>
-<div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> mongo mongo
+<div class="highlight"><pre><span></span>$ docker-compose <span class="nb">exec</span> mongo mongo
 
-MongoDB shell version v4.4.2
+MongoDB shell version v4.4.10
 connecting to: mongodb://127.0.0.1:27017/?compressors<span class="o">=</span>disabled<span class="p">&amp;</span><span class="nv">gssapiServiceName</span><span class="o">=</span>mongodb
-Implicit session: session <span class="o">{</span> <span class="s2">&quot;id&quot;</span> : UUID<span class="o">(</span><span class="s2">&quot;919072cf-817d-43a6-9ffb-c5e721eeefbc&quot;</span><span class="o">)</span> <span class="o">}</span>
-MongoDB server version: <span class="m">4</span>.4.2
+Implicit session: session <span class="o">{</span> <span class="s2">&quot;id&quot;</span> : UUID<span class="o">(</span><span class="s2">&quot;be711959-a359-4d1f-8fd4-9af7bad42c23&quot;</span><span class="o">)</span> <span class="o">}</span>
+MongoDB server version: <span class="m">4</span>.4.10
 Welcome to the MongoDB shell.
 For interactive help, <span class="nb">type</span> <span class="s2">&quot;help&quot;</span>.
 For more comprehensive documentation, see
@@ -631,7 +666,7 @@ switched to db laravel_sail
 </pre></div>
 
 
-<p>The <code>docker compose exec mongo mongo</code> command should look familiar; earlier in the article, we looked at what the <code>sail</code> script does behind the scenes, which mostly consists of translating simple <code>sail</code> commands into more complex <code>docker-compose</code> ones. Here, we're telling the <code>docker-compose</code> binary to execute the <code>mongo</code> command on the <code>mongo</code> container.</p>
+<p>The <code>docker-compose exec mongo mongo</code> command should look familiar – earlier in the article, we looked at what the <code>sail</code> script does behind the scenes, which mostly consists of translating simple <code>sail</code> commands into more complex <code>docker-compose</code> ones. Here, we're telling the <code>docker-compose</code> binary to execute the <code>mongo</code> command on the <code>mongo</code> container.</p>
 <p>To be fair, this command isn't too bad and we could easily remember it; but for consistency, it would be nice to have a simpler <code>sail</code> equivalent, like the following:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/sail mongo
 </pre></div>
@@ -644,29 +679,33 @@ switched to db laravel_sail
 <li>if none of the custom conditions matches the current arguments, pass them on to the original <code>sail</code> script.</li>
 </ol>
 <p>If we take a closer look at the <code>sail</code> file with <code>ls -al</code>, we can see that it's a symbolic link to the <code>vendor/laravel/sail/bin/sail</code> file:</p>
-<p><img alt="Sail symlink" src="/images/2021/01/05/sail_04.png" title="Sail symlink" /></p>
-<p>Let's copy that file to the root of our project now:</p>
+<div class="highlight"><pre><span></span>➜  ls -al vendor/bin
+total <span class="m">0</span>
+drwxr-xr-x   <span class="m">8</span> yannick  staff   <span class="m">256</span> <span class="m">26</span> Nov <span class="m">10</span>:37 .
+drwxr-xr-x  <span class="m">48</span> yannick  staff  <span class="m">1536</span> <span class="m">26</span> Nov <span class="m">12</span>:24 ..
+...
+lrwxr-xr-x   <span class="m">1</span> yannick  staff    <span class="m">24</span> <span class="m">26</span> Nov <span class="m">10</span>:36 sail -&gt; ../laravel/sail/bin/sail
+...
+</pre></div>
+
+
+<p>Copy that file and paste it at the root of our project:</p>
 <div class="highlight"><pre><span></span>$ cp vendor/laravel/sail/bin/sail .
 </pre></div>
 
 
 <p>Open the new copy and replace the content of its big <code>if</code> with the following, leaving the rest as-is:</p>
 <div class="highlight"><pre><span></span><span class="k">if</span> <span class="o">[</span> <span class="nv">$#</span> -gt <span class="m">0</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-    <span class="c1"># Source the &quot;.env&quot; file so Laravel&#39;s environment variables are available...</span>
-    <span class="k">if</span> <span class="o">[</span> -f ./.env <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-        <span class="nb">source</span> ./.env
-    <span class="k">fi</span>
-
     <span class="c1"># Initiate a Mongo shell terminal session within the &quot;mongo&quot; container...</span>
     <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;mongo&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
 
         <span class="k">if</span> <span class="o">[</span> <span class="s2">&quot;</span><span class="nv">$EXEC</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
-            docker compose <span class="nb">exec</span> mongo mongo
+            docker-compose <span class="nb">exec</span> mongo mongo
         <span class="k">else</span>
             sail_is_not_running
         <span class="k">fi</span>
 
-    <span class="c1"># Pass unknown commands to the original &quot;sail&quot; script..</span>
+    <span class="c1"># Pass unknown commands to the original &quot;sail&quot; script...</span>
     <span class="k">else</span>
         ./vendor/bin/sail <span class="s2">&quot;</span><span class="nv">$@</span><span class="s2">&quot;</span>
     <span class="k">fi</span>
@@ -691,9 +730,9 @@ switched to db laravel_sail
 <p>It works exactly the same way, except that you now need to run <code>./sail</code> instead of <code>./vendor/bin/sail</code> (or update your Bash alias if you created one as suggested in the <a href="https://laravel.com/docs/sail#configuring-a-bash-alias">documentation</a>).</p>
 <hr />
 <p>We are now running a fully functional instance of MongoDB as part of our Docker setup, nicely integrated with Laravel Sail. But MongoDB is a mere example here – you can do the same with pretty much any technology you'd like to use.</p>
-<p>Go <a href="https://hub.docker.com">take a look</a> now! Most major actors have Docker images – official or community-maintained – with easy-to-follow instructions. In most cases, you'll have a local instance of the software running in minutes.</p>
+<p>Go <a href="https://hub.docker.com">take a look</a> now! Most major actors have Docker images – official or maintained by the community – with easy-to-follow instructions. In most cases, you'll have a local instance of the software running in minutes.</p>
 <p>There are probably many more things we could do to customise Laravel Sail, but the three methods described above should get you a long way already.</p>
-<p>At this stage, you may be thinking that Laravel's new environment has a lot going for it, maybe even more so than you initially thought. Yet, the point of this article is to avoid using it...</p>
+<p>At this stage, you may be thinking that Laravel's new environment has a lot going for it, maybe even more so than you initially thought. Yet, the point of this article is to move away from it...</p>
 <p>So where am I going with this?</p>
 <div class="info">
 <span class="title">Why not use Takeout?</span>
@@ -704,25 +743,24 @@ switched to db laravel_sail
 
 <h2 id="whats-wrong-with-laravel-sail-anyway">What's wrong with Laravel Sail anyway?</h2>
 <p>If you made it this far, you're probably wondering what's wrong with Laravel Sail, now that it's clear how far we can push it.</p>
+<p>As it stands, it's a pretty decent solution. In an earlier version of this article, I was pointing to a whole list of issues which have now largely been solved. So why not use it?</p>
 <p>Let me break it to you right now: once you know and understand everything I've explained in the previous sections, you don't need Laravel Sail anymore.</p>
 <p>That's right – you can take that knowledge and walk away.</p>
-<p>But before I elaborate on this, let's review some actual pain points of Sail, even though I expect the Laravel team to address most of them sooner rather than later.</p>
-<p>The first one concerns the custom <code>sail</code> commands: while it's possible to extend the <code>sail</code> script as demonstrated earlier, the process is a bit ugly and somewhat hacky. Sail's maintainers could fix this with an explicit Bash extension point allowing users to add their own shortcuts, or by publishing the <code>sail</code> script along with the other files.</p>
-<p>Second, the Laravel application is served by PHP's development server. I won't go into too much detail here, but as mentioned before <a href="http://supervisord.org/">Supervisor</a> manages the PHP process in the <code>laravel.test</code> container; <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/supervisord.conf#L5">this line</a> is where Supervisor runs the <code>php artisan serve</code> command, which starts PHP's development server under the hood.</p>
+<p>But before I elaborate on this, let's review some remaining pain points of Sail, even though I expect the Laravel team to address most of them sooner rather than later.</p>
+<p>The first one concerns the custom <code>sail</code> commands: while it's possible to extend the <code>sail</code> script as demonstrated above, the process is a bit ugly and somewhat hacky. Sail's maintainers could fix this with an explicit Bash extension point allowing users to add their own shortcuts, or by publishing the <code>sail</code> script along with the other files.</p>
+<p>Second, the Laravel application is served by PHP's development server. I won't go into too much detail here, but as mentioned earlier, <a href="http://supervisord.org/">Supervisor</a> manages the PHP process in the <code>laravel.test</code> container. <a href="https://github.com/laravel/sail/blob/1.x/runtimes/8.0/supervisord.conf#L8">This line</a> is where Supervisor runs the <code>php artisan serve</code> command, which starts PHP's development server under the hood.</p>
 <p>The point here is that the environment doesn't use a proper web server (e.g. Nginx), which means we can't easily have local domain names, nor bring HTTPS to the setup. This may be fine for quick prototyping, but more elaborate development will most likely need those.</p>
-<p>The third issue is one I noticed while trying to clone and run a fresh instance of this article's <a href="https://github.com/osteel/laravel-sail-extended">repository</a> for testing. While the process to create a new Laravel project based on Sail works well, I couldn't find proper instructions to instal and run an existing one.</p>
-<p>You can't run <code>./vendor/bin/sail up</code> because the <code>vendor</code> folder doesn't exist yet. For this folder to be created, you need to run <code>composer install</code>; but if your project relies on dependencies present on the Docker image but not on your local machine, <code>composer install</code> won't work. You can run <code>composer install --ignore-platform-reqs</code> instead, but that doesn't feel right. There should be a way to instal and run an existing project without relying on a local Composer instance and clunky commands.</p>
-<p>The last issue belongs to a separate category, as it relates to Docker overall and not Laravel Sail specifically. It should be carefully considered before going down the Docker road and deserves a section of its own.</p>
+<p>The last issue belongs to a separate category, as it relates to Docker overall and not Laravel Sail specifically. It should be carefully considered before going down the Docker path and deserves a section of its own.</p>
 <h2 id="the-whale-in-the-cabin">The whale in the cabin</h2>
-<p>The one major caveat that appears to be absent from the conversation so far relates to performance. While this shouldn't affect Linux users, if you run Docker Desktop on your system you will most likely experience long loading times, especially on macOS (it seems that using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> on Windows can mitigate the slowness).</p>
-<p>You can see it for yourself right now: if you're using Docker Desktop and Sail is running, try and load the <a href="http://localhost">Laravel welcome page</a> – you will probably notice a delay.</p>
-<p>I won't go into too much detail here, but the reason essentially comes from the host's underlying filesystem, which does not perform well around mounted local directories. As we've seen, this is how Laravel Sail gets the application's source code in the Laravel application's container, hence the slowness.</p>
-<p>This is where an approach like Takeout's makes sense, as instead of running PHP from a Docker container, they expect developers to run it on their local machine (e.g. via <a href="https://laravel.com/docs/valet">Valet</a>), all the while providing instances of services like MySQL or MongoDB, thus offering convenience without sacrificing performance. But from the moment you choose to run PHP via a Docker container (like Sail does), the added value of Takeout decreases, in my opinion.</p>
-<p>There are strategies to mitigate these performance issues, but the Laravel documentation mentions none of them, let alone the fact that performance might be an issue at all, which I find surprising.</p>
+<p>The one major caveat that appears to be absent from the conversation so far relates to performance. While this shouldn't affect Linux users, if you run Docker Desktop on your system you will most likely experience long execution times, especially on macOS (it seems that using <a href="https://docs.docker.com/docker-for-windows/wsl/">WSL 2</a> on Windows can mitigate the slowness).</p>
+<p>While HTTP response times have improved a great deal, running local commands like Yarn or Composer is still very slow. You've probably experienced it yourself while going through this tutorial, when we installed the Laravel MongoDB package with Composer, for instance.</p>
+<p>I won't go into too much detail here, but the reason essentially comes from the host's underlying filesystem, which does not perform well around mounted local directories. As we've seen, this is how Laravel Sail gets the application's source code in the Laravel application's container.</p>
+<p>This is where an approach like <a href="https://tech.osteel.me/posts/you-dont-need-laravel-sail">Takeout</a>'s makes sense, as instead of running PHP from a Docker container, they expect developers to run it on their local machine (e.g. via <a href="https://laravel.com/docs/valet">Valet</a>), all the while providing instances of services like MySQL or MongoDB, thus offering convenience without sacrificing performance. But from the moment you choose to run PHP via a Docker container (like Sail does), the added value of Takeout decreases, in my opinion.</p>
+<p>There are strategies to mitigate these performance issues, but the Laravel documentation doesn't mention them, let alone that performance might be degraded at all, which I find surprising.</p>
 <p>That being said, you might be comfortable enough with performance as it is; I, for one, have been OK with it for years, even though I use Docker Desktop on macOS. The bottom line is that this aspect should be carefully considered before moving your whole setup to a solution running PHP in a container, be it Laravel Sail or something else.</p>
 <p>But once you've made that decision, and whether or not the other issues are eventually addressed, the main idea of this article remains the same.</p>
 <h2 id="you-dont-need-laravel-sail">You don't need Laravel Sail</h2>
-<p>If you're considering building anything substantial using Laravel Sail as your development environment, sooner or later you will have to extend it. You'll find yourself fumbling around the Dockerfiles and eventually writing your own; having to add some services to <code>docker-compose.yml</code>; and maybe throwing in a few custom Bash commands.</p>
+<p>If you're considering building anything substantial using Laravel Sail as your development environment, sooner or later you will have to extend it. You'll find yourself fumbling around the Dockerfiles and eventually writing your own; you'll have to add some services to <code>docker-compose.yml</code>, and maybe throw in a few custom Bash commands.</p>
 <p>Once you get there, there's one question you should ask yourself:</p>
 <blockquote>
 <p>What's stopping me from building my own setup?</p>
@@ -732,7 +770,7 @@ switched to db laravel_sail
 <p>So why artificially restrain yourself within the constraints of Sail?</p>
 <p>And more importantly: why limit yourself to using Docker in the context of Laravel?</p>
 <p>Your application may start as a monolith, but it might not always be. Perhaps you've got a separate frontend, and you use Laravel as the API layer. In that case, you might want your development environment to manage them both; to run them simultaneously so they interact with each other like they do on a staging environment or in production.</p>
-<p>If your whole application is a <a href="https://en.wikipedia.org/wiki/Monorepo">monorepo</a>, your Docker configuration and Bash script could be at the root of the project, and you could have your frontend and backend applications in separate subfolders, e.g. under an <code>src</code> folder.</p>
+<p>If your whole application is a <a href="https://en.wikipedia.org/wiki/Monorepo">monorepo</a>, your Docker configuration and Bash script could be at the root of the project, and you could have your frontend and backend applications in separate subfolders, e.g. <code>src</code>.</p>
 <p>The corresponding tree view would look something like this:</p>
 <div class="highlight"><pre><span></span>my-app/
 ├── bash-script
@@ -745,16 +783,16 @@ switched to db laravel_sail
 </pre></div>
 
 
-<p>The <code>docker-compose.yml</code> file would declare two services – one for the backend and one for the frontend – both pointing to each's respective Dockerfile.</p>
+<p>The <code>docker-compose.yml</code> file would declare two services – one for the backend and one for the frontend – both pointing to their respective Dockerfile.</p>
 <p>If the backend and the frontend live in different repositories, you could create a third one, containing your Docker development environment exclusively. Just <em>git-ignore</em> the <code>src</code> folder and complete your Bash script so that it pulls both application repositories into it, using the same commands you would normally run by hand.</p>
 <p>Even if your project is a Laravel monolith, this kind of structure is already cleaner than mixing up development-related files with the rest of the source code. Moreover, if your application grows bigger and needs other components besides Laravel, you're already in a good position to support them.</p>
-<p>Once you've made the effort to understand Laravel Sail to extend it, nothing is stopping you from building your own development environments, <em>whether or not Laravel is part of the equation</em>. That's right, you can build bespoke Docker-based environments for anything.</p>
+<p>Once you've made the effort to understand Laravel Sail to extend it, nothing's stopping you from building your own development environments, <em>whether or not Laravel is part of the equation</em>. That's right, you can build bespoke Docker-based environments for anything.</p>
 <p>And if Laravel is part of the stack, nothing prevents you from reusing Sail's Dockerfiles if you're not comfortable writing your own yet; after all, they are already optimised for Laravel. Likewise, you can draw inspiration from Sail's <code>docker-compose.yml</code> file if that helps.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>Don't get me wrong: Laravel Sail has a lot going for it, and I am glad to see such an established actor push forward the adoption of Docker for local development.</p>
+<p>Don't get me wrong – Sail has a lot going for it, and I am glad to see an established actor such as Laravel push forward the adoption of Docker for local development.</p>
 <p>We love our frameworks because they offer guidelines to achieve desired results in a way we know to be efficient and battle-tested, and it's only natural that they also seek to provide the environment that will allow their users to build upon them. But one thing that Sail incidentally shows us is that this doesn't have to be part of the framework's mandate anymore.</p>
 <p>Much like Truman's sailboat helps him overcome his fear of the sea and takes him to the edges of the artificial world he lives in, Sail reveals both the confines of Laravel and a way to escape from them.</p>
-<p>You may feel that Sail is more than enough for your needs today, or that you're not yet ready to go your own way. That's fine. But Laravel will always be limited by its monolithic nature, and as you grow as a developer, the day will come where your Laravel application will be but a single component of a larger system, for which Sail won't be enough anymore. Eventually, your small sailboat will bump into a painted backdrop.</p>
+<p>You may feel that Sail is more than enough for your needs today, or that you're not yet ready to go on your own. That's fine. But Laravel will always be limited by its monolithic nature, and as you grow as a developer, the day will come where your Laravel application will be but a single component of a larger system, for which Sail won't be enough anymore. Eventually, your small sailboat will bump into a painted backdrop.</p>
 <p>If you'd like to explore this further but feel like you need more guidance, I've published <a href="/posts/docker-for-local-web-development-introduction-why-should-you-care" title="Docker for local web development, introduction: why should you care?">a series on the subject</a> that should get you going. It requires no prior knowledge of Docker and covers web servers, HTTPS, domain names and many other things. It doesn't have all the answers but will get you to a place where you can find your own.</p>
 <p>What you do next is entirely up to you; just know that there's a whole world out there, waiting for you.</p>
 <blockquote>
@@ -793,7 +831,7 @@ switched to db laravel_sail
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-07-11" pubdate>2021-07-11</time>
+          <time datetime="2021-11-26" pubdate>2021-11-26</time>
           :: [
           <a href="https://tech.osteel.me/tag/laravel">laravel</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
