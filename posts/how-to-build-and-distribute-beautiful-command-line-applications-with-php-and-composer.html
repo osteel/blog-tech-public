@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2022/01/31/" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>How to build and distribute beautiful command-line applications with PHP and Composer &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+  <meta name="description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or intended to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console Component as a bedrock, GitHub Actions for testing, and Composer for distribution." />
+  <meta name="twitter:description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or intended to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console Component as a bedrock, GitHub Actions for testing, and Composer for distribution.">
+
+  <meta name="tags" content="" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="How to build and distribute beautiful command-line applications with PHP and Composer">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2022/01/31/">
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2022
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      How to build and distribute beautiful command-line applications with PHP and Composer
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2022-01-31 ::
+        Published: 2022-01-31
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><img alt="CLI tool preview" src="/images/2022/01/31/cli_01.png" title="CLI tool preview" /></p>
+<p>When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or intended to be used within projects.</p>
+<p>Here are a few examples:</p>
+<ul>
+<li><a href="https://github.com/laravel/valet">Valet</a></li>
+<li><a href="https://github.com/vimeo/psalm">Psalm</a></li>
+<li><a href="https://github.com/phpstan/phpstan">PHPStan</a></li>
+<li><a href="https://github.com/nunomaduro/phpinsights">PHP Insights</a></li>
+<li><a href="https://github.com/FriendsOfPHP/PHP-CS-Fixer">PHP CS Fixer</a></li>
+<li><a href="https://github.com/squizlabs/PHP_CodeSniffer">PHP_CodeSniffer</a></li>
+<li><a href="https://github.com/rectorphp/rector">Rector</a></li>
+<li><a href="https://github.com/tighten/takeout">Takeout</a></li>
+</ul>
+<p>Be it through its vast ecosystem of libraries and frameworks, its ability to interact with the host, or the versatility of its dependency manager, PHP features everything you need to build and ship powerful CLI applications.</p>
+<p>This tutorial will walk you through the process of creating a simple game running in the terminal, using <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component</a> as a bedrock, <a href="https://github.com/features/actions">GitHub Actions</a> for compatibility checking, and <a href="https://getcomposer.org">Composer</a> for distribution.</p>
+<p>We won't use specialised frameworks like <a href="https://github.com/minicli/minicli">Minicli</a> or <a href="https://laravel-zero.com">Laravel Zero</a> because the goal is not so much to focus on application features but to better understand the development, testing, and distribution phases of command-line programs.</p>
+<p>You will find that you can build a lot of things on top of such a simple foundation, but you can always check out these frameworks later on, should you need extra capabilities.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#repository-and-core-dependencies">Repository and core dependencies</a></li>
+<li><a href="#entry-point">Entry point</a></li>
+<li><a href="#command">Command</a></li>
+<li><a href="#styling-the-output">Styling the output</a></li>
+<li><a href="#distribution-test">Distribution test</a></li>
+<li><a href="#php-version-support">PHP version support</a><ul>
+<li><a href="#automated-test">Automated test</a></li>
+<li><a href="#github-workflow">GitHub workflow</a></li>
+</ul>
+</li>
+<li><a href="#release">Release</a></li>
+<li><a href="#cleaning-up">Cleaning up</a></li>
+<li><a href="#conclusion">Conclusion</a></li>
+<li><a href="#resources">Resources</a></li>
+</ul>
+</div>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To complete this tutorial, you will need:</p>
+<ul>
+<li>A <a href="https://github.com">GitHub</a> account (a free one will do)</li>
+<li>A <a href="https://www.php.net/manual/en/install.php">local PHP instal</a></li>
+<li>A <a href="https://getcomposer.org/doc/00-intro.md">local Composer instal</a></li>
+<li>A terminal to interact with the above</li>
+</ul>
+<p>If at any time you feel lost, you can also refer to this article's <a href="https://github.com/osteel/php-cli-demo">repository</a>.</p>
+<h2 id="repository-and-core-dependencies">Repository and core dependencies</h2>
+<p>The first thing we need to do is create a GitHub repository named <code>php-cli-demo</code> (or anything you like, but the rest of this guide will refer to this name so it might be simpler to stick to it).</p>
+<p>You can make the repository public straight away if you want, but I like to do so only when the code is pretty much ready. No matter what you choose, I will let you know when is a good time to make it public.</p>
+<p><img alt="Create a new repository" src="/images/2022/01/31/cli_02.png" title="Create a new repository" /></p>
+<p>Next, open a terminal and clone the project locally, and enter its root directory:</p>
+<div class="highlight"><pre><span></span>$ git clone git@github.com:&lt;YOUR GITHUB USERNAME&gt;/php-cli-demo.git
+$ <span class="nb">cd</span> php-cli-demo
+</pre></div>
+
+
+<p>Run the following command to create a <code>composer.json</code> file interactively:</p>
+<div class="highlight"><pre><span></span>$ composer init
+</pre></div>
+
+
+<p>It will ask you a series of questions – here is some guidance on how to answer them:</p>
+<ul>
+<li><code>Package name (&lt;vendor&gt;/&lt;name&gt;)</code>: I distribute all my packages under the vendor name <code>osteel</code>, so in my case, it's <code>osteel/php-cli-demo</code>. If you're not sure, you can just pick your GitHub username</li>
+<li><code>Description</code>: shown as optional but will be required for distribution later on. You can set "PHP command-line tool demo"</li>
+<li><code>Author</code>: make sure you set values that you are comfortable sharing publicly</li>
+<li><code>Minimum stability</code>: go for <code>stable</code>. You may sometimes need to pick <code>dev</code> instead if some of your tool's dependencies aren't marked as <code>stable</code> (see <a href="https://getcomposer.org/doc/04-schema.md#minimum-stability">here</a> for details). That won't be the case in this tutorial though</li>
+<li><code>Package type</code>: choose <code>library</code> (see <a href="https://getcomposer.org/doc/04-schema.md#type">here</a>)</li>
+<li><code>License</code>: this is up to you, but since the code will be distributed and available publicly, it has to be open source. <a href="https://choosealicense.com/licenses/mit">MIT</a> is fine in most cases, but if you need something more specific <a href="https://choosealicense.com">this guide</a> will help. Make sure to set a value that is <a href="https://getcomposer.org/doc/04-schema.md#license">recognised by Composer</a>, too. For this article, <code>MIT</code> will do</li>
+</ul>
+<p>We will set our dependencies manually, so answer <code>no</code> when asked about defining them interactively. Keep the default value (<code>src/</code>) for PSR-4 autoload mapping.</p>
+<p>The last question is about adding the <code>vendor</code> directory to the <code>.gitignore</code> file, to which you should reply <code>yes</code>.</p>
+<p>That should be it for <code>composer init</code> – it will generate a <code>composer.json</code> file at the root of your project based on the values you've selected.</p>
+<p>Before we instal any dependency, let's create a <code>LICENSE</code> file at the top of our project and paste the content of the chosen license in it (<a href="https://choosealicense.com/licenses/mit">here's the MIT one</a> – you will find the others <a href="https://choosealicense.com">here</a>). Make sure to edit the placeholders for the name and year.</p>
+<p>Let's now require <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component</a> as a dependency:</p>
+<div class="highlight"><pre><span></span>$ composer require symfony/console
+</pre></div>
+
+
+<p><img alt="composer require symfony/console" src="/images/2022/01/31/cli_03.png" title="composer require symfony/console" /></p>
+<p>This component is used as a foundation for many frameworks' command-line features such as Laravel's <a href="https://laravel.com/docs/artisan">Artisan</a>. It's a robust and battle-tested set of classes for console applications and is pretty much a standard at this stage, so it makes sense to use it as a starting point instead of reinventing the wheel.</p>
+<p>Once the script is done, you should see the dependency listed in the <code>require</code> section of <code>composer.json</code> (your version might be different based on when you're completing this tutorial):</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;symfony/console&quot;</span>: <span class="s2">&quot;^6.0&quot;</span>
+<span class="o">}</span>,
+</pre></div>
+
+
+<h2 id="entry-point">Entry point</h2>
+<p>Console programs, like web applications, need an entry point through which all "requests" come through. In other words, we need an <code>index.php</code> for our commands.</p>
+<p>To get started, we will reuse the example given in the Console Component's <a href="https://symfony.com/doc/current/components/console.html#creating-a-console-application">documentation</a>. Create a new folder named <code>bin</code> at the root of the project and add a <code>demo</code> file to it, with the following content:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="x">#!/usr/bin/env php</span>
+<span class="cp">&lt;?php</span>
+
+<span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
+
+<span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">();</span>
+
+<span class="c1">// ... register commands</span>
+
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</pre></div>
+</td></tr></table>
+
+<p>The <code>demo</code> file will be the entry point of our program, allowing us to call it from a terminal using commands like this one:</p>
+<div class="highlight"><pre><span></span>$ demo play
+</pre></div>
+
+
+<p>If you already have a local application named <code>demo</code>, give it a different name (if you're not sure, run <code>which demo</code>  and see if it returns a path to an existing application).</p>
+<p>Back to our <code>demo</code> file – notice the first line:</p>
+<div class="highlight"><pre><span></span><span class="x">#!/usr/bin/env php</span>
+</pre></div>
+
+
+<p>This is a way for the system to know which executable it should use to run the script, saving us from having to explicitly call it.</p>
+<p>In other words, that's what will allow us to run this:</p>
+<div class="highlight"><pre><span></span>$ demo play
+</pre></div>
+
+
+<p>Instead of this:</p>
+<div class="highlight"><pre><span></span>$ php demo play
+</pre></div>
+
+
+<p><code>#!/usr/bin/env</code> means the system will use the first <code>php</code> executable found in the user's <code>PATH</code>, regardless of its actual location (see <a href="https://unix.stackexchange.com/questions/29608/why-is-it-better-to-use-usr-bin-env-name-instead-of-path-to-name-as-my">here</a> for details).</p>
+<p>Speaking of execution, this will only work if <code>demo</code> is executable. Let's make sure that is the case:</p>
+<div class="highlight"><pre><span></span>$ chmod +x bin/demo
+</pre></div>
+
+
+<p>Now run the following commands:</p>
+<div class="highlight"><pre><span></span>$ php bin/demo
+$ ./bin/demo
+</pre></div>
+
+
+<p>Both should display the default console menu:</p>
+<p><img alt="Default help menu" src="/images/2022/01/31/cli_04.png" title="Default help menu" /></p>
+<h2 id="command">Command</h2>
+<p>Now that the base structure of our application is in place, we can focus on the command that will contain the core of our program. What we're building is a simple game of calculation, giving the user basic sums to solve and returning whether the answer is correct or not.</p>
+<p>Once again, the <a href="https://symfony.com/doc/current/console.html">documentation</a> provides some guidance on how to write commands, but for the sake of simplicity, I will give you the code straight away, followed by a breakdown.</p>
+<p>Create some new folders <code>src</code> and <code>src/Commands</code> at the root of the project and add the following <code>Play.php</code> file to the latter:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Osteel\PhpCliDemo\Commands</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Style\SymfonyStyle</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Play</span> <span class="k">extends</span> <span class="nx">Command</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * The name of the command (the part after &quot;bin/demo&quot;).</span>
+<span class="sd">     *</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">static</span> <span class="nv">$defaultName</span> <span class="o">=</span> <span class="s1">&#39;play&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * The command description shown when running &quot;php bin/demo list&quot;.</span>
+<span class="sd">     *</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">static</span> <span class="nv">$defaultDescription</span> <span class="o">=</span> <span class="s1">&#39;Play the game!&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Execute the command</span>
+<span class="sd">     *</span>
+<span class="sd">     * @param  InputInterface  $input</span>
+<span class="sd">     * @param  OutputInterface $output</span>
+<span class="sd">     * @return int 0 if everything went fine, or an exit code.</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
+    <span class="p">{</span>
+        <span class="nv">$term1</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+        <span class="nv">$term2</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$term1</span> <span class="o">+</span> <span class="nv">$term2</span><span class="p">;</span>
+
+        <span class="nv">$io</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SymfonyStyle</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+
+        <span class="nv">$answer</span> <span class="o">=</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">ask</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;What is %s + %s?&#39;</span><span class="p">,</span> <span class="nv">$term1</span><span class="p">,</span> <span class="nv">$term2</span><span class="p">));</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$answer</span> <span class="o">===</span> <span class="nv">$result</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">(</span><span class="s1">&#39;Well done!&#39;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Aww, so close. The answer was %s&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">confirm</span><span class="p">(</span><span class="s1">&#39;Play again?&#39;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Make sure to change the namespace at the top to reflect your vendor name.</p>
+<p>Our class extends Symfony Console's <a href="https://github.com/symfony/symfony/blob/6.0/src/Symfony/Component/Console/Command/Command.php"><code>Command</code> class</a> and overwrites some of its static properties. <code>$defaultName</code> and <code>$defaultDescription</code> are the command's name and description, which will both appear in the application's menu. The former will also allow us to invoke the command in the terminal later on.</p>
+<p>Next comes the <code>execute</code> method, that the parent class requires us to implement. It contains the actual logic for the game and receives an instance of the console's input and output.</p>
+<p>There are several ways to interact with those and I admittedly find the official documentation a bit confusing on the topic. My preferred approach is to rely on the <a href="https://symfony.com/doc/current/console/style.html"><code>SymfonyStyle</code> class</a> because it abstracts away most typical console interactions and I like the default style it gives them.</p>
+<p>Let's take a closer look at the body of the <code>execute</code> method:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nv">$term1</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+<span class="nv">$term2</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+<span class="nv">$result</span> <span class="o">=</span> <span class="nv">$term1</span> <span class="o">+</span> <span class="nv">$term2</span><span class="p">;</span>
+
+<span class="nv">$io</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">SymfonyStyle</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+
+<span class="nv">$answer</span> <span class="o">=</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">ask</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;What is %s + %s?&#39;</span><span class="p">,</span> <span class="nv">$term1</span><span class="p">,</span> <span class="nv">$term2</span><span class="p">));</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$answer</span> <span class="o">===</span> <span class="nv">$result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">success</span><span class="p">(</span><span class="s1">&#39;Well done!&#39;</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">error</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Aww, so close. The answer was %s&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">confirm</span><span class="p">(</span><span class="s1">&#39;Play again?&#39;</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+</pre></div>
+
+
+<p>First, we randomly generate the two terms of the sum and calculate the result in advance. We instantiate <code>SymfonyStyle</code>, pass the console's input and output to it and use it to display the question and request an answer (with the <code>ask</code> method).</p>
+<p class="info"><span class="title">What the heck is <code>sprintf</code>?</span> If you're unfamiliar with <code>sprintf</code>, it's a <a href="https://www.php.net/manual/en/function.sprintf">PHP function</a> allowing developers to format strings in a way that I find easier to read than the standard concatenation operator (<code>.</code>). Feel free to use the latter instead, though.</p>
+
+<p>We collect and save the answer in the <code>$answer</code> variable, cast it to an integer (inputs are strings by default), and compare it to the expected result. If the answer is correct, we display a success message; if not, we display an error.</p>
+<p>We then ask the user if she wants to play another round, this time using the <code>confirm</code> method since we need a boolean answer ("yes" or "no").</p>
+<p>If the answer is "yes", we call the <code>execute</code> method recursively, essentially starting the game over. If the answer is "no", we exit the command by returning <code>Command::SUCCESS</code> (a constant containing the integer <code>0</code>, which is a code signalling a successful execution).</p>
+<p>The returned value is a way to tell the console whether the program executed correctly or not, and has nothing to do with the answer being right or wrong. These exit codes are <a href="https://tldp.org/LDP/abs/html/exitcodes.html">standardised</a> and anything other than <code>0</code> usually means "failure". You can see <a href="https://github.com/symfony/symfony/blob/6.0/src/Symfony/Component/Console/Command/Command.php#L36">here</a> which exit codes the <code>Command</code> class defines by default and come up with your own if you need to.</p>
+<p>The above breakdown is more than enough for this article, but feel free to check out the <a href="https://symfony.com/doc/current/console.html">official documentation</a> for details and advanced command usage.</p>
+<p>We now need to register our command to make it available from the outside. Update the content of the <code>bin/demo</code> file to match the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="x">#!/usr/bin/env php</span>
+<span class="cp">&lt;?php</span>
+
+<span class="k">require</span> <span class="no">__DIR__</span><span class="o">.</span><span class="s1">&#39;/../vendor/autoload.php&#39;</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Osteel\PhpCliDemo\Commands\Play</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
+
+<span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">();</span>
+
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="k">new</span> <span class="nx">Play</span><span class="p">());</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</pre></div>
+</td></tr></table>
+
+<p>The only thing we've changed is we now pass an instance of our command to the application before running it (again, don't forget to update the namespace of the imported class).</p>
+<p>Go back to your terminal and run this from the project's root:</p>
+<div class="highlight"><pre><span></span>$ ./bin/demo
+</pre></div>
+
+
+<p>The help menu should display again, only this time the <code>play</code> command should be part of it, alongside its description:</p>
+<p><img alt="Help menu with the command" src="/images/2022/01/31/cli_05.png" title="Help menu with the command" /></p>
+<p>We should now be able to play the game, so let's give it a try:</p>
+<div class="highlight"><pre><span></span>$ ./bin/demo play
+</pre></div>
+
+
+<p>Make sure it behaves as you would expect – if it doesn't, go back a few steps or take a look at the tutorial's <a href="https://github.com/osteel/php-cli-demo">repository</a> to check if you missed something.</p>
+<p><img alt="Testing the game" src="/images/2022/01/31/cli_06.png" title="Testing the game" /></p>
+<div class="info">
+    <p><span class="title">Single command applications</span> As our application will expose a single command <code>play</code>, we could also have made it the <a href="https://symfony.com/doc/current/components/console/changing_default_command.html">default one</a>:</p>
+    <p>
+        <pre>$command = new Play();
+$application = new Application();
+
+$application->add($command);
+$application->setDefaultCommand($command->getName());
+$application->run();</pre>
+    </p>
+    <p>Doing so would have allowed us to start the game by running <code>demo</code> instead of <code>demo play</code>.</p>
+</div>
+
+<h2 id="styling-the-output">Styling the output</h2>
+<p>The defaults provided by the <code>SymfonyStyle</code> class are quite good already, but these <code>[OK]</code> and <code>[ERROR]</code> messages are a bit dry and not very suitable for a game.</p>
+<p>To make them a bit more user-friendly, let's create a new <code>Services</code> folder in <code>src</code>, and add the following <code>InputOutput.php</code> file to it:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Osteel\PhpCliDemo\Services</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Style\SymfonyStyle</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">InputOutput</span> <span class="k">extends</span> <span class="nx">SymfonyStyle</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * Ask a question and return the answer.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">question</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$question</span><span class="p">)</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">ask</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39; ✍️  %s&#39;</span><span class="p">,</span> <span class="nv">$question</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Display a message in case of right answer.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">right</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$message</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">block</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39; 🎉  %s&#39;</span><span class="p">,</span> <span class="nv">$message</span><span class="p">),</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;fg=white;bg=green&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Display a message in case of wrong answer.</span>
+<span class="sd">     */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">wrong</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$message</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">block</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39; 😮  %s&#39;</span><span class="p">,</span> <span class="nv">$message</span><span class="p">),</span> <span class="k">null</span><span class="p">,</span> <span class="s1">&#39;fg=white;bg=red&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Once again, make sure to change the vendor namespace at the top.</p>
+<p>The purpose of this class is to extend <code>SymfonyStyle</code> to adapt its behaviour to our needs.</p>
+<p>The program interacts with the player in three ways – it asks questions and indicates whether an answer is right or wrong.</p>
+<p>I've reflected this in the <code>InputOutput</code> class above by creating three public methods – <code>question</code>, <code>right</code>, and <code>wrong</code>. <code>question</code> simply calls the parent class' <code>ask</code> method and prepends the question with the ✍️ emoji.</p>
+<p>For <code>right</code> and <code>wrong</code>, I drew inspiration from the parent class' <a href="https://github.com/symfony/symfony/blob/6.0/src/Symfony/Component/Console/Style/SymfonyStyle.php#L135"><code>success</code></a> and <a href="https://github.com/symfony/symfony/blob/6.0/src/Symfony/Component/Console/Style/SymfonyStyle.php#L143"><code>error</code></a> methods and adapted their content to replace the default messages with more convivial emojis.</p>
+<p>And that's all there is to it – the only thing left is to adapt the <code>Play</code> command to use our new service instead of <code>SymfonyStyle</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Osteel\PhpCliDemo\Commands</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Osteel\PhpCliDemo\Services\InputOutput</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Command\Command</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Input\InputInterface</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Output\OutputInterface</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">Play</span> <span class="k">extends</span> <span class="nx">Command</span>
+<span class="p">{</span>
+    <span class="sd">/**</span>
+<span class="sd">     * The name of the command (the part after &quot;bin/demo&quot;).</span>
+<span class="sd">     *</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">static</span> <span class="nv">$defaultName</span> <span class="o">=</span> <span class="s1">&#39;play&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * The command description shown when running &quot;php bin/demo list&quot;.</span>
+<span class="sd">     *</span>
+<span class="sd">     * @var string</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">static</span> <span class="nv">$defaultDescription</span> <span class="o">=</span> <span class="s1">&#39;Play the game!&#39;</span><span class="p">;</span>
+
+    <span class="sd">/**</span>
+<span class="sd">     * Execute the command</span>
+<span class="sd">     *</span>
+<span class="sd">     * @param  InputInterface  $input</span>
+<span class="sd">     * @param  OutputInterface $output</span>
+<span class="sd">     * @return int 0 if everything went fine, or an exit code.</span>
+<span class="sd">     */</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">execute</span><span class="p">(</span><span class="nx">InputInterface</span> <span class="nv">$input</span><span class="p">,</span> <span class="nx">OutputInterface</span> <span class="nv">$output</span><span class="p">)</span><span class="o">:</span> <span class="nx">int</span>
+    <span class="p">{</span>
+        <span class="nv">$term1</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+        <span class="nv">$term2</span> <span class="o">=</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+        <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$term1</span> <span class="o">+</span> <span class="nv">$term2</span><span class="p">;</span>
+
+        <span class="nv">$io</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">InputOutput</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+
+        <span class="nv">$answer</span> <span class="o">=</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span> <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">question</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;What is %s + %s?&#39;</span><span class="p">,</span> <span class="nv">$term1</span><span class="p">,</span> <span class="nv">$term2</span><span class="p">));</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$answer</span> <span class="o">===</span> <span class="nv">$result</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">right</span><span class="p">(</span><span class="s1">&#39;Well done!&#39;</span><span class="p">);</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="nv">$io</span><span class="o">-&gt;</span><span class="na">wrong</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Aww, so close. The answer was %s&#39;</span><span class="p">,</span> <span class="nv">$result</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$io</span><span class="o">-&gt;</span><span class="na">confirm</span><span class="p">(</span><span class="s1">&#39;Play again?&#39;</span><span class="p">))</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">(</span><span class="nv">$input</span><span class="p">,</span> <span class="nv">$output</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="k">return</span> <span class="nx">Command</span><span class="o">::</span><span class="na">SUCCESS</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>As usual, pay attention to namespaces.</p>
+<p>Let's play the game again and appreciate the new look:</p>
+<div class="highlight"><pre><span></span>$ ./bin/demo play
+</pre></div>
+
+
+<p><img alt="New look" src="/images/2022/01/31/cli_07.png" title="New look" />
+<p class="caption">Bit nicer, isn't it?</p></p>
+<p>Now, you might be wondering why I created new methods instead of extending the <code>ask</code>, <code>success</code> and <code>error</code> methods. The quick answer is that doing so increases compatibility across library versions.</p>
+<p>Extending a method means the signature of the child method must be identical to that of the parent (with some <a href="https://www.npopov.com/2021/11/08/Type-variance-in-PHP.html">subtleties</a>), which is fine as long as the parent class doesn't change. For the sake of portability, however, we want our application to be compatible with various PHP and dependency versions, and in the case of the Console Component, method signatures vary from one major version to another.</p>
+<p>In short, creating new methods instead of extending existing ones allows us to avoid errors related to signature mismatch across versions.</p>
+<p>The above is a quick example of how you can customise the style of console outputs. It also gives you an idea of how you can structure your application, with the introduction of the <code>Services</code> folder where you can put utility classes to decouple your code.</p>
+<p>Concerning styling, if you need to push the appearance of your console program a bit further, you might want to take a look at <a href="https://github.com/nunomaduro/termwind">Termwind</a>, a promising new framework described as "Tailwind CSS, but for PHP command-line applications".</p>
+<h2 id="distribution-test">Distribution test</h2>
+<p>Let's now take a few steps towards the distribution of our application. First, we need to tweak our <code>demo</code> script:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="x">#!/usr/bin/env php</span>
+<span class="cp">&lt;?php</span>
+
+<span class="nv">$root</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">is_file</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;%s/vendor/autoload.php&#39;</span><span class="p">,</span> <span class="nv">$root</span><span class="p">)))</span> <span class="p">{</span>
+    <span class="nv">$root</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">require</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;%s/vendor/autoload.php&#39;</span><span class="p">,</span> <span class="nv">$root</span><span class="p">);</span>
+
+<span class="k">use</span> <span class="nx">Osteel\PhpCliDemo\Commands\Play</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Application</span><span class="p">;</span>
+
+<span class="nv">$application</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Application</span><span class="p">();</span>
+
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">add</span><span class="p">(</span><span class="k">new</span> <span class="nx">Play</span><span class="p">());</span>
+<span class="nv">$application</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">();</span>
+</pre></div>
+</td></tr></table>
+
+<p>The bit we've updated is the following:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nv">$root</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">is_file</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;%s/vendor/autoload.php&#39;</span><span class="p">,</span> <span class="nv">$root</span><span class="p">)))</span> <span class="p">{</span>
+    <span class="nv">$root</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">require</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;%s/vendor/autoload.php&#39;</span><span class="p">,</span> <span class="nv">$root</span><span class="p">);</span>
+</pre></div>
+
+
+<p>We're now looking for the <code>autoload.php</code> file in two different places. Why? Because this file will be located in different folders based on whether we're in development mode or distribution mode.</p>
+<p>So far we've used our application in the former mode only, so we knew exactly where the <code>vendor</code> folder was – at the project's root. But once it'll be distributed (installed globally on a user's system), that folder will be located a few levels above the current one.</p>
+<p>Here's for instance the path to the application's <code>bin</code> folder on my system, once I've installed it globally:</p>
+<div class="highlight"><pre><span></span>~/.composer/vendor/osteel/php-cli-demo/bin
+</pre></div>
+
+
+<p>And here is the path to the global <code>autoload.php</code> file:</p>
+<div class="highlight"><pre><span></span>~/.composer/vendor/autoload.php
+</pre></div>
+
+
+<p>The path to <code>/vendor/autoload.php</code> is then four levels above <code>bin</code>, hence the use of <code>dirname(__DIR__, 4)</code> (this <a href="https://www.php.net/manual/en/function.dirname">function</a> returns the path of the given directory's parent, which here is the parent of the current directory <code>__DIR__</code>. The second parameter is the number of parent directories to go up).</p>
+<p>Save the file and make sure you can still access the application by displaying the menu:</p>
+<div class="highlight"><pre><span></span>$ ./bin/demo
+</pre></div>
+
+
+<div class="info">
+    <p><span class="title">The <code>$_composer_autoload_path</code> global variable</span> <a href="https://getcomposer.org/doc/articles/vendor-binaries.md#finding-the-composer-autoloader-from-a-binary">Since Composer 2.2</a>, a <code>$_composer_autoload_path</code> global variable containing the path to the autoloader is available when running the program globally.</p>
+    <p>This variable would allow us to simplify the above script, but also means we'd have to enforce the use of Composer 2.2 as a minimum requirement, potentially impacting compatibility.</p>
+</div>
+
+<p>Another thing we need to do is add <code>composer.lock</code> to the <code>.gitignore</code> file:</p>
+<div class="highlight"><pre><span></span><span class="o">/</span><span class="n">vendor</span><span class="o">/</span>
+<span class="n">composer</span><span class="p">.</span><span class="k">lock</span>
+</pre></div>
+
+
+<p>If you come from regular PHP application development, you may be used to <a href="https://getcomposer.org/doc/01-basic-usage.md#commit-your-composer-lock-file-to-version-control">committing this file</a> to freeze dependency versions (also called <em>dependency pinning</em>), thus guaranteeing consistent behaviour across environments. When it comes to command-line tools, however, things are different.</p>
+<p>As mentioned earlier, your CLI application should ideally work with various PHP and dependency versions to maximise compatibility. This flexibility means you can't dictate which versions your users should instal, and instead let client environments figure out the dependency tree for themselves.</p>
+<p>Note that you <a href="https://getcomposer.org/doc/02-libraries.md#lock-file"><em>can</em></a> commit this file – it will be ignored when your application is installed via Composer. But in practice, explicitly ignoring <code>composer.lock</code> best reflects real usage conditions, and forces you (and your team) to consider version variation early on.</p>
+<p>By the way, if you'd like to know more about when to and when not to commit <code>composer.lock</code>, I published a Twitter thread on the subject:</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">A short thread on when to commit the composer.lock file in your PHP projects 👇</p>&mdash; Yannick (@osteel) <a href="https://twitter.com/osteel/status/1465285217892114443?ref_src=twsrc%5Etfw">November 29, 2021</a></blockquote>
+
+<p><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></p>
+<p>Since we don't enforce specific dependency versions anymore, we need to define the range of versions our application will support. Open <code>composer.json</code> and update the <code>require</code> section as follows:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;php&quot;</span>: <span class="s2">&quot;^8.0&quot;</span>,
+    <span class="s2">&quot;symfony/console&quot;</span>: <span class="s2">&quot;^5.0|^6.0&quot;</span>
+<span class="o">}</span>,
+</pre></div>
+
+
+<p>We need to specify the PHP version because down the line we won't know which versions our users are running. By making it explicit, Composer will then be able to check whether a compatible version of PHP is available and refuse to proceed with the installation if that's not the case.</p>
+<p>Right now we're only interested in running a distribution test on our current machine though, so specifying your local PHP version is enough (adjust it if it's different from the above – if you're not sure, run <code>php -v</code> from a terminal).</p>
+<p>You'll notice that I also added version <code>5.0</code> of the Console Component – that's because while running my own tests, I experienced some compatibility issues with my local instance of Laravel Valet, which needed Console <code>5.0</code> at the time.</p>
+<p>Based on when you're completing this tutorial, versions may have changed and this constraint may not be true anymore, but it's a good example of the kind of compatibility issues you may have to deal with.</p>
+<p>There's one last change we need to make to this file, and that is the addition of a <code>bin</code> section:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;php&quot;</span>: <span class="s2">&quot;^8.0&quot;</span>,
+    <span class="s2">&quot;symfony/console&quot;</span>: <span class="s2">&quot;^5.0|^6.0&quot;</span>
+<span class="o">}</span>,
+<span class="s2">&quot;bin&quot;</span>: <span class="o">[</span>
+    <span class="s2">&quot;bin/demo&quot;</span>
+<span class="o">]</span>,
+</pre></div>
+
+
+<p>This is how you specify the <a href="https://getcomposer.org/doc/articles/vendor-binaries.md">vendor binary</a>, which is a way to tell Composer "this will be the application's entry point, please make it available in the user's <code>vendor/bin</code> directory". By doing so, our users will be able to call our application globally.</p>
+<p>Commit and push the above changes. Then, if your repository was private so far, now is the time to make it public. Go to the <em>Settings</em> tab, enter the <em>Options</em> section, and scroll all the way down to the <em>Danger Zone</em> (which always reminds me of <a href="https://www.youtube.com/watch?v=k3-zaTr6OUo">Archer</a>).</p>
+<p>There you can change the repository's visibility to <em>public</em>:</p>
+<p><img alt="Change repository visibility" src="/images/2022/01/31/cli_08.png" title="Change repository visibility" /></p>
+<p>Now head over to <a href="https://packagist.org/">packagist.org</a> and create an account (or sign in if you already have one).</p>
+<p>Once you're logged in, click the <em>Submit</em> button in the top right corner and submit the URL of your repository. Allow a few moments for the crawler to do its job and your repository will appear:</p>
+<p><img alt="Crawled repository" src="/images/2022/01/31/cli_09.png" title="Crawled repository" /></p>
+<p>Don’t worry too much about publishing a dummy package – the worst that can happen is that no one but yourself will instal it (and you will be able to delete it later anyway).</p>
+<p>Let's now try and instal it on your machine. Go to your terminal and run the following command:</p>
+<div class="highlight"><pre><span></span>$ composer global require osteel/php-cli-demo:dev-main
+</pre></div>
+
+
+<p>Then again, make sure to set the right vendor name. Notice the presence of <code>:dev-main</code> at the end – this is a way to target the <code>main</code> branch specifically, as there is no release available yet.</p>
+<p>Once the instal is successful, make sure that the system recognises your application (you may need to open a new terminal window):</p>
+<div class="highlight"><pre><span></span>$ which demo
+</pre></div>
+
+
+<p>This command should return the path to your application's entry point (the <code>demo</code> file). If it doesn't, make sure the <code>~/.composer/vendor/bin</code> directory <a href="https://blackdeerdev.com/how-to-add-composer-vendor-bin-directory-in-your-path">is in your system's <code>PATH</code></a>.</p>
+<p>Give the game a quick spin to ensure it behaves as expected:</p>
+<div class="highlight"><pre><span></span>$ demo play
+</pre></div>
+
+
+<p>Our distribution test is successful!</p>
+<h2 id="php-version-support">PHP version support</h2>
+<p>Before we carry on and publish a proper release, we need to tackle something we've now mentioned a few times – PHP version support.</p>
+<p>This will be a two-step process:</p>
+<ol>
+<li>Write a test that controls the correct end-to-end execution of our program</li>
+<li>Add a GitHub workflow that will run the test using various PHP versions</li>
+</ol>
+<h3 id="automated-test">Automated test</h3>
+<p>We will use <a href="https://phpunit.de/">PHPUnit</a> as our testing environment – let's instal it as a development dependency:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev phpunit/phpunit
+</pre></div>
+
+
+<p>Create the folders <code>tests</code> and <code>tests/Commands</code> at the root of the project and add a <code>PlayTest.php</code> file to the latter, with the following content:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Osteel\PhpCliDemo\Tests\Commands</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Osteel\PhpCliDemo\Commands\Play</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">PHPUnit\Framework\TestCase</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Symfony\Component\Console\Tester\CommandTester</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">PlayTest</span> <span class="k">extends</span> <span class="nx">TestCase</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">testItDisplaysTheRightOutput</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="nv">$command</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Play</span><span class="p">();</span>
+
+        <span class="nv">$tester</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">CommandTester</span><span class="p">(</span><span class="nv">$command</span><span class="p">);</span>
+        <span class="nv">$tester</span><span class="o">-&gt;</span><span class="na">setInputs</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">]);</span>
+        <span class="nv">$tester</span><span class="o">-&gt;</span><span class="na">execute</span><span class="p">([]);</span>
+
+        <span class="nv">$tester</span><span class="o">-&gt;</span><span class="na">assertCommandIsSuccessful</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>As usual, make sure to update the vendor in the namespace and <code>use</code> statement.</p>
+<p>As per the <a href="https://symfony.com/doc/current/console.html#testing-commands">documentation</a>, the Console Component comes with a <code>CommandTester</code> helper class that will simplify testing the <code>Play</code> command.</p>
+<p>We instantiate the latter and pass it to the tester, which allows us to <a href="https://symfony.com/doc/current/components/console/helpers/questionhelper.html#testing-a-command-that-expects-input">simulate a series of inputs</a>.</p>
+<p>The sequence is as follows:</p>
+<ol>
+<li>Answer <code>10</code> to the first question</li>
+<li>Say <code>yes</code> to playing another round</li>
+<li>Answer <code>10</code> again</li>
+<li>Say <code>no</code> to playing another round</li>
+</ol>
+<p>We then have the tester execute the command and check if it ran successfully using the <code>assertCommandIsSuccessful</code> method (which controls that the command returned <code>0</code>).</p>
+<p>And that's it. We're not testing the game's outputs – we're merely making sure that the program runs successfully given a series of inputs. In other words, we're ensuring that it doesn't crash.</p>
+<p>Feel free to add more tests to control the game's actual behaviour (e.g. whether it gives the correct answers), but for our immediate purpose, the above is all we need.</p>
+<p>Let's make sure our test is passing:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/phpunit tests
+</pre></div>
+
+
+<p><img alt="Test execution" src="/images/2022/01/31/cli_10.png" title="Test execution" /></p>
+<p>If it doesn't, go back a few steps or take a look at the tutorial's <a href="https://github.com/osteel/php-cli-demo">repository</a> to check if you missed anything.</p>
+<h3 id="github-workflow">GitHub workflow</h3>
+<p>Now that we have a test controlling the correct execution of our program, we can use it to ensure the latter's compatibility with a range of PHP versions. Doing so manually would be a bit of a pain, but we can automate the process using <a href="https://github.com/features/actions">GitHub Actions</a>.</p>
+<p>GitHub Actions allow us to write workflows triggering on selected events, such as the push of a commit or the opening of a pull request. They're available with any GitHub account, including the free ones (they come with a <a href="https://docs.github.com/en/billing/managing-billing-for-github-actions/about-billing-for-github-actions">monthly allowance</a>).</p>
+<p>Workflows are in YAML format and must be placed in a <code>.github/workflows</code> folder at the root.</p>
+<p>Create this folder and add the following <code>ci.yml</code> file to it:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CI</span>
+
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+  <span class="nt">pull_request</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+
+  <span class="nt">phpunit</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">PHPUnit</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">strategy</span><span class="p">:</span>
+      <span class="nt">matrix</span><span class="p">:</span>
+        <span class="nt">php-version</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;7.4&quot;</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;8.0&quot;</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;8.1&quot;</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">php-version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.php-version }}</span>
+          <span class="nt">coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="s">&quot;ramsey/composer-install@v1&quot;</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Run PHPUnit</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/phpunit tests</span>
+</pre></div>
+</td></tr></table>
+
+<p>At the very top of the workflow is its name ("CI" stands for <a href="https://www.martinfowler.com/articles/continuousIntegration.html">Continuous Integration</a>), followed by the events on which it should trigger, in the <code>on</code> section. Ours will go off anytime some code is pushed to the <code>main</code> branch, or whenever a pull request is open towards it.</p>
+<p>We then define jobs to be executed, which in our case is just one – running the test. We specify that we'll use Ubuntu as the environment, and then define the execution <a href="https://docs.github.com/en/actions/learn-github-actions/contexts#strategy-context">strategy</a> to apply. Here, we'll be using a <a href="https://docs.github.com/en/actions/using-jobs/using-a-build-matrix-for-your-jobs">matrix</a> of PHP versions, each of which will run our test in sequence (the listed versions are the <a href="https://www.php.net/supported-versions.php">supported ones</a> at the time of writing).</p>
+<p>Finally, we define the steps of our job, that we break down as follows:</p>
+<ol>
+<li>Check out the code</li>
+<li>Set up PHP using the current version</li>
+<li>Instal Composer dependencies</li>
+<li>Run the test</li>
+</ol>
+<p>We now need to list the same PHP versions in our application's <code>composer.json</code> so Composer won't refuse to instal it for some of them. Let's update the <code>require</code> section again:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;php&quot;</span>: <span class="s2">&quot;^7.4|^8.0&quot;</span>,
+    <span class="s2">&quot;symfony/console&quot;</span>: <span class="s2">&quot;^5.0|^6.0&quot;</span>
+<span class="o">}</span>,
+</pre></div>
+
+
+<p>If you're wondering why I didn't list <code>8.1</code>, that's because as per the rules of <a href="https://semver.org/">Semantic Versioning</a> (<em>semver</em>), <code>^8.0</code> covers all versions above or equal to <code>8.0</code> but strictly under <code>9.0</code>, which includes <code>8.1</code>. If you're like me and tend to forget the rules of semver when you need them, keep this <a href="https://devhints.io/semver">cheatsheet</a> handy and thank me later.</p>
+<p>Save, commit and push the above – if it went well, you should see the workflow running in the <em>Actions</em> tab of your GitHub repository:</p>
+<p><img alt="Workflow execution" src="/images/2022/01/31/cli_11.png" title="Workflow execution" /></p>
+<p>Then again, refer to the article's <a href="https://github.com/osteel/php-cli-demo">repository</a> if something goes wrong.</p>
+<p>This workflow gives us the confidence that our application will run successfully with any of the listed PHP versions, and will confirm whether this is still the case any time we push some changes.</p>
+<h2 id="release">Release</h2>
+<p>We now have a tested application that is compatible with a range of PHP versions and an early version of which we managed to instal on our machine. We're ready to publish an official release.</p>
+<p>But before we do that, we need to ensure our future users will know how to instal and use our application – that's what <code>README.md</code> files are for.</p>
+<p>Let's create one at the root of the project:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="nv">h1</span> <span class="nv">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">center</span><span class="s2">&quot;</span><span class="o">&gt;</span><span class="nv">PHP</span> <span class="nv">CLI</span> <span class="nv">Demo</span><span class="o">&lt;/</span><span class="nv">h1</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nv">p</span> <span class="nv">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">center</span><span class="s2">&quot;</span><span class="o">&gt;</span><span class="nv">PHP</span> <span class="nv">command</span><span class="o">-</span><span class="nv">line</span> <span class="nv">tool</span> <span class="nv">demonstration</span><span class="o">&lt;/</span><span class="nv">p</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nv">p</span> <span class="nv">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">center</span><span class="s2">&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">img</span> <span class="nv">alt</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Preview</span><span class="s2">&quot;</span> <span class="nv">src</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">/art/preview.png</span><span class="s2">&quot;</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="nv">p</span> <span class="nv">align</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">center</span><span class="s2">&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nv">a</span> <span class="nv">href</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">https://github.com/osteel/php-cli-demo/actions</span><span class="s2">&quot;</span><span class="o">&gt;&lt;</span><span class="nv">img</span> <span class="nv">alt</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Build Status</span><span class="s2">&quot;</span> <span class="nv">src</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">https://github.com/osteel/php-cli-demo/workflows/CI/badge.svg</span><span class="s2">&quot;</span><span class="o">&gt;&lt;/</span><span class="nv">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nv">a</span> <span class="nv">href</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">//packagist.org/packages/osteel/php-cli-demo</span><span class="s2">&quot;</span><span class="o">&gt;&lt;</span><span class="nv">img</span> <span class="nv">alt</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">Latest Stable Version</span><span class="s2">&quot;</span> <span class="nv">src</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">https://poser.pugx.org/osteel/php-cli-demo/v</span><span class="s2">&quot;</span><span class="o">&gt;&lt;/</span><span class="nv">a</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="nv">a</span> <span class="nv">href</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">//packagist.org/packages/osteel/php-cli-demo</span><span class="s2">&quot;</span><span class="o">&gt;&lt;</span><span class="nv">img</span> <span class="nv">alt</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">License</span><span class="s2">&quot;</span> <span class="nv">src</span><span class="o">=</span><span class="s2">&quot;</span><span class="s">https://poser.pugx.org/osteel/php-cli-demo/license</span><span class="s2">&quot;</span><span class="o">&gt;&lt;/</span><span class="nv">a</span><span class="o">&gt;</span>
+    <span class="o">&lt;/</span><span class="nv">p</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="nv">p</span><span class="o">&gt;</span>
+
+## <span class="nv">Instal</span>
+
+<span class="nv">This</span> <span class="nv">CLI</span> <span class="nv">application</span> <span class="nv">is</span> <span class="nv">a</span> <span class="nv">small</span> <span class="nv">game</span> <span class="nv">written</span> <span class="nv">in</span> <span class="nv">PHP</span> <span class="nv">and</span> <span class="nv">is</span> <span class="nv">installed</span> <span class="nv">using</span> [<span class="nv">Composer</span>]<span class="ss">(</span><span class="nv">https</span>:<span class="o">//</span><span class="nv">getcomposer</span>.<span class="nv">org</span><span class="ss">)</span>:
+
+```
+<span class="nv">composer</span> <span class="nv">global</span> <span class="nv">require</span> <span class="nv">osteel</span><span class="o">/</span><span class="nv">php</span><span class="o">-</span><span class="nv">cli</span><span class="o">-</span><span class="nv">demo</span>
+```
+
+<span class="nv">Make</span> <span class="nv">sure</span> <span class="nv">the</span> `<span class="o">~/</span>.<span class="nv">composer</span><span class="o">/</span><span class="nv">vendor</span><span class="o">/</span><span class="nv">bin</span>` <span class="nv">directory</span> <span class="nv">is</span> <span class="nv">in</span> <span class="nv">your</span> <span class="nv">system</span><span class="s1">&#39;</span><span class="s">s `PATH`.</span>
+
+<span class="o">&lt;</span><span class="nv">details</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nv">summary</span><span class="o">&gt;</span><span class="k">Show</span> <span class="nv">me</span> <span class="nv">how</span><span class="o">&lt;/</span><span class="nv">summary</span><span class="o">&gt;</span>
+
+<span class="k">If</span> <span class="nv">it</span><span class="s1">&#39;</span><span class="s">s not already there, add the following line to your Bash configuration file (usually `~/.bash_profile`, `~/.bashrc`, `~/.zshrc`, etc.):</span>
+
+```
+<span class="nv">export</span> <span class="nv">PATH</span><span class="o">=~/</span>.<span class="nv">composer</span><span class="o">/</span><span class="nv">vendor</span><span class="o">/</span><span class="nv">bin</span>:$<span class="nv">PATH</span>
+```
+
+<span class="k">If</span> <span class="nv">the</span> <span class="nv">file</span> <span class="nv">doesn</span><span class="s1">&#39;</span><span class="s">t exist, create it.</span>
+
+<span class="nv">Run</span> <span class="nv">the</span> <span class="nv">following</span> <span class="nv">command</span> <span class="nv">on</span> <span class="nv">the</span> <span class="nv">file</span> <span class="nv">you</span><span class="s1">&#39;</span><span class="s">ve just updated for the change to take effect:</span>
+
+```
+<span class="nv">source</span> <span class="o">~/</span>.<span class="nv">bash_profile</span>
+```
+<span class="o">&lt;/</span><span class="nv">details</span><span class="o">&gt;</span>
+
+## <span class="nv">Use</span>
+
+<span class="nv">All</span> <span class="nv">you</span> <span class="nv">need</span> <span class="nv">to</span> <span class="k">do</span> <span class="nv">is</span> <span class="k">call</span> <span class="nl">the</span> `<span class="nv">play</span>` <span class="nv">command</span> <span class="nv">to</span> <span class="nv">start</span> <span class="nv">the</span> <span class="nv">game</span>:
+
+```
+<span class="nv">demo</span> <span class="nv">play</span>
+```
+
+## <span class="nv">Update</span>
+
+```
+<span class="nv">composer</span> <span class="nv">global</span> <span class="nv">update</span> <span class="nv">osteel</span><span class="o">/</span><span class="nv">php</span><span class="o">-</span><span class="nv">cli</span><span class="o">-</span><span class="nv">demo</span>
+```
+
+## <span class="nv">Delete</span>
+
+```
+<span class="nv">composer</span> <span class="nv">global</span> <span class="nv">remove</span> <span class="nv">osteel</span><span class="o">/</span><span class="nv">php</span><span class="o">-</span><span class="nv">cli</span><span class="o">-</span><span class="nv">demo</span>
+```
+</pre></div>
+</td></tr></table>
+
+<p>This is a basic template mixing some HTML and markdown code. I won't spend too much time explaining it, so here is a quick summary of the content:</p>
+<ul>
+<li>Title and subtitle</li>
+<li>Preview image</li>
+<li>Some badges</li>
+<li>Installation instructions</li>
+<li>Usage instructions</li>
+<li>Update instructions</li>
+<li>Deletion instructions</li>
+</ul>
+<p>You'll need to replace instances of <code>osteel</code> with your vendor name again (and maybe some other things like the application name or entry point if you chose something other than <code>demo</code>).</p>
+<p>For the preview image I like to take a simple screenshot of the application being used:</p>
+<p><img alt="Screenshot" src="/images/2022/01/31/cli_01.png" title="Screenshot" />
+<p class="caption">This is also the image I used to illustrate this post</p></p>
+<p>Create an <code>art</code> folder at the root of the project and place a <code>preview.png</code> image in it (update the code accordingly if you pick a different name).</p>
+<p>You can also use this picture for social media by setting it in the <em>Social preview</em> section of the repository's <em>Settings</em> tab.</p>
+<p>That's pretty much it – feel free to reuse and adapt this template as you please.</p>
+<p>Save and push <code>README.md</code>, and head over to the repository's <em>Releases</em> section, available from the column on the right-hand side:</p>
+<p><img alt="Releases" src="/images/2022/01/31/cli_12.png" title="Releases" /></p>
+<p>Create a tag for your release, which should follow the rules of <a href="https://semver.org/">Semantic Versioning</a>. We'll make ours version 1:</p>
+<p><img alt="Release tag v1.0" src="/images/2022/01/31/cli_13.png" title="Release tag v1.0" /></p>
+<p>Give your release a name and a description and publish it:</p>
+<p><img alt="Release name and description" src="/images/2022/01/31/cli_14.png" title="Release name and description" /></p>
+<p>After a few moments, you should see it appear on the Packagist page of your repository:</p>
+<p><img alt="Release on Packagist" src="/images/2022/01/31/cli_15.png" title="Release on Packagist" /></p>
+<p>Now go back to your terminal and run the following command (using the appropriate vendor name):</p>
+<div class="highlight"><pre><span></span>$ composer global require osteel/php-cli-demo
+</pre></div>
+
+
+<p>Now that a proper release is available, there's no need to append <code>:dev-main</code> anymore.</p>
+<p>Make sure you can still play the game:</p>
+<div class="highlight"><pre><span></span>$ demo play
+</pre></div>
+
+
+<p>And that's it! Your application is now ready to be advertised and distributed.</p>
+<p>You can instal future releases by running the following command:</p>
+<div class="highlight"><pre><span></span>$ composer global update osteel/php-cli-demo
+</pre></div>
+
+
+<h2 id="cleaning-up">Cleaning up</h2>
+<p>This tutorial is now drawing to an end, and if after playing with your application you feel like cleaning up after yourself, you can delete your package from Packagist:</p>
+<p><img alt="Packagist options" src="/images/2022/01/31/cli_16.png" title="Packagist options" /></p>
+<p>And this is how you'd remove it from your local system:</p>
+<div class="highlight"><pre><span></span>$ composer global remove osteel/php-cli-demo
+</pre></div>
+
+
+<p>Of course, you can also delete your GitHub repository at any time.</p>
+<h2 id="conclusion">Conclusion</h2>
+<p>I hope this will inspire you to write your own command-line tools in PHP.</p>
+<p>While the language's primary application remains for web development, the above should show that it's versatile enough to assist you in other ways.</p>
+<p>Let's be honest – if your goal is the widespread use of a standalone CLI application, PHP is probably not the best language. Users would still need an environment that supports it, a local instal of Composer, and also to edit their local <code>PATH</code> to include Composer's <code>bin</code> directory. These are all steps that most people won't be comfortable taking.</p>
+<p>But if you're already a PHP developer, your environment is very likely to satisfy these conditions already, and as a result, the barrier to building your own CLI tools is very low.</p>
+<p>Think of repetitive tasks that you perform regularly, and that could be automated away without the need of a full-blown website. I, for instance, grew tired of having to manually import my Kobo annotations to <a href="https://readwise.io">Readwise</a>, so came up with a <a href="https://github.com/osteel/kobwise">tool</a> to make the conversion easier.</p>
+<p>PHP has no issue running <a href="https://www.php.net/manual/en/function.system.php">system commands</a> and if you need more muscle than what the Console Component alone has to offer, frameworks like <a href="https://laravel-zero.com">Laravel Zero</a> will greatly expand the realm of possibility.</p>
+<p>You don't necessarily have to distribute your programs via Packagist for a strictly personal use, but it's a way to share your work with others who might have similar needs and a potential foray into open-source development.</p>
+<p>Besides, the process of writing and distributing your own CLI tools is not so dissimilar to that of application libraries – once you're comfortable with the former, the latter becomes more accessible, and both are ways to give back to the community.</p>
+<h2 id="resources">Resources</h2>
+<p>Here are some of the resources referenced in this post:</p>
+<ul>
+<li><a href="https://github.com/osteel/php-cli-demo">Article repository</a></li>
+<li><a href="https://getcomposer.org/doc/00-intro.md">Composer documentation</a></li>
+<li><a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component documentation</a></li>
+<li><a href="https://choosealicense.com">Choose an open source license</a></li>
+<li><a href="https://unix.stackexchange.com/questions/29608/why-is-it-better-to-use-usr-bin-env-name-instead-of-path-to-name-as-my">Why is it better to use "#!/usr/bin/env NAME" instead of "#!/path/to/NAME" as my shebang?</a></li>
+<li><a href="https://tldp.org/LDP/abs/html/exitcodes.html">Appendix E. Exit Codes With Special Meanings</a></li>
+<li><a href="https://www.npopov.com/2021/11/08/Type-variance-in-PHP.html">Type variance in PHP</a></li>
+<li><a href="https://www.php.net/manual/en/function.dirname">PHP's dirname function</a></li>
+<li><a href="https://www.php.net/supported-versions.php">PHP Supported Versions</a></li>
+<li><a href="https://phpunit.de/">PHPUnit</a></li>
+<li><a href="https://www.martinfowler.com/articles/continuousIntegration.html">Continuous Integration</a></li>
+<li><a href="https://github.com/features/actions">GitHub Actions</a></li>
+<li><a href="https://packagist.org/">Packagist.org</a></li>
+<li><a href="https://semver.org/">Semantic Versioning</a></li>
+<li><a href="https://devhints.io/semver">Semantic Versioning Cheatsheet</a></li>
+<li><a href="https://blackdeerdev.com/how-to-add-composer-vendor-bin-directory-in-your-path">How to add composer vendor bin directory to path</a></li>
+<li><a href="https://github.com/minicli/minicli">Minicli</a></li>
+<li><a href="https://laravel-zero.com">Laravel Zero</a></li>
+<li><a href="https://github.com/nunomaduro/termwind">Termwind</a></li>
+</ul>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="2022-01-31" pubdate>2022-01-31</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/"></a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer";
+              var disqus_url = "https://tech.osteel.me/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer";
+              var disqus_title = "How to build and distribute beautiful command-line applications with PHP and Composer";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+    <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+     </div>
+  </body>
+</html>
