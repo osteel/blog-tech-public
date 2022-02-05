@@ -139,7 +139,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-11-25 ::
+          Last updated: 2022-02-05 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -238,14 +238,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.21</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
 </pre></div>
 </td></tr></table>
 
 <p>The <code>version</code> key at the top of the file indicates the version of Docker Compose we intend to use (3.8 is the latest version at the time of writing).</p>
-<p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.19 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
+<p>It is followed by the <code>services</code> key, which is a list of the application's components. For the moment we only have the <code>nginx</code> service, with a couple of keys: <code>image</code> and <code>ports</code>. The former indicates which image to use to build our service's container; in our case, version 1.21 of the <a href="https://hub.docker.com/_/nginx">Nginx image</a>. Open the link in a new tab: it will take you to Docker Hub, which is the largest registry for container images (think of it as the <a href="https://packagist.org/">Packagist</a> or <a href="https://pypi.org/">PyPI</a> of Docker).</p>
 <p class="info"><span class="title">Why not use the <em>latest</em> tag?</span> You will probably notice that all images have a <em>latest</em> tag corresponding to the most up-to-date version of the image. While it might be tempting to use it, you don't know how the image will evolve in the future – it is very likely that breaking changes will be introduced sooner or later. The same way you do a version freeze for an application's dependencies (via <code>composer.lock</code> for PHP or <code>requirements.txt</code> in Python, for example), using a specific version tag ensures your Docker setup won't break due to unforeseen changes.</p>
 
 <p>Much like a Github repository, image descriptions on Docker Hub usually do a good job at explaining how to use it and what the available versions are. Here, we are looking at Nginx's official image: Docker <a href="https://docs.docker.com/docker-hub/official_images/">keeps a curated list</a> of "official" images (sometimes maintained by upstream developers, but not always), which I always use whenever possible. They are easily recognisable: their page mentions <em>Docker Official Images</em> at the top, and Docker Hub separates them clearly from the community images when doing a search:</p>
@@ -310,7 +310,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.21</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
@@ -521,7 +521,7 @@ nginx_1 exited with code <span class="m">1</span>
 
   <span class="c1"># Nginx Service</span>
   <span class="nt">nginx</span><span class="p">:</span>
-    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.19</span>
+    <span class="nt">image</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">nginx:1.21</span>
     <span class="nt">ports</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">80:80</span>
     <span class="nt">volumes</span><span class="p">:</span>
@@ -956,7 +956,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-11-25" pubdate>2021-11-25</time>
+          <time datetime="2022-02-05" pubdate>2022-02-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

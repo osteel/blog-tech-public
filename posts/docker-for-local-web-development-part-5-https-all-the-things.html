@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-10-02 ::
+          Last updated: 2022-02-05 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -209,7 +209,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> nginx:1.19-alpine</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> nginx:1.21-alpine</span>
 
 <span class="c"># Install packages</span>
 <span class="k">RUN</span> apk --update --no-cache add openssl
@@ -336,7 +336,7 @@ $ demo cert
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># Generate a wildcard certificate</span>
 cert_generate <span class="o">()</span> <span class="o">{</span>
     rm -Rf .docker/nginx/certs/demo.test.*
-    docker compose run --rm nginx sh -c <span class="s2">&quot;cd /etc/nginx/certs &amp;&amp; touch openssl.cnf &amp;&amp; cat /etc/ssl/openssl.cnf &gt; openssl.cnf &amp;&amp; echo \&quot;\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;[ SAN ]\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;subjectAltName=DNS.1:demo.test,DNS.2:*.demo.test\&quot; &gt;&gt; openssl.cnf &amp;&amp; openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout demo.test.key -out demo.test.crt -days 3650 -subj \&quot;/CN=*.demo.test\&quot; -config openssl.cnf -extensions SAN &amp;&amp; rm openssl.cnf&quot;</span>
+    docker compose run --rm nginx sh -c <span class="s2">&quot;cd /etc/nginx/certs &amp;&amp; touch openssl.cnf &amp;&amp; cat /etc/ssl1.1/openssl.cnf &gt; openssl.cnf &amp;&amp; echo \&quot;\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;[ SAN ]\&quot; &gt;&gt; openssl.cnf &amp;&amp; echo \&quot;subjectAltName=DNS.1:demo.test,DNS.2:*.demo.test\&quot; &gt;&gt; openssl.cnf &amp;&amp; openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout demo.test.key -out demo.test.crt -days 3650 -subj \&quot;/CN=*.demo.test\&quot; -config openssl.cnf -extensions SAN &amp;&amp; rm openssl.cnf&quot;</span>
 <span class="o">}</span>
 </pre></div>
 </td></tr></table>
@@ -866,7 +866,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-10-02" pubdate>2021-10-02</time>
+          <time datetime="2022-02-05" pubdate>2022-02-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
