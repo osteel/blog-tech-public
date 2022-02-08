@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-01-31 ::
+          Last updated: 2022-02-08 ::
         Published: 2022-01-31
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer.html">history</a> ]
       </small>
@@ -1205,13 +1205,18 @@ $application->run();</pre>
 
 
 <p>And that's it! Your application is now ready to be advertised and distributed.</p>
-<p>You can instal future releases by running the following command:</p>
+<p>You can instal future minor releases by running the following command:</p>
 <div class="highlight"><pre><span></span>$ composer global update osteel/php-cli-demo
 </pre></div>
 
 
+<p>And major ones with the following:</p>
+<div class="highlight"><pre><span></span>$ composer global require osteel/php-cli-demo
+</pre></div>
+
+
 <h2 id="cleaning-up">Cleaning up</h2>
-<p>This tutorial is now drawing to an end, and if after playing with your application you feel like cleaning up after yourself, you can delete your package from Packagist:</p>
+<p>This tutorial is drawing to an end and if after playing with your application you feel like cleaning up after yourself, you can delete your package from Packagist:</p>
 <p><img alt="Packagist options" src="/images/2022/01/31/cli_16.png" title="Packagist options" /></p>
 <p>And this is how you'd remove it from your local system:</p>
 <div class="highlight"><pre><span></span>$ composer global remove osteel/php-cli-demo
@@ -1270,7 +1275,7 @@ $application->run();</pre>
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-01-31" pubdate>2022-01-31</time>
+          <time datetime="2022-02-08" pubdate>2022-02-08</time>
           :: [
           <a href="https://tech.osteel.me/tag/cli">cli</a>
           <a href="https://tech.osteel.me/tag/composer">composer</a>
