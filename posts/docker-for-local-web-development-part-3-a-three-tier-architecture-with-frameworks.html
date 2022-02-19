@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-02-05 ::
+          Last updated: 2022-02-19 ::
         Published: 2020-03-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks.html">history</a> ]
       </small>
@@ -292,7 +292,7 @@ volumes:
 </pre>
 
 <p>The main update is the removal of the PHP service in favour of the backend service, although they are quite similar. The <code>build</code> key now points to a Dockerfile located in the backend application's directory (<code>src/backend</code>), which is also mounted as a volume on the container.</p>
-<p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
+<p>As the backend application will be built with Laravel, let's create an Nginx server configuration based on the one provided in the <a href="https://laravel.com/docs/9.x/deployment#nginx">official documentation</a>. Create a new <code>backend.conf</code> file in <code>.docker/nginx/conf.d</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -324,19 +324,16 @@ volumes:
 29
 30
 31
-32
-33
-34</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>      <span class="mi">80</span><span class="p">;</span>
     <span class="kn">listen</span>      <span class="s">[::]:80</span><span class="p">;</span>
     <span class="kn">server_name</span> <span class="s">backend.demo.test</span><span class="p">;</span>
     <span class="kn">root</span>        <span class="s">/var/www/backend/public</span><span class="p">;</span>
 
     <span class="kn">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">&quot;SAMEORIGIN&quot;</span><span class="p">;</span>
-    <span class="kn">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">&quot;1</span><span class="p">;</span> <span class="kn">mode=block&quot;</span><span class="p">;</span>
     <span class="kn">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">&quot;nosniff&quot;</span><span class="p">;</span>
 
-    <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span> <span class="s">index.php</span><span class="p">;</span>
+    <span class="kn">index</span> <span class="s">index.php</span><span class="p">;</span>
 
     <span class="kn">charset</span> <span class="s">utf-8</span><span class="p">;</span>
 
@@ -351,7 +348,6 @@ volumes:
 
     <span class="kn">location</span> <span class="p">~</span> <span class="sr">\.php$</span> <span class="p">{</span>
         <span class="kn">fastcgi_pass</span>  <span class="n">backend</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
-        <span class="kn">fastcgi_index</span> <span class="s">index.php</span><span class="p">;</span>
         <span class="kn">fastcgi_param</span> <span class="s">SCRIPT_FILENAME</span> <span class="nv">$realpath_root$fastcgi_script_name</span><span class="p">;</span>
         <span class="kn">include</span>       <span class="s">fastcgi_params</span><span class="p">;</span>
     <span class="p">}</span>
@@ -381,7 +377,7 @@ volumes:
 
 
 <p>Now create the <code>src/backend</code> directory and add a Dockerfile with this content:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.1-fpm-alpine</span>
 </pre></div>
 
 
@@ -460,7 +456,7 @@ zlib
 4
 5
 6
-7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.1-fpm-alpine</span>
 
 <span class="c"># Install extensions</span>
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath
@@ -504,7 +500,7 @@ zlib
 11
 12
 13
-14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.1-fpm-alpine</span>
 
 <span class="c"># Install extensions</span>
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath
@@ -557,12 +553,12 @@ zlib
 
 
 <h3 id="creating-a-new-laravel-project">Creating a new Laravel project</h3>
-<p>Once the new version of the image is ready, run the following command:</p>
-<div class="highlight"><pre><span></span>$ docker compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp <span class="s2">&quot;8.*&quot;</span>
+<p>Once the new version of the image is ready, run the <a href="https://laravel.com/docs/9.x/installation#installation-via-composer">following command</a>:</p>
+<div class="highlight"><pre><span></span>$ docker compose run --rm backend composer create-project --prefer-dist laravel/laravel tmp <span class="s2">&quot;9.*&quot;</span>
 </pre></div>
 
 
-<p>This will use the version of Composer installed on the backend container (no need to install Composer locally!) to create a new Laravel 8 project in the container's <code>/var/www/backend/tmp</code> folder.</p>
+<p>This will use the version of Composer installed on the backend container (no need to install Composer locally!) to create a new Laravel 9 project in the container's <code>/var/www/backend/tmp</code> folder.</p>
 <p>As per <code>docker-compose.yml</code>, the container's working directory is <code>/var/www/backend</code>, onto which the local folder <code>src/backend</code> was mounted – if you look into that directory now on your local machine, you will find a new <code>tmp</code> folder containing the files of a fresh Laravel application. But why did we not create the project in <code>backend</code> directly?</p>
 <p>Behind the scenes, <code>composer create-project</code> performs a <code>git clone</code>, and that won't work if the target directory is not empty. In our case, <code>backend</code> already contains the Dockerfile, which is necessary to run the command in the first place. We essentially created the <code>tmp</code> folder as a temporary home for our project, and we now need to move back the files to their final location:</p>
 <div class="highlight"><pre><span></span>$ docker compose run --rm backend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
@@ -571,7 +567,7 @@ zlib
 
 <p>This will run the content between the double quotes on the container, <code>sh -c</code> basically being a trick allowing us to run more than a single command at once (if we ran <code>docker compose run --rm backend mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp</code> instead, only the first <code>mv</code> instruction would be executed on the container, and the rest would be run on the local machine).</p>
 <div class="info">
-<p><span class="title">Shouldn't Composer be in its own container?</span> A popular way to deal with package managers is to isolate them into their own containers, the main reason being that they are external tools mostly used during development and that they've got no business shipping with the application itself (which is all correct).</p>
+<p><span class="title">Shouldn't Composer be in its own container?</span> A common way to deal with package managers is to isolate them into their own containers, the main reason being that they are external tools mostly used during development and that they've got no business shipping with the application itself (which is all correct).</p>
 <p>I actually used this approach for a while, but it comes with downsides that are often overlooked: as Composer allows developers to specify a package's requirements (necessary PHP extensions, PHP's minimum version, etc.), by default it will check the system on which it installs the application's dependencies to make sure it meets those criteria. In practice, this means the configuration of the container hosting Composer must be as close as possible to the application's, which often means doubling the work for the maintainer. As a result, some people choose to run Composer with the <code>--ignore-platform-reqs</code> flag instead, ensuring dependencies will always install regardless of the system's configuration.</p>
 <p>This is a dangerous thing to do: while most of the time dependency-related errors will be spotted during development, in some instances the problem could go unnoticed until someone stumbles upon it, either on staging or even in production (this is especially true if your application does't have full test coverage). Moreover, staged builds are an effective way to separate the package manager from the application in a single Dockerfile, but that's a topic I will broach later in this series. Bear with!</p>
 </div>
@@ -699,7 +695,7 @@ $ docker compose run --rm backend composer
 17
 18
 19
-20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.0-fpm-alpine</span>
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.1-fpm-alpine</span>
 
 <span class="c"># Install extensions</span>
 <span class="k">RUN</span> docker-php-ext-install pdo_mysql bcmath opcache
@@ -768,7 +764,7 @@ nginx:
 </pre>
 
 <p>Then, create a new <code>frontend</code> folder under <code>src</code> and add the following Dockerfile to it:</p>
-<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:15-alpine</span>
+<div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:17-alpine</span>
 </pre></div>
 
 
@@ -779,19 +775,24 @@ nginx:
 
 
 <p>Once the image is ready, create a fresh Vue.js project with the following command:</p>
-<div class="highlight"><pre><span></span>$ docker compose run --rm frontend sh -c <span class="s2">&quot;yarn global add @vue/cli &amp;&amp; vue create tmp --default --force&quot;</span>
+<div class="highlight"><pre><span></span>$ docker compose run --rm frontend yarn create vite tmp --template vue
 </pre></div>
 
 
-<p>By using the same <code>sh -c</code> trick as earlier in order to run multiple commands at once on the container, we install <a href="https://cli.vuejs.org/">Vue CLI</a> (<code>yarn global add @vue/cli</code>) and use it straight away to <a href="https://cli.vuejs.org/guide/creating-a-project.html#vue-create">create a new Vue.js project</a> with some default presets, in the <code>tmp</code> directory (<code>vue create tmp --default --force</code>). This directory is located under <code>/var/www/frontend</code>, which is the container's working directory as per <code>docker-compose.yml</code>.</p>
-<p>Note that if you'd rather select your own presets (such as the Vue.js version to use), you can simply remove <code>--default</code> from the command.</p>
-<p>We don't install Vue CLI via the Dockerfile here, because the only use we have for it is to create the project. Once that's done, there's no need to keep it around.</p>
+<p>We're using <a href="https://vitejs.dev">Vite</a> to <a href="https://vitejs.dev/guide/#scaffolding-your-first-vite-project">create a new project</a> in the <code>tmp</code> directory. This directory is located under <code>/var/www/frontend</code>, which is the container's working directory as per <code>docker-compose.yml</code>.</p>
+<p class="info"><span class="title">Why Vite?</span> <a href="https://vitejs.dev">Vite</a> is a set of frontend tools that was brought to my attention by Brian Parvin in the <a href="https://tech.osteel.me/posts/docker-for-local-web-development-part-3-a-three-tier-architecture-with-frameworks#comment-5697583530">comments</a>. It brings significant performance gains over <a href="https://cli.vuejs.org/">Vue CLI</a> around compilation and hot-reloading.</p>
+
 <p>Just like the backend, let's move the files out of <code>tmp</code> and back to the parent directory:</p>
 <div class="highlight"><pre><span></span>$ docker compose run --rm frontend sh -c <span class="s2">&quot;mv -n tmp/.* ./ &amp;&amp; mv tmp/* ./ &amp;&amp; rm -Rf tmp&quot;</span>
 </pre></div>
 
 
 <p>If all went well, you will find the application's files under <code>src/frontend</code> on your local machine.</p>
+<p>Finally, let's install the project's dependencies:</p>
+<div class="highlight"><pre><span></span>$ docker compose run --rm frontend yarn
+</pre></div>
+
+
 <div class="info">
 <p><span class="title">Issues around <code>node_modules</code>?</span> A few readers have reported symlink issues related to the <code>node_modules</code> folder on Windows. To be honest I am not entirely sure what is going on here, but it seems that creating a <code>.dockerignore</code> file at the root of the project containing the line <code>node_modules</code> fixes it (you might need to delete that folder first). Again, not sure why is that, but you might find answers <a href="https://github.com/docker/compose/issues/5888#issuecomment-660578735">here</a>.</p>
 <p><code>.dockerignore</code> files are very similar to <code>.gitignore</code> files in that they allow us to specify files and folders that should be ignored when copying or adding content to a container. They are not really necessary in the context of this series and I only touch upon them in the <a href="/posts/docker-for-local-web-development-conclusion-where-to-go-from-here" title="Docker for local web development, conclusion: where to go from here">conclusion</a>, but you can read more about them <a href="https://docs.docker.com/engine/reference/builder/#dockerignore-file">here</a>.</p>
@@ -828,8 +829,8 @@ nginx:
 </pre></div>
 </td></tr></table>
 
-<p>This simple configuration redirects the traffic from the domain name's port 80 to the container's port 8080, which is the port Vue.js uses for its <a href="https://cli.vuejs.org/guide/cli-service.html#using-the-binary">development server</a>.</p>
-<p>Let's also add a new <code>vue.config.js</code> file in <code>src/frontend</code>:</p>
+<p>This simple configuration redirects the traffic from the domain name's port 80 to the container's port 8080, which is the port the development server will use.</p>
+<p>Let's also update the <code>vite.config.js</code> file in <code>src/frontend</code>:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -840,29 +841,35 @@ nginx:
  8
  9
 10
-11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nx">devServer</span><span class="o">:</span> <span class="p">{</span>
-        <span class="nx">disableHostCheck</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-        <span class="nx">sockHost</span><span class="o">:</span> <span class="s1">&#39;frontend.demo.test&#39;</span><span class="p">,</span>
-        <span class="nx">watchOptions</span><span class="o">:</span> <span class="p">{</span>
-            <span class="nx">ignored</span><span class="o">:</span> <span class="sr">/node_modules/</span><span class="p">,</span>
-            <span class="nx">aggregateTimeout</span><span class="o">:</span> <span class="mi">300</span><span class="p">,</span>
-            <span class="nx">poll</span><span class="o">:</span> <span class="mi">1000</span><span class="p">,</span>
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kr">import</span> <span class="p">{</span> <span class="nx">defineConfig</span> <span class="p">}</span> <span class="nx">from</span> <span class="s1">&#39;vite&#39;</span>
+<span class="kr">import</span> <span class="nx">vue</span> <span class="nx">from</span> <span class="s1">&#39;@vitejs/plugin-vue&#39;</span>
+
+<span class="kr">export</span> <span class="k">default</span> <span class="nx">defineConfig</span><span class="p">({</span>
+    <span class="nx">plugins</span><span class="o">:</span> <span class="p">[</span><span class="nx">vue</span><span class="p">()],</span>
+    <span class="nx">server</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">host</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+        <span class="nx">hmr</span><span class="o">:</span> <span class="p">{</span><span class="nx">port</span><span class="o">:</span> <span class="mi">80</span><span class="p">},</span>
+        <span class="nx">port</span><span class="o">:</span> <span class="mi">8080</span><span class="p">,</span>
+        <span class="nx">watch</span><span class="o">:</span> <span class="p">{</span>
+            <span class="nx">usePolling</span><span class="o">:</span> <span class="kc">true</span>
         <span class="p">}</span>
-    <span class="p">},</span>
-<span class="p">};</span>
+    <span class="p">}</span>
+<span class="p">})</span>
 </pre></div>
 </td></tr></table>
 
-<p>This will ensure the <em>hot-reload</em> feature is functional. I won't go into details about each option here, as the point is not so much about configuring Vue.js as seeing how to articulate a frontend and a backend application with Docker, regardless of the chosen frameworks. You are welcome to <a href="https://cli.vuejs.org/config/">look them up</a> though!</p>
+<p>This will ensure the <em>hot-reload</em> feature is functional. I won't go into details about each option here, as the point is not so much about configuring Vite as seeing how to articulate a frontend and a backend application with Docker, regardless of the chosen frameworks. You are welcome to browse the <a href="https://vitejs.dev/config/">documentation</a> though!</p>
 <p>Let's complete our Dockerfile by adding the command that will start the development server:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
 2
 3
-4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:15-alpine</span>
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> node:17-alpine</span>
 
 <span class="c"># Start application</span>
-<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;yarn&quot;</span><span class="p">,</span> <span class="s2">&quot;serve&quot;</span><span class="p">]</span>
+<span class="k">CMD</span> <span class="p">[</span><span class="s2">&quot;yarn&quot;</span><span class="p">,</span> <span class="s2">&quot;dev&quot;</span><span class="p">]</span>
 </pre></div>
 </td></tr></table>
 
@@ -876,14 +883,14 @@ nginx:
 </pre></div>
 
 
-<p>Once everything is up and running, access <a href="http://frontend.demo.test">frontend.demo.test</a> and you should see Vue.js' welcome page:</p>
+<p>Once everything is up and running, access <a href="http://frontend.demo.test">frontend.demo.test</a> and you should see this welcome page:</p>
 <p><img alt="Vue.js home" src="/images/2020/03/30/docker-03.png" title="Vue.js home" /></p>
-<p>Give it a minute if it doesn't show up immediately, as the server takes some time to start. If need be, you can monitor it with the following command:</p>
+<p>If you don't, take a look at the container's logs to see what's going on:</p>
 <div class="highlight"><pre><span></span>$ docker compose logs -f frontend
 </pre></div>
 
 
-<p>Open <code>src/frontend/src/components/HelloWorld.vue</code> and update some content (one of the <code>&lt;h3&gt;</code> tags, for example). Go back to your browser and you should see the change happen in real time: this is hot-reload doing its magic!</p>
+<p>Open <code>src/frontend/src/components/HelloWorld.vue</code> and update some content (the <code>&lt;h1&gt;</code> tag, for example). Go back to your browser and you should see the change happen in real time – this is hot-reload doing its magic!</p>
 <p>To make sure our setup is complete, all we've got left to do is to query the API endpoint we defined earlier in the backend, with the help of <a href="https://github.com/axios/axios">Axios</a>. Let's install the package with the following command:</p>
 <div class="highlight"><pre><span></span>$ docker compose <span class="nb">exec</span> frontend yarn add axios
 </pre></div>
@@ -917,9 +924,9 @@ nginx:
 25
 26
 27</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">HelloThere</span> <span class="na">:msg</span><span class="o">=</span><span class="s">&quot;msg&quot;</span><span class="p">/&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;app&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">HelloThere</span> <span class="na">:msg</span><span class="o">=</span><span class="s">&quot;msg&quot;</span><span class="p">/&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
 
 <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
@@ -927,20 +934,20 @@ nginx:
 <span class="kr">import</span> <span class="nx">HelloThere</span> <span class="nx">from</span> <span class="s1">&#39;./components/HelloThere.vue&#39;</span>
 
 <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
-  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
-  <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
-    <span class="nx">HelloThere</span>
-  <span class="p">},</span>
-  <span class="nx">data</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="p">{</span>
-      <span class="nx">msg</span><span class="o">:</span> <span class="kc">null</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;App&#39;</span><span class="p">,</span>
+    <span class="nx">components</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">HelloThere</span>
+    <span class="p">},</span>
+    <span class="nx">data</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">msg</span><span class="o">:</span> <span class="kc">null</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nx">mounted</span> <span class="p">()</span> <span class="p">{</span>
+        <span class="nx">axios</span>
+            <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;http://backend.demo.test/api/hello-there&#39;</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="p">=&gt;</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">msg</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">))</span>
     <span class="p">}</span>
-  <span class="p">},</span>
-  <span class="nx">mounted</span> <span class="p">()</span> <span class="p">{</span>
-    <span class="nx">axios</span>
-      <span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;http://backend.demo.test/api/hello-there&#39;</span><span class="p">)</span>
-      <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span> <span class="p">=&gt;</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">msg</span> <span class="o">=</span> <span class="nx">response</span><span class="p">.</span><span class="nx">data</span><span class="p">))</span>
-  <span class="p">}</span>
 <span class="p">}</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 </pre></div>
@@ -979,34 +986,34 @@ nginx:
 29
 30
 31</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">&lt;</span><span class="nt">template</span><span class="p">&gt;</span>
-  <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2020/03/04/hello.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello there&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{ msg }}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
-  <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;https://tech.osteel.me/images/2020/03/04/hello.gif&quot;</span> <span class="na">alt</span><span class="o">=</span><span class="s">&quot;Hello there&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>{{ msg }}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
 <span class="p">&lt;/</span><span class="nt">template</span><span class="p">&gt;</span>
 
 <span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
 <span class="kr">export</span> <span class="k">default</span> <span class="p">{</span>
-  <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;HelloThere&#39;</span><span class="p">,</span>
-  <span class="nx">props</span><span class="o">:</span> <span class="p">{</span>
-      <span class="nx">msg</span><span class="o">:</span> <span class="nb">String</span>
-  <span class="p">}</span>
+    <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;HelloThere&#39;</span><span class="p">,</span>
+    <span class="nx">props</span><span class="o">:</span> <span class="p">{</span>
+        <span class="nx">msg</span><span class="o">:</span> <span class="nb">String</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 <span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
 
 <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
 <span class="nt">p</span> <span class="p">{</span>
-  <span class="k">font-family</span><span class="p">:</span> <span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="kc">sans-serif</span><span class="p">;</span>
-  <span class="k">font-size</span><span class="p">:</span> <span class="mi">90</span><span class="kt">px</span><span class="p">;</span>
-  <span class="k">text-align</span><span class="p">:</span> <span class="kc">center</span><span class="p">;</span>
-  <span class="k">font-weight</span><span class="p">:</span> <span class="kc">bold</span><span class="p">;</span>
+    <span class="k">font-family</span><span class="p">:</span> <span class="s2">&quot;Arial&quot;</span><span class="p">,</span> <span class="kc">sans-serif</span><span class="p">;</span>
+    <span class="k">font-size</span><span class="p">:</span> <span class="mi">90</span><span class="kt">px</span><span class="p">;</span>
+    <span class="k">text-align</span><span class="p">:</span> <span class="kc">center</span><span class="p">;</span>
+    <span class="k">font-weight</span><span class="p">:</span> <span class="kc">bold</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="p">.</span><span class="nc">center</span> <span class="p">{</span>
-  <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
-  <span class="k">margin-left</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
-  <span class="k">margin-right</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
-  <span class="k">width</span><span class="p">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
+    <span class="k">display</span><span class="p">:</span> <span class="kc">block</span><span class="p">;</span>
+    <span class="k">margin-left</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+    <span class="k">margin-right</span><span class="p">:</span> <span class="kc">auto</span><span class="p">;</span>
+    <span class="k">width</span><span class="p">:</span> <span class="mi">50</span><span class="kt">%</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
 </pre></div>
@@ -1054,7 +1061,7 @@ nginx:
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-02-05" pubdate>2022-02-05</time>
+          <time datetime="2022-02-19" pubdate>2022-02-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-02-05 ::
+          Last updated: 2022-02-19 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -240,7 +240,7 @@ nginx:
 </pre></div>
 
 
-<p>All of the tools necessary to generate our certificate are now in place – we just need to add the corresponding Bash command and function.</p>
+<p>All the tools necessary to generate our certificate are now in place – we just need to add the corresponding Bash command and function.</p>
 <p>First, let's update our application menu, at the bottom of the <code>demo</code> file:</p>
 <pre>
 Command line interface for the Docker-based web development environment demo.
@@ -621,7 +621,21 @@ mounted () {
 ...
 </pre>
 
-<p>Looks like we're ready to make a test! Restart the containers for the changes to take effect:</p>
+<p>And to update the port in <code>src/frontend/vite.config.js</code>:</p>
+<pre>
+...
+  server: {
+    host: true,
+    hmr: {port: <strong>443</strong>},
+    port: 8080,
+    watch: {
+      usePolling: true
+    }
+  }
+...
+</pre>
+
+<p>Looks like we're ready for a test! Restart the containers for the changes to take effect:</p>
 <div class="highlight"><pre><span></span>$ demo restart
 </pre></div>
 
@@ -866,7 +880,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-02-05" pubdate>2022-02-05</time>
+          <time datetime="2022-02-19" pubdate>2022-02-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
