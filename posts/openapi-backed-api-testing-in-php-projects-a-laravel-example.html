@@ -13,7 +13,7 @@
 
     <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
 
-    <title>OpenAPI-backed API testing in PHP projects – a Laravel example &mdash; osteel's blog</title>
+    <title>Validate your PHP API tests against OpenAPI definitions – a Laravel example &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -34,8 +34,8 @@
 
 
 
-  <meta name="description" content="In this article, we will see how to combine OpenAPI 3.0.x definitions with integration tests to validate whether an API behaves the way it's supposed to, using the OpenAPI HttpFoundation Testing package." />
-  <meta name="twitter:description" content="In this article, we will see how to combine OpenAPI 3.0.x definitions with integration tests to validate whether an API behaves the way it's supposed to, using the OpenAPI HttpFoundation Testing package.">
+  <meta name="description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to." />
+  <meta name="twitter:description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to.">
 
   <meta name="tags" content="openapi" />
   <meta name="tags" content="laravel" />
@@ -45,7 +45,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
-  <meta name="twitter:title" content="OpenAPI-backed API testing in PHP projects – a Laravel example">
+  <meta name="twitter:title" content="Validate your PHP API tests against OpenAPI definitions – a Laravel example">
   <meta name="twitter:image" content="https://tech.osteel.me/images/2020/11/11/openapi_01.jpg">
 
   </head>
@@ -136,11 +136,11 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      OpenAPI-backed API testing in PHP projects – a Laravel example
+      Validate your PHP API tests against OpenAPI definitions – a Laravel example
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2021-06-13 ::
+          Last updated: 2022-03-18 ::
         Published: 11/11/2020
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example.html">history</a> ]
       </small>
@@ -161,57 +161,56 @@ styles, `#sidebar-checkbox` for behavior. -->
 
     <p><img alt="PHP and OpenAPI" src="/images/2020/11/11/openapi_01.jpg" title="PHP and OpenAPI" />
 <p class="caption">Am I proud of this montage? You bet I am.</p></p>
-<p><a href="https://swagger.io/specification/">OpenAPI</a> is a specification intended to describe RESTful APIs in JSON and YAML, with the aim of being understandable by humans and machines alike.</p>
-<p>OpenAPI definitions are language-agnostic and can be used in a lot of different ways:</p>
+<p><a href="https://swagger.io/specification/">OpenAPI</a> is a specification for describing RESTful APIs in JSON and YAML format, aiming at being understandable by humans and machines alike.</p>
+<p>OpenAPI definitions are language-agnostic and can be used in several ways:</p>
 <blockquote>
 <p>An OpenAPI definition can be used by documentation generation tools to display the API, code generation tools to generate servers and clients in various programming languages, testing tools, and many other use cases.</p>
 </blockquote>
 <p>– <a href="https://swagger.io/specification/">The OpenAPI Specification</a></p>
-<p>In this article, we will see how to combine OpenAPI 3.0.x definitions with integration tests to validate whether an API behaves the way it's supposed to, using the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package.</p>
-<p>We will do so in a fresh <a href="https://laravel.com/">Laravel</a> installation, for which we'll also generate a <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> documentation using the <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a> package.</p>
-<p>I will first elaborate a bit further on why this is useful, but if you're just here for the code, you're welcome to skip ahead and go to the <a href="#a-laravel-example">Laravel example</a> section straight away.</p>
+<p>This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to.</p>
+<p>We will use the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package in a fresh <a href="https://laravel.com/">Laravel</a> installation for which we'll also generate a <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> documentation (using the <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a> package).</p>
+<p>The first part of the post will describe the issue and provide further context – if you're just here for the code, you're welcome to skip ahead and go to the <a href="#a-laravel-example">Laravel example</a> section straight away.</p>
 <h2 id="the-issue">The issue</h2>
-<p>APIs are pretty common nowadays, and when we're lucky they come with some form of documentation that helps us find our way around the endpoints. These documentations come in many shapes and flavours (some tastier than others), but one thing they've got in common in that they need to be updated every time the API they describe changes.</p>
-<p>To many developers, maintaining an API's documentation feels like extra homework when they've already passed the exam; it's boring, sometimes tedious, and often unrewarding. Some strategies can help, like using annotations to keep the code and the documentation in one place; but those are often annoying to write still, and even the most willing developer is not immune to an oversight that won't necessarily be caught by coworkers.</p>
-<p>The usual outcome is that, one way or another, the documentation and the API become out of sync, leading to confused consumers.</p>
-<p>Another aspect of API maintenance is ensuring that no endpoint stops functioning the way it's supposed to; regressions will be introduced eventually, and without a proper testing strategy they might go unnoticed for a while.</p>
-<p>A way to avoid this is to implement integration tests that will automatically check that the API's behaviour is correct, and that recently introduced changes have not had unintended consequences. This is fine, but still doesn't provide any guarantee that the expectations set in the integration tests are exactly the same as the ones inferred from the documentation.</p>
-<p>If only there was a way to ensure that they perfectly reflect each other…</p>
+<p>APIs are commonplace nowadays and the decent ones come with a documentation describing the endpoints and how to use them. These documents come in various shapes and forms, but one thing they've got in common in that they need to be updated every time the API changes.</p>
+<p>To many developers, API documentation is an afterthought – it's boring, sometimes tedious, often unrewarding. Using annotations to keep the code and the documentation in one place can help, but these are often painful to write and even the most willing developer is likely to introduce errors that won't necessarily be caught by reviewers.</p>
+<p>In this rather common scenario, documentation and API can end up out of sync, leading to frustrated consumers.</p>
+<p>Another goal of API maintenance is to ensure that existing endpoints keep functioning properly – regressions can and will appear over time, and may go unnoticed if there isn't a proper testing strategy in place.</p>
+<p>One approach is to write integration tests controlling the API's behaviour and automatically detecting breaking changes as soon as they are introduced. While this is a good strategy, it isn't foolproof – there's no guarantee that the expectations set in the tests will always 100% match the documentation.</p>
+<p>What we need is a way to ensure they remain in sync.</p>
 <h2 id="a-solution">A solution</h2>
-<p>We are now assuming that we've got an API documentation and some integration tests, and we'd like to align their expectations somehow.</p>
-<p>The OpenAPI specification has become a popular choice to describe APIs over time, but whether we use it or not doesn't change the fact that the corresponding definitions need to be maintained; in other words, using OpenAPI does not automagically make the aforementioned issues go away.</p>
-<p>What sets OpenAPI apart, however, is that it's used as the base layer for <a href="https://openapi.tools">a growing number of tools</a> that make the specification useful far beyond the mere documenting side of things.</p>
-<p>One of these tools built for the PHP ecosystem and maintained by <a href="https://thephpleague.com">The PHP League</a> is <a href="https://github.com/thephpleague/openapi-psr7-validator">OpenAPI PSR-7 Message Validator</a>, a package for validating HTTP requests and responses implementing the <a href="https://www.php-fig.org/psr/psr-7">PSR-7</a> standard against OpenAPI definitions.</p>
-<p>The idea is essentially to take HTTP requests and responses, and make sure they match one of the operations described in an OpenAPI definition.</p>
-<p>Can you see where this is going?</p>
-<p>We could basically use this package to add an extra layer on top of our integration tests, that will take the API responses obtained in the tests and make sure they match the OpenAPI definitions describing our API.<br />
-If they don't, the tests fail.</p>
-<p>This is what it looks like as a fancy diagram:</p>
+<p>Let's assume that we have an API documented with OpenAPI and some integration tests, and that we now want to align the expectations of the latter with the operations listed in the former.</p>
+<p>While using the OpenAPI specification is a strong starting point, it's not enough to address the issue straight away.</p>
+<p>What sets it apart, however, is the growing number of <a href="https://openapi.tools">tools</a> built on top of it, pushing its utility far beyond the documenting aspect.</p>
+<p>One tool destined for the PHP community and maintained by <a href="https://thephpleague.com">The PHP League</a> is <a href="https://github.com/thephpleague/openapi-psr7-validator">OpenAPI PSR-7 Message Validator</a>, a package validating <a href="https://www.php-fig.org/psr/psr-7">PSR-7</a> HTTP messages against OpenAPI definitions.</p>
+<p>The idea is to take HTTP requests and responses and to compare them with OpenAPI definitions, and return an error if they don't match.</p>
+<p>In other words, we can use this package to add an extra layer on top of our integration tests, comparing API responses with the OpenAPI definitions of our API, and making the test fail in case of discrepancy.</p>
+<p>Here is a fancy diagram to illustrate the relationship between the API, the integration tests and the OpenAPI definition:</p>
 <p><img alt="OpenAPI, API and tests relationship" src="/images/2020/11/11/openapi_02.png" title="OpenAPI, API and tests relationship" /></p>
-<p>The OpenAPI definition describes the API, and the tests use the OpenAPI definition to make sure the API actually behaves the way the definition says it does.</p>
-<p>All of a sudden, our OpenAPI definition becomes a reference for both our code and our tests, thus acting as the API's single source of truth.</p>
+<p>The definition describes the API, and the tests use the definition to make sure the API behaves the way the definition says it does.</p>
+<p>All of a sudden, our OpenAPI definition becomes a reference for both our code and our tests, and acts as the API's single source of truth.</p>
 <h2 id="psr-7">PSR-7</h2>
-<p>You might have noticed a small detail in the previous section: the OpenAPI PSR-7 Message Validator package only works for – it's in the name – <a href="https://www.php-fig.org/psr/psr-7">PSR-7</a> messages. The issue here is that not all frameworks support this standard out of the box; as a matter of fact, a lot of them use <a href="https://symfony.com/components/HttpFoundation">Symfony's HttpFoundation component</a> under the hood, whose requests and responses do not implement that standard by default.</p>
-<p>The Symfony folks have got us covered though, as they've developed <a href="https://symfony.com/doc/current/components/psr7.html">a bridge</a> that converts HttpFoundation objects to PSR-7 ones, as long as it's given a PSR-7 and <a href="https://www.php-fig.org/psr/psr-17">PSR-17</a> factory to do so, for which they suggest to use <a href="https://github.com/Nyholm">Tobias Nyholm</a>'s <a href="https://github.com/Nyholm/psr7">PSR-7 implementation</a>.</p>
-<p>All of these pieces form a jigsaw puzzle that the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a>  package offers to assemble for us, allowing developers to back their integration tests with OpenAPI definitions in projects leveraging the HttpFoundation component.</p>
+<p>One caveat of the OpenAPI PSR-7 Message Validator package is that, as its name indicates, it only works with <a href="https://www.php-fig.org/psr/psr-7">PSR-7</a> messages.</p>
+<p>The issue is that not all frameworks support this standard by default – as a matter of fact, a lot of them use Symfony's <a href="https://symfony.com/components/HttpFoundation">HttpFoundation component</a> under the hood, whose requests and responses do not implement that standard out of the box.</p>
+<p>The Symfony folks thought of this, however, and provided <a href="https://symfony.com/doc/current/components/psr7.html">a bridge</a> that converts HttpFoundation objects to PSR-7 ones. The bridge simply needs a PSR-7 and <a href="https://www.php-fig.org/psr/psr-17">PSR-17</a> factory, for which they suggest to use <a href="https://github.com/Nyholm">Tobias Nyholm</a>'s <a href="https://github.com/Nyholm/psr7">PSR-7 implementation</a>.</p>
+<p>All of these pieces form a jigsaw puzzle that the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package sets out to solve for us, allowing developers to back their integration tests with OpenAPI definitions in applications relying on the HttpFoundation component.</p>
 <p>Let's see how to use it in a Laravel project, which falls into this category.</p>
 <h2 id="a-laravel-example">A Laravel example</h2>
-<p>The code contained in this section is also available as a <a href="https://github.com/osteel/openapi-httpfoundation-testing-laravel-example/">GitHub repository</a>.</p>
-<p>First, let's create a new Laravel 8 project, using Composer:</p>
-<div class="highlight"><pre><span></span>$ composer create-project --prefer-dist laravel/laravel openapi-example <span class="s2">&quot;8.*&quot;</span>
+<p>The code featured in this section is also available as a <a href="https://github.com/osteel/openapi-httpfoundation-testing-laravel-example/">GitHub repository</a> for reference.</p>
+<p>First, let's create a new Laravel 9 project, using Composer:</p>
+<div class="highlight"><pre><span></span>$ composer create-project --prefer-dist laravel/laravel openapi-example <span class="s2">&quot;9.*&quot;</span>
 </pre></div>
 
 
-<p>Enter the project's root folder and install a couple of dependencies:</p>
+<p>Enter the project's root folder and instal a couple of dependencies:</p>
 <div class="highlight"><pre><span></span>$ <span class="nb">cd</span> openapi-example
 $ composer require --dev osteel/openapi-httpfoundation-testing
-$ composer require darkaonline/l5-swagger
+$ composer require darkaonline/l5-swagger -W
 </pre></div>
 
 
-<p>The first one is the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package mentioned earlier, that we install as a development dependency as it's intended to be used as part of our test suite.</p>
-<p>The second one is <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a>, a popular package bringing <a href="https://github.com/zircote/swagger-php">Swagger PHP</a> and <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> to Laravel. We actually don't need Swagger PHP here, as it uses Doctrine annotations to generate OpenAPI definitions and we're going to write our own manually instead. We do need Swagger UI, however, and the package conveniently adapts it to work with Laravel.</p>
-<p>To make sure Swagger PHP doesn't overwrite the OpenAPI definition, let's set the following environment variable in the <code>.env</code> file at the root of the project:</p>
+<p>The first one is the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package mentioned earlier, that we instal as a development dependency as it's intended to be used as part of our test suite.</p>
+<p>The second one is <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a>, a popular package bringing <a href="https://github.com/zircote/swagger-php">Swagger PHP</a> and <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> to Laravel. We actually don't need Swagger PHP here, as it uses Doctrine annotations to generate OpenAPI definitions and we're going to manually write our own instead. We do need Swagger UI, however, and the package conveniently adapts it to work with Laravel (the <code>-W</code> option is simply here to also update related dependencies, to avoid conflicts).</p>
+<p>To make sure Swagger PHP doesn't overwrite the OpenAPI definition, let's set the following environment variable in the <code>.env</code> file, at the root of the project:</p>
 <div class="highlight"><pre><span></span><span class="nv">L5_SWAGGER_GENERATE_ALWAYS</span><span class="o">=</span><span class="nb">false</span>
 </pre></div>
 
@@ -269,8 +268,8 @@ $ composer require darkaonline/l5-swagger
 </pre></div>
 </td></tr></table>
 
-<p>This is a simple OpenAPI definition describing a single operation – a <code>GET</code> request on the <code>/api/test</code> endpoint, that should return a JSON object containing a required <code>foo</code> key.</p>
-<p>Let's check whether Swagger UI displays our OpenAPI definition correctly. Start PHP's development server with this <code>artisan</code> command, to be run from the project's root:</p>
+<p>This is a simple OpenAPI definition describing a single operation – a <code>GET</code> request to the <code>/api/test</code> endpoint, that should return a JSON object containing a required <code>foo</code> key.</p>
+<p>Let's check whether Swagger UI displays our OpenAPI definition correctly. Start the PHP development server (from the project's root):</p>
 <div class="highlight"><pre><span></span>$ php artisan serve
 </pre></div>
 
@@ -342,20 +341,20 @@ $ composer require darkaonline/l5-swagger
 </pre></div>
 </td></tr></table>
 
-<p>Let's unpack this a bit. For those unfamiliar with Laravel, <code>$this-&gt;get()</code> is a test method provided by the <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php"><code>MakesHttpRequests</code></a> trait that essentially performs a <code>GET</code> request on the provided endpoint, executing the request's lifecycle without leaving the application. It returns a response that is identical to the one we would obtain if we'd perform the same request from the outside.</p>
-<p>We then create a validator using the <code>Osteel\OpenApi\Testing\ValidatorBuilder</code> class, to which we feed the YAML definition we wrote earlier via the <code>fromYaml</code> static method (the <code>storage_path</code> function is a helper returning the path to the <code>storage</code> folder, where we stored the definition).</p>
-<p>Had we had a JSON definition instead, we could have used the <code>fromJson</code> method; also, both methods accept YAML and JSON strings respectively, as well as  files.</p>
-<p>The builder returns an instance of <code>Osteel\OpenApi\Testing\Validator</code>, on which we call the <code>get</code> method, passing the path and the response as parameters (<code>$response</code> is a <code>Illuminate\Testing\TestResponse</code> object here, which is a wrapper for the underlying HttpFoundation object, which can be retrieved through the <code>baseResponse</code> public property).</p>
+<p>Let's unpack this a bit. For those unfamiliar with Laravel, <code>$this-&gt;get()</code> is a test method provided by the <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php"><code>MakesHttpRequests</code></a> trait to perform a <code>GET</code> request to the provided endpoint, executing the request's lifecycle without leaving the application. It returns a response that is identical to one we would obtain if we'd perform the same request from the outside.</p>
+<p>We then create a validator using the <code>Osteel\OpenApi\Testing\ValidatorBuilder</code> class, to which we feed the YAML definition we wrote earlier via the <code>fromYaml</code> static method (the <code>storage_path</code> function is a helper returning the path to the <code>storage</code> folder, where we placed the definition).</p>
+<p>Had we had a JSON definition instead, we could have used the <code>fromJson</code> method. Also, both methods accept YAML and JSON strings respectively, in addition to files.</p>
+<p>The builder returns an instance of <code>Osteel\OpenApi\Testing\Validator</code>, on which we call the <code>get</code> method, passing the path and the response as parameters (<code>$response</code> is an instance of <code>Illuminate\Testing\TestResponse</code> here – a wrapper for the underlying HttpFoundation object, which can be retrieved through the <code>baseResponse</code> public property).</p>
 <p>The above is basically the equivalent of saying:</p>
 <blockquote>
-<p>I want to validate that this response conforms to the OpenAPI definition of a <code>GET</code> request on the <code>/test</code> path.</p>
+<p>I want to validate that this response conforms to the OpenAPI definition of a <code>GET</code> request to the <code>/test</code> path.</p>
 </blockquote>
 <p>It could also be written this way:</p>
 <div class="highlight"><pre><span></span><span class="x">$result = $validator-&gt;get($response-&gt;baseResponse, &#39;/test&#39;);</span>
 </pre></div>
 
 
-<p>That's because the validator has a shortcut method for each of the HTTP methods supported by OpenAPI (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code> and <code>TRACE</code>), to make it simpler to test responses for the corresponding operations.</p>
+<p>That's because the validator exposes a shortcut method for each of the HTTP methods supported by OpenAPI (<code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code> and <code>TRACE</code>), to make it simpler to test responses for the corresponding operations.</p>
 <p>Note that the specified path must exactly match one of the OpenAPI definition's <a href="https://swagger.io/specification/#paths-object">paths</a>.</p>
 <p>You can now run the test, which should be successful:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/phpunit tests/Feature
@@ -371,21 +370,22 @@ $ composer require darkaonline/l5-swagger
 </pre></div>
 </td></tr></table>
 
-<p>Run the test again; it should now fail, because the response contains <code>baz</code> instead of <code>foo</code>, and the OpenAPI definition says the latter is expected.</p>
-<p>Our test is backed by OpenAPI!</p>
-<p>The above is obviously an oversimplified example for the sake of the demonstration, but in a real situation a good practice would be to overwrite the <code>MakesHttpRequests</code> trait's <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php#L496"><code>call</code></a> method, so it performs both the test request and the OpenAPI validation.</p>
-<p>As a result, our test would now be a single line:</p>
+<p>Run the test again – it should now fail, because the response contains <code>baz</code> instead of <code>foo</code>, and the OpenAPI definition says the latter is expected.</p>
+<p>Our test is officially backed by OpenAPI!</p>
+<p>The above is obviously an oversimplified example for the sake of demonstration, but in a real situation a good practice would be to overwrite the <code>MakesHttpRequests</code> trait's <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php#L496"><code>call</code></a> method, so it performs both the test request and the OpenAPI validation.</p>
+<p>This way, our test would now fit on one line:</p>
 <div class="highlight"><pre><span></span><span class="x">$this-&gt;get(&#39;/api/test&#39;);</span>
 </pre></div>
 
 
-<p>This could be implemented as a new <code>MakesOpenApiRequests</code> trait that would "extend" the <code>MakesHttpRequests</code> one, and that would first call the parent <code>call</code> method to get the response. It would then work out the path from the URI, and validate the response against the OpenAPI definition before returning it, for the calling test to perform any further assertions as needed.</p>
+<p>This could be implemented as a new <code>MakesOpenApiRequests</code> trait that would "extend" the <code>MakesHttpRequests</code> one, and that would first call the parent <code>call</code> method to get the response. It would then work out the path from the URI, and validate the response against the OpenAPI definition before returning it, for the calling test to perform any further assertions, as needed.</p>
 <h2 id="conclusion">Conclusion</h2>
-<p>While the above setup is a great step up in improving an API's robustness, it is no silver bullet; it requires that every single endpoint is covered with integration tests, which is not easily enforceable in an automated way, and ultimately still requires some discipline and vigilance from the developers. It may even feel a bit coercive to some at first, since as a result they are basically <em>forced</em> to maintain the documentation in order to write successful tests.</p>
-<p>The added value, however, is that said documentation is now guaranteed to be much more accurate, leading to happy consumers who will enjoy an API which is less likely to act erratically; this, in turn, should lead to less frustrated developers, who shall spend less time hunting down pesky discrepancies.</p>
-<p>All in all, making OpenAPI definitions the single source of truth for both the API documentation and the integration tests is in itself a strong incentive to keep them up to date; they naturally become a priority, where they used to be an afterthought.</p>
-<p>As for maintaining the OpenAPI definition itself, doing so manually can admittedly feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this VSCode one</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use <a href="https://openapi.tools/#gui-editors">tools</a> like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface.</p>
-<p>And since we're talking about Stoplight*, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
+<p>While this setup is a great step towards improving an API's robustness, it is no silver bullet – it requires that every single endpoint is covered with integration tests, which is not easily enforceable in an automated way and ultimately still requires some discipline and vigilance on the part of developers.</p>
+<p>It may even feel a bit coercive at first, since as a result maintainers are basically <em>forced</em> to keep the documentation up to date to write successful tests.</p>
+<p>The added value, however, is that said documentation is now guaranteed to be much more accurate, leading to happy consumers which, in turn, should lead to less frustrated developers, who will spend less time hunting down pesky discrepancies.</p>
+<p>All in all, making OpenAPI definitions the single source of truth for both the API documentation and integration tests is in itself a strong incentive to keep them up to date. They naturally become a priority, where they used to be an afterthought.</p>
+<p>As for maintaining the OpenAPI definition itself, doing so manually can feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this one for VSCode</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use <a href="https://openapi.tools/#gui-editors">tools</a> like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface.</p>
+<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://swagger.io/specification">The OpenAPI Specification</a></li>
@@ -401,7 +401,6 @@ $ composer require darkaonline/l5-swagger
 <li><a href="https://github.com/Nyholm/psr7">PSR-7 implementation</a></li>
 <li><a href="https://stoplight.io/blog/api-design-first-vs-code-first">API Design-First vs Code First</a></li>
 </ul>
-<p><em>* I am not affiliated with them in any way</em></p>
 
     <div class="sharethis-inline-share-buttons"></div>
 
@@ -421,7 +420,7 @@ $ composer require darkaonline/l5-swagger
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2021-06-13" pubdate>2021-06-13</time>
+          <time datetime="2022-03-18" pubdate>2022-03-18</time>
           :: [
           <a href="https://tech.osteel.me/tag/openapi">openapi</a>
           <a href="https://tech.osteel.me/tag/laravel">laravel</a>
@@ -477,7 +476,7 @@ $ composer require darkaonline/l5-swagger
         var disqus_shortname = "osteel";
               var disqus_identifier = "/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example";
               var disqus_url = "https://tech.osteel.me/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example";
-              var disqus_title = "OpenAPI-backed API testing in PHP projects – a Laravel example";
+              var disqus_title = "Validate your PHP API tests against OpenAPI definitions – a Laravel example";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
