@@ -34,8 +34,8 @@
 
 
 
-  <meta name="description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to." />
-  <meta name="twitter:description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to.">
+  <meta name="description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the former conform to the latter." />
+  <meta name="twitter:description" content="This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the former conform to the latter.">
 
   <meta name="tags" content="openapi" />
   <meta name="tags" content="laravel" />
@@ -140,7 +140,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-03-18 ::
+          Last updated: 2022-03-19 ::
         Published: 11/11/2020
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example.html">history</a> ]
       </small>
@@ -161,14 +161,14 @@ styles, `#sidebar-checkbox` for behavior. -->
 
     <p><img alt="PHP and OpenAPI" src="/images/2020/11/11/openapi_01.jpg" title="PHP and OpenAPI" />
 <p class="caption">Am I proud of this montage? You bet I am.</p></p>
-<p><a href="https://swagger.io/specification/">OpenAPI</a> is a specification for describing RESTful APIs in JSON and YAML format, aiming at being understandable by humans and machines alike.</p>
+<p><a href="https://swagger.io/specification/">OpenAPI</a> is a specification for describing RESTful APIs in JSON and YAML format, aiming at being understandable by both humans and machines.</p>
 <p>OpenAPI definitions are language-agnostic and can be used in several ways:</p>
 <blockquote>
 <p>An OpenAPI definition can be used by documentation generation tools to display the API, code generation tools to generate servers and clients in various programming languages, testing tools, and many other use cases.</p>
 </blockquote>
 <p>– <a href="https://swagger.io/specification/">The OpenAPI Specification</a></p>
-<p>This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the API behaves the way it's supposed to.</p>
-<p>We will use the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package in a fresh <a href="https://laravel.com/">Laravel</a> installation for which we'll also generate a <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> documentation (using the <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a> package).</p>
+<p>This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the former conform to the latter.</p>
+<p>We will use the <a href="https://github.com/osteel/openapi-httpfoundation-testing">OpenAPI HttpFoundation Testing</a> package in a fresh <a href="https://laravel.com/">Laravel</a> installation for which we'll also generate a <a href="https://swagger.io/tools/swagger-ui/">Swagger UI</a> documentation using the <a href="https://github.com/DarkaOnLine/L5-Swagger">L5 Swagger</a> package.</p>
 <p>The first part of the post will describe the issue and provide further context – if you're just here for the code, you're welcome to skip ahead and go to the <a href="#a-laravel-example">Laravel example</a> section straight away.</p>
 <h2 id="the-issue">The issue</h2>
 <p>APIs are commonplace nowadays and the decent ones come with a documentation describing the endpoints and how to use them. These documents come in various shapes and forms, but one thing they've got in common in that they need to be updated every time the API changes.</p>
@@ -185,9 +185,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>The idea is to take HTTP requests and responses and to compare them with OpenAPI definitions, and return an error if they don't match.</p>
 <p>In other words, we can use this package to add an extra layer on top of our integration tests, comparing API responses with the OpenAPI definitions of our API, and making the test fail in case of discrepancy.</p>
 <p>Here is a fancy diagram to illustrate the relationship between the API, the integration tests and the OpenAPI definition:</p>
-<p><img alt="OpenAPI, API and tests relationship" src="/images/2020/11/11/openapi_02.png" title="OpenAPI, API and tests relationship" /></p>
+<p><img alt="Relationship between OpenAPI, API and tests" src="/images/2020/11/11/openapi_02.png" title="Relationship between OpenAPI, API and tests" /></p>
 <p>The definition describes the API, and the tests use the definition to make sure the API behaves the way the definition says it does.</p>
-<p>All of a sudden, our OpenAPI definition becomes a reference for both our code and our tests, and acts as the API's single source of truth.</p>
+<p>All of a sudden, our OpenAPI definition becomes a reference for both our code and our tests – it acts as the API's single source of truth.</p>
 <h2 id="psr-7">PSR-7</h2>
 <p>One caveat of the OpenAPI PSR-7 Message Validator package is that, as its name indicates, it only works with <a href="https://www.php-fig.org/psr/psr-7">PSR-7</a> messages.</p>
 <p>The issue is that not all frameworks support this standard by default – as a matter of fact, a lot of them use Symfony's <a href="https://symfony.com/components/HttpFoundation">HttpFoundation component</a> under the hood, whose requests and responses do not implement that standard out of the box.</p>
@@ -385,7 +385,7 @@ $ composer require darkaonline/l5-swagger -W
 <p>The added value, however, is that said documentation is now guaranteed to be much more accurate, leading to happy consumers which, in turn, should lead to less frustrated developers, who will spend less time hunting down pesky discrepancies.</p>
 <p>All in all, making OpenAPI definitions the single source of truth for both the API documentation and integration tests is in itself a strong incentive to keep them up to date. They naturally become a priority, where they used to be an afterthought.</p>
 <p>As for maintaining the OpenAPI definition itself, doing so manually can feel a bit daunting. Annotations are a solution, but I personally don't like them and prefer to maintain a YAML file directly. IDE extensions like <a href="https://marketplace.visualstudio.com/items?itemName=42Crunch.vscode-openapi">this one for VSCode</a> make it much easier, but if you can't bear the sight of a YAML or JSON file, you can also use <a href="https://openapi.tools/#gui-editors">tools</a> like <a href="https://stoplight.io/studio">Stoplight Studio</a> to do it through a more user-friendly interface.</p>
-<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that suits you.</p>
+<p>And since we're talking about Stoplight, <a href="https://stoplight.io/blog/api-design-first-vs-code-first/">this article about API Design-First vs Code First</a> by <a href="https://twitter.com/philsturgeon">Phil Sturgeon</a> is a good starting point for API documentation in general, and might help you choose an approach to documenting that works for you.</p>
 <h2 id="resources">Resources</h2>
 <ul>
 <li><a href="https://swagger.io/specification">The OpenAPI Specification</a></li>
@@ -420,7 +420,7 @@ $ composer require darkaonline/l5-swagger -W
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-03-18" pubdate>2022-03-18</time>
+          <time datetime="2022-03-19" pubdate>2022-03-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/openapi">openapi</a>
           <a href="https://tech.osteel.me/tag/laravel">laravel</a>
