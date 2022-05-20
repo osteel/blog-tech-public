@@ -66,14 +66,17 @@ styles, `#sidebar-checkbox` for behavior. -->
 
   <section>
     <ul class="sidebar-nav">
-        <li><a class="sidebar-nav-item" href="https://tech.osteel.me/pages/about">About</a></li>
     </ul>
   </section>
 
   <section>
-    <h2>Search</h2>
-    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
-        <input class="form-input" type="text" name="q" placeholder="Search" />
+    <h2>Newsletter</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="Email address" required>
+      <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+      <input type="submit" hidden />
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
     </form>
   </section>
 
@@ -91,13 +94,19 @@ styles, `#sidebar-checkbox` for behavior. -->
     </nav>
   </section>
 
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
     <section>
         <h2>Find me</h2>
         <ul class="sidebar-nav">
             <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
             <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
             <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
-            <li><a class="sidebar-nav-item" href="https://instagram.com/osteel" target="_blank">Instagram</a></li>
         </ul>
     </section>
 
