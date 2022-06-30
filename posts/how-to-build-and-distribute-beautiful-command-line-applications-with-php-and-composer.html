@@ -1051,6 +1051,8 @@ $application->run();</pre>
 <p><img alt="Workflow execution" src="/images/2022/01/31/cli_11.png" title="Workflow execution" /></p>
 <p>Then again, refer to the article's <a href="https://github.com/osteel/php-cli-demo">repository</a> if something goes wrong.</p>
 <p>This workflow gives us the confidence that our application will run successfully with any of the listed PHP versions, and will confirm whether this is still the case any time we push some changes.</p>
+<p class="info"><span class="title">A more complete workflow</span> The above is a simplified workflow that doesn't quite cover all dependency versions. We can push the concept of matrix even further, but to avoid making this post longer than it already is, I've published a <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions">separate blog post</a> dedicated to the topic.</p>
+
 <h2 id="release">Release</h2>
 <p>We now have a tested application that is compatible with a range of PHP versions and an early version of which we managed to instal on our machine. We're ready to publish an official release.</p>
 <p>But before we do that, we need to ensure our future users will know how to instal and use our application – that's what <code>README.md</code> files are for.</p>
