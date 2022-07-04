@@ -149,7 +149,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-06-30 ::
+          Last updated: 2022-07-04 ::
         Published: 2022-06-30
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions.html">history</a> ]
       </small>
@@ -557,7 +557,7 @@ composer.lock
 <p>But so far we're only testing a single set of dependency versions – whatever Composer decides is best when the workflow reaches the <em>Install composer dependencies</em> step.</p>
 <p>Let's go one step further.</p>
 <h3 id="dependency-ranges">Dependency ranges</h3>
-<p>Say we want to support both PHP 7.4 and PHP 8.0+. Instead of letting Composer do its best based on what software version is available on the client environment, we are going to tip it off by explicitly listing the PHP versions our library is compatible with.</p>
+<p>Say we want to support both PHP 7.4+ and PHP 8.0+. Instead of letting Composer do its best based on what software version is available on the client environment, we are going to tip it off by explicitly listing the PHP versions our library is compatible with.</p>
 <p>Open <code>composer.json</code> and update the <code>require</code> section as follows:</p>
 <div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span><span class="err">:</span> <span class="p">{</span>
     <span class="nt">&quot;php&quot;</span><span class="p">:</span> <span class="s2">&quot;^7.4|^8.0&quot;</span><span class="p">,</span>
@@ -566,7 +566,7 @@ composer.lock
 </pre></div>
 
 
-<p>We're now supporting both PHP 7.4+ and PHP 8.0+. But wait, that's not going to work – the Money library <a href="https://github.com/moneyphp/money/blob/v4.0.0/composer.json#L27">requires PHP 8.0+</a> for its v4, so if we want to add support for PHP 7.4, we also need to include an older version of Money.</p>
+<p>We're now supporting both PHP 7.4+ and PHP 8.0+. But wait, that's not going to work – the Money library <a href="https://github.com/moneyphp/money/blob/v4.0.0/composer.json#L27">requires PHP 8.0+</a> for its v4, so if we want to add support for PHP 7.4+, we also need to include an older version of Money.</p>
 <p>Let's update <code>composer.json</code> again:</p>
 <div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span><span class="err">:</span> <span class="p">{</span>
     <span class="nt">&quot;php&quot;</span><span class="p">:</span> <span class="s2">&quot;^7.4|^8.0&quot;</span><span class="p">,</span>
@@ -704,7 +704,7 @@ composer.lock
 <p>Commit and push and check the <em>Actions</em> tab again:</p>
 <p><img alt="Successful intermediate workflow" src="/images/2022/06/30/workflow_05.png" title="Successful intermediate workflow" /></p>
 <p>The error is gone!</p>
-<p>So it appears our library is now compatible with both PHP 7.4 and PHP 8.0+.</p>
+<p>So it appears our library is now compatible with both PHP 7.4+ and PHP 8.0+.</p>
 <p>Or is it?</p>
 <h3 id="testing-lower-dependency-versions">Testing lower dependency versions</h3>
 <p>Let's take a look at the logs again. Click on the latest successful workflow run and enter the <em>PHPUnit (7.4)</em> job from the left-hand side. Expand the <em>Install composer dependencies</em> logs and look for the line referencing the Money library.</p>
@@ -844,6 +844,7 @@ composer.lock
 <p>Yet you may eventually find yourself in a situation where you need to build and provide a PHP package with limited knowledge of target environments. Be it in the context of a private company or as a way to contribute back to the community, when that day comes it may be useful to have this kind of guide handy.</p>
 <h2 id="resources">Resources</h2>
 <ul>
+<li><a href="https://github.com/osteel/php-compatibility-demo">Article repository</a></li>
 <li><a href="https://docs.github.com/en/actions">GitHub Actions documentation</a></li>
 <li><a href="https://docs.github.com/en/actions/using-workflows">GitHub Actions workflows documentation</a></li>
 <li><a href="https://github.com/actions/checkout">Checkout (GitHub Action)</a></li>
@@ -870,7 +871,7 @@ composer.lock
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-06-30" pubdate>2022-06-30</time>
+          <time datetime="2022-07-04" pubdate>2022-07-04</time>
           :: [
           <a href="https://tech.osteel.me/tag/github">github</a>
           <a href="https://tech.osteel.me/tag/workflow">workflow</a>
