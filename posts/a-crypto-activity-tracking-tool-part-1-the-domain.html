@@ -13,7 +13,7 @@
 
     <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
 
-    <title>A crypto activity tracking tool. Part 1: the domain &mdash; osteel's blog</title>
+    <title>Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -42,7 +42,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
-  <meta name="twitter:title" content="A crypto activity tracking tool. Part 1: the domain">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain">
   <meta name="twitter:image" content="https://tech.osteel.me/images/2022/08/17/dime_01.jpg">
 
   </head>
@@ -142,11 +142,11 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      A crypto activity tracking tool. Part 1: the domain
+      Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-08-24 ::
+          Last updated: 2022-08-31 ::
         Published: 2022-08-17
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-1-the-domain.html">history</a> ]
       </small>
@@ -165,12 +165,18 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p>The first D of DDD stands for <em>Domain</em>. This is where we start.</p>
-<p><img alt="People in a meeting" src="/images/2022/08/17/dime_01.jpg" title="Photo by Jason Goodman Unsplash" />
+    <p><img alt="People in a meeting" src="/images/2022/08/17/dime_01.jpg" title="Photo by Jason Goodman Unsplash" />
 <p class="caption">Time to sit with the experts (photo by <a href="https://unsplash.com/@jasongoodman_youxventures?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Jason Goodman</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>)</p></p>
+<p>The first D of DDD stands for <em>Domain</em>. This is where we start.</p>
+<p>The word <em>domain</em> can mean a number of things, but in the context of DDD and of this series, we'll use two definitions from <a href="https://en.wiktionary.org/wiki/domain">Wiktionary</a>:</p>
+<blockquote>
+<p>1) A field or sphere of activity, influence or expertise<br />
+2) A group of related items, topics, or subjects</p>
+</blockquote>
+<p>While these definitions are still fairly loose, they encompass the main ideas behind the type of domain we're trying to identify – a group of related concepts and ideas about a field, articulated by experts in that field.</p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
-<li><a href="/posts/a-crypto-activity-tracking-tool-introduction-why" title="A crypto activity tracking tool. Introduction: why?">Introduction: why?</a></li>
+<li><a href="/posts/a-crypto-activity-tracking-tool-introduction-why" title="Building a PHP CLI tool using DDD and Event Sourcing. Introduction: why?">Introduction: why?</a></li>
 <li>Part 1: the domain  <strong>⬅️ you are here</strong></li>
 <li>Part 2: the model <em>(coming soon)</em></li>
 </ul>
@@ -179,8 +185,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <ul>
 <li><a href="#in-this-series">In this series</a></li>
 <li><a href="#in-this-post">In this post</a></li>
-<li><a href="#what-is-a-domain">What is a domain?</a></li>
-<li><a href="#what-is-it-for">What is it for?</a></li>
+<li><a href="#what-is-the-domain-for">What is the domain for?</a></li>
 <li><a href="#who-are-the-experts">Who are the experts?</a></li>
 <li><a href="#the-domain">The domain</a><ul>
 <li><a href="#the-basics">The basics</a></li>
@@ -201,27 +206,20 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#closing-thoughts">Closing thoughts</a></li>
 </ul>
 </div>
-<h2 id="what-is-a-domain">What is a domain?</h2>
-<p>The word <em>domain</em> can mean a number of things, but in the context of DDD and of this series, we'll use two definitions from <a href="https://en.wiktionary.org/wiki/domain">Wiktionary</a>:</p>
-<blockquote>
-<p>1) A field or sphere of activity, influence or expertise<br />
-2) A group of related items, topics, or subjects</p>
-</blockquote>
-<p>While these definitions are still fairly loose, they encompass the main ideas behind the type of domain we're trying to identify – a group of related concepts and ideas about a field, articulated by experts in that field.</p>
-<h2 id="what-is-it-for">What is it for?</h2>
+<h2 id="what-is-the-domain-for">What is the domain for?</h2>
 <p>The process roughly goes like this – domain experts describe what they do and go through the rules applying to various scenarios, guided by our questions and what we aim to achieve with the software. The goal is to gather as much information as possible to later try and identify the key concepts of the domain.</p>
 <p>Expressing the domain is also a way to get familiar with its lexical field, to remove ambiguity from terms that may eventually find their way to the model. In doing so, we lay the foundation of the <em>ubiquitous language</em>, the language to be used consistently across all communications, both by the team and the experts.</p>
 <p>The result won't be 100% complete nor correct, but it's a starting point. The next phases – modelling and code design – will help further determine what bits of information are important and what can be ignored. Sometimes, these steps will uncover elements missing from the domain, which we will need to amend with the help of the experts.</p>
-<p>In turn, these new elements will reshape the model and flow into the code, each phase feeding into the others and creating a feedback loop in which each iteration gets us closer to the truth.</p>
+<p>In turn, these new elements will reshape the model and flow into the code, each phase feeding into the others, creating a feedback loop in which each iteration gets us closer to the truth.</p>
 <h2 id="who-are-the-experts">Who are the experts?</h2>
 <p>A key element of DDD is to identify the relevant experts. When it comes to the tool serving as a backdrop for this series, one group of professionals naturally comes to mind – accountants. They know the rules that apply to crypto transactions and can confirm whether the implemented logic yields the correct results.</p>
 <p>As rule issuers, another essential group of experts is <a href="https://www.gov.uk/government/organisations/hm-revenue-customs">HMRC</a> – the UK Government's department responsible for the collection of taxes. While I am not in direct contact with an HMRC agent, there is a fairly comprehensive <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual">Cryptoassets Manual</a> available online for anyone to consult.</p>
 <p>But in this case, there's also a third, less obvious expert that can inform the domain – myself. I want to write a program that reflects my crypto activity, of which I'm an "expert" of some sort. I know the types of transactions I need to ask about, allowing me to guide the conversation so that, together with the other experts, we express a subset of the domain that is relevant to the future software.</p>
 <p>To facilitate this, I laid out the use cases I was particularly interested in, preemptively narrowing down the domain. I sent those use cases to my accountant, who explained the applicable rules and, later on, confirmed whether the example calculations I had submitted were correct.</p>
 <h2 id="the-domain">The domain</h2>
-<p>So what are those use cases? I've listed them below, providing some context and illustrative examples. Together with some more general aspects of the UK tax regime, they constitute the domain.</p>
-<div class="info"><p><span class="title">Evolving landscape</span> Note that nothing is set in stone. It is very likely that as the field of crypto and web3 expands, so too will my crypto activity, forcing me to revisit the domain, complete the model and update its implementation.</p><p>HMRC rules are also likely to evolve, prompting similar changes.</p></div>
-
+<p>So what are those use cases? I've listed them below, with some context and illustrative examples. Together with some more general aspects of the UK tax regime, they constitute the domain.</p>
+<p>Note that it isn't set in stone. It is very likely that as the field of crypto and web3 expands, so too will my crypto activity, forcing me to revisit the domain, complete the model and update its implementation.</p>
+<p>HMRC rules are also likely to evolve, prompting similar changes.</p>
 <p class="warning"><span class="title">Disclaimer</span> The below is correct to the best of my knowledge and I implemented the corresponding rules accordingly. But I am not an accountant and therefore cannot guarantee the complete accuracy of the following examples at any given time. Please speak to a professional before using this material for tax purposes.</p>
 
 <h3 id="the-basics">The basics</h3>
@@ -324,7 +322,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Where an allowable cost relates to more than one asset, the cost should be apportioned between those assets on a just and reasonable basis (TCGA92/S52(4)). You can accept that apportioning this type of fee equally between the assets disposed of and the assets acquired (that is a 50/50 split) is just and reasonable in these circumstances.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22150" title="CRYPTO22150 - Cryptoassets for individuals: Capital Gains Tax: allowable expenses">The Cryptoassets Manual</a></p>
-<p>This means that the fee can also be split in half – 50% is excluded from the market value of the disposed asset and the other 50% is included in the cost basis of the acquired asset. This is the method I'll be using from now on.</p>
+<p>This means that the fee can also be split in half – 50% is excluded from the disposal proceeds of the disposed asset and the other 50% is included in the cost basis of the acquired asset. This is the method I'll be using from now on.</p>
 <p class="info"><span class="title">Example</span> Alice swaps her remaining ether for 0.1 bitcoins on the same exchange. The exchange charges a £10 fee to execute the transaction. Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3000 per ether. As 50% of the fee must be excluded from the market value of the disposed ether, Alice made a <code>£3000 - (£10 / 2) - £1010 = £1985</code> gain with this transaction, which is subject to Capital Gains Tax. As 50% of the fee must be included in the cost basis of the acquired bitcoins, the corresponding amount is <code>£3000 + (£10 / 2) = £3005</code>.</p>
 
 <p>Things are slowly getting complicated, but the real fun starts when transaction fees are settled in cryptocurrency.</p>
@@ -404,7 +402,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>Coming up with the domain can be a bit messy. Even though I was able to narrow it down from the get-go by focussing on my specific use cases, that is still a lot of information – a good chunk of which will turn out to be noise.</p>
 <p>Some of the rules and examples laid out in this article are rather complicated and some of it may have gone over your head. That's OK. Then again, this series is not so much about crypto taxes as it is about building an application following a DDD approach. The main goal of this post was to give you an idea of what a domain is and how to express it.</p>
-<p>While I've tried to emphasise the terms which I think are good candidates for the ubiquitous language, at this stage I don't know for sure which bits will make it to the model. That will be the focus of the next part of the series.</p>
+<p>While I've tried to emphasise the terms which I think are good candidates for the ubiquitous language, at this stage I don't know for sure which bits will make it to the model. That will be the focus of the <a href="/posts/a-crypto-activity-tracking-tool-part-2-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing. Part 2: the model">next part</a> of the series.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
@@ -425,7 +423,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-08-24" pubdate>2022-08-24</time>
+          <time datetime="2022-08-31" pubdate>2022-08-31</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           ]
@@ -478,7 +476,7 @@ styles, `#sidebar-checkbox` for behavior. -->
         var disqus_shortname = "osteel";
               var disqus_identifier = "/posts/a-crypto-activity-tracking-tool-part-1-the-domain";
               var disqus_url = "https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-1-the-domain";
-              var disqus_title = "A crypto activity tracking tool. Part 1: the domain";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

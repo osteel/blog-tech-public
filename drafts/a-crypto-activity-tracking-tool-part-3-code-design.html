@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/favicon.ico" />
+    <meta property="og:image" content="https://tech.osteel.me/images/year/month/day/" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
     <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
 
-    <title>osteel's blog</title>
+    <title>Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -31,6 +31,18 @@
       src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
       async="async">
     </script>
+
+
+
+
+  <meta name="tags" content="" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/year/month/day/">
+
   </head>
 
   <body>
@@ -125,114 +137,81 @@ styles, `#sidebar-checkbox` for behavior. -->
       </div>
 
       <div class="container content">
-<div class="content-title">
-<h2>PHP category</h2>
-</div>
 <div class="posts">
-  <div class="post">
+<div class="post">
     <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-1-the-domain" rel="bookmark" title="Permalink to Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain">Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain</a>
+      Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design
     </h1>
     <span class="post-date">
-        2022-08-31
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
+      <small>
+          Last updated: 1970-01-01 ::
+        Published: 1970-01-01
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/a-crypto-activity-tracking-tool-part-3-code-design.html">history</a> ]
+      </small>
     </span>
 
-    <p>We continue our exploration of DDD with the expression of the domain. A domain is a group of related concepts and ideas about a field, articulated by experts in that field. Expressing the domain is a way to get familiar with its lexical field and to start building the ubiquitous language, the language to be used consistently in the model and across all communications.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-introduction-why" rel="bookmark" title="Permalink to Building a PHP CLI tool using DDD and Event Sourcing. Introduction: why?">Building a PHP CLI tool using DDD and Event Sourcing. Introduction: why?</a>
-    </h1>
-    <span class="post-date">
-        2022-08-31
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
 
-    <p>This is the introduction to a blog series about building a PHP CLI tool to help me track my crypto activity. I haven't built anything yet – the goal is to document my progress as I go, publicly. I intend to use Laravel Zero, Event Sourcing, and to follow a Domain-Driven Design approach.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" rel="bookmark" title="Permalink to A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions</a>
-    </h1>
-    <span class="post-date">
-        2022-08-17
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>A common aspect of a PHP developer's job is to deal with Composer dependencies. We don't usually need to think about supporting various versions of these dependencies, just as we don't need to think about accommodating a range of PHP versions. Things are different for open-source software maintainers – they need to ensure their libraries will work with as many environments as possible. This post explores one way of automating compatibility testing, using a combination of test coverage and a GitHub workflow.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" rel="bookmark" title="Permalink to How to build and distribute beautiful command-line applications with PHP and Composer">How to build and distribute beautiful command-line applications with PHP and Composer</a>
-    </h1>
-    <span class="post-date">
-        2022-08-17
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console Component as a bedrock, GitHub Actions for testing, and Composer for distribution.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/openapi-backed-api-testing-in-php-projects-a-laravel-example" rel="bookmark" title="Permalink to Validate your PHP API tests against OpenAPI definitions – a Laravel example">Validate your PHP API tests against OpenAPI definitions – a Laravel example</a>
-    </h1>
-    <span class="post-date">
-        2022-03-19
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>This article demonstrates how to write integration tests that compare API responses to OpenAPI 3.0.x definitions in order to validate that the former conform to the latter.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/dynamic-github-profile-readme-with-github-actions-and-php" rel="bookmark" title="Permalink to Dynamic GitHub profile README with Github Actions and PHP">Dynamic GitHub profile README with Github Actions and PHP</a>
-    </h1>
-    <span class="post-date">
-        2021-01-11
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>A few weeks ago, GitHub quietly released a feature that was quickly noticed by the community – profile READMEs. A profile README is a global README file for your GitHub profile; in this article, I describe how I've used GitHub Actions and PHP to automatically update my profile README to list my blog's latest publications.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/a-simple-git-pre-commit-hook-running-php-codesniffer" rel="bookmark" title="Permalink to A simple Git pre-commit hook running PHP_CodeSniffer">A simple Git pre-commit hook running PHP_CodeSniffer</a>
-    </h1>
-    <span class="post-date">
-        2020-07-14
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>Git hooks are scripts that are run every time a specific Git-related event happens, like a commit or a checkout. This article shows you how to use a simple hook to enforce a coding standard at every commit in a PHP project.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/talking-about-collections-at-php-quebec" rel="bookmark" title="Permalink to Talking about Collections at PHP Quebec">Talking about Collections at PHP Quebec</a>
-    </h1>
-    <span class="post-date">
-        2019-06-29
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>Who knew Collections were so popular? After Laravel Montreal last month, I will be speaking about Collections again at PHP Quebec on July 4.</p>
-  </div>
-  <div class="post">
-    <h1 class="post-title">
-      <a href="https://tech.osteel.me/posts/how-to-use-the-fork-of-a-repository-with-composer" rel="bookmark" title="Permalink to How to use the fork of a repository with Composer">How to use the fork of a repository with Composer</a>
-    </h1>
-    <span class="post-date">
-        2020-09-16
-      in <a href="https://tech.osteel.me/category/php.html">PHP</a>
-    </span>
-
-    <p>When using packages maintained by other developers, you may eventually find yourself waiting for a fix, an update, or the merge of a PR that will be available with the next release. I you can't wait, a workaround is to fork the corresponding repository, make the changes you need and then use your fork instead of the original package.</p>
-  </div>
+    <p><img alt="Caption" src="/images//.jpg" title="Caption" /></p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-post">In this post</a></li>
+</ul>
 </div>
-<!--// updated -->
-<div class="pagination">
-        <span class="pagination-item older">older</span>
-        <span class="pagination-item newer">newer</span>
+<p class="info"><span class="title">Title</span> Content</p>
+
+<div class="info"><p><span class="title">Title</span> Content</p></div>
+
+<p>Plain code block:</p>
+<div class="highlight"><pre><span></span>
+</pre></div>
+
+
+<p>Code block with line numbers:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
+</pre></div>
+</td></tr></table>
+
+<p>In fact, the concept of tax year is a good candidate for an <em>aggregate root</em> – the main entity of an aggregate, a group of domain objects treated as a single unit. In our case, this aggregate would comprise the tax year as well as its relevant taxable events.</p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="1970-01-01" pubdate>1970-01-01</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/"></a>
+          ]
+      </small>
+    </p>
+
+  </div>
 </div>
       </div>
 
@@ -272,6 +251,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
+              var disqus_identifier = "/drafts/a-crypto-activity-tracking-tool-part-3-code-design";
+              var disqus_url = "https://tech.osteel.me/drafts/a-crypto-activity-tracking-tool-part-3-code-design";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

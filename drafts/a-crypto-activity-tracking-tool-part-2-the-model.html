@@ -7,13 +7,13 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/year/month/day/" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2/dime_01.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
     <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
 
-    <title>A crypto activity tracking tool. Part 2: the model &mdash; osteel's blog</title>
+    <title>Building a PHP CLI tool using DDD and Event Sourcing. Part 2: the model &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -35,13 +35,17 @@
 
 
 
-  <meta name="tags" content="" />
+  <meta name="tags" content="ddd" />
+  <meta name="tags" content="userstory" />
+  <meta name="tags" content="userstorymapping" />
+  <meta name="tags" content="boundedcontext" />
+  <meta name="tags" content="contextmapping" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
-  <meta name="twitter:title" content="A crypto activity tracking tool. Part 2: the model">
-  <meta name="twitter:image" content="https://tech.osteel.me/images/year/month/day/">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing. Part 2: the model">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2/dime_01.png">
 
   </head>
 
@@ -140,7 +144,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      A crypto activity tracking tool. Part 2: the model
+      Building a PHP CLI tool using DDD and Event Sourcing. Part 2: the model
     </h1>
     <span class="post-date">
       <small>
@@ -163,7 +167,173 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><img alt="Caption" src="/images//.jpg" title="Caption" /></p>
+    <p><img alt="Transaction processing flowchart preview" src="/images/2/dime_01.png" title="Transaction processing flowchart preview" />
+<p class="caption">Extract from the transaction processing flow (made with <a href="https://excalidraw.com/">Excalidraw</a>)</p></p>
+<p>The model is where the software meets the domain. It is a technical expression of the domain that experts can understand and validate, and that gives developers a sense of what needs to be implemented. It is where we extract the essential concepts from the domain.</p>
+<p>The goal of the model is to identify and express the use cases and constraints that will make it to the software, helped by schemas and diagrams.</p>
+<p>It is also the place where the ubiquitous language emerges from.</p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/a-crypto-activity-tracking-tool-introduction-why" title="Building a PHP CLI tool using DDD and Event Sourcing. Introduction: why?">Introduction: why?</a></li>
+<li><a href="/posts/a-crypto-activity-tracking-tool-part-1-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain">Part 1: the domain</a></li>
+<li>Part 2: the model <strong>⬅️ you are here</strong></li>
+<li>Part 3: code design <em>(coming soon)</em></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#modelling">Modelling</a><ul>
+<li><a href="#transaction-flowchart">Transaction flowchart</a></li>
+<li><a href="#user-stories">User stories</a></li>
+<li><a href="#user-story-map">User story map</a></li>
+<li><a href="#bounded-contexts">Bounded contexts</a></li>
+</ul>
+</li>
+<li><a href="#ubiquitous-language">Ubiquitous language</a></li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul>
+</div>
+<h2 id="modelling">Modelling</h2>
+<p>There is no clearly identified recipe for modelling. Instead, there is a plethora of tools that can be leveraged to express the model, some more or less suitable depending on the task at hand.</p>
+<p>It's about finding the ones that will successfully inform the implementation down the line.</p>
+<h3 id="transaction-flowchart">Transaction flowchart</h3>
+<p>I wasn't sure where to begin and found myself more and more confused as I looked online for answers, everyone seemingly using a different approach.</p>
+<p>As I felt inertia creeping in, I decided to have a go and to start with what screamed at me the loudest – transaction processing.</p>
+<p>I went through the various rules and examples expressed in <a href="/posts/a-crypto-activity-tracking-tool-part-1-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing. Part 1: the domain">the domain</a> and realised that I was looking at a bunch of "if this then that" scenarios.</p>
+<p>I picked up a marker and drew the following flowchart on a whiteboard:</p>
+<p><img alt="Hand-drawn flowchart on a whiteboard" src="/images/2/dime_02.jpg" title="Hand-drawn flowchart on a whiteboard" />
+<p class="caption">How it started</p></p>
+<p>While I couldn't fit all the details on it, it covered all the scenarios listed in the domain and connected them in a logical way.</p>
+<p>Satisfied, I made a digital version of it:</p>
+<p><img alt="Transaction processing flowchart" src="/images/2/dime_03.png" title="Transaction processing flowchart" />
+<p class="caption">Transaction processing flowchart (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2/flowchart-big.png">here</a> for a higher definition)</p></p>
+<p>Most of the blue rectangles were quite high-level (e.g. "NFT rules"), but I knew I could find the details by referring to specific parts of the domain, so decided it was good enough for now.</p>
+<h3 id="user-stories">User stories</h3>
+<p>Looking at the flowchart, I realised I needed users to report their transactions in a way that would fit the logic.</p>
+<p>So I started listing the reporting needs as user stories:</p>
+<ul>
+<li><em>As a user, I want to specify whether a transaction is a transfer so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether an asset is an NFT so the transaction is processed correctly</em></li>
+<li><em>As a user, I want to specify whether a transaction is a swap so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether a transaction is a disposal so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether a transaction is an acquisition so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether a transaction is an airdrop so it is processed correctly</em></li>
+<li><em>As a user, I want to specify a transaction's fee so it is processed correctly</em></li>
+</ul>
+<p>I went through the domain article again and added some implicit use cases not represented on the flowchart:</p>
+<ul>
+<li><em>As a user, I want to specify the cost basis of a transaction so it is processed correctly</em></li>
+<li><em>As a user, I want to specify the disposal proceeds of a transaction so it is processed correctly</em></li>
+<li><em>As a user, I want to specify the market value of a fee so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether an acquisition is a gift so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether an acquisition is a gift from a spouse or civil partner so it is processed correctly</em></li>
+<li><em>As a user, I want to specify whether an acquired NFT was minted from other NFTs so the transaction is processed correctly</em></li>
+<li><em>As a user, I want to specify whether an airdrop should be counted as income so it is processed correctly</em></li>
+<li><em>As a user, I want to attach a note to a transaction so I can be reminded of the context</em></li>
+</ul>
+<p>And then some more generic needs:</p>
+<ul>
+<li><em>As a user, I want to report amounts in pounds so I can obtain numbers in the currency I need to pay my taxes in</em></li>
+<li><em>As a user, I want to report amounts in other currencies so I don't need to convert them to pounds myself</em></li>
+</ul>
+<p>That got me thinking about the submission process, for which I came up with these stories:</p>
+<ul>
+<li><em>As a user, I want to submit a CSV file so I can process my transactions</em></li>
+<li><em>As a user, I want to submit an Excel file so I can process my transactions</em></li>
+<li><em>As a user, I want to submit a previously submitted file with new transactions so I don't need to submit new transactions only</em></li>
+<li><em>As a user, I want to select a tax year so I get numbers for this tax year only</em></li>
+<li><em>As a user, I want to specify whether my activity is considered trading so I can obtain numbers for the correct tax regime</em></li>
+</ul>
+<p>And finally, the reporting and submitting phases are followed by a third one – the reviewing process. In other words, the software output:</p>
+<ul>
+<li><em>As a user, I want to see my capital gains so I can complete my tax return</em></li>
+<li><em>As a user, I want to see my income so I can complete my tax return</em></li>
+<li><em>As a user, I want to see my non-attributable allowable costs so I can complete my tax return</em></li>
+</ul>
+<p>I thought of a couple more use cases:</p>
+<ul>
+<li><em>As a user, I want to know whether I am within the 30-days period after the end of the tax year so I am aware I should wait before completing my tax return</em></li>
+<li><em>As a user, I want to see my revenues beyond allowances so I don't need to calculate this myself</em></li>
+</ul>
+<p>Of course, these user stories were initially mixed-up and I had to take a step back before I could identify the above three categories, and file them accordingly.</p>
+<p>Not all stories have the same importance, either. To classify them further, I resorted to a tool I had used before – a user story map.</p>
+<h3 id="user-story-map">User story map</h3>
+<p>User stories and user story mapping come form the <a href="https://www.atlassian.com/agile">Agile</a> world and are not inherently DDD practices, but they provide valuable insights that can be used in a DDD context nonetheless.</p>
+<p>I'm not sure whether they are better suited for the model or the domain, but as they express the latter as user needs that experts can understand on the one hand and draw the outlines of the software for developers to see on the other, the model seemed like a good fit.</p>
+<p>A user story map is a visual representation of user stories. It's a way to logically group, sort and prioritise stories to identify what parts need to be built together to fulfil a user journey, and what can be implemented at a later time.</p>
+<p>This is the story map I came up with for the application. It's interactive, so you can have a look around and click on the various stories:</p>
+<iframe width="100%" height="432" src="https://miro.com/app/live-embed/uXjVPcEwHSM=/?moveToViewport=-4568,-407,2720,1419&embedId=563813484627" frameborder="0" scrolling="no" allowfullscreen></iframe>
+
+<p class="caption">Interactive user story map (made with <a href="https://miro.com/">Miro</a>)</p>
+
+<p>The blue rectangles are the <em>activities</em> – the high-level tasks the user needs to complete. They match the three categories identified earlier – <em>report</em>, <em>submit</em> and <em>review</em>.</p>
+<p>The yellow rectangles are <em>steps</em> – they represent subtasks the user has to go through to complete the activity.</p>
+<p>Finally, the other rectangles are the <em>details</em> of each activity and step. They are regular user stories, sorted by priority and broken down by <em>iterations</em> – here, the <em>MVP</em> and the <em>backlog</em>.</p>
+<p>The user story map provides both a roadmap for me to follow and a way to keep track of my progress. Moreover, it gives me an idea of the future <a href="https://www.martinfowler.com/bliki/BoundedContext.html"><em>bounded contexts</em></a> and <a href="https://martinfowler.com/bliki/DDD_Aggregate.html"><em>aggregates</em></a> of the application, two key concepts of DDD.</p>
+<p>I'll leave the aggregates aside for now as I consider them an implementation detail, but as bounded contexts can inform the model, I'll cover them now.</p>
+<h3 id="bounded-contexts">Bounded contexts</h3>
+<p>I'm going to be honest here – I am unable to give you a precise definition of what a bounded context is. Like most things DDD, everyone seems to have their own explanation (see <a href="https://hermanpeeren.nl/varia/why-i-dont-need-a-bounded-context">this one</a>, for instance).</p>
+<p>But basically, it's about separating the various parts of an application and describing <a href="https://medium.com/ingeniouslysimple/context-mapping-in-domain-driven-design-9063465d2eb8" title="Context mapping in Domain Driven Design">how they relate to each other</a>. That latter part is usually done with a <em>context map</em> – here's what our application's looks like:</p>
+<p><img alt="Context map" src="/images/2/dime_04.png" title="Context map" />
+<p class="caption">Context map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2/bounded-contexts-big.png">here</a> for a higher definition)</p></p>
+<p>Notice that the activities identified in the user story map were reused as bounded contexts. We can also see that the reporting context is external to the application, as the transaction spreadsheet must be completed upstream. Its relationship with the application is one of <em>customer-supplier</em> – the provided file (supplier) must meet the expectations of the application (customer).</p>
+<p>On the other hand, both the submission and review contexts are internal to the application, and the tax year object bridging the two is likely to be the same for both. In other words, they have a <em>shared kernel</em>.</p>
+<p>I will stop my exploration of bounded contexts here. They are useful to model the domain, but in this case I defined them for the sake of the exercise more than anything.</p>
+<p>Bounded contexts are often worked on by separate teams and considered to be distinct models with their own ubiquitous language. But I am the only developer working on the application and the size of the model doesn't really warrant breaking it up this way. In this case, the context map is just another way to represent and think about the application.</p>
+<h2 id="ubiquitous-language">Ubiquitous language</h2>
+<p>As the meeting point between experts and developers, the model is also the place where they share a common language – the ubiquitous language.</p>
+<p>We can go through the diagrams and user stories and start to extract a glossary of key terms:</p>
+<ul>
+<li><em>30-days period</em>: The 30 days following the end of a tax year. Transactions occurring during that period may still count for the tax year that has just ended, because of the 30-days rule of the pooling rules;</li>
+<li><em>30-days rule</em>: A tax rule part of the pooling rules whereby assets acquired within 30 days of being disposed of must be matched with those disposals;</li>
+<li><em>Acquisition</em>: The fact of acquiring an asset by whichever way it may be;</li>
+<li><em>Airdrop</em>: The fact of receiving an asset in the context of a promotional operation;</li>
+<li><em>Allowable cost</em>: A cost that can be deducted from other revenues and that can be attributed either to an acquisition or a disposal;</li>
+<li><em>Allowance</em>: An amount under which a tax regime doesn't apply;</li>
+<li><em>Application</em>: The software processing the transaction spreadsheet and outputting results;</li>
+<li><em>Asset</em>: A property whose acquisition or disposal is a taxable event;</li>
+<li><em>Capital gain</em>: A profit realised when the proceeds of an asset disposal are greater than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
+<li><em>Cost basis</em>: The cost of acquisition of an asset in fiat terms;</li>
+<li><em>Disposal</em>: The fact of disposing of an asset by whichever way it may be;</li>
+<li><em>Disposal proceeds</em>: The amount obtained for an asset disposal in fiat terms;</li>
+<li><em>Fee</em>: An amount paid in exchange of a service;</li>
+<li><em>Fiat</em>: A government-issued currency;</li>
+<li><em>Gift</em>: An asset either received or given away for free;</li>
+<li><em>Income</em>: An amount falling under the Income Tax regime;</li>
+<li><em>Loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
+<li><em>Market value</em>: The value of an asset at a certain point in time in fiat terms;</li>
+<li><em>Mint</em>: The action of creating an NFT;</li>
+<li><em>NFT/Non-Fungible Token</em>: A type of asset that isn't subject to pooling rules;</li>
+<li><em>Non-attributable allowable cost</em>: A cost that can be deducted from other revenues and that can't be attributed either to an acquisition or a disposal;</li>
+<li><em>Note</em>: A piece of free text attached to a transaction;</li>
+<li><em>Pooling</em>: A set of tax rules applying to certain types of assets;</li>
+<li><em>Remaining amount</em>: Any amount left after one of the pooling rules has been applied;</li>
+<li><em>Report/reporting</em>: The process of a user recording a set of transactions in a spreadsheet;</li>
+<li><em>Revenue</em>: Generic term to design any type of income, be it dividends, capital gains, or anything else;</li>
+<li><em>Review/reviewing</em>: The process of a user going through the application's output;</li>
+<li><em>Same-day rule</em>: A tax rule part of the pooling rules whereby assets acquired or disposed of on the same day must be matched with those acquisitions and disposals;</li>
+<li><em>Section 104 pool</em>: An abstract container used as part of the pooling rules where the acquisitions of an asset are flowing into to calculate its average cost basis;</li>
+<li><em>Section 104 pool rule</em>: A tax rule part of the pooling rules whereby the acquisitions of an asset are flowing into a pool to calculate its average cost basis;</li>
+<li><em>Spouse or civil partner gift</em>: An asset either received or given away for free, from or to a spouse or civil partner;</li>
+<li><em>Spreadsheet</em>: A list of transactions as reported by the user;</li>
+<li><em>Submit/submission</em>: The process of a user submitting a transaction spreadsheet to the application;</li>
+<li><em>Swap</em>: The fact of exchanging an asset for another;</li>
+<li><em>Taxable event</em>: An operation which is subject to a tax regime;</li>
+<li><em>Tax return</em>: The document users have to submit to HMRC;</li>
+<li><em>Tax year</em>: The UK fiscal year, running from April 6 to April 5;</li>
+<li><em>Token</em>: A property whose acquisition or disposal is a taxable event;</li>
+<li><em>Trading</em>: The fact of a user's activity being considered a financial trade, thus falling under the Income Tax regime;</li>
+<li><em>Transaction</em>: Any activity as reported by the user;</li>
+<li><em>Transfer</em>: The fact of moving an asset from a wallet to another, when both wallets belong to the user.</li>
+</ul>
+<p>We came across most of these terms before, but listing them like this is a way to crystallise them as the words and expressions to use everywhere, including the code.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much a method that requires experience to get a good feel for it, and starting without proper guidance can be a bit overwhelming. It took me a while to identify the tools that would help me express the model, and as I am writing this I am still not sure whether I went too far or not enough.</p>
+<p>That being said, I trust that the next steps will soon expose any gaps in the model and the domain, and will force me to revisit those to try and get a clearer picture.</p>
+<p>The next instalment of this series will cover the code design phase, which flows directly from the model.</p>
+<p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 <p>It seems that the ubiquitous language comes from the model. The model is "the place where the software meets the domain".</p>
 <p>The goal is to extract use cases and constraints, with the help of schemas and diagrams. Separate the "abstract model" (this post) from the "implementation model" (what I called "code design"). The model should be understandable by non-developers.</p>
 <p>"Once we have the abstract model in the head, we can specify it by use cases, diagrams and stories that use ubiquitous language. The model should be continuously validated by a domain expert so that we keep the right track."</p>
@@ -189,25 +359,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>"While every team works on its model, it is good for everyone to have an idea of the overall picture. A Context Map is a document which outlines the different Bounded Contexts and the relationships between them."</p>
 <p>"Each Bounded Context should have a name which should be part of the Ubiquitous Language. That helps the team communication a lot when talking about the entire system. Everyone should know the boundaries of each context and the mapping between contexts and code. A common practice is to define the contexts, then create modules for each context, and use a naming convention to indicate the context each module belongs to."</p>
 <p>"When we develop the ubiquitous language, the key concepts of the domain are introduced in the language, and the nouns of the language are easily mapped to objects. The verbs of the language, associated with their corresponding nouns become the part of the behavior of those objects."</p>
-<h2 id="in-this-post">In this post</h2>
-<div class="toc">
-<ul>
-<li><a href="#in-this-post">In this post</a></li>
-</ul>
-</div>
-<p class="info"><span class="title">Title</span> Content</p>
-
-<div class="info"><p><span class="title">Title</span> Content</p></div>
-
-<p>Plain code block:</p>
-<div class="highlight"><pre><span></span>
-</pre></div>
-
-
-<p>Code block with line numbers:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
-</pre></div>
-</td></tr></table>
 
     <div class="sharethis-inline-share-buttons"></div>
 
@@ -229,7 +380,11 @@ styles, `#sidebar-checkbox` for behavior. -->
         Last updated by osteel on
           <time datetime="1970-01-01" pubdate>1970-01-01</time>
           :: [
-          <a href="https://tech.osteel.me/tag/"></a>
+          <a href="https://tech.osteel.me/tag/ddd">ddd</a>
+          <a href="https://tech.osteel.me/tag/userstory">userstory</a>
+          <a href="https://tech.osteel.me/tag/userstorymapping">userstorymapping</a>
+          <a href="https://tech.osteel.me/tag/boundedcontext">boundedcontext</a>
+          <a href="https://tech.osteel.me/tag/contextmapping">contextmapping</a>
           ]
       </small>
     </p>
@@ -276,7 +431,7 @@ styles, `#sidebar-checkbox` for behavior. -->
         var disqus_shortname = "osteel";
               var disqus_identifier = "/drafts/a-crypto-activity-tracking-tool-part-2-the-model";
               var disqus_url = "https://tech.osteel.me/drafts/a-crypto-activity-tracking-tool-part-2-the-model";
-              var disqus_title = "A crypto activity tracking tool. Part 2: the model";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing. Part 2: the model";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
