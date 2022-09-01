@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-2-the-model</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-1-the-domain</loc>
     <priority>0.8</priority>
   </url>
