@@ -164,12 +164,6 @@ styles, `#sidebar-checkbox` for behavior. -->
     </section>
 
     <p><img alt="Caption" src="/images//.jpg" title="Caption" /></p>
-<h2 id="in-this-post">In this post</h2>
-<div class="toc">
-<ul>
-<li><a href="#in-this-post">In this post</a></li>
-</ul>
-</div>
 <p class="info"><span class="title">Title</span> Content</p>
 
 <div class="info"><p><span class="title">Title</span> Content</p></div>
@@ -184,7 +178,75 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
+<p>When I started this series, I wasn't sure whether I would need to write this post. What I'm calling "code design" here is technically still part of the model, and when searching for inspiration online I found many examples where the model contained proper implementation details. But the model is also supposed to be understood by domain experts – how can we expect them to know what a repository or an aggregate root is?</p>
+<p>I decided to use this as a guideline and to draw the line between what non-developers would and wouldn't understand, effectively making a distinction between the <em>abstract</em> model (the previous post) and the <em>implementation</em> model (this post). This allows me to go as technical as I wish in the latter, without constraints.</p>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#domain-driven-design">Domain-Driven Design</a></li>
+<li><a href="#event-sourcing">Event Sourcing</a></li>
+<li><a href="#layered-architecture">Layered architecture</a></li>
+<li><a href="#code-design">Code design</a></li>
+<li><a href="#misc-to-sort-out">Misc (to sort out)</a></li>
+</ul>
+</div>
+<h2 id="domain-driven-design">Domain-Driven Design</h2>
+<p>https://www.mirkosertic.de/blog/2012/07/domain-driven-design-overview-and-building-blocks/</p>
+<p>Entity:</p>
+<p>Value object:</p>
+<h2 id="event-sourcing">Event Sourcing</h2>
+<p>"A pragmatic introduction to Event Sourcing" https://www.youtube.com/watch?v=xHbP3bshU3U</p>
+<p>Diagrams:</p>
+<p>(state) =&gt; [action] =&gt; (new state)</p>
+<p>When the operation is over, we're only left with the new state.</p>
+<p>(state) =&gt; [action]
+|event| &lt;====/
+|event|
+|event|</p>
+<p>Aggregate: a group of objects that are held together through an entity, called an aggregate root. An aggregate is reconstituted to be ready to make decisions. An aggregate is a subset of events.</p>
+<p>Event: something that happened in the past, immutable. Value object. Recorded on the aggregate, to <em>reconstitute</em> the aggregate.</p>
+<p>Aggregate root repository: for storing recorded events and reconstituting aggregates.</p>
+<p>Message: wrapper for an event containing additional metadata (aggregate ID, event type, etc.).</p>
+<p>Message repository: persist and retrieve messages. Can work with any storage type.</p>
+<p>Message dispatcher: transport messages. RabbitMQ, Kafka, sync, whatever.</p>
+<p>Projection (consumer): reacts to events and use their data to create read models (views).</p>
+<p>Read model: view of the event data, optimised for reading.</p>
+<h2 id="layered-architecture">Layered architecture</h2>
+<p>Layered architecture – presentation, application, domain, infrastructure.</p>
+<p>Presentation: console input output, commands (Laravel ones)</p>
+<p>Application: jobs, concrete (Eloquent) repositories, providers, exceptions</p>
+<p>Domain: entities, aggregates, value objects, services, factories, repository interfaces, consumers (projectors), read models (projections)</p>
+<p>Infrastructure: config, storage, database, queues, eloquent models, vendors</p>
+<h2 id="code-design">Code design</h2>
 <p>In fact, the concept of tax year is a good candidate for an <em>aggregate root</em> – the main entity of an aggregate, a group of domain objects treated as a single unit. In our case, this aggregate would comprise the tax year as well as its relevant taxable events.</p>
+<p>"Imagine our domain use-case contains sending an e-mail, but our domain is not about sending emails. Then we can create an interface that will do the sending e-mail use-case. We use this interface in the domain layer and thus keep the domain layer clean, separated.</p>
+<p>Another typical domain interface is a repository."</p>
+<p>– https://medium.com/carvago-development/domain-driven-design-handbook-4d34b069bec4</p>
+<p>Value objects: transactions</p>
+<p>Entities/aggregates: tax years, section 104 pools, nft pools</p>
+<p>Tax year events: capitalGainRealised, capitalLossRealised, incomeEarned, nonAttributableAllowableCostGenerated</p>
+<p>Projection for tax years to get current capital gains, income and non-attributable allowable costs without having to replay all events.</p>
+<p>Section 104 pool events: poolingAssetAcquired, poolingAssetDisposedOf, poolingAssetMatchedForSameDayRule, poolingAssetMatchedFor30DaysRule</p>
+<p>Projection for section 104 pools to get average cost bases without having to replay all events.</p>
+<p>Nft pool events: nftAcquired, nftCostBasisUpdated</p>
+<p>Projection for NFT pools to get final cost basis without having to replay all events.</p>
+<p>Projections: capital gains, income, non-attributable allowable costs</p>
+<p>Services: pooling (with rules – same-day, 30-days and section 104 pool), fee handler</p>
+<p>Diagram</p>
+<h2 id="misc-to-sort-out">Misc (to sort out)</h2>
+<p>Submitting a spreadsheet erases existing records and starts over.</p>
+<p>Only two bounded contexts belong to the application – <em>submit</em> and <em>review</em>. Make modules out of them?</p>
+<p>Once the job is dispatched, record and report errors at the end instead of interrupting the import?</p>
+<p>Use the "sync" driver for events.</p>
+<p>dime process transactions.csv</p>
+<p>=&gt; do you want to review now?</p>
+<p>=&gt; do you want to export now?</p>
+<p>dime review</p>
+<p>=&gt; please import some transactions first</p>
+<p>=&gt; do you want to export now?</p>
+<p>dime export</p>
+<p>=&gt; please import some transactions first</p>
 
     <div class="sharethis-inline-share-buttons"></div>
 

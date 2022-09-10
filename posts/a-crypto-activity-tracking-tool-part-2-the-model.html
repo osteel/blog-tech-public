@@ -150,7 +150,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-09-01 ::
+          Last updated: 2022-09-10 ::
         Published: 2022-09-01
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-2-the-model.html">history</a> ]
       </small>
@@ -248,19 +248,25 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>As a user, I want to select a tax year so I get numbers for this tax year only</em></li>
 <li><em>As a user, I want to specify whether my activity is considered trading so I can obtain numbers for the correct tax regime</em></li>
 </ul>
-<p>And finally, the third and last phase consists in reviewing the information returned by the software:</p>
+<p>In turn, that led to the reviewing process, where the user goes through the information returned by the software:</p>
 <ul>
 <li><em>As a user, I want to see my capital gains so I can complete my tax return</em></li>
 <li><em>As a user, I want to see my income so I can complete my tax return</em></li>
 <li><em>As a user, I want to see my non-attributable allowable costs so I can complete my tax return</em></li>
 </ul>
-<p>For which I thought of a couple more use cases, extracted from the domain:</p>
+<p>I thought of a couple more use cases for this one, extracted from the domain:</p>
 <ul>
 <li><em>As a user, I want to know whether I am within the 30 days following the end of the tax year so I am aware I should wait before completing my tax return</em></li>
 <li><em>As a user, I want to see my revenues beyond allowances so I don't need to calculate this myself</em></li>
 </ul>
-<p>Of course, I didn't come up with these three categories – report, submit and review – from the get-go. The stories were initially mixed-up, and only after taking a step back did I see these groups emerge.</p>
-<p>Not all stories have the same importance, either. To classify them further, I resorted to a tool I had used before – a user story map.</p>
+<p>Finally, there's a fourth category of stories that only came to me later, during the code design phase – exporting the results. It's well and good to display the results in the terminal, but as a user I also want to be able to save the corresponding figures in a file for easy access.</p>
+<p>I added the following stories:</p>
+<ul>
+<li><em>As a user, I want to export my revenues and non-attributable allowable costs to a CSV file so I can complete my tax return</em></li>
+<li><em>As a user, I want to export my revenues and non-attributable allowable costs to an Excel file so I can complete my tax return</em></li>
+<li><em>As a user, I want to export my revenues and non-attributable allowable costs to a PDF file so I can complete my tax return</em></li>
+</ul>
+<p>But not all stories have the same importance. To classify them further and get a better sense of what would need to be built and when, I resorted to a tool I had used before – a user story map.</p>
 <h3 id="user-story-map">User story map</h3>
 <p>User stories and user story mapping come from the <a href="https://www.atlassian.com/agile">Agile</a> world and are not inherently DDD practices. But they provide valuable insights that we can use in a DDD context nonetheless.</p>
 <p>I'm not even sure whether they are better suited for the model or the domain, but as they help both the experts by listing the user needs in a way they can understand and the developers by sketching the outlines of the software, the model seemed like a good fit.</p>
@@ -270,7 +276,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 <p class="caption">Interactive user story map (made with <a href="https://miro.com/">Miro</a>)</p>
 
-<p>The blue rectangles are the <em>activities</em> – the high-level tasks the user needs to complete. They match the three categories identified earlier – report, submit and review.</p>
+<p>The blue rectangles are the <em>activities</em> – the high-level tasks the user needs to complete. They match the four categories identified earlier – report, submit, review and export.</p>
 <p>The yellow rectangles are <em>steps</em> – they represent subtasks the user has to go through to complete an activity.</p>
 <p>Finally, the other rectangles are the <em>details</em> of each activity and step. They're essentially user stories, sorted by priority and broken down by <em>iterations</em>. Here, I've defined two – the <a href="https://en.wikipedia.org/wiki/Minimum_viable_product"><em>MVP</em></a> and the <em>backlog</em>.</p>
 <p>The user story map provides both a roadmap for me to follow and a way to keep track of my progress. Moreover, it gives me an idea of the future <a href="https://www.martinfowler.com/bliki/BoundedContext.html"><em>bounded contexts</em></a> and <a href="https://martinfowler.com/bliki/DDD_Aggregate.html"><em>aggregates</em></a> of the application, two key concepts of DDD.</p>
@@ -282,7 +288,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p class="caption">Context map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2022/09/01/bounded-contexts-big.png">here</a> for a higher definition)</p></p>
 <p>Notice that the activities identified in the user story map have become bounded contexts.</p>
 <p>We can also see that the "Report" context is external to the application, as the transaction spreadsheet must be created and completed upstream. Its relationship with the application is one of <em>customer-supplier</em> – the provided file (supplier) must meet the expectations of the application (customer).</p>
-<p>On the other hand, both the "Submit" and "Review" contexts are internal to the application, and the tax year object bridging the two is likely to be the same for both. In other words, they have a <em>shared kernel</em>.</p>
+<p>On the other hand, both the "Submit", "Review" and "Report" contexts are internal to the application, and the tax year object bridging them is likely to be the same for all. In other words, they have a <em>shared kernel</em>.</p>
 <p>This is the extent to which I will cover bounded contexts. While they can be useful to model the domain, in this case I defined them for the sake of the exercise more than anything else.</p>
 <p>Bounded contexts are often worked on by separate teams and considered to be distinct models with their own ubiquitous language. But this is a one-man show, and the size of the model doesn't warrant breaking it up anyway.</p>
 <p>When it comes to this series, the context map is just an extra way to represent and think about the application.</p>
@@ -305,6 +311,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Fee</em>: An amount paid in exchange for a service;</li>
 <li><em>Fiat</em>: A government-issued currency;</li>
 <li><em>Gift</em>: An asset either received or given away for free;</li>
+<li><em>Hard fork</em>: A protocol update leading to the split of a blockchain and the creation of a new asset;</li>
 <li><em>Income</em>: An amount falling under the Income Tax regime;</li>
 <li><em>Loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Market value</em>: The value of an asset at a certain point in time, in fiat terms;</li>
@@ -334,7 +341,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 <p>We came across most of these terms before, but by compiling them in this way, we crystallise them as words and expressions to use everywhere, including in the code. We formalise them.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
-<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven method, and starting without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and as I'm writing this I'm still not sure whether I went too far or not enough (although I suspect the latter).</p>
+<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and as I'm writing this I'm still not sure whether I went too far or not enough (although I suspect the latter).</p>
 <p>That being said, I trust that the next steps will expose any gaps left in the model and the domain, and force me to revisit those to try and get a clearer picture.</p>
 <p>The next instalment of this series will cover the code design of the application, which flows directly from the model.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
@@ -357,7 +364,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-09-01" pubdate>2022-09-01</time>
+          <time datetime="2022-09-10" pubdate>2022-09-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/userstory">userstory</a>
