@@ -146,7 +146,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-09-10 ::
+          Last updated: 2022-09-19 ::
         Published: 2022-08-17
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-1-the-domain.html">history</a> ]
       </small>
@@ -393,22 +393,25 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 <p>This is something to keep in mind when you qualify for an airdrop – if the airdrop is not directly sent to your wallet and you have to claim it instead, it could be worth waiting for a token price drop before claiming.</p>
 <h3 id="hard-forks">Hard forks</h3>
-<p><em>Forks</em> occur when updates are made to the protocol underlying the blockchain. There are two types of forks – <em>soft</em> forks and <em>hard</em> forks. Here we're interested in the latter, because they occur when the protocol update is such that the blockchain is split and the new version goes on to live a life of its own, independent from the original chain.</p>
-<p>In that case, the new chain's existence often involves the creation of its own asset: </p>
+<p><em>Forks</em> occur when updates are made to the protocol underlying the blockchain. There are two types of forks – <em>soft</em> forks and <em>hard</em> forks. Soft forks happen when the changes are backward-compatible (like a patch or minor version release in <a href="https://semver.org">Semantic Versioning</a>), while hard forks occur when the new version of the protocol isn't compatible with the old one (like a major version release with breaking changes).</p>
+<p>In the latter case, when there is still significant support for the old version of the protocol, the old blockchain and the new blockchain begin a life of their own, independent from each other. That often leads to the creation of two separate assets:</p>
 <blockquote>
 <p>There are two types of forks, a soft fork and a hard fork. A soft fork updates the protocol and is intended to be adopted by all. No new tokens, or distributed ledger, are expected to be created. A hard fork is different and can result in new tokens coming into existence. Before the fork occurs there is a single distributed ledger. Usually, at the point of the hard fork a second branch (and therefore a new cryptoasset) is created.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22300" title="CRYPTO22300 - Cryptoassets for individuals: Capital Gains Tax: blockchain forks">The Cryptoassets Manual</a></p>
-<p>A new asset created through a hard fork goes to its own Section 104 pool and its cost basis is derived from the original asset (which is different from airdrops, where we assign the market value of the asset at the time it was airdropped). This means that the average cost basis of the original asset can be split between the two assets.</p>
-<p>It is also allowed to keep the average cost basis of the original asset as is, and to assign a zero cost basis to the new asset, which is simpler.</p>
+<p>Holders of the original asset usually receive the newly created asset at a 1:1 ratio, using a snapshot of the original blockchain as reference.</p>
+<p>For tax-treatment purposes, the new asset goes to its own Section 104 pool and its cost basis is derived from the original asset (which is different from airdrops, where we assign the market value of the asset at the time it was airdropped). This means that the average cost basis of the original asset can be split between the two assets.</p>
+<p>It is also allowed to maintain the average cost basis of the original asset as it is, and to assign a zero cost basis to the new asset instead, which is simpler:</p>
+<p class="info"><span class="title">Example</span> Bob was holding 5 bitcoins (BTC) when the Bitcoin Cash fork occurred in 2017.  As a result, he received 5 BCH. Bob later sold his 5 BCH for £1000. As the cost basis for the acquisition of the 5 BCH was 0, Bob made a £1000 gain, which is subject to Capital Gains Tax.</p>
+
 <h3 id="gifts">Gifts</h3>
 <p>Finally, when receiving an asset as a gift from someone who is not your spouse or civil partner, you need to work out the price of the asset in fiat terms at the time of the transaction and use it as the cost basis of the asset when you dispose of it.</p>
-<p class="info"><span class="title">Example</span> Bob receives 0.1 bitcoins from his sister. He later sells them for £2200. Bob looks up the market value of the BTC token at the time of the gift and notes that it was £20000 per bitcoin. As a result, Bob made a <code>£2200 - (£20000 * 0.1) = £200</code> gain, which is subject to Capital Gains Tax.</p>
+<p class="info"><span class="title">Example</span> Charlie receives 0.1 bitcoins from his sister. He later sells them for £2200. Charlie looks up the market value of the BTC token at the time of the gift and notes that it was £20000 per bitcoin. As a result, Charlie made a <code>£2200 - (£20000 * 0.1) = £200</code> gain, which is subject to Capital Gains Tax.</p>
 
 <p>The gift in and of itself is not a taxable event for the person receiving it, but is subject to Capital Gains Tax for the person making it, following the same rules as any other disposal.</p>
 <p>Even though I am not concerned by this scenario at the time of writing, it is also worth looking into gifts coming from a spouse or civil partner, as I couldn't find this information in the HMRC Cryptoassets Manual and it was brought up during a conversation with a specialised accountant instead.</p>
 <p>When an asset is gifted to a spouse or civil partner, the transaction is not considered a taxable event for either of the parties, and the cost basis of the disposal is the cost basis of the initial acquisition by the person making the gift.</p>
-<p class="info"><span class="title">Example</span> Charlie gifts 2 ethers previously acquired for £2000 to his spouse. Charlie looks up the price of the ETH token at the time of the gift and notes that it was £1500 per ether. But since he gifted the ethers to his spouse, the transaction doesn’t constitute a taxable event. A few months later, Charlie's spouse sells the 2 ethers for £4000. But since he got these ethers from his spouse in the first place, their cost basis is not the market value at the time of the gift, but at the time Charlie first acquired the ethers. Charlie's spouse made a <code>£4000 - £2000 = £2000</code> gain, which is subject to Capital Gains Tax.</p>
+<p class="info"><span class="title">Example</span> Alice gifts 2 ethers previously acquired for £2000 to her spouse. Alice looks up the price of the ETH token at the time of the gift and notes that it was £1500 per ether. But since she gifted the ethers to her spouse, the transaction doesn’t constitute a taxable event. A few months later, Alice's spouse sells the 2 ethers for £4000. But since he got these ethers from his spouse in the first place, their cost basis is not the market value at the time of the gift, but at the time Alice first acquired the ethers. Alice's spouse made a <code>£4000 - £2000 = £2000</code> gain, which is subject to Capital Gains Tax.</p>
 
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>Coming up with the domain can be a bit messy. Even though I was able to narrow it down from the get-go by focussing on my specific use cases, that is still a lot of information – a good chunk of which will turn out to be noise.</p>
@@ -434,7 +437,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-09-10" pubdate>2022-09-10</time>
+          <time datetime="2022-09-19" pubdate>2022-09-19</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           ]
