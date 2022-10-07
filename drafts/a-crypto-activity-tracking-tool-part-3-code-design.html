@@ -188,7 +188,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#event-sourcing">Event Sourcing</a></li>
 <li><a href="#layered-architecture">Layered architecture</a></li>
 <li><a href="#code-design">Code design</a></li>
+<li><a href="#folder-structure">Folder structure</a></li>
 <li><a href="#misc-to-sort-out">Misc (to sort out)</a></li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
 </ul>
 </div>
 <h2 id="domain-driven-design">Domain-Driven Design</h2>
@@ -210,30 +212,58 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Message: wrapper for an event containing additional metadata (aggregate ID, event type, etc.).</p>
 <p>Message repository: persist and retrieve messages. Can work with any storage type.</p>
 <p>Message dispatcher: transport messages. RabbitMQ, Kafka, sync, whatever.</p>
-<p>Projection (consumer): reacts to events and use their data to create read models (views).</p>
-<p>Read model: view of the event data, optimised for reading.</p>
+<p>Projector (called "projection" in EventSauce and is a type of consumer): reacts to events and use their data to create projections (called "read models" in EventSauce and are basically views).</p>
+<p>Projection (called "read model" in EventSauce): view of the event data, optimised for reading.</p>
 <h2 id="layered-architecture">Layered architecture</h2>
 <p>Layered architecture – presentation, application, domain, infrastructure.</p>
 <p>Presentation: console input output, commands (Laravel ones)</p>
 <p>Application: jobs, concrete (Eloquent) repositories, providers, exceptions</p>
 <p>Domain: entities, aggregates, value objects, services, factories, repository interfaces, consumers (projectors), read models (projections)</p>
 <p>Infrastructure: config, storage, database, queues, eloquent models, vendors</p>
+<blockquote>
+<p>Nothing in a lower layer can know anything at all about something in a higher layer.
+In other words, the code on the lower layers should not depend on the code on the higher layers. The code at the higher levels should depend only on the code at one level below.</p>
+</blockquote>
+<p>– https://medium.com/@pogulailo/domain-driven-design-and-clean-architecture-in-php-part-1-layers-and-structure-edcce57be42a</p>
 <h2 id="code-design">Code design</h2>
 <p>In fact, the concept of tax year is a good candidate for an <em>aggregate root</em> – the main entity of an aggregate, a group of domain objects treated as a single unit. In our case, this aggregate would comprise the tax year as well as its relevant taxable events.</p>
-<p>"Imagine our domain use-case contains sending an e-mail, but our domain is not about sending emails. Then we can create an interface that will do the sending e-mail use-case. We use this interface in the domain layer and thus keep the domain layer clean, separated.</p>
-<p>Another typical domain interface is a repository."</p>
+<p>As mentioned in the model article, I've decided not to split it in bounded contexts nor modules, which will also simplify the structure of the application (modules would belong to bounded contexts, although there can be modules without bounded contexts as well).</p>
+<blockquote>
+<p>Imagine our domain use-case contains sending an e-mail, but our domain is not about sending emails. Then we can create an interface that will do the sending e-mail use-case. We use this interface in the domain layer and thus keep the domain layer clean, separated.</p>
+<p>Another typical domain interface is a repository.</p>
+</blockquote>
 <p>– https://medium.com/carvago-development/domain-driven-design-handbook-4d34b069bec4</p>
-<p>Value objects: transactions</p>
-<p>Entities/aggregates: tax years, section 104 pools, nft pools</p>
-<p>Tax year events: capitalGainRealised, capitalLossRealised, incomeEarned, nonAttributableAllowableCostGenerated</p>
+<p>Value objects: transaction, fiat amount, acquisition, disposal, transfer, airdrop, swap, fee</p>
+<p>Enums: currency</p>
+<p>https://matthiasnoback.nl/2022/09/is-it-a-dto-or-a-value-object/</p>
+<p>Entities/aggregates: tax year, section 104 pool, nft</p>
+<p>Tax year events: taxYearInitiated, capitalGainRealised, capitalLossRealised, incomeEarned, nonAttributableAllowableCostGenerated</p>
 <p>Projection for tax years to get current capital gains, income and non-attributable allowable costs without having to replay all events.</p>
-<p>Section 104 pool events: poolingAssetAcquired, poolingAssetDisposedOf, poolingAssetMatchedForSameDayRule, poolingAssetMatchedFor30DaysRule</p>
-<p>Projection for section 104 pools to get average cost bases without having to replay all events.</p>
-<p>Nft pool events: nftAcquired, nftCostBasisUpdated</p>
-<p>Projection for NFT pools to get final cost basis without having to replay all events.</p>
-<p>Projections: capital gains, income, non-attributable allowable costs</p>
-<p>Services: pooling (with rules – same-day, 30-days and section 104 pool), fee handler</p>
+<p>Section 104 pool events: pooledTokensAcquired, pooledTokensDisposedOf, pooledTokensMatchedForSameDayRule, pooledTokensMatchedFor30DaysRule</p>
+<p>Nft events: nftAcquired, nftCostBasisAveraged</p>
+<p>Services: TransactionConsumer (breaks down incoming transactions and passes them on to the right handler. E.g. in the case of a transfer, it extracts the fee and makes it a Disposal value object to pass on to the Section104PoolHandler service. The rest of the transaction is passed on to the TransferHandler service), Section104PoolHandler (with rules – same-day, 30-days and section 104 pool), TransferHandler, NftHandler, AirdropHandler</p>
 <p>Diagram</p>
+<h2 id="folder-structure">Folder structure</h2>
+<p>I have read many articles on the topic but the one that influenced me the most in the end was <a href="https://lorisleiva.com/conciliating-laravel-and-ddd">Conciliating Laravel and DDD </a> by <a href="https://twitter.com/lorismatic">Loris Leiva</a>. The main takeaway for me was that it's counterproductive to fight the framework. Keeping this principle in mind, all the layers but the domain one are basically mixed up in the <code>app/</code> folder of the framework – and that's fine.</p>
+<p>In practice, that means the only new folder I created at the root is <code>domain/</code>, which I added to the PSR-4 autoload mapping section of <code>composer.json</code>:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;autoload&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;App\\&quot;</span><span class="p">:</span> <span class="s2">&quot;app/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Domain\\&quot;</span><span class="p">:</span> <span class="s2">&quot;domain/src/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Database\\Factories\\&quot;</span><span class="p">:</span> <span class="s2">&quot;database/factories/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Database\\Seeders\\&quot;</span><span class="p">:</span> <span class="s2">&quot;database/seeders/&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="err">,</span>
+<span class="s2">&quot;autoload-dev&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Tests\\&quot;</span><span class="p">:</span> <span class="s2">&quot;tests/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Domain\\Tests\\&quot;</span><span class="p">:</span> <span class="s2">&quot;domain/tests/&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="err">,</span>
+</pre></div>
+
+
+<p>Note that I also decided to keep the domain-related tests next to the domain, meaning the <code>domain/</code> folder has two subfolders <code>src/</code> and <code>tests/</code>, both mapped above.</p>
 <h2 id="misc-to-sort-out">Misc (to sort out)</h2>
 <p>Submitting a spreadsheet erases existing records and starts over.</p>
 <p>Only two bounded contexts belong to the application – <em>submit</em> and <em>review</em>. Make modules out of them?</p>
@@ -247,6 +277,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>=&gt; do you want to export now?</p>
 <p>dime export</p>
 <p>=&gt; please import some transactions first</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>This post is likely the last one purely within the framework of Domain-Driven Design. The code design phase closes the feedback loop opened with the description of the domain and its model, and the three phases will now keep feeding into each other to get a software that represents and addresses more and more accurately identified domain issues.</p>
+<p>The following articles will cover more specific aspects of the implementation, like Event Sourcing, Test-Driven Development and developing with Laravel Zero, which will be the focus of the next article.</p>
+<p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
 

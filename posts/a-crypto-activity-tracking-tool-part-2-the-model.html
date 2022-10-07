@@ -150,7 +150,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-09-19 ::
+          Last updated: 2022-10-07 ::
         Published: 2022-09-01
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-2-the-model.html">history</a> ]
       </small>
@@ -172,7 +172,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p><img alt="Transaction processing flowchart preview" src="/images/2022/09/01/dime_01.png" title="Transaction processing flowchart preview" />
 <p class="caption">Extract from the transaction processing flow (made with <a href="https://excalidraw.com/">Excalidraw</a>)</p></p>
 <p>The model is where the software meets the domain.</p>
-<p>It is a technical expression of the domain that informs the development of the software while being understandable by the experts, who can validate it.</p>
+<p>It is a technical expression of the domain that informs the development of the software but that is also understandable by the experts, who can validate it.</p>
 <p>The goal of the model is to identify and express the use cases and constraints that will be built into the software, using schemas and diagrams. It is where we extract the essential concepts from the domain and where we consolidate the ubiquitous language.</p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
@@ -208,10 +208,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><img alt="Hand-drawn flowchart on a whiteboard" src="/images/2022/09/01/dime_02.jpg" title="Hand-drawn flowchart on a whiteboard" />
 <p class="caption">How it started</p></p>
 <p>While I couldn't fit in all the details, the diagram covered all the scenarios listed in the domain and connected them in a logical way, without obvious gaps.</p>
-<p>Satisfied, I made a digital version of it:</p>
+<p>I later made a digital version of it:</p>
 <p><img alt="Transaction processing flowchart" src="/images/2022/09/01/dime_03.png" title="Transaction processing flowchart" />
 <p class="caption">Transaction processing flowchart (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2022/09/01/flowchart-big.png">here</a> for a higher definition)</p></p>
-<p>Most of the blue rectangles were quite high-level (e.g. "NFT rules"), but as I knew I could find the particulars in the domain article, I decided that it was good enough for now.</p>
+<p>Wait. That is not the same diagram! That's because you are looking at an updated version of it, that I came up with later on, while working on the code design. As I mentioned in the domain article, the different phases of DDD tend to feed into each other to get an ever clearer picture of what the software should be. The above diagram is the result of this mechanism.</p>
 <h3 id="user-stories">User stories</h3>
 <p>Looking at the flowchart, I realised I needed users to report their transactions in a way that would fit the logic.</p>
 <p>So I started listing the reporting needs as user stories:</p>
@@ -307,6 +307,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Application</em>: The software processing the transaction spreadsheet and outputting results;</li>
 <li><em>Asset</em>: A property whose acquisition or disposal is a taxable event;</li>
 <li><em>Capital gain</em>: A profit realised when the proceeds of an asset disposal are greater than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
+<li><em>Capital loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Cost basis</em>: The cost of acquisition of an asset, in fiat terms;</li>
 <li><em>Disposal</em>: The fact of disposing of an asset, in whichever way it may be;</li>
 <li><em>Disposal proceeds</em>: The amount obtained for an asset disposal, in fiat terms;</li>
@@ -315,7 +316,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Gift</em>: An asset either received or given away for free;</li>
 <li><em>Hard fork</em>: A protocol update leading to the split of a blockchain and the creation of a new asset;</li>
 <li><em>Income</em>: An amount falling under the Income Tax regime;</li>
-<li><em>Loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Market value</em>: The value of an asset at a certain point in time, in fiat terms;</li>
 <li><em>Mint</em>: The action of creating an NFT;</li>
 <li><em>NFT/Non-Fungible Token</em>: A type of asset that isn't subject to pooling rules;</li>
@@ -341,10 +341,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Transaction</em>: Any crypto activity as reported by the user;</li>
 <li><em>Transfer</em>: The fact of moving an asset from one wallet to another, when both wallets belong to the user.</li>
 </ul>
-<p>We came across most of these terms before, but by compiling them in this way, we crystallise them as words and expressions to use everywhere, including in the code. We formalise them.</p>
+<p>We came across most of these terms before, but by compiling them in this way, we crystallise them as words and expressions to use everywhere, including in the code.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
-<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and as I'm writing this I'm still not sure whether I went too far or not enough (although I suspect the latter).</p>
-<p>That being said, I trust that the next steps will expose any gaps left in the model and the domain, and force me to revisit those to try and get a clearer picture.</p>
+<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and I am still not sure how far I am supposed to go in terms of representation.</p>
+<p>That being said, the next steps have already uncovered some gaps in the model and the domain, which I have updated accordingly. I trust I will keep getting a clearer picture over time.</p>
 <p>The next instalment of this series will cover the code design of the application, which flows directly from the model.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 
@@ -366,7 +366,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-09-19" pubdate>2022-09-19</time>
+          <time datetime="2022-10-07" pubdate>2022-10-07</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/userstory">userstory</a>
