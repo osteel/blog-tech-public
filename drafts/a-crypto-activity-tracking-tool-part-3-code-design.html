@@ -178,8 +178,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>When I started this series, I wasn't sure whether I would need to write this post. What I'm calling "code design" here is technically still part of the model, and when searching for inspiration online I found many examples where the model contained proper implementation details. But the model is also supposed to be understood by domain experts – how can we expect them to know what a repository or an aggregate root is?</p>
-<p>I decided to use this as a guideline and to draw the line between what non-developers would and wouldn't understand, effectively making a distinction between the <em>abstract</em> model (the previous post) and the <em>implementation</em> model (this post). This allows me to go as technical as I wish in the latter, without constraints.</p>
+<p>When I started this series, I wasn't sure whether I would need to write this post. What I'm referring to as "code design" here is technically still part of the model, and when searching for inspiration online I found many examples of models containing rather specific implementation details. But as per DDD, the model is also supposed to be understood by domain experts, so they can validate it. How can we expect them to know what a repository or an aggregate root is?</p>
+<p>I decided to use this as a guideline and to draw a line between what non-developers would and wouldn't understand. This led to two separate articles – one covering the <em>abstract</em> model (the previous post) and the other covering the <em>implementation</em> model (this post). This also allowed me to go as technical as I wanted to in the latter.</p>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
 <ul>
@@ -190,31 +190,61 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#code-design">Code design</a></li>
 <li><a href="#folder-structure">Folder structure</a></li>
 <li><a href="#misc-to-sort-out">Misc (to sort out)</a></li>
+<li><a href="#implementation-plan">Implementation plan</a></li>
 <li><a href="#closing-thoughts">Closing thoughts</a></li>
 </ul>
 </div>
 <h2 id="domain-driven-design">Domain-Driven Design</h2>
-<p>https://www.mirkosertic.de/blog/2012/07/domain-driven-design-overview-and-building-blocks/</p>
-<p>Entity:</p>
-<p>Value object:</p>
+<p>Before I get into the nitty-gritty of the implementation, I need to get some base concepts out of the way, starting with DDD. You may want to skip this section if you are already familiar with the matter.</p>
+<p>Domain-Driven Design is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the following patterns, even if you've never worked with DDD.</p>
+<p><em>Entity:</em> An entity is an object that has an identity that remains the same within a system – sometimes beyond. Entities are usually referred to as <em>models</em> in non-DDD contexts, and are persisted throughout the states of the software.</p>
+<p><em>Value object:</em> On the other hand, value objects are defined by their attributes and have no identity. They describe a particular aspect of the domain, and are usually immutable. When different values are needed, a new object is created.</p>
+<p><em>Service:</em> Sometimes, a particular operation does not belong to an entity nor a value object. Such behaviour can be implemented in a service. A service does not matter as an object, but in what it does to other objects from the domain, for which it is a connection point. Services have no state – they provide functionality for the domain.</p>
+<p>Services don't always belong to the domain, however, and can provide utility for other layers.</p>
+<p><em>Factory:</em> Factories contain logic to create other objects, when that process is too complex for a constructor, or it requires creating several objects together, for instance.</p>
+<p><em>Repository:</em> Repositories are used to save and retrieve entities. They don't create them (that's the job of the factories) but persist them in the storage layer. They contain any logic to retrieve specific objects from that persistence layer, like applying filters. They are a way to decouple the domain from the underlying storage infrastructure.</p>
+<p>There are other DDD patterns that belong to a larger pattern that it's worth exploring as a whole – Event Sourcing.</p>
 <h2 id="event-sourcing">Event Sourcing</h2>
 <p>"A pragmatic introduction to Event Sourcing" https://www.youtube.com/watch?v=xHbP3bshU3U</p>
-<p>Diagrams:</p>
-<p>(state) =&gt; [action] =&gt; (new state)</p>
-<p>When the operation is over, we're only left with the new state.</p>
-<p>(state) =&gt; [action]
-|event| &lt;====/
-|event|
-|event|</p>
-<p>Aggregate: a group of objects that are held together through an entity, called an aggregate root. An aggregate is reconstituted to be ready to make decisions. An aggregate is a subset of events.</p>
+<blockquote>
+<p>Event sourcing tries to solve this problem by storing all events that happen in your app. The state of your application is built by listening to those events. An aggregate is used to validate if a new event is allowed to get written and to make decisions based on the past. Projectors are used to transform newly written events into a format useful for consumption in your app.</p>
+</blockquote>
+<p>– https://github.com/spatie/laravel-event-sourcing/blob/main/docs/getting-familiar-with-event-sourcing/introduction.md</p>
+<p>Event Sourcing is a software pattern whereby the successive states of an object are stored, instead of the current state only. That means the whole history of an object is stored, and to get the current state of an object you need to replay the past events up until the most recent one.</p>
+<p>A typical example is a bank statement – instead of just giving you the amount currently available on your account, the statement will list all the operations performed on the account that led to the current amount.</p>
+<p>Event Sourcing is considered a pattern of DDD and it has its own patterns, some of which are briefly explained below.</p>
+<p><em>Aggregate:</em> The most important pattern of Event Sourcing is the aggregate. An aggregate is a group of objects that are held together through an entity called the aggregate root, which is also the only way to change the aggregate from the outside. The objects in the aggregate constitute a single unit forming a relationship through data.</p>
+<p><em>Invariant:</em> </p>
+<blockquote>
+<p>A collection of objects that are bound together by a root entity, otherwise known as an aggregate root. The aggregate root guarantees the consistency of changes being made within the aggregate by forbidding external objects from holding references to its members.</p>
+<p>The invariants are those rules which have to be maintained whenever data changes.</p>
+<p>An Aggregate is a group of associated objects which are considered as one unit with regard to data changes. The Aggregate is demarcated by a boundary which separates the objects inside from those outside. Each Aggregate has one root. The root is an Entity, and it is the only object accessible from outside. If there are other Entities inside the boundary, the identity of those entities is local, making sense only inside the aggregate.</p>
+<p>Since other objects can hold references only to the root, it means that they cannot directly change the other objects in the aggregate. All they can do is to change the root, or ask the root to perform some actions. And the root will be able to change the other objects, but that is an operation contained inside the aggregate, and it is controllable. If the root is deleted and removed from memory, all the other objects from the aggregate will be deleted too, because there is no other object holding reference to any of them.</p>
+<p>Cluster the Entities and Value Objects into Aggregates and define boundaries around each. Choose one Entity to be the root of each Aggregate, and control all access to the objects inside the boundary through the root. Allow external objects to hold references to the root only. Transient references to internal members can be passed out for use within a single operation only. Because the root controls access, it cannot be blindsided by changes to the internals. This arrangement makes it practical to enforce all invariants for objects in the Aggregate and for the Aggregate as a whole in any state change.</p>
+</blockquote>
 <p>Event: something that happened in the past, immutable. Value object. Recorded on the aggregate, to <em>reconstitute</em> the aggregate.</p>
+<blockquote>
+<p>Domain events can be used to model distributed systems. The model will become more complex, but it can be more scalable. Domain Events are often used in an Event Driven Architecture.</p>
+</blockquote>
 <p>Aggregate root repository: for storing recorded events and reconstituting aggregates.</p>
 <p>Message: wrapper for an event containing additional metadata (aggregate ID, event type, etc.).</p>
 <p>Message repository: persist and retrieve messages. Can work with any storage type.</p>
 <p>Message dispatcher: transport messages. RabbitMQ, Kafka, sync, whatever.</p>
-<p>Projector (called "projection" in EventSauce and is a type of consumer): reacts to events and use their data to create projections (called "read models" in EventSauce and are basically views).</p>
+<p>Projector (called "projection" in EventSauce and is a type of consumer): reacts to events and use their data to create projections (called "read models" in EventSauce and are basically views). You can replay them.</p>
 <p>Projection (called "read model" in EventSauce): view of the event data, optimised for reading.</p>
+<p>Reactor: consumer that perform actions beyond updating read models (e.g. send emails). You don't replay them.</p>
 <h2 id="layered-architecture">Layered architecture</h2>
+<p>The last concept I want to introduce before getting into the implementation details in the layered architecture.</p>
+<blockquote>
+<p>In an object-oriented program, UI, database, and other support code often gets written directly into the business objects. Additional business logic is embedded in the behavior of UI widgets and database scripts. This sometimes happens because it is the easiest way to make things work quickly. However, when domain-related code is mixed with the other layers, it becomes extremely difficult to see and think about.</p>
+<p>Partition a complex program into layers. Develop a design within each layer that is cohesive and that depends only on the layers below. Follow standard architectural patterns to provide loose coupling to the layers above. Concentrate all the code related to the domain model in one layer and isolate it from the user interface, application, and infrastructure code. The domain objects, free of the responsibility of displaying themselves, storing themselves, managing application tasks, and so forth, can be focused on expressing the domain model</p>
+<p>User Interface (Presentation Layer): Responsible for presenting information to the user and interpreting user commands.
+Application Layer: This is a thin layer which coordinates the application activity. It does not contain business logic. It does not hold the state of the business objects, but it can hold the state of an application task progress.
+Domain Layer: This layer contains information about the domain. This is the heart of the business software. The state of business objects is held here. Persistence of the business objects and possibly their state is delegated to the infrastructure layer.
+Infrastructure Layer: This layer acts as a supporting library for all the other layers. It provides communication between layers, implements persistence for business objects, contains supporting libraries for the user interface layer, etc.</p>
+<p>One of the most common patterns for managing separation of concerns is through use of a layered architecture.</p>
+<p>The layers capture the related parts of the application. The parts that change for similar reasons are kept together (cohesion) and are separated out from less heavily associated parts of the program (decoupling). Any layer should depend only on parts of itself or the layers below it. This gives us the ability to work in one area of the application without having to worry about other concerns.</p>
+</blockquote>
 <p>Layered architecture – presentation, application, domain, infrastructure.</p>
 <p>Presentation: console input output, commands (Laravel ones)</p>
 <p>Application: jobs, concrete (Eloquent) repositories, providers, exceptions</p>
@@ -239,8 +269,8 @@ In other words, the code on the lower layers should not depend on the code on th
 <p>Entities/aggregates: tax year, section 104 pool, nft</p>
 <p>Tax year events: taxYearInitiated, capitalGainRealised, capitalLossRealised, incomeEarned, nonAttributableAllowableCostGenerated</p>
 <p>Projection for tax years to get current capital gains, income and non-attributable allowable costs without having to replay all events.</p>
-<p>Section 104 pool events: pooledTokensAcquired, pooledTokensDisposedOf, pooledTokensMatchedForSameDayRule, pooledTokensMatchedFor30DaysRule</p>
-<p>Nft events: nftAcquired, nftCostBasisAveraged</p>
+<p>Section 104 pool events: section104PoolTokensAcquired, section104PoolTokensDisposedOf, section104PoolTokensMatchedForSameDayRule, section104PoolTokensMatchedFor30DaysRule</p>
+<p>Nft events: nftAcquired, nftCostBasisIncreased, nftDisposedOf</p>
 <p>Services: TransactionConsumer (breaks down incoming transactions and passes them on to the right handler. E.g. in the case of a transfer, it extracts the fee and makes it a Disposal value object to pass on to the Section104PoolHandler service. The rest of the transaction is passed on to the TransferHandler service), Section104PoolHandler (with rules – same-day, 30-days and section 104 pool), TransferHandler, NftHandler, AirdropHandler</p>
 <p>Diagram</p>
 <h2 id="folder-structure">Folder structure</h2>
@@ -277,6 +307,8 @@ In other words, the code on the lower layers should not depend on the code on th
 <p>=&gt; do you want to export now?</p>
 <p>dime export</p>
 <p>=&gt; please import some transactions first</p>
+<h2 id="implementation-plan">Implementation plan</h2>
+<p>Start with the aggregates as they can be built in isolation. Then implement the logic connecting them. Finally, build the presentation layer.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>This post is likely the last one purely within the framework of Domain-Driven Design. The code design phase closes the feedback loop opened with the description of the domain and its model, and the three phases will now keep feeding into each other to get a software that represents and addresses more and more accurately identified domain issues.</p>
 <p>The following articles will cover more specific aspects of the implementation, like Event Sourcing, Test-Driven Development and developing with Laravel Zero, which will be the focus of the next article.</p>

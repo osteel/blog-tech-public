@@ -146,7 +146,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-09-19 ::
+          Last updated: 2022-10-21 ::
         Published: 2022-08-17
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-1-the-domain.html">history</a> ]
       </small>
@@ -279,6 +279,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>There is more. The same-day rule also applies if you buy back the asset on the same day, <em>after</em> you've sold it. The cost basis of the buy-back is then used to calculate the cost basis of the amount sold.</p>
 <p class="info"><span class="title">Example</span> On Monday, Bob buys 3 ethers for £3000. On Tuesday, he sells 2 ethers for £2500. Later that day, he buys 1 ether for £1100. Since he bought back 1 ether on the same day he sold 2, the cost basis of the first ether sold is the cost basis of the ether he bought back. The cost basis of the second ether sold is the average cost basis of the Section 104 pool, so <code>£3000 / 3 = £1000</code> per unit. Bob made a <code>£2500 - (£1100 + £1000) = £400</code> gain, which is subject to Capital Gains Tax.</p>
 
+<p>Finally, if you happen to purchase the same asset several times on the same day, at different prices, you need to use the average cost basis of the acquisitions to calculate the cost basis of all the disposals on that day, essentially treating all acquisitions and all disposals as single transactions:</p>
+<blockquote>
+<p>All shares of the same class in the same company acquired by the same person on the same day and in the same capacity are treated as though they were acquired by a single transaction, TCGA92/S105 (1)(a).</p>
+<p>All shares of the same class in the same company disposed of by the same person on the same day and in the same capacity are also treated as though they were disposed of by a single transaction, TCGA92/S105 (1)(a).</p>
+</blockquote>
+<p>– <a href="https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg51560#IDATX33F" title="CG51560 - Share identification rules for capital gains tax from 6.4.2008: the “same day” and “bed and breakfast” identification rules">The Capital Gains Manual</a></p>
 <p>That's it for the same-day rule. So what's the second scenario in which the Section 104 rule doesn't apply? It's the <em>30-day</em> rule (also referred to as <a href="https://www.gov.uk/hmrc-internal-manuals/capital-gains-manual/cg13370" title="CG13370 - Bed and breakfasting: shares and securities"><em>bed and breakfasting</em></a>), which concerns assets being bought back within 30 days of being sold.</p>
 <p>The rule works in the same way as the last same-day rule example above, by taking into account the cost basis of the buy-back for the calculation of the cost basis of the amount initially sold.</p>
 <p class="info"><span class="title">Example</span> On Monday, Charlie buys 3 ethers for £3000. On Tuesday, he sells 2 ethers for £2500. Then, that Sunday, he buys back 1 ether for £900. Since he bought back 1 ether within 30 days of selling 2, the cost basis of the first ether sold is the cost basis of the ether he bought back. The cost basis of the second ether sold is the average cost basis of the Section 104 pool, so <code>£3000 / 3 = £1000</code> per unit. Charlie made a <code>£2500 - (£900 + £1000) = £600</code> gain, which is subject to Capital Gains Tax.</p>
@@ -437,7 +443,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-09-19" pubdate>2022-09-19</time>
+          <time datetime="2022-10-21" pubdate>2022-10-21</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           ]
