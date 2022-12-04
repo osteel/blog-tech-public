@@ -266,10 +266,10 @@ In other words, the code on the lower layers should not depend on the code on th
 <p>Value objects: transaction, fiat amount, acquisition, disposal, transfer, airdrop, swap, fee</p>
 <p>Enums: currency</p>
 <p>https://matthiasnoback.nl/2022/09/is-it-a-dto-or-a-value-object/</p>
-<p>Entities/aggregates: tax year, section 104 pool, nft</p>
-<p>Tax year events: taxYearInitiated, capitalGainRealised, capitalLossRealised, incomeEarned, nonAttributableAllowableCostGenerated</p>
+<p>Entities/aggregates: tax year, share pooling, nft</p>
+<p>Tax year events: capitalGainRecorded, capitalGainReverted, capitalLossRecorded, capitalLossReverted, incomeRecorded, nonAttributableAllowableCostRecorded</p>
 <p>Projection for tax years to get current capital gains, income and non-attributable allowable costs without having to replay all events.</p>
-<p>Section 104 pool events: section104PoolTokensAcquired, section104PoolTokensDisposedOf, section104PoolTokensMatchedForSameDayRule, section104PoolTokensMatchedFor30DaysRule</p>
+<p>Share pooling events: sharePoolingTokenAcquired, sharePoolingTokenDisposedOf, sharePoolingTokenDisposalReverted</p>
 <p>Nft events: nftAcquired, nftCostBasisIncreased, nftDisposedOf</p>
 <p>Services: TransactionConsumer (breaks down incoming transactions and passes them on to the right handler. E.g. in the case of a transfer, it extracts the fee and makes it a Disposal value object to pass on to the Section104PoolHandler service. The rest of the transaction is passed on to the TransferHandler service), Section104PoolHandler (with rules – same-day, 30-days and section 104 pool), TransferHandler, NftHandler, AirdropHandler</p>
 <p>Diagram</p>
@@ -376,7 +376,6 @@ In other words, the code on the lower layers should not depend on the code on th
             })(document);
       </script>
 
-
       <script type="text/javascript">
         var disqus_shortname = "osteel";
               var disqus_identifier = "/drafts/a-crypto-activity-tracking-tool-part-3-code-design";
@@ -389,7 +388,7 @@ In other words, the code on the lower layers should not depend on the code on th
          })();
       </script>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-53994673-2']);
     _gaq.push(['_trackPageview']);
@@ -406,6 +405,16 @@ In other words, the code on the lower layers should not depend on the code on th
 
     ga('create', 'UA-53994673-2');
     ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
 </script>
 
      </div>

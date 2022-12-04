@@ -146,7 +146,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-10-21 ::
+          Last updated: 2022-12-04 ::
         Published: 2022-08-17
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/a-crypto-activity-tracking-tool-part-1-the-domain.html">history</a> ]
       </small>
@@ -248,8 +248,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>HMRC issue <a href="https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat">monthly exchange rates</a> that they publish on their website, filed by year. These rates can be used to convert amounts to pounds.</p>
 <h3 id="buying-and-selling">Buying and selling</h3>
 <p>Under Capital Gains Tax, cryptocurrencies are referred to as <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22050"><em>assets</em></a> or <em>tokens</em>. When one buys an asset at a certain price and then sells this asset, if the obtained amount (the <em>disposal proceeds</em>) is greater than the initial purchase price (the <em>cost basis</em>), then a <em>gain</em> has been <em>realised</em>.</p>
-<p>The gain is the difference between the cost basis and the disposal proceeds, and this amount is subject to Capital Gains Tax.</p>
-<p>If, on the contrary, the disposal proceeds are less than the cost basis, a <em>loss</em> has been realised and the difference can be deducted from gains acquired elsewhere.</p>
+<p>The gain is the difference between the cost basis and the proceeds, and this amount is subject to Capital Gains Tax.</p>
+<p>If, on the contrary, the proceeds are less than the cost basis, a <em>loss</em> has been realised and the difference can be deducted from gains acquired elsewhere.</p>
 <p>Selling an asset is also referred to as a <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22100"><em>disposal</em></a> – a broader category of <em>taxable events</em> comprising:</p>
 <ul>
 <li>selling the asset for a <em>fiat</em> currency;</li>
@@ -262,8 +262,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Buying an asset with fiat currency and selling it for the same currency is the most straightforward scenario from an accounting perspective. Investors need to keep track of the cost basis of an asset acquisition and calculate whether a gain or loss is realised upon selling the asset.</p>
 <p class="info"><span class="title">Example</span> Alice buys 5 ethers for £5000. She then sells 3 of these ethers for £4000. She initially bought these ethers at a <em>unit price</em> of <code>£5000 / 5 = £1000</code>, meaning the cost basis of the disposal is <code>£1000 * 3 = £3000</code>. Alice made a <code>£4000 - £3000 = £1000</code> gain, which is subject to Capital Gains Tax.</p>
 
-<p>Some people buy and accumulate assets over time, sometimes through regular automated purchases (a strategy called <a href="https://www.investopedia.com/terms/d/dollarcostaveraging.asp"><em>dollar-cost averaging</em></a>). In that case, the way to calculate capital gains or losses differs based on when the asset is disposed of, following the rules of <a href="https://coinpanda.io/blog/crypto-taxes-uk-capital-gains/"><em>pooling</em></a>.</p>
-<p>The main idea of pooling is that when an asset is acquired, it goes into a <em>pool</em>. That pool then grows or shrinks as more of the asset is acquired or disposed of. We calculate the cost basis of a disposal using the <em>average cost basis</em> of each purchase that flowed into the pool up to the date of the disposal.</p>
+<p>Some people buy and accumulate assets over time, sometimes through regular automated purchases (a strategy called <a href="https://www.investopedia.com/terms/d/dollarcostaveraging.asp"><em>dollar-cost averaging</em></a>). In that case, the way to calculate capital gains or losses differs based on when the asset is disposed of, following the rules of <a href="https://coinpanda.io/blog/crypto-taxes-uk-capital-gains/"><em>share pooling</em></a>.</p>
+<p>The main idea of share pooling is that when an asset is acquired, it goes into a <em>pool</em>. That pool then grows or shrinks as more of the asset is acquired or disposed of. We calculate the cost basis of a disposal using the <em>average cost basis</em> of each purchase that flowed into the pool up to the date of the disposal.</p>
 <p>This pool is also referred to as a <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22200"><em>Section 104 pool</em></a> or <em>Section 104 holding</em>.</p>
 <p class="info"><span class="title">Example</span> Bob buys 2 ethers for £2000. A few days later, he buys 2 more ethers for £3000. He now has 4 ethers in the pool, for an average cost basis of <code>(£2000 + £3000) / 4 = £1250</code> per unit. A month later he decides to sell 3 ethers for £6000. He made a <code>£6000 - (3 * £1250) = £2250</code> gain, which is subject to Capital Gains Tax.</p>
 
@@ -297,7 +297,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>In that case, it's the investor's job to determine the cost basis of the operation, by finding out the <em>market value</em> of the sold asset in fiat terms at the time of the transaction. That market value should be taken from the exchange on which the swap was conducted if available, and from price-tracking websites such as <a href="https://coinmarketcap.com/">CoinMarketCap</a> or <a href="https://www.coingecko.com/">CoinGecko</a> if not.</p>
 <p class="info"><span class="title">Example</span> Bob buys 2 ethers for £2000. A few days later, he swaps 1 ether for 0.1 bitcoins. He looks up the market value of the ETH token at the time of the swap and notes that it was £1500 per ether. As a result, Bob made a <code>£1500 - (£2000 / 2) = £500</code> gain with this transaction, which is subject to Capital Gains Tax. Bob eventually sells the 0.1 bitcoins for £2100. The cost basis of the acquired 0.1 bitcoins was £1500, so Bob made another gain of <code>£2100 - £1500 = £600</code>, which is also subject to Capital Gains Tax.</p>
 
-<p>Note that <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22257">the rules of pooling also apply here</a> – the only difference is that the cost basis in fiat terms must be established beforehand.</p>
+<p>Note that <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22257">the rules of share pooling also apply here</a> – the only difference is that the cost basis in fiat terms must be established beforehand.</p>
 <p class="info"><span class="title">What if the asset is not listed?</span> If the market value of one of the assets involved in the transaction isn't tracked anywhere, the market value of the other asset can be used instead. If none of the assets' market values is tracked, the investor must determine the <em>fair market value</em> of the disposed asset. It is not very clear how to do that, however.</p>
 
 <h3 id="using-an-asset-to-purchase-goods-and-services">Using an asset to purchase goods and services</h3>
@@ -305,7 +305,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>When the good isn't priced in fiat at all, the investor is supposed to figure out its fair market value. Typically, that’d be the market value of the asset sold for the good at the time of the transaction, as reported by a price-tracking platform like mentioned earlier.</p>
 <p class="info"><span class="title">Example</span> Charlie buys 0.5 bitcoins for £10000, at a unit price of £20000 per bitcoin. He wants to attend an event whose tickets are exclusively priced in bitcoin, at 0.1 bitcoins each. Charlie looks up the market value of the BTC token at the time of the purchase and notes that it was £21000 per bitcoin. As a result, Charlie made a <code>(£21000 * 0.1) - (£20000 * 0.1) = £100</code> gain with this transaction, which is subject to Capital Gains Tax.</p>
 
-<p>Keep in mind that here too, pooling rules apply.</p>
+<p>Keep in mind that here too, share pooling rules apply.</p>
 <h3 id="fees-in-fiat">Fees in fiat</h3>
 <p>Most exchanges charge a fee for the following operations:</p>
 <ul>
@@ -317,10 +317,10 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>When buying an asset with fiat currency, the fee must be <em>included</em> in the cost basis:</p>
 <p class="info"><span class="title">Example</span> Alice buys 2 ethers for £2000 on an exchange. The exchange charges a £20 fee to execute the transaction. The cost basis of the 2 ethers is then <code>£2000 + £20 = £2020</code>, so a unit price of £1010.</p>
 
-<p>When selling an asset for fiat currency, the fee must be <em>excluded</em> from the disposal proceeds:</p>
+<p>When selling an asset for fiat currency, the fee must be <em>excluded</em> from the proceeds:</p>
 <p class="info"><span class="title">Example</span> A couple of months later, Alice sells one of her ethers for £2500 on the same exchange. The exchange charges a £25 fee to execute the transaction. Alice made a <code>(£2500 - £25) - (£1010 * 1) = £1465</code> gain, which is subject to Capital Gains Tax.</p>
 
-<p>Finally, when swapping an asset for another, the fee can either be <em>excluded</em> from the disposal proceeds of the disposed asset or <em>included</em> in the cost basis of the acquired asset:</p>
+<p>Finally, when swapping an asset for another, the fee can either be <em>excluded</em> from the proceeds of the disposed asset or <em>included</em> in the cost basis of the acquired asset:</p>
 <blockquote>
 <p>Exchange (swap) token A for token B: the fee paid is in relation to the whole of the transaction, that is for a disposal of one asset and the acquisition of another asset. This means that the fee is attributable to both assets. HMRC’s view is that this fee would be allowable as a deduction in computing the disposal in respect of token A under section 38(1)(c), and that it would be allowable as a deduction in computing the eventual disposal of token B under section 38(1)(a). TCGA92/S52(1) makes it clear that a sum may be allowed as a deduction only once in computing a disposal.</p>
 </blockquote>
@@ -330,7 +330,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Where an allowable cost relates to more than one asset, the cost should be apportioned between those assets on a just and reasonable basis (TCGA92/S52(4)). You can accept that apportioning this type of fee equally between the assets disposed of and the assets acquired (that is a 50/50 split) is just and reasonable in these circumstances.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22150" title="CRYPTO22150 - Cryptoassets for individuals: Capital Gains Tax: allowable expenses">The Cryptoassets Manual</a></p>
-<p>This means that the fee can also be split in half – 50% is excluded from the disposal proceeds of the disposed asset and the other 50% is included in the cost basis of the acquired asset. This is the method I'll be using from now on.</p>
+<p>This means that the fee can also be split in half – 50% is excluded from the proceeds of the disposed asset and the other 50% is included in the cost basis of the acquired asset. This is the method I'll be using from now on.</p>
 <p class="info"><span class="title">Example</span> Alice swaps her remaining ether for 0.1 bitcoins on the same exchange. The exchange charges a £10 fee to execute the transaction. Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3000 per ether. As 50% of the fee must be excluded from the market value of the disposed ether, Alice made a <code>£3000 - (£10 / 2) - £1010 = £1985</code> gain with this transaction, which is subject to Capital Gains Tax. As 50% of the fee must be included in the cost basis of the acquired bitcoins, the corresponding amount is <code>£3000 + (£10 / 2) = £3005</code>.</p>
 
 <p>Things are slowly getting complicated, but the real fun starts when transaction fees are settled in cryptocurrency.</p>
@@ -341,7 +341,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Most cryptoasset transactions require the person disposing of the tokens to pay a fee. This fee will often be satisfied in tokens. If the transaction fee is satisfied in tokens then you need to consider that fee as one of the costs for the disposal of the tokens, but you also need to consider the fee as a disposal in its own right.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22280" title="CRYPTO22280 - Cryptoassets for individuals: Capital Gains Tax: Fees satisfied in tokens">The Cryptoassets Manual</a></p>
-<p>This means that in a swapping transaction whose fee is settled in cryptocurrency, and when following the fee-split rule, not only 50% of the market value of the fee must be excluded from the disposal proceeds of the disposed asset and the other 50% be included in the cost basis of the acquired asset, but the entire market value of the fee must also be counted as a disposal, <em>following the pooling rules</em>. Read that again.</p>
+<p>This means that in a swapping transaction whose fee is settled in cryptocurrency, and when following the fee-split rule, not only 50% of the market value of the fee must be excluded from the proceeds of the disposed asset and the other 50% included in the cost basis of the acquired asset, but the entire market value of the fee must also be counted as a disposal, <em>following the share pooling rules</em>. Read that again.</p>
 <div class="info"><p><span class="title">Example</span> Bob buys 0.2 bitcoins for £4000 on an exchange, at a unit price of £20000 per bitcoin. A few weeks later he swaps 0.1 bitcoins for 2 ethers. The exchange charges a 0.001 BTC fee for the transaction. Bob looks up the market value of the BTC token at the time of the transaction and notes that it was £30000 per bitcoin.</p><p>As 50% of the market value of the fee must be excluded from the market value of the disposed bitcoins, Bob made a <code>(£30000 * 0.1) - (£30000 * 0.001 / 2) - (£20000 * 0.1) = £985</code> gain with this transaction, which is subject to Capital Gains Tax.</p><p>As 50% of the market value of the fee must be included in the cost basis of the acquired ethers, the corresponding amount is <code>(£30000 * 0.1) + (£30000 * 0.001 / 2) = £3015</code>.</p><p>As the fee also constitutes a disposal, Bob made another <code>(£30000 * 0.001) - (£20000 * 0.001) = £10</code> gain with this transaction, which is subject to Capital Gains Tax. But as both disposals happened on the same day, they must be treated as a single transaction.</p><p>In the end, Bob made a <code>(£30000 * (0.1 + 0.001)) - (£30000 * 0.001 / 2) - (£20000 * (0.1 + 0.001)) = £995</code> gain with this transaction, which is subject to Capital Gains Tax.</p></div>
 
 <p>How about transferring an asset from one wallet to another? As long as you are the owner of both wallets, there is no capital gain to report on the transferred amount:</p>
@@ -362,12 +362,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="info"><p><span class="title">Example</span> Alice lends 3 ethers previously acquired for £6000 to a DeFi protocol that doesn't guarantee a specific return. She gets 3 zETH in exchange, a token that represents her lending. Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3000 per ether. Alice made a <code>(£3000 * 3) - £6000 = £3000</code> gain, which is subject to Capital Gains Tax. The cost basis of the 3 zETH tokens is <code>£3000 * 3 = £9000</code>.</p><p>A few months later she decides to withdraw her ethers from the DeFi protocol. She returns the 3 zETH and gets back 3.1 ethers. There is no price-tracking information for the zETH token, so Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3200 per ether. Alice made a <code>(£3200 * 3.1) - £9000 = £920</code> gain, which is subject to Capital Gains Tax.</p></div>
 
 <h3 id="non-fungible-tokens">Non-Fungible Tokens</h3>
-<p><em>Non-Fungible Tokens</em> or <em>NFTs</em> are also subject to Capital Gains Tax. But the key difference with <em>fungible tokens</em> (e.g. bitcoins or ethers) is that, because of their uniqueness, pooling rules don't apply to NFTs:</p>
+<p><em>Non-Fungible Tokens</em> or <em>NFTs</em> are also subject to Capital Gains Tax. But the key difference with <em>fungible tokens</em> (e.g. bitcoins or ethers) is that, because of their uniqueness, share pooling rules don't apply to NFTs:</p>
 <blockquote>
 <p>Non-Fungible Tokens (NFTs) are separately identifiable and so are not pooled.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22200" title="CRYPTO22200 - Cryptoassets for individuals: Capital Gains Tax: pooling">The Cryptoassets Manual</a></p>
-<p class="info"><span class="title">Example</span> Bob buys an NFT on a platform for £500. Later that day, he sells it for £600, making a £100 gain which is subject to Capital Gains Tax. A week later, he buys the same NFT again for £400. Because pooling rules don't apply, the cost basis of the sold NFT is still £500. Bob made a <code>£600 - £500 = £100</code> gain, which is subject to Capital Gains Tax.</p>
+<p class="info"><span class="title">Example</span> Bob buys an NFT on a platform for £500. Later that day, he sells it for £600, making a £100 gain which is subject to Capital Gains Tax. A week later, he buys the same NFT again for £400. Because share pooling rules don't apply, the cost basis of the sold NFT is still £500. Bob made a <code>£600 - £500 = £100</code> gain, which is subject to Capital Gains Tax.</p>
 
 <p>Where it gets tricky in my case is that I <em>minted</em> (created) some NFTs in exotic ways, for instance by <em>burning</em> several NFTs to create a new one. In that case, the cost basis of the new NFT is the sum of the cost bases of the burnt NFTs.</p>
 <p class="info"><span class="title">Example</span> Charlie buys an NFT depicting a lion for £500. He then successively buys an NFT of a goat for £300 and an NFT of a snake for £400. He burns the three NFTs to mint a new NFT, depicting the Chimera. A few days later, he sells the Chimera NFT for £2000. Charlie made a <code>£2000 - (£500 + £300 + £400) = £800</code> gain, which is subject to Capital Gains Tax.</p>
@@ -378,7 +378,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>An airdrop is when an individual receives an allocation of tokens. For example, tokens that are given as part of a marketing or advertising campaign.</p>
 </blockquote>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22350" title="CRYPTO22350 - Cryptoassets for individuals: Capital Gains Tax: airdrops">The Cryptoassets Manual</a></p>
-<p>Airdropped tokens also follow the Section 104 pool rules – they go to a new pool if the investor didn't <em>hold</em> any yet or flow into the existing pool if she did. Their cost basis is the market value of the asset at the time it was airdropped.</p>
+<p>Airdropped tokens also follow the rules of share pooling – they go to a new Section 104 pool if the investor didn't <em>hold</em> any yet or flow into the existing pool if she did. Their cost basis is the market value of the asset at the time it was airdropped.</p>
 <div class="info"><p><span class="title">Example</span> Alice receives 100 MEOW tokens as part of a marketing campaign. She did not previously hold this asset so the tokens go to a new Section 104 pool. Alice looks up the market value of the MEOW token at the time of the transaction and notes that it was £1 per MEOW.</p><p>A few days later, Alice buys another 100 MEOW tokens for £200 on an exchange, which flow into the existing Section 104 pool. The average cost basis of the pool is <code>(£100 + £200) / (100 + 100) = £1.5</code> per unit. A month later, Alice sells 150 MEOW tokens for £300. Alice made a <code>£300 - (150 * £1.5) = £75</code> gain, which is subject to Capital Gains Tax.</p></div>
 
 <p>But airdropped tokens are a bit special – they can also be considered as income when recipients qualified for the airdrop based on past activity:</p>
@@ -443,7 +443,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-10-21" pubdate>2022-10-21</time>
+          <time datetime="2022-12-04" pubdate>2022-12-04</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           ]
@@ -491,7 +491,6 @@ styles, `#sidebar-checkbox` for behavior. -->
             })(document);
       </script>
 
-
       <script type="text/javascript">
         var disqus_shortname = "osteel";
               var disqus_identifier = "/posts/a-crypto-activity-tracking-tool-part-1-the-domain";
@@ -504,7 +503,7 @@ styles, `#sidebar-checkbox` for behavior. -->
          })();
       </script>
 
-    <script type="text/javascript">
+<script type="text/javascript">
     var _gaq = _gaq || [];
     _gaq.push(['_setAccount', 'UA-53994673-2']);
     _gaq.push(['_trackPageview']);
@@ -521,6 +520,16 @@ styles, `#sidebar-checkbox` for behavior. -->
 
     ga('create', 'UA-53994673-2');
     ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
 </script>
 
      </div>
