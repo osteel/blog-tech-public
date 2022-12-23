@@ -149,7 +149,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-08-17 ::
+          Last updated: 2022-12-23 ::
         Published: 2022-01-31
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer.html">history</a> ]
       </small>
@@ -990,7 +990,8 @@ $application->run();</pre>
 33
 34
 35
-36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CI</span>
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CI</span>
 
 <span class="nt">on</span><span class="p">:</span>
   <span class="nt">push</span><span class="p">:</span>
@@ -1010,6 +1011,7 @@ $application->run();</pre>
           <span class="p p-Indicator">-</span> <span class="s">&quot;7.4&quot;</span>
           <span class="p p-Indicator">-</span> <span class="s">&quot;8.0&quot;</span>
           <span class="p p-Indicator">-</span> <span class="s">&quot;8.1&quot;</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;8.2&quot;</span>
 
     <span class="nt">steps</span><span class="p">:</span>
       <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout</span>
@@ -1046,7 +1048,7 @@ $application->run();</pre>
 </pre></div>
 
 
-<p>If you're wondering why I didn't list <code>8.1</code>, that's because as per the rules of <a href="https://semver.org/">Semantic Versioning</a> (<em>semver</em>), <code>^8.0</code> covers all versions above or equal to <code>8.0</code> but strictly under <code>9.0</code>, which includes <code>8.1</code>. If you're like me and tend to forget the rules of semver when you need them, keep this <a href="https://devhints.io/semver">cheatsheet</a> handy and thank me later.</p>
+<p>If you're wondering why I didn't list <code>8.1</code> nor <code>8.2</code>, that's because as per the rules of <a href="https://semver.org/">Semantic Versioning</a> (<em>semver</em>), <code>^8.0</code> covers all versions above or equal to <code>8.0</code> but strictly under <code>9.0</code>, which includes <code>8.1</code> and <code>8.2</code>. If you're like me and tend to forget the rules of semver when you need them, keep this <a href="https://devhints.io/semver">cheatsheet</a> handy and thank me later.</p>
 <p>Save, commit and push the above – if it went well, you should see the workflow running in the <em>Actions</em> tab of your GitHub repository:</p>
 <p><img alt="Workflow execution" src="/images/2022/01/31/cli_11.png" title="Workflow execution" /></p>
 <p>Then again, refer to the article's <a href="https://github.com/osteel/php-cli-demo">repository</a> if something goes wrong.</p>
@@ -1286,7 +1288,7 @@ $application->run();</pre>
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-08-17" pubdate>2022-08-17</time>
+          <time datetime="2022-12-23" pubdate>2022-12-23</time>
           :: [
           <a href="https://tech.osteel.me/tag/cli">cli</a>
           <a href="https://tech.osteel.me/tag/composer">composer</a>
