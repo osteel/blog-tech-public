@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>https://tech.osteel.me/posts/upgrade-your-project-to-the-latest-php-version-with-rector</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://tech.osteel.me/posts/speaking-at-php-london-and-other-news</loc>
     <priority>0.8</priority>
   </url>
