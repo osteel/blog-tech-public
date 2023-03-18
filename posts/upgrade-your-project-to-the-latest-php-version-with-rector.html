@@ -148,7 +148,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-03-15 ::
+          Last updated: 2023-03-18 ::
         Published: 2023-03-15
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/upgrade-your-project-to-the-latest-php-version-with-rector.html">history</a> ]
       </small>
@@ -171,10 +171,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>I wanted to upgrade a project to PHP 8.2 and figured I could use <a href="https://getrector.com/">Rector</a> for this.</p>
 <p>Not only was that the case, but I also completely underestimated how easy it was going to be.</p>
 <h2 id="what-is-rector">What is Rector?</h2>
-<p><a href="https://getrector.com/">Rector</a> is a tool written in PHP allowing you to automate various refactoring tasks. It analyses your code and applies whatever <a href="https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md" title="Rules Overview">rules</a> you've specified in its <a href="https://getrector.com/documentation" title="Documentation">configuration</a>.</p>
-<p>It is also possible to <a href="https://getrector.com/documentation/custom-rule" title="Custom Rule">create your own rules</a>.</p>
-<h2 id="upgrade-your-project-to-php-82">Upgrade your project to PHP 8.2</h2>
-<p>You first need to install Rector as a development dependency:</p>
+<p><a href="https://getrector.com/">Rector</a> is a free and open-source tool written in PHP allowing you to automate various refactoring tasks. It analyses your code and applies whatever <a href="https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md" title="Rules Overview">rules</a> you've specified in its <a href="https://getrector.com/documentation" title="Documentation">configuration</a>. It is also possible to <a href="https://getrector.com/documentation/custom-rule" title="Custom Rule">create your own rules</a>.</p>
+<h2 id="how-to-upgrade-your-project-to-php-82">How to upgrade your project to PHP 8.2</h2>
+<p>First, install Rector as a development dependency:</p>
 <div class="highlight"><pre><span></span>$ composer require --dev rector/rector
 </pre></div>
 
@@ -217,7 +216,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 
 
-<p>You can also specify the paths to analyse in the configuration file:</p>
+<p>You can also specify the paths to analyse in the configuration file directly:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -250,19 +249,19 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>After which you can simply run:</p>
+<p>And then simply run:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/bin/rector process
 </pre></div>
 
 
-<h2 id="what-just-happened">What just happened?</h2>
-<p>In the above, the <code>UP_TO_PHP_82</code> constant means that not only the rules to upgrade from PHP 8.1 to PHP 8.2 were applied, but so did those from PHP 8.0 to PHP 8.1, as well as all the other ones down to PHP 5.2.</p>
-<p>That's right – you can bring an entire code base from PHP 5.2 to the latest version with a single command, using predefined rulesets provided by Rector.</p>
-<p>But there's more – check all the available rules and their description <a href="https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md" title="Rules Overview">here</a>, which go way beyond version-related changes. And, as mentioned earlier, you can also <a href="https://getrector.com/documentation/custom-rule" title="Custom Rule">create your own rules</a> if need be.</p>
+<h2 id="whats-happening-under-the-hood">What's happening under the hood?</h2>
+<p>In the above, the <code>UP_TO_PHP_82</code> constant means that not only the rules to upgrade from PHP 8.1 to PHP 8.2 were applied, but so did those from PHP 8.0 to PHP 8.1, as well as all the other versions down to PHP 5.2.</p>
+<p>In other words, you can bring an entire code base from PHP 5.2 to the latest version with a single command, using predefined rulesets provided by Rector.</p>
+<p>But there's more – you can check the available rules and their description <a href="https://github.com/rectorphp/rector/blob/main/docs/rector_rules_overview.md" title="Rules Overview">here</a>, which go way beyond version-related changes. And, as mentioned earlier, you can also <a href="https://getrector.com/documentation/custom-rule" title="Custom Rule">create your own rules</a> if need be.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>Rector has been on my radar for a while and I even used it a few times before, yet I'm still surprised by how powerful it is.</p>
-<p>While it seems to be getting a little more traction recently, along with other static analysis tools like <a href="https://phpstan.org/">PHPStan</a>, it is still very much underused. One of the reasons is probably that developers are unaware of its potential, of which the above is a mere preview.</p>
-<p>There is a <a href="https://getrector.com/book" title="Rector - The Power of Automated Refactoring">book</a> covering Rector in depth, which I'm planning to read soon.</p>
+<p>While it seems to be getting a little more traction recently, along with other static analysis tools like <a href="https://phpstan.org/">PHPStan</a>, it is still very much underused. One of the reasons is probably that developers are unaware of its potential, of which the above is just a taste.</p>
+<p>There is a <a href="https://getrector.com/book" title="Rector - The Power of Automated Refactoring">book</a> covering Rector in depth, which I'm planning on reading soon.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
 
@@ -282,7 +281,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-03-15" pubdate>2023-03-15</time>
+          <time datetime="2023-03-18" pubdate>2023-03-18</time>
           :: [
           <a href="https://tech.osteel.me/tag/rector">rector</a>
           <a href="https://tech.osteel.me/tag/refactoring">refactoring</a>
