@@ -177,8 +177,8 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><img alt="A transparent whiteboard" src="/images/2022/07/13/dime_01.jpg" title="Photo by Kvalifik on Unsplash" />
 <p class="caption">Photo by <a href="https://unsplash.com/@kvalifik?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Kvalifik</a> on <a href="https://unsplash.com/s/photos/whiteboard?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a></p></p>
 <p>Anyone following me on <a href="https://twitter.com/osteel">Twitter</a> is well aware of my interest in crypto. I find it a fascinating topic with ramifications that I believe will change society in many ways.</p>
-<p>But whether you share this view or not doesn't really matter here – this post isn't about crypto (feel free to head over <a href="https://medium.com/coinmonks/why-bitcoin-matters-f7dbeb70b725" title="Why Bitcoin Matters">here</a> if you want my take on Bitcoin though!).</p>
-<p>The field just happens to serve as a backdrop for this series, focussed on the building of a PHP console application that will help me track my crypto activity.</p>
+<p>But whether you share this view or not doesn't really matter here – this post isn't about crypto (feel free to check <a href="https://medium.com/coinmonks/why-bitcoin-matters-f7dbeb70b725" title="Why Bitcoin Matters">this post</a> if you want to know why I think Bitcoin is important, though).</p>
+<p>The field just happens to serve as a backdrop for this series, focussed on the building of a PHP console application that will help me track my crypto activity for tax purposes.</p>
 <p>And there are a few reasons why I'm getting into this.</p>
 <h2 id="taxes">Taxes</h2>
 <blockquote>
@@ -187,29 +187,29 @@ styles, `#sidebar-checkbox` for behavior. -->
 </blockquote>
 <p>As I keep exploring the ever-expanding crypto sphere, I'm performing all sorts of actions, some of which <a href="https://www.gov.uk/government/organisations/hm-revenue-customs">Her Majesty's Revenue and Customs</a> (HMRC) has an interest in. I live in the UK and, like in many other places, the government is grappling with this rapidly evolving field, adding new rules and amending existing ones on a regular basis to try and keep up with new practices.</p>
 <p>While it's fairly easy to keep track of and compute a limited number of transactions, it becomes far more complicated when that number goes up (wait – isn't NGU supposed to be good?). There are lots of portfolio- and tax-tracking tools out there, but I couldn't find one that covers all my use cases or that reports numbers I can make sense of.</p>
-<p>As I want to understand what's going on under the hood and as I need to know the rules to make informed decisions anyway, I figured I might as well build my own tool.</p>
+<p>As I wanted to understand the underlying rules to make informed decisions anyway, I figured I might as well build my own tool.</p>
 <h2 id="technical-exploration">Technical exploration</h2>
 <p>The second reason for this series is that this project has some interesting technical aspects to it:</p>
 <ol>
 <li>
-<p>It's a good candidate for a console application, a topic I've been looking into and <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer">covering</a> lately;</p>
+<p>It's a good candidate for a console application, a topic I've been <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer">looking into</a> lately;</p>
 </li>
 <li>
 <p>It's sufficiently complex that it could use some advanced features typically provided by a framework. <a href="https://laravel-zero.com/">Laravel Zero</a> has been on my radar for a while and this feels like a good opportunity to use it;</p>
 </li>
 <li>
-<p>I've recently been exposed to <a href="https://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>, an approach where an application's state is stored as a sequence of events instead of keeping the current state only. Storing my crypto activity this way could help me understand why the numbers are what they are while allowing me to process the data in ways I haven't thought of yet later on (e.g. through additional <a href="https://domaincentric.net/blog/event-sourcing-projections">projections</a>);</p>
+<p>I've recently been exposed to <a href="https://martinfowler.com/eaaDev/EventSourcing.html">Event Sourcing</a>, an approach where an application's state is stored as a sequence of events leading to its current state, instead of storing the latter only. Keeping track of my crypto activity using this method could help me understand why the numbers are what they are, while allowing me to process the data in ways I haven't thought of later on (e.g. through additional <a href="https://domaincentric.net/blog/event-sourcing-projections">projections</a>);</p>
 </li>
 <li>
 <p>Event Sourcing is considered a pattern of <a href="https://en.wikipedia.org/wiki/Domain-driven_design">Domain-Driven Design</a> (DDD), which involves talking to experts to come up with a model matching the business domain. I've got access to an accountant I can ask questions to and there's now <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual">plenty</a> of <a href="https://coinpanda.io/crypto-taxes-uk-hmrc/">literature</a> <a href="https://koinly.io/guides/hmrc-cryptocurrency-tax-guide/">available</a> out there, which makes this approach suitable for this project.</p>
 </li>
 </ol>
 <h2 id="build-in-public">Build in public</h2>
-<p>Finally, the third reason I'm writing this series is that I've been interested in building in public for a while. This approach is usually taken with an <a href="https://www.ceros.com/inspire/originals/building-in-public/">entrepreneurial</a> mindset – advertise the product you're planning to build, document and share your progress, grow an audience and gather feedback along the way. The goal is to then convert part of that audience to buyers when the product is finally available.</p>
-<p>The main difference here is I've got nothing to sell. The tool will be <a href="https://github.com/osteel/dime">open-source</a> and people will be free to use it if they want to, although if they do it will be their responsibility to ensure the numbers are correct (by running them by an accountant, for instance).</p>
+<p>Finally, the third reason I'm writing this series is that I've been interested in building in public for a while. This approach is usually taken with an <a href="https://www.ceros.com/inspire/originals/building-in-public/">entrepreneurial</a> mindset – advertise the product you're planning to build, document and share your progress, grow an audience and gather feedback along the way – the goal being to then convert part of that audience to buyers when the product is finally available.</p>
+<p>The main difference here is I've got nothing to sell. The tool will be <a href="https://github.com/osteel/dime">open-source</a> and free to use, although if people decide to do so it will be their responsibility to ensure the numbers are correct (by running them by a professional accountant, for instance).</p>
 <p>In short, people joining me on this journey should come for the process first and foremost, and not so much for the outcome.</p>
 <p>I am not an expert in DDD any more than I am an Event Sourcing guru. My aim here is to learn as much as possible on these topics by building and to document my findings as I go. I hope to introduce others to these topics along the way, and to maybe gather useful feedback if people are kind enough to chip in. I'm also keen to explore how far PHP CLI applications can go.</p>
-<p>Since I haven't done anything yet, I don't know how many parts this series will comprise. Feel free to subscribe to the newsletter further down so you don't miss the next posts, or to follow me on <a href="https://twitter.com/osteel">Twitter</a> where I'll share them also.</p>
+<p>Since I haven't done anything yet, I don't know how many parts this series will comprise. Feel free to subscribe to the newsletter using the form further down so you don't miss the next posts, or to follow me on <a href="https://twitter.com/osteel">Twitter</a> where I'll share them also.</p>
 <p>For now, as DDD commands, let us start with <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">the domain</a>.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
