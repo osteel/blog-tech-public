@@ -12,17 +12,17 @@
   </url>
 
   <url>
-    <loc>https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-2-the-model</loc>
+    <loc>https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model</loc>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-part-1-the-domain</loc>
+    <loc>https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain</loc>
     <priority>0.8</priority>
   </url>
 
   <url>
-    <loc>https://tech.osteel.me/posts/a-crypto-activity-tracking-tool-introduction-why</loc>
+    <loc>https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why</loc>
     <priority>0.8</priority>
   </url>
 
