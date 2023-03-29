@@ -151,7 +151,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-03-28 ::
+          Last updated: 2023-03-29 ::
         Published: 2022-09-01
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model.html">history</a> ]
       </small>
@@ -212,97 +212,94 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>I later made a digital version of it:</p>
 <p><img alt="Transaction processing flowchart" src="/images/2022/09/01/dime_03.png" title="Transaction processing flowchart" />
 <p class="caption">Transaction processing flowchart (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2022/09/01/flowchart-big.png">here</a> for a higher definition)</p></p>
-<p>Wait. That is not the same diagram! That's because you are looking at an updated version of it, that I came up with later on, while working on the code design. As I mentioned in the domain article, the different phases of DDD tend to feed into each other to get an ever clearer picture of what the software should be. The above diagram is the result of this mechanism.</p>
+<p>Wait. That is not the same diagram. That's because you are looking at an updated version of it, that I came up with later on, while working on the code design. As I mentioned in the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#what-is-the-domain-for" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">domain article</a>, the different phases of DDD tend to feed into each other to get an increasingly clearer picture of what the software should be. The above diagram is the result of this process.</p>
 <h3 id="user-stories">User stories</h3>
-<p>Looking at the flowchart, I realised I needed users to report their transactions in a way that would fit the logic.</p>
-<p>So I started listing the reporting needs as user stories:</p>
+<p>Looking at the flowchart, I realised I needed users to keep track of their transactions in a way that would satisfy the logic. So I started listing the reporting needs as user stories:</p>
 <ul>
-<li><em>As a user, I want to specify whether a transaction is a transfer so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether an asset is an NFT so the transaction is processed correctly</em></li>
-<li><em>As a user, I want to specify whether a transaction is a swap so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether a transaction is a disposal so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether a transaction is an acquisition so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether a transaction is an airdrop so it is processed correctly</em></li>
-<li><em>As a user, I want to specify a transaction's fee so it is processed correctly</em></li>
+<li><em>As a user, I want my acquisitions to be processed as such, so I can get the correct figures</em></li>
+<li><em>As a user, I want my disposals to be processed as such, so I can get the correct figures</em></li>
+<li><em>As a user, I want my swaps to be processed as such, so I can get the correct figures</em></li>
+<li><em>As a user, I want my transfers to be processed as such, so I can get the correct figures</em></li>
+<li><em>As a user, I want fees to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want share pooling assets to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want non-fungible assets to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want airdrops to be identified in my transactions, so I can get the correct figures</em></li>
 </ul>
 <p>I went through the domain article again and added some implicit use cases not represented on the flowchart:</p>
 <ul>
-<li><em>As a user, I want to specify the cost basis of a transaction so it is processed correctly</em></li>
-<li><em>As a user, I want to specify the disposal proceeds of a transaction so it is processed correctly</em></li>
-<li><em>As a user, I want to specify the market value of a fee so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether an acquisition is a gift so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether an acquisition is a gift from a spouse or civil partner so it is processed correctly</em></li>
-<li><em>As a user, I want to specify whether an acquired NFT was minted from other NFTs so the transaction is processed correctly</em></li>
-<li><em>As a user, I want to specify whether an airdrop should be counted as income so it is processed correctly</em></li>
-<li><em>As a user, I want to specify transaction hashes so I can easily access transaction logs</em></li>
-<li><em>As a user, I want to attach a note to a transaction so I can be reminded of the context</em></li>
+<li><em>As a user, I want my transactions to be processed in chronological order, so I can get the correct figures</em></li>
+<li><em>As a user, I want fiat amounts to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want cost bases to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want proceeds to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want the fees' market value to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want non-fungible assets swapped from other non-fungible assets to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want airdrops that should be counted as income to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want to report amounts in other currencies, so I don't need to convert them to British pounds myself</em></li>
 </ul>
-<p>Note that I didn't mention hard forks – the reason is that they can be reported as regular acquisitions with a 0 cost basis.</p>
-<p>I then added some more generic needs:</p>
+<p>Note that I didn't mention hard forks nor gifts. The reason is that the former can be reported as regular acquisitions with a 0 cost basis, and the latter can also be reported as regular acquisitions, using the asset's market value at the time of the gift as the cost basis, or at the moment the asset was originally acquired by the gifter, if that person is the spouse of civil partner.</p>
+<p>In both cases, a note can be added to the spreadsheet to mention that the acquisition came from a hard fork or a gift, but this is at the user's discretion, and not related to the software per se.</p>
+<p>I then moved on to the submission process, for which I came up with the following stories:</p>
 <ul>
-<li><em>As a user, I want to report amounts in pounds so I can obtain numbers in the currency I need to pay my taxes in</em></li>
-<li><em>As a user, I want to report amounts in other currencies so I don't need to convert them to pounds myself</em></li>
+<li><em>As a user, I want to submit my transactions as a CSV file, so I don't need to convert them to another format</em></li>
+<li><em>As a user, I want to submit my transactions as an Excel file, so I don't need to convert them to another format</em></li>
+<li><em>As a user, I want to submit a previously submitted file with new transactions, so I don't need to submit the new transactions only</em></li>
+<li><em>As a user, I want to select a specific tax year, so I don't get numbers for tax years I am not interested in</em></li>
+<li><em>As a user, I want to specify whether my activity is considered trading, so I can get the correct figures</em></li>
 </ul>
-<p>That got me thinking about the submission process, for which I came up with these stories:</p>
+<p>That led me to the reviewing process, when the user goes through the data returned by the software:</p>
 <ul>
-<li><em>As a user, I want to submit a CSV file so I can process my transactions</em></li>
-<li><em>As a user, I want to submit an Excel file so I can process my transactions</em></li>
-<li><em>As a user, I want to submit a previously submitted file with new transactions so I don't need to submit new transactions only</em></li>
-<li><em>As a user, I want to select a tax year so I get numbers for this tax year only</em></li>
-<li><em>As a user, I want to specify whether my activity is considered trading so I can obtain numbers for the correct tax regime</em></li>
-</ul>
-<p>In turn, that led to the reviewing process, where the user goes through the information returned by the software:</p>
-<ul>
-<li><em>As a user, I want to see my capital gains so I can complete my tax return</em></li>
-<li><em>As a user, I want to see my income so I can complete my tax return</em></li>
-<li><em>As a user, I want to see my non-attributable allowable costs so I can complete my tax return</em></li>
+<li><em>As a user, I want to see my capital gain, so I can complete my tax return</em></li>
+<li><em>As a user, I want to see my income, so I can complete my tax return</em></li>
+<li><em>As a user, I want to see my non-attributable allowable cost, so I can complete my tax return</em></li>
+<li><em>As a user, I want amounts to be expressed in British pounds, so I can complete my tax return</em></li>
 </ul>
 <p>I thought of a couple more use cases for this one, extracted from the domain:</p>
 <ul>
-<li><em>As a user, I want to know whether I am within the 30 days following the end of the tax year so I am aware I should wait before completing my tax return</em></li>
-<li><em>As a user, I want to see my revenues beyond allowances so I don't need to calculate this myself</em></li>
+<li><em>As a user, I want to know whether I am within the 30 days following the end of the tax year, so I am aware I should wait before completing my tax return</em></li>
+<li><em>As a user, I want to see my revenue beyond allowances, so I don't need to calculate this myself</em></li>
 </ul>
-<p>Finally, there's a fourth category of stories that only came to me later, during the code design phase – exporting the results. It's well and good to display the results in the terminal, but as a user I also want to be able to save the corresponding figures in a file for easy access.</p>
-<p>I added the following stories:</p>
+<p>Finally, there's a fourth category of stories that only came to me later, during the code design phase – exporting the results. Because while displaying the results in the terminal is nice, as a user I also want the possibility to save them to a file, for eventual access:</p>
 <ul>
-<li><em>As a user, I want to export my revenues and non-attributable allowable costs to a CSV file so I can complete my tax return</em></li>
-<li><em>As a user, I want to export my revenues and non-attributable allowable costs to an Excel file so I can complete my tax return</em></li>
-<li><em>As a user, I want to export my revenues and non-attributable allowable costs to a PDF file so I can complete my tax return</em></li>
+<li><em>As a user, I want to export my capital gain, income and non-attributable allowable cost to a CSV file, so I can complete my tax return</em></li>
+<li><em>As a user, I want to export my capital gain, income and non-attributable allowable cost to an Excel file, so I can complete my tax return</em></li>
+<li><em>As a user, I want to export my capital gain, income and non-attributable allowable cost to a PDF file, so I can complete my tax return</em></li>
 </ul>
-<p>But not all stories have the same importance. To classify them further and get a better sense of what would need to be built and when, I resorted to a tool I had used before – a user story map.</p>
+<p>I ended up with a decent amount of user stories, but that wasn't the end of it. Not all stories bear the same weight and I now needed to classify them further to get a better sense of what would need to be built and when.</p>
+<p>To that end, I resorted to a tool I had used before – a user story map.</p>
 <h3 id="user-story-map">User story map</h3>
 <p>User stories and user story mapping come from the <a href="https://www.atlassian.com/agile">Agile</a> world and are not inherently DDD practices. But they provide valuable insights that we can use in a DDD context nonetheless.</p>
-<p>I'm not even sure whether they are better suited for the model or the domain, but as they help both the experts by listing the user needs in a way they can understand and the developers by sketching the outlines of the software, the model seemed like a good fit.</p>
-<p>A user story map is a visual representation of user stories. It's a way to logically group, sort and prioritise stories that helps us identify and separate the parts that we need to build together from the stories that we can address at a later time.</p>
-<p>This is the user story map I came up with for the application. It's interactive, so you can have a look around and click on the various stories:</p>
+<p>To be honest I'm still not sure whether they are better suited for the model or the domain, but as they help both the experts (by listing user needs in a way they can understand) and the developers (by sketching the outlines of the software), the model seemed like a good fit.</p>
+<p>A user story map is a visual representation of user stories. It's a way to logically group, sort and prioritise stories which also helps us identify the parts that we need to build together and separate them from the stories that can be dealt with later.</p>
+<p>This is the user story map I came up with for the application. It's interactive, so you can have a look around and expand the various stories to see the detail:</p>
 <iframe width="100%" height="432" class="media-embed" src="https://miro.com/app/live-embed/uXjVPcEwHSM=/?moveToViewport=-4568,-407,2720,1419&embedId=563813484627" frameborder="0" scrolling="no" allowfullscreen></iframe>
 
 <p class="caption">Interactive user story map (made with <a href="https://miro.com/">Miro</a>)</p>
 
-<p>The blue rectangles are the <em>activities</em> – the high-level tasks the user needs to complete. They match the four categories identified earlier – report, submit, review and export.</p>
-<p>The yellow rectangles are <em>steps</em> – they represent subtasks the user has to go through to complete an activity.</p>
-<p>Finally, the other rectangles are the <em>details</em> of each activity and step. They're essentially user stories, sorted by priority and broken down by <em>iterations</em>. Here, I've defined two – the <a href="https://en.wikipedia.org/wiki/Minimum_viable_product"><em>MVP</em></a> and the <em>backlog</em>.</p>
-<p>The user story map provides both a roadmap for me to follow and a way to keep track of my progress. Moreover, it gives me an idea of the future <a href="https://www.martinfowler.com/bliki/BoundedContext.html"><em>bounded contexts</em></a> and <a href="https://martinfowler.com/bliki/DDD_Aggregate.html"><em>aggregates</em></a> of the application, two key concepts of DDD.</p>
-<p>I'll leave the aggregates aside for now as I consider them an implementation detail, but as bounded contexts can inform the model, I'll cover them now.</p>
+<p>The blue rectangles at the top of each column are <em>activities</em> – higher-level groups of user stories. They match the four categories identified earlier – report, submit, review and export.</p>
+<p>The yellow rectangles beneath them are <em>steps</em> – they represent sub-categories that put together form a complete activity.</p>
+<p>Finally, the other rectangles are the <em>details</em> of each activity and step. They're essentially user stories, sorted by priority and broken down by <em>iterations</em>. Here, I've defined two iterations – the <a href="https://en.wikipedia.org/wiki/Minimum_viable_product"><em>MVP</em></a> and the <em>backlog</em>.</p>
+<p>In other words, the application's MVP will be considered complete once all its user stories have been implemented. Other stories can then be picked up from the backlog to form a new iteration.</p>
+<p>In short, the user story map provides both a roadmap for me to follow and a way to keep track of my progress. Moreover, it gives me an idea of the future <a href="https://www.martinfowler.com/bliki/BoundedContext.html"><em>bounded contexts</em></a> and <a href="https://martinfowler.com/bliki/DDD_Aggregate.html"><em>aggregates</em></a> of the application, two key concepts of DDD.</p>
+<p>I'll leave the aggregates aside for now as I consider them an implementation detail, but I'll cover bounded contexts in the next section, as these can inform the model.</p>
 <h3 id="bounded-contexts">Bounded contexts</h3>
-<p>I'm going to be honest here – I am unable to give you a precise explanation of what a bounded context is. Like most things DDD, everyone seems to have their own definition (<a href="https://hermanpeeren.nl/varia/why-i-dont-need-a-bounded-context">here is one</a>, for instance).</p>
+<p>I'm going to be honest here – I am unable to give you a precise definition for bounded contexts. Like most things DDD, everyone seems to have their own interpretation (<a href="https://hermanpeeren.nl/varia/why-i-dont-need-a-bounded-context">here is one</a>).</p>
 <p>But the gist of it is to separate the various parts of an application and describe <a href="https://medium.com/ingeniouslysimple/context-mapping-in-domain-driven-design-9063465d2eb8" title="Context mapping in Domain Driven Design">how they relate to each other</a>. That latter part is usually done with a <em>context map</em>, which I drew below:</p>
 <p><img alt="Context map" src="/images/2022/09/01/dime_04.png" title="Context map" />
 <p class="caption">Context map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2022/09/01/bounded-contexts-big.png">here</a> for a higher definition)</p></p>
-<p>Notice that the activities identified in the user story map have become bounded contexts.</p>
-<p>We can also see that the "Report" context is external to the application, as the transaction spreadsheet must be created and completed upstream. Its relationship with the application is one of <em>customer-supplier</em> – the provided file (supplier) must meet the expectations of the application (customer).</p>
+<p>Note that the activities identified in the user story map have become bounded contexts.</p>
+<p>Also note that the "Report" context is external to the application, as the transaction spreadsheet must be created and completed upstream. Its relationship with the application is one of <em>customer-supplier</em> – the provided file (supplier) must meet the expectations of the application (customer).</p>
 <p>On the other hand, both the "Submit", "Review" and "Report" contexts are internal to the application, and the tax year object bridging them is likely to be the same for all. In other words, they have a <em>shared kernel</em>.</p>
 <p>This is the extent to which I will cover bounded contexts. While they can be useful to model the domain, in this case I defined them for the sake of the exercise more than anything else.</p>
 <p>Bounded contexts are often worked on by separate teams and considered to be distinct models with their own ubiquitous language. But this is a one-man show, and the size of the model doesn't warrant breaking it up anyway.</p>
 <p>When it comes to this series, the context map is just an extra way to represent and think about the application.</p>
 <h2 id="ubiquitous-language">Ubiquitous language</h2>
-<p>As the meeting point of experts and developers, the model is also where they use a common language – the ubiquitous language.</p>
-<p>We can go through the diagrams and user stories to start establishing a glossary of key terms:</p>
+<p>As the model is where experts and developers meet, it is also where they use a common language – the ubiquitous language.</p>
+<p>We can go through the domain and analyse the diagrams and user stories to extract a glossary of key terms that will also be used within the software:</p>
 <ul>
 <li><em>30-day period</em>: The 30 days following the end of a tax year. Transactions occurring during that period may still count for the tax year that has just ended, because of the 30-days rule of pooling;</li>
-<li><em>30-days rule</em>: A pooling tax rule whereby assets acquired within 30 days of being disposed of must be matched with those disposals;</li>
-<li><em>Acquisition</em>: The fact of acquiring an asset, in whichever way it may be;</li>
-<li><em>Airdrop</em>: The fact of receiving an asset in the context of a promotional operation;</li>
+<li><em>30-days rule</em>: A share pooling tax rule whereby assets acquired within 30 days of being disposed of must be matched with those disposals;</li>
+<li><em>Acquisition</em>: An asset being acquired, in whichever way it may be;</li>
+<li><em>Airdrop</em>: An asset being acquired in the context of a promotional operation;</li>
 <li><em>Allowable cost</em>: A cost that can be deducted from other revenues, attributable to either an acquisition or a disposal;</li>
 <li><em>Allowance</em>: An amount under which a tax regime doesn't apply;</li>
 <li><em>Application</em>: The software processing the transaction spreadsheet and outputting results;</li>
@@ -310,41 +307,50 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Capital gain</em>: A profit realised when the proceeds of an asset disposal are greater than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Capital loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Cost basis</em>: The cost of acquisition of an asset, in fiat terms;</li>
-<li><em>Disposal</em>: The fact of disposing of an asset, in whichever way it may be;</li>
-<li><em>Disposal proceeds</em>: The amount obtained for an asset disposal, in fiat terms;</li>
+<li><em>Disposal</em>: An asset being disposed of, in whichever way it may be;</li>
+<li><em>Disposal reversion</em>: When an already processed disposal must be reverted due to a subsequent transaction falling under one of the share pooling rules;</li>
 <li><em>Fee</em>: An amount paid in exchange for a service;</li>
 <li><em>Fiat</em>: A government-issued currency;</li>
 <li><em>Gift</em>: An asset either received or given away for free;</li>
 <li><em>Hard fork</em>: A protocol update leading to the split of a blockchain and the creation of a new asset;</li>
 <li><em>Income</em>: An amount falling under the Income Tax regime;</li>
 <li><em>Market value</em>: The value of an asset at a certain point in time, in fiat terms;</li>
-<li><em>Mint</em>: The action of creating an NFT;</li>
-<li><em>NFT/Non-Fungible Token</em>: A type of asset that isn't subject to pooling rules;</li>
+<li><em>Mint</em>: The action of creating a non-fungible asset;</li>
+<li><em>NFT</em>: A type of asset that isn't subject to share pooling rules;</li>
 <li><em>Non-attributable allowable cost</em>: A cost that can be deducted from other revenues, that can't be attributed either to an acquisition or a disposal;</li>
-<li><em>Note</em>: A piece of free text attached to a transaction;</li>
-<li><em>Pooling</em>: A set of tax rules applying to certain types of assets;</li>
-<li><em>Remaining amount</em>: Any amount left after one of the pooling rules has been applied;</li>
-<li><em>Report/reporting</em>: The user process of recording a set of transactions in a spreadsheet;</li>
+<li><em>Non-Fungible Asset</em>: A type of asset that isn't subject to share pooling rules, like a NFT;</li>
+<li><em>Operation</em>: Any operation involving an asset, as reported by the user;</li>
+<li><em>Proceeds</em>: The amount obtained for an asset disposal, in fiat terms;</li>
+<li><em>Quantity</em>: Any amount of an asset or fiat expressed as a number;</li>
+<li><em>Quantity allocation</em>: Any quantity of a transaction that must be matched with another transaction's according to share pooling rules;</li>
+<li><em>Remaining quantity</em>: Any quantity left after one of the share pooling rules has been applied;</li>
+<li><em>Report/Reporting</em>: A user recording a set of transactions in a spreadsheet;</li>
 <li><em>Revenue</em>: Generic term to design any type of income, be it dividends, capital gains, or anything else;</li>
-<li><em>Review/Reviewing</em>: The user process of going through the application's output;</li>
-<li><em>Same-day rule</em>: A pooling tax rule whereby assets acquired or disposed of on the same day must be matched with those acquisitions and disposals;</li>
-<li><em>Section 104 pool</em>: An abstract container used as part of the pooling rules where the acquisitions of an asset are flowing into to calculate its average cost basis;</li>
-<li><em>Section 104 pool rule</em>: A pooling tax rule whereby the acquisitions of an asset are flowing into a pool to calculate its average cost basis;</li>
+<li><em>Review/Reviewing</em>: A user going through the application's output;</li>
+<li><em>Same-day rule</em>: A share pooling tax rule whereby assets acquired or disposed of on the same day must be matched with those acquisitions and disposals;</li>
+<li><em>Section 104 pool</em>: An abstract container used as part of the share pooling rules and in which the acquisitions of an asset are flowing to calculate the average cost basis;</li>
+<li><em>Section 104 pool rule</em>: A share pooling tax rule whereby the acquisitions of an asset are flowing into a pool to calculate the average cost basis;</li>
+<li><em>Share pooling</em>: A set of tax rules applying to certain types of assets;</li>
+<li><em>Share pooling asset</em>: A type of asset that is subject to share pooling rules;</li>
+<li><em>Software</em>: The software processing the transaction spreadsheet and outputting results;</li>
 <li><em>Spouse or civil partner gift</em>: An asset either received or given away for free, from or to a spouse or civil partner;</li>
-<li><em>Spreadsheet</em>: A list of transactions reported by the user;</li>
-<li><em>Submit/Submission</em>: The user process of submitting a transaction spreadsheet to the application;</li>
-<li><em>Swap</em>: The fact of exchanging an asset for another;</li>
+<li><em>Spreadsheet</em>: A list of transactions as reported by the user;</li>
+<li><em>Submit/Submission</em>: A user submitting a spreadsheet of transactions to the application;</li>
+<li><em>Swap</em>: An asset being exchanged for another. Note that "swap" is preferred over "exchange" to avoid any confusion with the platforms where transactions are conducted;</li>
+<li><em>Symbol</em>: An abbreviation representing an asset (e.g. BTC for Bitcoin);</li>
 <li><em>Taxable event</em>: An operation which is subject to a tax regime;</li>
-<li><em>Tax return</em>: The document users have to submit to HMRC to declare their revenues;</li>
+<li><em>Tax return</em>: The document tax payers have to submit to HMRC to declare their revenues;</li>
 <li><em>Tax year</em>: The UK fiscal year, running from April 6 to April 5;</li>
+<li><em>Tax year summary</em>: The report generated by the application for a specific tax year, featuring the capital gain, the income and the non-attributable allowable cost;</li>
+<li><em>Ticker</em>: An abbreviation representing an asset (e.g. BTC for Bitcoin);</li>
 <li><em>Token</em>: A property whose acquisition or disposal is a taxable event;</li>
 <li><em>Trading</em>: Designates a user's crypto activity being considered a financial trade, thus falling under the Income Tax regime;</li>
-<li><em>Transaction</em>: Any crypto activity as reported by the user;</li>
-<li><em>Transfer</em>: The fact of moving an asset from one wallet to another, when both wallets belong to the user.</li>
+<li><em>Transaction</em>: Any operation involving an asset, as reported by the user;</li>
+<li><em>Transfer</em>: Moving an asset from one wallet to another, when both wallets belong to the user.</li>
 </ul>
-<p>We came across most of these terms before, but by compiling them in this way, we crystallise them as words and expressions to use everywhere, including in the code.</p>
+<p>We came across most of these terms before, but by establishing a clear list like the above we crystallise them as words and expressions to use everywhere, including in the code.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
-<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and I am still not sure how far I am supposed to go in terms of representation.</p>
+<p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting out without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and I am still not sure how far I am supposed to go in doing so.</p>
 <p>That being said, the next steps have already uncovered some gaps in the model and the domain, which I have updated accordingly. I trust I will keep getting a clearer picture over time.</p>
 <p>The next instalment of this series will cover the code design of the application, which flows directly from the model.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
@@ -367,7 +373,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-03-28" pubdate>2023-03-28</time>
+          <time datetime="2023-03-29" pubdate>2023-03-29</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/userstory">userstory</a>
