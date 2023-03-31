@@ -165,24 +165,10 @@ styles, `#sidebar-checkbox` for behavior. -->
     </section>
 
     <p><img alt="A pencil on a sheet of paper with drawn lines" src="/images/1/dime_01.png" title="A pencil on a sheet of paper with drawn lines" /></p>
-<p class="info"><span class="title">Title</span> Content</p>
-
-<div class="info"><p><span class="title">Title</span> Content</p></div>
-
-<p>Plain code block:</p>
-<div class="highlight"><pre><span></span>
-</pre></div>
-
-
-<p>Code block with line numbers:</p>
-<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span>
-</pre></div>
-</td></tr></table>
-
 <p>When I started this series, I wasn't sure whether this post would be necessary.</p>
-<p>What I'm referring to as "implementation design" here is technically still part of the model, and when searching for inspiration online I found many examples of models featuring some rather specific implementation details.</p>
-<p>As per DDD, however, the model is also supposed to be accessible to domain experts, who should be able to validate it. But how can we expect an accountant to know what a repository or an aggregate is?</p>
-<p>This is where I decided to draw the line between what non-developers would understand and what they wouldn't, which led me to publishing two articles – one covering the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model"><em>abstract</em> model</a> and the other covering the <em>implementation</em> model (this post). This also meant I could go as technical as I wanted in the latter.</p>
+<p>What I'm referring to as "implementation design" here is arguably still part of the model, and when searching for inspiration online I found many examples of models featuring some rather specific implementation details.</p>
+<p>As per DDD, however, the model is also supposed to be accessible to domain experts, who should be able to validate it. But how can we expect an accountant to know what a repository or a value object is?</p>
+<p>This is where I decided to draw the line between what non-developers could reasonably understand and what they wouldn't, which led me to publishing two articles – one covering the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model"><em>abstract</em> model</a>, and the other covering the <em>implementation</em> model (this post). This also meant I could go as technical as necessary in the latter.</p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
@@ -198,64 +184,137 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#domain-driven-design">Domain-Driven Design</a></li>
 <li><a href="#event-sourcing">Event Sourcing</a></li>
 <li><a href="#layered-architecture">Layered Architecture</a></li>
-<li><a href="#implementation-design">Implementation design</a></li>
+<li><a href="#implementation-design">Implementation design</a><ul>
+<li><a href="#presentation-layer">Presentation layer</a></li>
+<li><a href="#application-layer">Application layer</a></li>
+<li><a href="#domain-layer">Domain layer</a></li>
+<li><a href="#infrastructure-layer">Infrastructure layer</a></li>
+</ul>
+</li>
 <li><a href="#folder-structure">Folder structure</a></li>
-<li><a href="#misc-to-sort-out">Misc (to sort out)</a></li>
 <li><a href="#implementation-plan">Implementation plan</a></li>
 <li><a href="#closing-thoughts">Closing thoughts</a></li>
 </ul>
 </div>
 <h2 id="domain-driven-design">Domain-Driven Design</h2>
-<p>Before I get into the nitty-gritty of the implementation, I need to get some base concepts out of the way. I'm going to start with DDD, so feel free to skip this section if you are already familiar with the topic.</p>
-<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the patterns described below, even if you've never worked with DDD:</p>
+<p>Before I get into the nitty-gritty of the implementation, I need to lay some base concepts out. I'm going to start with DDD, so feel free to skip this section if you're already familiar with the topic.</p>
+<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the patterns described below, even if you're not familiar with DDD:</p>
+<ol>
+<li>
 <p><em>Entity:</em> An entity is a domain object that has a unique identity and a lifecycle that spans multiple interactions with the system. Entities are often referred to as <em>models</em> in non-DDD contexts.</p>
+</li>
+<li>
 <p><em>Value Object:</em> A value object is a domain object that has no identity and is defined entirely by its properties. Unlike entities, value objects are immutable and can be freely shared and copied between different parts of the system without any side effects.</p>
-<p><em>Service:</em> A service is a domain object that encapsulates a specific behavior or process within the domain. Services typically operate on one or more entities or value objects to accomplish a specific goal. Services don't always belong to the domain, however – they can also provide utility for other layers.</p>
+</li>
+<li>
+<p><em>Service:</em> A service is a domain object that encapsulates a specific behavior or process within the domain. Services typically operate on one or more entities or value objects to accomplish a specific goal. Services don't always belong to the domain, however – they can also provide utility for other layers (see <a href="#layered-architecture">Layered Architecture</a> further down).</p>
+</li>
+<li>
 <p><em>Factory:</em> A factory is a domain object that encapsulates the creation of other domain objects, such as entities or value objects. Factories are often used to simplify the creation of complex objects or to ensure that objects are created consistently and according to specific rules or constraints.</p>
-<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create them (that's the factory's job) but persist them in the storage layer. It contains any logic to retrieve specific objects from that persistence layer, like filters. Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
-<p>There are other DDD patterns that I need to cover, but these belong to a larger pattern worth exploring as a whole – Event Sourcing.</p>
+</li>
+<li>
+<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create entities (that's the factory's job) but persists them in the storage layer. It contains any logic related to retrieving specific objects from that layer, including filters. Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
+</li>
+</ol>
+<p>Some other DDD patterns that I need to cover belong to a larger pattern that is worth dedicating an entire section to – Event Sourcing.</p>
 <h2 id="event-sourcing">Event Sourcing</h2>
 <p><a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">Event Sourcing</a> is a software design pattern whereby the state of a system is stored as a sequence of events, rather than as the current snapshot of that state. Each event represents a change to the system's state and can be used to reconstruct that state at any point in time.</p>
 <p>A typical example is a bank statement – instead of displaying the amount currently available on your account and nothing else, the statement lists all the operations performed on the account, which resulted in the current amount.</p>
-<p>Event Sourcing is considered a pattern of DDD and it has its own sub-patterns, some of which are briefly covered below:</p>
-<p><em>Aggregate:</em> An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules within the domain.</p>
+<p>Event Sourcing is considered a pattern of DDD and it has its own sub-patterns and concepts, some of which are briefly defined below:</p>
+<ol>
+<li>
+<p><em>Aggregate:</em> An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules (invariants) within the domain.</p>
+</li>
+<li>
 <p><em>Aggregate Root:</em> An aggregate root is a special type of aggregate that serves as the entry point for all operations on the aggregate. The aggregate root is responsible for ensuring the consistency of the entire aggregate, and is the only object that can modify the state of the aggregate.</p>
+</li>
+<li>
 <p><em>Invariant:</em> An invariant is a business rule. It's a condition or set of conditions that must always be true within a domain. Invariants are typically enforced by aggregates or aggregate roots, and are checked and maintained whenever an event is applied to the system.</p>
+</li>
+<li>
 <p><em>Event:</em> An event is a record of a change to the system's state. Events are typically immutable and represent a historical record of everything that has happened within the system.</p>
+</li>
+<li>
 <p><em>Projector:</em> A projector is an object that transforms a stream of events into a separate read model, or projection. Projectors typically subscribe to events and update the projection accordingly.</p>
+</li>
+<li>
 <p><em>Projection:</em> A projection is the output of a projector, and represents a read-only view of the system's state at a specific point in time. Projections can be used for querying and reporting purposes, and are typically optimised for specific use cases.</p>
+</li>
+<li>
 <p><em>Reactor:</em> A reactor is an object that reacts to specific events by triggering other actions within the system. The main difference with projectors is that they react to an event only once, even if the event is then replayed to reconstruct the system's state at a specific point in time, for instance.</p>
+</li>
+</ol>
+<p>If you're new to all this, these definitions may feel a bit abstract. That's OK – each of these patterns will be illustrated with concrete examples later on, either in this article or in future posts.</p>
 <h2 id="layered-architecture">Layered Architecture</h2>
 <p>The last concept I want to introduce before getting into the implementation details is that of <a href="https://www.baeldung.com/cs/layered-architecture">Layered Architecture</a>.</p>
-<p>A layered architecture is a software design pattern that involves breaking a system down into a series of logical layers, each of which is responsible for a specific set of functions or responsibilities within the system. Each layer communicates only with adjacent layers and provides a well-defined interface that can be used by higher-level layers.</p>
-<p><img alt="Layered Architecture" src="/images/1/dime_02.png" title="Layered Architecture" /></p>
-<p>Here's a brief definition for each layer:</p>
-<p><em>Presentation Layer:</em> The presentation layer is responsible for handling user interaction and input, and presenting information back to the user.</p>
-<p><em>Application Layer:</em> The application layer orchestrates the interactions between the presentation layer, the domain layer, and the infrastructure layer. It does not contain any business logic.</p>
-<p><em>Domain Layer:</em> The domain layer represents the core business concepts and rules/invariants of the system, and is responsible for ensuring the consistency and correctness of the system's behaviour.</p>
-<p><em>Infrastructure Layer:</em> The infrastructure layer provides the underlying technical infrastructure and services that support the application, such as databases, messaging systems, and network communication.</p>
+<p>A layered architecture is a software design pattern that involves breaking a system down into a series of logical layers, each of which is responsible for a specific set of functions or responsibilities within the system.</p>
+<p>Each layer communicates with adjacent layers only and provides a well-defined interface that can be used by higher-level layers.</p>
+<p>These layers are given various names and their number sometimes varies, but they're usually along these lines:</p>
+<p><img alt="Layers, top to bottom: Presentation, Application, Domain, Infrastructure" src="/images/1/dime_02.png" title="Layered Architecture" /></p>
+<p>Here's a brief definition for each of them:</p>
+<ol>
+<li>
+<p><em>Presentation:</em> The presentation layer is responsible for handling user interaction and input, and presenting information back to the user.</p>
+</li>
+<li>
+<p><em>Application:</em> The application layer orchestrates the interactions between the presentation layer, the domain layer, and the infrastructure layer. It does not contain any business logic.</p>
+</li>
+<li>
+<p><em>Domain:</em> The domain layer represents the core business concepts and rules/invariants of the system, and is responsible for ensuring the consistency and correctness of the system's behaviour.</p>
+</li>
+<li>
+<p><em>Infrastructure:</em> The infrastructure layer provides the underlying technical infrastructure and services that support the application, such as databases, messaging systems, and network communication.</p>
+</li>
+</ol>
+<p>We can already see that the Layered Architecture, Event Sourcing and Domain-Driven Design patterns overlap to some extent. Let's now combine them properly to map out the various moving parts of the application.</p>
 <h2 id="implementation-design">Implementation design</h2>
-<p>Presentation: console input output, commands (Laravel ones)</p>
-<p>Application: jobs, concrete (Eloquent) repositories, providers, exceptions</p>
-<p>Domain: entities, aggregates, value objects, services, factories, repository interfaces, consumers (projectors), read models (projections)</p>
+<p>This is where we leave the realm of theory to enter a more concrete phase of the implementation. The goal is to come up with the objects that will help us fulfill the user stories, and to identify their type and to which layer they belong.</p>
+<p>Let's cut to the chase and unveil the resulting "implementation map" (not an official term – I just like the sound of it):</p>
+<p><img alt="Layers from the layered architecture, with the various objects that belong to them and how they interact with each other" src="/images/1/dime_03.png" title="Implementation map" />
+<p class="caption">Implementation map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/1/layers-big.png">here</a> for a higher definition)</p></p>
+<p>As with the other phases of this series so far, what you are looking at is the outcome of multiple iterations already. Previous assumptions have been adjusted over time, based on implementation feedback which also led to updates to the model and even the domain, where missing concepts were revealed.</p>
+<p>Let's now go into the detail of each layer, starting with the presentation one.</p>
+<h3 id="presentation-layer">Presentation layer</h3>
+<p>As the presentation layer is responsible for getting input from the user and outputting data in the console, this is where the Artisan commands go (Artisan is Laravel's <a href="https://laravel.com/docs/artisan" title="Artisan documentation">console component</a>, also part of <a href="https://laravel-zero.com/" title="Laravel Zero">Laravel Zero</a>, the framework used for this application).</p>
+<p>There are three commands – <code>Process</code>, <code>Review</code> and <code>Export</code>. <code>Process</code> will take the spreadsheet of transactions as an input, and pass it on to lower layers for processing. Once that's done, the <code>Review</code> command will retrieve the results (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model#ubiquitous-language" title="Ubiquitous language">tax year summaries</a>) and display them back in the console. Having a separate command for this will allow users not to have to process the whole file every time, and to display the results of a previous run directly. The <code>Process</code> command will call the <code>Review</code> one once it's done though, to save the user from an extra step.</p>
+<p>The <code>Export</code> command will be responsible for outputting the results in a different format, like a CSV file. The <code>Review</code> command will ask the user if they want to save the results to a file, and call the <code>Export</code> command if that is the case.</p>
+<p>Finally, a <code>Presenter</code> service will abstract away the formatting of the console output, to avoid cluttering the commands with the related logic.</p>
+<h3 id="application-layer">Application layer</h3>
+<p>One level down is the application layer. The definition of the application layer is a bit vague, but we can see it as the glue between the other ones. It's mostly made of services and concrete repositories.</p>
+<p>On the service side, we've got <code>TransactionReader</code>, whose responsibility is to parse the spreadsheet and return raw transactions to the <code>Process</code> command from the presentation layer. In turn, the <code>Process</code> command passes on the raw transactions to <code>TransactionProcessor</code>, the second service of the application layer. Its job is to turn each raw transaction into an object that the domain layer will understand, and pass it on to it for further processing.</p>
+<p>In short, in the context of transaction processing, the application layer serves as a translation layer between the presentation and domain layers.</p>
+<p>The third and last service of the application layer is <code>TaxYearSummaryExporter</code>, and its job is to export the tax year summaries to various file formats. It receives that data from the <code>Export</code> command, which itself has previously fetched it from the <code>TaxYearSummaryRepository</code> repository, which also lives in the application layer. As a quick reminder, a repository is responsible for fetching and recording entities (although this one only does the former).</p>
+<p>Now, what's interesting here is that this repository is a <em>concrete</em> repository – the concrete implementation of an <em>abstract</em> repository, which in our case is a PHP interface belonging to the domain layer.</p>
+<p>We'll get to the detail of the domain layer in the next section, but for now all you need to know is that the reason why the concrete repositories live in the application layer and not in the domain layer is because they are considered implementation details. In this case, the concrete repository will use Eloquent (Laravel's <a href="https://laravel.com/docs/eloquent" title="Eloquent documentation&quot;">ORM</a>) to interact with the database, but the domain should not be aware of such technicalities. These are infrastructure details, and once again the application layer acts as a translation layer, although this time between the domain and infrastructure layers.</p>
+<p>While <code>TaxYearSummaryRepository</code> is the only repository represented on the implementation map, other (currently implied) repositories will also be necessary. This is why there is a generic "Concrete repositories" tile represented in the application layer, and its "Repository interfaces" counterpart in the domain layer.</p>
+<h3 id="domain-layer">Domain layer</h3>
+<p>The domain layer is where the bulk of the application – the "core business concepts and rules/invariants of the system" – lives.</p>
+<p>We already mentioned a few of its components, in relation to higher levels. One of them is the <code>Transaction</code> value object, which is the object that the <code>TransactionProcessor</code> service from the application layer transforms raw transactions into, before passing it to the <code>TransactionDispatcher</code>, a service from the domain layer that I will get into in a moment.</p>
+<p><code>Transaction</code> is the only value object featured on the implementation map, but in practice, there will be many more. Value objects are a core concept of DDD and are much more than meets the eye. More than mere data containers, they encapsulate domain concepts and can be used to guarantee the validity of the properties they are made of.</p>
+<p>To take the <code>Transaction</code> value object as an example, it will make sure that the raw transaction data is correct and valid, or return an error. In other words, any other part of the domain receiving a <code>Transaction</code> value object can be assured that the transaction data is sound and valid. Value objects are also immutable, meaning they can be passed around safely without worrying that their state may change.</p>
+<p>I won't turn this into a course about value objects, but if you'd like to know more about them, <a href="https://matthiasnoback.nl/2022/09/is-it-a-dto-or-a-value-object/" title="Is it a DTO or a Value Object?">this article by Matthias Noback</a> does a good job at explaining what they are and how they differ from Data Transfer Objects (DTOs), another pattern they're often confused with.</p>
+<p>Another component of the domain layer we've touched upon already is the <code>TaxYearSummaryRepository</code> interface, whose concrete implementation lives in the application layer. As stated before, repositories are responsible for retrieving and storing entities. In this case, <code>TaxYearSummaryRepository</code>'s job is to retrieve <code>TaxYearSummary</code> entities from the database, which are <em>projections</em>.</p>
+<p>We are now entering the realm of Event Sourcing.</p>
+<p>Projections are created by <em>projectors</em> and are basically views – data representations of specific events happening in the system. Tax year summaries are reports of the capital gain, income and non-attributable allowable cost incurred during a specific tax year. That means that the <code>TaxYearSummaryProjector</code> projector listens to any event that would cause these numbers to change, and udpates the relevant <code>TaxYearSummary</code> projections when they happen.</p>
+<p>Where do these events come from? From the <code>TaxYear</code> <em>aggregate</em>, which encapsulates everything that happens to any given tax year. Or, to put it differently, it keeps tracks of and records all the events pertaining to a specific tax year.</p>
+<p>Implied in the above is also the presence of the <code>TaxYear</code> <em>aggregate root</em>, which is the entry point for anything happening to the aggregate. The only way to record a new state for the aggregate – a new event – is to ask the aggregate root to do so. It's the guardian of the aggregate and won't update its state before making sure the business rules (the invariants) aren't being violated.</p>
+<p>An example of invariant would be trying to record a capital gain for a date that isn't within the tax year. The aggregate root will first make sure that the date of the event belongs to the tax year it represents, and reject it if not.</p>
+<p>But who is asking the <code>TaxYear</code> aggregate root to update its aggregate's state in the first place? Other components in the domain.</p>
+<p>Let's come back to the <code>TransactionDispatcher</code> service. It's the service that receives the <code>Transaction</code> value objects from the application layer's <code>TransactionProcessor</code> service, after the latter converted it from raw transaction data.</p>
+<p>The <code>TransactionDispatcher</code> service is an implementation of the <a href="https://en.wikipedia.org/wiki/Strategy_pattern" title="Strategy pattern">strategy design pattern</a>. Upon receiving a transaction, it must decide what to do with it based on the type of transaction and its data. It will select the <em>handlers</em> that will then deal with the transaction.</p>
+<p>For instance, if it detects that the transaction is a transfer (i.e. between two wallets belonging to the user), it will pass the transaction to the <code>TransferHandler</code> service. If that transaction has a fee, the handler will tell the <code>TaxYear</code> aggregate root to record a new non-attributable allowable cost for the tax year (please refer to the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#fees-in-cryptocurrency" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Fees in cryptocurrency">domain article</a> if you want to know why).</p>
+<p>Likewise, if <code>TransactionDispatcher</code> detects that the transaction incurs some income, it will pass it on to the <code>IncomeHandler</code> service, which will then tell the <code>TaxYear</code> aggregate root to record some income for the corresponding tax year.</p>
+<p>These are the simplest handlers. Things get a little more complicated with the two remaning handlers – <code>NonFungibleAssetHandler</code> and <code>SharePoolingAssetHandler</code>. Let's start with the former.</p>
+<p>If <code>TransactionDispatcher</code> detects that a transaction involves a NFT (you know – a monkey JPEG), it will pass that transaction to the <code>NonFungibleAssetHandler</code> service. Now, NFTs are a bit special, because several things can happen to them while being held by a user. The NFT is first acquired, and eventually it can be disposed of (for another asset, for some fiat currency, as a gift...). But before that happens, its cost basis can also change, if this NFT was minted from several other NFTs, for instance (again, please refer to the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#non-fungible-tokens" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Non-Fungible Tokens">domain article</a> for details).</p>
+<p>All these scenarios represent potential events changing the state of the NFT – events that we want to keep track of. You've guessed it – we've got another aggregate on our hands. Just like <code>TaxYear</code>, <code>NonFungibleAsset</code> is both an aggregate and an aggregate root, the latter responsible for validating events before recording them within the former.</p>
+<p>How does the <code>NonFungibleAsset</code> aggregate tell the <code>TaxYear</code> aggregate that it should change its state based on something that happened to the NFT? Through a <em>reactor</em>.</p>
+<p>Like projectors, reactors listen to events, but instead of updating a view (projection), they trigger various actions. They do so only once, whereas a projector will respond to an event for as many times as it is replayed.</p>
+<p>Here, the <code>NonFungibleAssetReactor</code> reactor will listen to any NFT-related events that are taxable events (typically, a disposal will update a tax year's capital gain). When it catches one, it tells the relevant <code>TaxYear</code> aggregate root to update its aggregate's state.</p>
+<p>The <code>SharePoolingAssetHandler</code> service deals with the other kind of cryptoassets – those that fall under the rules of <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#selling-an-asset-for-fiat-currency" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Selling an asset for fiat currency">share pooling</a>. On the surface, it works similarly to the <code>NonFungibleAssetHandler</code> service – depending on the type of transaction, different things can happen to the share pooling asset held by the user (she can acquire more of it, dispose of some, exchange it for another asset, etc.). All these events are also recorded within an aggregate – the <code>SharePoolingAsset</code> aggregate – through its aggregate root, which updates the aggregate's state so long as the invariants are observed.</p>
+<p>There is a <code>SharePoolingAssetReactor</code> reactor listening to any taxable events coming from <code>SharePoolingAsset</code> aggregate roots, and that tells the relevant <code>TaxYear</code> aggregate root to update its aggregate's state when it catches one.</p>
+<p>And while this is enough detail for the scope of this article, the reality is that the <code>SharePoolingAsset</code> aggregate is far more complex than the <code>NonFungibleAsset</code> one, involving many value objects and dealing with convoluted invariants, all related to the implementation of the share pooling rules.</p>
+<h3 id="infrastructure-layer">Infrastructure layer</h3>
 <p>Infrastructure: config, storage, database, queues, eloquent models, vendors</p>
-<p>In fact, the concept of tax year is a good candidate for an <em>aggregate root</em> – the main entity of an aggregate, a group of domain objects treated as a single unit. In our case, this aggregate would comprise the tax year as well as its relevant taxable events.</p>
-<p>As mentioned in the model article, I've decided not to split it in bounded contexts nor modules, which will also simplify the structure of the application (modules would belong to bounded contexts, although there can be modules without bounded contexts as well).</p>
-<blockquote>
-<p>Imagine our domain use-case contains sending an e-mail, but our domain is not about sending emails. Then we can create an interface that will do the sending e-mail use-case. We use this interface in the domain layer and thus keep the domain layer clean, separated.</p>
-<p>Another typical domain interface is a repository.</p>
-</blockquote>
-<p>– https://medium.com/carvago-development/domain-driven-design-handbook-4d34b069bec4</p>
-<p>Value objects: transaction, fiat amount, acquisition, disposal, transfer, airdrop, swap, fee</p>
-<p>Enums: currency</p>
-<p>https://matthiasnoback.nl/2022/09/is-it-a-dto-or-a-value-object/</p>
-<p>Entities/aggregates: tax year, share pooling, nft</p>
-<p>Tax year events: capitalGainRecorded, capitalGainReverted, capitalLossRecorded, capitalLossReverted, incomeRecorded, nonAttributableAllowableCostRecorded</p>
-<p>Projection for tax years to get current capital gains, income and non-attributable allowable costs without having to replay all events.</p>
-<p>Share pooling events: sharePoolingTokenAcquired, sharePoolingTokenDisposedOf, sharePoolingTokenDisposalReverted</p>
-<p>Nft events: nftAcquired, nftCostBasisIncreased, nftDisposedOf</p>
-<p>Services: TransactionConsumer (breaks down incoming transactions and passes them on to the right handler. E.g. in the case of a transfer, it extracts the fee and makes it a Disposal value object to pass on to the Section104PoolHandler service. The rest of the transaction is passed on to the TransferHandler service), Section104PoolHandler (with rules – same-day, 30-days and section 104 pool), TransferHandler, NftHandler, AirdropHandler</p>
-<p>Diagram</p>
 <h2 id="folder-structure">Folder structure</h2>
 <p>I have read many articles on the topic but the one that influenced me the most in the end was <a href="https://lorisleiva.com/conciliating-laravel-and-ddd">Conciliating Laravel and DDD </a> by <a href="https://twitter.com/lorismatic">Loris Leiva</a>. The main takeaway for me was that it's counterproductive to fight the framework. Keeping this principle in mind, all the layers but the domain one are basically mixed up in the <code>app/</code> folder of the framework – and that's fine.</p>
 <p>In practice, that means the only new folder I created at the root is <code>domain/</code>, which I added to the PSR-4 autoload mapping section of <code>composer.json</code>:</p>
@@ -277,19 +336,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 
 
 <p>Note that I also decided to keep the domain-related tests next to the domain, meaning the <code>domain/</code> folder has two subfolders <code>src/</code> and <code>tests/</code>, both mapped above.</p>
-<h2 id="misc-to-sort-out">Misc (to sort out)</h2>
-<p>Submitting a spreadsheet erases existing records and starts over.</p>
-<p>Only two bounded contexts belong to the application – <em>submit</em> and <em>review</em>. Make modules out of them?</p>
-<p>Once the job is dispatched, record and report errors at the end instead of interrupting the import?</p>
-<p>Use the "sync" driver for events.</p>
-<p>dime process transactions.csv</p>
-<p>=&gt; do you want to review now?</p>
-<p>=&gt; do you want to export now?</p>
-<p>dime review</p>
-<p>=&gt; please import some transactions first</p>
-<p>=&gt; do you want to export now?</p>
-<p>dime export</p>
-<p>=&gt; please import some transactions first</p>
 <h2 id="implementation-plan">Implementation plan</h2>
 <p>Start with the aggregates as they can be built in isolation. Then implement the logic connecting them. Finally, build the presentation layer.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
