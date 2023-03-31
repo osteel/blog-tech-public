@@ -7,13 +7,13 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/year/month/day/" />
+    <meta property="og:image" content="https://tech.osteel.me/images/1/dime_01.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
     <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
 
-    <title>Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design &mdash; osteel's blog</title>
+    <title>Building a PHP CLI tool using DDD and Event Sourcing: implementation design &mdash; osteel's blog</title>
 
     <meta charset="utf-8" />
     <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
@@ -40,8 +40,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
-  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design">
-  <meta name="twitter:image" content="https://tech.osteel.me/images/year/month/day/">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: implementation design">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/1/dime_01.png">
 
   </head>
 
@@ -141,13 +141,13 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="posts">
 <div class="post">
     <h1 class="post-title">
-      Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design
+      Building a PHP CLI tool using DDD and Event Sourcing: implementation design
     </h1>
     <span class="post-date">
       <small>
           Last updated: 1970-01-01 ::
         Published: 1970-01-01
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/a-crypto-activity-tracking-tool-part-3-code-design.html">history</a> ]
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-implementation-design.html">history</a> ]
       </small>
     </span>
 
@@ -164,7 +164,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><img alt="Caption" src="/images//.jpg" title="Caption" /></p>
+    <p><img alt="A pencil on a sheet of paper with drawn lines" src="/images/1/dime_01.png" title="A pencil on a sheet of paper with drawn lines" /></p>
 <p class="info"><span class="title">Title</span> Content</p>
 
 <div class="info"><p><span class="title">Title</span> Content</p></div>
@@ -179,16 +179,26 @@ styles, `#sidebar-checkbox` for behavior. -->
 </pre></div>
 </td></tr></table>
 
-<p>When I started this series, I wasn't sure whether I would need to write this post. What I'm referring to as "code design" here is technically still part of the model, and when searching for inspiration online I found many examples of models containing rather specific implementation details. But as per DDD, the model is also supposed to be understood by domain experts, so they can validate it. How can we expect them to know what a repository or an aggregate root is?</p>
-<p>I decided to use this as a guideline and to draw a line between what non-developers would and wouldn't understand. This led to two separate articles – one covering the <em>abstract</em> model (the previous post) and the other covering the <em>implementation</em> model (this post). This also allowed me to go as technical as I wanted to in the latter.</p>
+<p>When I started this series, I wasn't sure whether this post would be necessary.</p>
+<p>What I'm referring to as "implementation design" here is technically still part of the model, and when searching for inspiration online I found many examples of models featuring some rather specific implementation details.</p>
+<p>As per DDD, however, the model is also supposed to be accessible to domain experts, who should be able to validate it. But how can we expect an accountant to know what a repository or an aggregate is?</p>
+<p>This is where I decided to draw the line between what non-developers would understand and what they wouldn't, which led me to publishing two articles – one covering the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model"><em>abstract</em> model</a> and the other covering the <em>implementation</em> model (this post). This also meant I could go as technical as I wanted in the latter.</p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
+<li>Implementation design <strong>⬅️ you are here</strong></li>
+</ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
 <ul>
+<li><a href="#in-this-series">In this series</a></li>
 <li><a href="#in-this-post">In this post</a></li>
 <li><a href="#domain-driven-design">Domain-Driven Design</a></li>
 <li><a href="#event-sourcing">Event Sourcing</a></li>
-<li><a href="#layered-architecture">Layered architecture</a></li>
-<li><a href="#code-design">Code design</a></li>
+<li><a href="#layered-architecture">Layered Architecture</a></li>
+<li><a href="#implementation-design">Implementation design</a></li>
 <li><a href="#folder-structure">Folder structure</a></li>
 <li><a href="#misc-to-sort-out">Misc (to sort out)</a></li>
 <li><a href="#implementation-plan">Implementation plan</a></li>
@@ -196,67 +206,39 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="domain-driven-design">Domain-Driven Design</h2>
-<p>Before I get into the nitty-gritty of the implementation, I need to get some base concepts out of the way, starting with DDD. You may want to skip this section if you are already familiar with the matter.</p>
-<p>Domain-Driven Design is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the following patterns, even if you've never worked with DDD.</p>
-<p><em>Entity:</em> An entity is an object that has an identity that remains the same within a system – sometimes beyond. Entities are usually referred to as <em>models</em> in non-DDD contexts, and are persisted throughout the states of the software.</p>
-<p><em>Value object:</em> On the other hand, value objects are defined by their attributes and have no identity. They describe a particular aspect of the domain, and are usually immutable. When different values are needed, a new object is created.</p>
-<p><em>Service:</em> Sometimes, a particular operation does not belong to an entity nor a value object. Such behaviour can be implemented in a service. A service does not matter as an object, but in what it does to other objects from the domain, for which it is a connection point. Services have no state – they provide functionality for the domain.</p>
-<p>Services don't always belong to the domain, however, and can provide utility for other layers.</p>
-<p><em>Factory:</em> Factories contain logic to create other objects, when that process is too complex for a constructor, or it requires creating several objects together, for instance.</p>
-<p><em>Repository:</em> Repositories are used to save and retrieve entities. They don't create them (that's the job of the factories) but persist them in the storage layer. They contain any logic to retrieve specific objects from that persistence layer, like applying filters. They are a way to decouple the domain from the underlying storage infrastructure.</p>
-<p>There are other DDD patterns that belong to a larger pattern that it's worth exploring as a whole – Event Sourcing.</p>
+<p>Before I get into the nitty-gritty of the implementation, I need to get some base concepts out of the way. I'm going to start with DDD, so feel free to skip this section if you are already familiar with the topic.</p>
+<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the patterns described below, even if you've never worked with DDD:</p>
+<p><em>Entity:</em> An entity is a domain object that has a unique identity and a lifecycle that spans multiple interactions with the system. Entities are often referred to as <em>models</em> in non-DDD contexts.</p>
+<p><em>Value Object:</em> A value object is a domain object that has no identity and is defined entirely by its properties. Unlike entities, value objects are immutable and can be freely shared and copied between different parts of the system without any side effects.</p>
+<p><em>Service:</em> A service is a domain object that encapsulates a specific behavior or process within the domain. Services typically operate on one or more entities or value objects to accomplish a specific goal. Services don't always belong to the domain, however – they can also provide utility for other layers.</p>
+<p><em>Factory:</em> A factory is a domain object that encapsulates the creation of other domain objects, such as entities or value objects. Factories are often used to simplify the creation of complex objects or to ensure that objects are created consistently and according to specific rules or constraints.</p>
+<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create them (that's the factory's job) but persist them in the storage layer. It contains any logic to retrieve specific objects from that persistence layer, like filters. Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
+<p>There are other DDD patterns that I need to cover, but these belong to a larger pattern worth exploring as a whole – Event Sourcing.</p>
 <h2 id="event-sourcing">Event Sourcing</h2>
-<p>"A pragmatic introduction to Event Sourcing" https://www.youtube.com/watch?v=xHbP3bshU3U</p>
-<blockquote>
-<p>Event sourcing tries to solve this problem by storing all events that happen in your app. The state of your application is built by listening to those events. An aggregate is used to validate if a new event is allowed to get written and to make decisions based on the past. Projectors are used to transform newly written events into a format useful for consumption in your app.</p>
-</blockquote>
-<p>– https://github.com/spatie/laravel-event-sourcing/blob/main/docs/getting-familiar-with-event-sourcing/introduction.md</p>
-<p>Event Sourcing is a software pattern whereby the successive states of an object are stored, instead of the current state only. That means the whole history of an object is stored, and to get the current state of an object you need to replay the past events up until the most recent one.</p>
-<p>A typical example is a bank statement – instead of just giving you the amount currently available on your account, the statement will list all the operations performed on the account that led to the current amount.</p>
-<p>Event Sourcing is considered a pattern of DDD and it has its own patterns, some of which are briefly explained below.</p>
-<p><em>Aggregate:</em> The most important pattern of Event Sourcing is the aggregate. An aggregate is a group of objects that are held together through an entity called the aggregate root, which is also the only way to change the aggregate from the outside. The objects in the aggregate constitute a single unit forming a relationship through data.</p>
-<p><em>Invariant:</em> </p>
-<blockquote>
-<p>A collection of objects that are bound together by a root entity, otherwise known as an aggregate root. The aggregate root guarantees the consistency of changes being made within the aggregate by forbidding external objects from holding references to its members.</p>
-<p>The invariants are those rules which have to be maintained whenever data changes.</p>
-<p>An Aggregate is a group of associated objects which are considered as one unit with regard to data changes. The Aggregate is demarcated by a boundary which separates the objects inside from those outside. Each Aggregate has one root. The root is an Entity, and it is the only object accessible from outside. If there are other Entities inside the boundary, the identity of those entities is local, making sense only inside the aggregate.</p>
-<p>Since other objects can hold references only to the root, it means that they cannot directly change the other objects in the aggregate. All they can do is to change the root, or ask the root to perform some actions. And the root will be able to change the other objects, but that is an operation contained inside the aggregate, and it is controllable. If the root is deleted and removed from memory, all the other objects from the aggregate will be deleted too, because there is no other object holding reference to any of them.</p>
-<p>Cluster the Entities and Value Objects into Aggregates and define boundaries around each. Choose one Entity to be the root of each Aggregate, and control all access to the objects inside the boundary through the root. Allow external objects to hold references to the root only. Transient references to internal members can be passed out for use within a single operation only. Because the root controls access, it cannot be blindsided by changes to the internals. This arrangement makes it practical to enforce all invariants for objects in the Aggregate and for the Aggregate as a whole in any state change.</p>
-</blockquote>
-<p>Event: something that happened in the past, immutable. Value object. Recorded on the aggregate, to <em>reconstitute</em> the aggregate.</p>
-<blockquote>
-<p>Domain events can be used to model distributed systems. The model will become more complex, but it can be more scalable. Domain Events are often used in an Event Driven Architecture.</p>
-</blockquote>
-<p>Aggregate root repository: for storing recorded events and reconstituting aggregates.</p>
-<p>Message: wrapper for an event containing additional metadata (aggregate ID, event type, etc.).</p>
-<p>Message repository: persist and retrieve messages. Can work with any storage type.</p>
-<p>Message dispatcher: transport messages. RabbitMQ, Kafka, sync, whatever.</p>
-<p>Projector (called "projection" in EventSauce and is a type of consumer): reacts to events and use their data to create projections (called "read models" in EventSauce and are basically views). You can replay them.</p>
-<p>Projection (called "read model" in EventSauce): view of the event data, optimised for reading.</p>
-<p>Reactor: consumer that perform actions beyond updating read models (e.g. send emails). You don't replay them.</p>
-<h2 id="layered-architecture">Layered architecture</h2>
-<p>The last concept I want to introduce before getting into the implementation details in the layered architecture.</p>
-<blockquote>
-<p>In an object-oriented program, UI, database, and other support code often gets written directly into the business objects. Additional business logic is embedded in the behavior of UI widgets and database scripts. This sometimes happens because it is the easiest way to make things work quickly. However, when domain-related code is mixed with the other layers, it becomes extremely difficult to see and think about.</p>
-<p>Partition a complex program into layers. Develop a design within each layer that is cohesive and that depends only on the layers below. Follow standard architectural patterns to provide loose coupling to the layers above. Concentrate all the code related to the domain model in one layer and isolate it from the user interface, application, and infrastructure code. The domain objects, free of the responsibility of displaying themselves, storing themselves, managing application tasks, and so forth, can be focused on expressing the domain model</p>
-<p>User Interface (Presentation Layer): Responsible for presenting information to the user and interpreting user commands.
-Application Layer: This is a thin layer which coordinates the application activity. It does not contain business logic. It does not hold the state of the business objects, but it can hold the state of an application task progress.
-Domain Layer: This layer contains information about the domain. This is the heart of the business software. The state of business objects is held here. Persistence of the business objects and possibly their state is delegated to the infrastructure layer.
-Infrastructure Layer: This layer acts as a supporting library for all the other layers. It provides communication between layers, implements persistence for business objects, contains supporting libraries for the user interface layer, etc.</p>
-<p>One of the most common patterns for managing separation of concerns is through use of a layered architecture.</p>
-<p>The layers capture the related parts of the application. The parts that change for similar reasons are kept together (cohesion) and are separated out from less heavily associated parts of the program (decoupling). Any layer should depend only on parts of itself or the layers below it. This gives us the ability to work in one area of the application without having to worry about other concerns.</p>
-</blockquote>
-<p>Layered architecture – presentation, application, domain, infrastructure.</p>
+<p><a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">Event Sourcing</a> is a software design pattern whereby the state of a system is stored as a sequence of events, rather than as the current snapshot of that state. Each event represents a change to the system's state and can be used to reconstruct that state at any point in time.</p>
+<p>A typical example is a bank statement – instead of displaying the amount currently available on your account and nothing else, the statement lists all the operations performed on the account, which resulted in the current amount.</p>
+<p>Event Sourcing is considered a pattern of DDD and it has its own sub-patterns, some of which are briefly covered below:</p>
+<p><em>Aggregate:</em> An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules within the domain.</p>
+<p><em>Aggregate Root:</em> An aggregate root is a special type of aggregate that serves as the entry point for all operations on the aggregate. The aggregate root is responsible for ensuring the consistency of the entire aggregate, and is the only object that can modify the state of the aggregate.</p>
+<p><em>Invariant:</em> An invariant is a business rule. It's a condition or set of conditions that must always be true within a domain. Invariants are typically enforced by aggregates or aggregate roots, and are checked and maintained whenever an event is applied to the system.</p>
+<p><em>Event:</em> An event is a record of a change to the system's state. Events are typically immutable and represent a historical record of everything that has happened within the system.</p>
+<p><em>Projector:</em> A projector is an object that transforms a stream of events into a separate read model, or projection. Projectors typically subscribe to events and update the projection accordingly.</p>
+<p><em>Projection:</em> A projection is the output of a projector, and represents a read-only view of the system's state at a specific point in time. Projections can be used for querying and reporting purposes, and are typically optimised for specific use cases.</p>
+<p><em>Reactor:</em> A reactor is an object that reacts to specific events by triggering other actions within the system. The main difference with projectors is that they react to an event only once, even if the event is then replayed to reconstruct the system's state at a specific point in time, for instance.</p>
+<h2 id="layered-architecture">Layered Architecture</h2>
+<p>The last concept I want to introduce before getting into the implementation details is that of <a href="https://www.baeldung.com/cs/layered-architecture">Layered Architecture</a>.</p>
+<p>A layered architecture is a software design pattern that involves breaking a system down into a series of logical layers, each of which is responsible for a specific set of functions or responsibilities within the system. Each layer communicates only with adjacent layers and provides a well-defined interface that can be used by higher-level layers.</p>
+<p><img alt="Layered Architecture" src="/images/1/dime_02.png" title="Layered Architecture" /></p>
+<p>Here's a brief definition for each layer:</p>
+<p><em>Presentation Layer:</em> The presentation layer is responsible for handling user interaction and input, and presenting information back to the user.</p>
+<p><em>Application Layer:</em> The application layer orchestrates the interactions between the presentation layer, the domain layer, and the infrastructure layer. It does not contain any business logic.</p>
+<p><em>Domain Layer:</em> The domain layer represents the core business concepts and rules/invariants of the system, and is responsible for ensuring the consistency and correctness of the system's behaviour.</p>
+<p><em>Infrastructure Layer:</em> The infrastructure layer provides the underlying technical infrastructure and services that support the application, such as databases, messaging systems, and network communication.</p>
+<h2 id="implementation-design">Implementation design</h2>
 <p>Presentation: console input output, commands (Laravel ones)</p>
 <p>Application: jobs, concrete (Eloquent) repositories, providers, exceptions</p>
 <p>Domain: entities, aggregates, value objects, services, factories, repository interfaces, consumers (projectors), read models (projections)</p>
 <p>Infrastructure: config, storage, database, queues, eloquent models, vendors</p>
-<blockquote>
-<p>Nothing in a lower layer can know anything at all about something in a higher layer.
-In other words, the code on the lower layers should not depend on the code on the higher layers. The code at the higher levels should depend only on the code at one level below.</p>
-</blockquote>
-<p>– https://medium.com/@pogulailo/domain-driven-design-and-clean-architecture-in-php-part-1-layers-and-structure-edcce57be42a</p>
-<h2 id="code-design">Code design</h2>
 <p>In fact, the concept of tax year is a good candidate for an <em>aggregate root</em> – the main entity of an aggregate, a group of domain objects treated as a single unit. In our case, this aggregate would comprise the tax year as well as its relevant taxable events.</p>
 <p>As mentioned in the model article, I've decided not to split it in bounded contexts nor modules, which will also simplify the structure of the application (modules would belong to bounded contexts, although there can be modules without bounded contexts as well).</p>
 <blockquote>
@@ -311,7 +293,7 @@ In other words, the code on the lower layers should not depend on the code on th
 <h2 id="implementation-plan">Implementation plan</h2>
 <p>Start with the aggregates as they can be built in isolation. Then implement the logic connecting them. Finally, build the presentation layer.</p>
 <h2 id="closing-thoughts">Closing thoughts</h2>
-<p>This post is likely the last one purely within the framework of Domain-Driven Design. The code design phase closes the feedback loop opened with the description of the domain and its model, and the three phases will now keep feeding into each other to get a software that represents and addresses more and more accurately identified domain issues.</p>
+<p>This post is likely the last one purely within the framework of Domain-Driven Design. The implementation design phase closes the feedback loop opened with the description of the domain and its model, and the three phases will now keep feeding into each other to get a software that represents and addresses more and more accurately identified domain issues.</p>
 <p>The following articles will cover more specific aspects of the implementation, like Event Sourcing, Test-Driven Development and developing with Laravel Zero, which will be the focus of the next article.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 
@@ -379,9 +361,9 @@ In other words, the code on the lower layers should not depend on the code on th
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/drafts/a-crypto-activity-tracking-tool-part-3-code-design";
-              var disqus_url = "https://tech.osteel.me/drafts/a-crypto-activity-tracking-tool-part-3-code-design";
-              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing. Part 3: code design";
+              var disqus_identifier = "/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-implementation-design";
+              var disqus_url = "https://tech.osteel.me/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-implementation-design";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: implementation design";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
           dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

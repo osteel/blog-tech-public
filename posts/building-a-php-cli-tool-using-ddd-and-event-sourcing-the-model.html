@@ -170,8 +170,7 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><img alt="Transaction processing flowchart preview" src="/images/2022/09/01/dime_01.png" title="Transaction processing flowchart preview" />
-<p class="caption">Extract from the transaction processing flow (made with <a href="https://excalidraw.com/">Excalidraw</a>)</p></p>
+    <p><img alt="Sticky notes" src="/images/2022/09/01/dime_01.png" title="Sticky notes" /></p>
 <p>The model is where the software meets the domain.</p>
 <p>It is a technical expression of the domain that drives the development of the software but that is also understandable by the experts, who can validate it.</p>
 <p>The goal of the model is to identify and express the use cases and constraints that will be built into the software, using schemas and diagrams. It is where we extract the essential concepts from the domain and where we consolidate the ubiquitous language.</p>
@@ -180,7 +179,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
 <li>The model <strong>⬅️ you are here</strong></li>
-<li>Code design <em>(coming soon)</em></li>
+<li>Implementation design <em>(coming soon)</em></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -212,7 +211,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>I later made a digital version of it:</p>
 <p><img alt="Transaction processing flowchart" src="/images/2022/09/01/dime_03.png" title="Transaction processing flowchart" />
 <p class="caption">Transaction processing flowchart (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2022/09/01/flowchart-big.png">here</a> for a higher definition)</p></p>
-<p>Wait. That is not the same diagram. That's because you are looking at an updated version of it, that I came up with later on, while working on the code design. As I mentioned in the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#what-is-the-domain-for" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">domain article</a>, the different phases of DDD tend to feed into each other to get an increasingly clearer picture of what the software should be. The above diagram is the result of this process.</p>
+<p>Wait. That is not the same diagram. That's because you are looking at an updated version of it, that I came up with later on, while working on the implementation design. As I mentioned in the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#what-is-the-domain-for" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">domain article</a>, the different phases of DDD tend to feed into each other to get an increasingly clearer picture of what the software should be. The above diagram is the result of this process.</p>
 <h3 id="user-stories">User stories</h3>
 <p>Looking at the flowchart, I realised I needed users to keep track of their transactions in a way that would satisfy the logic. So I started listing the reporting needs as user stories:</p>
 <ul>
@@ -258,7 +257,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>As a user, I want to know whether I am within the 30 days following the end of the tax year, so I am aware I should wait before completing my tax return</em></li>
 <li><em>As a user, I want to see my revenue beyond allowances, so I don't need to calculate this myself</em></li>
 </ul>
-<p>Finally, there's a fourth category of stories that only came to me later, during the code design phase – exporting the results. Because while displaying the results in the terminal is nice, as a user I also want the possibility to save them to a file, for eventual access:</p>
+<p>Finally, there's a fourth category of stories that only came to me later, during the implementation design phase – exporting the results. Because while displaying the results in the terminal is nice, as a user I also want the possibility to save them to a file, for eventual access:</p>
 <ul>
 <li><em>As a user, I want to export my capital gain, income and non-attributable allowable cost to a CSV file, so I can complete my tax return</em></li>
 <li><em>As a user, I want to export my capital gain, income and non-attributable allowable cost to an Excel file, so I can complete my tax return</em></li>
@@ -352,7 +351,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>I had the same difficulties approaching the model as I did the domain. Domain-Driven Design is very much an experience-driven discipline and starting out without proper guidance can be a bit overwhelming. It took me a while to identify the right tools to express the model in helpful ways, and I am still not sure how far I am supposed to go in doing so.</p>
 <p>That being said, the next steps have already uncovered some gaps in the model and the domain, which I have updated accordingly. I trust I will keep getting a clearer picture over time.</p>
-<p>The next instalment of this series will cover the code design of the application, which flows directly from the model.</p>
+<p>The next instalment of this series will cover the implementation design of the application, which flows directly from the model.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share the next posts as soon as they are published.</p>
 
     <div class="sharethis-inline-share-buttons"></div>

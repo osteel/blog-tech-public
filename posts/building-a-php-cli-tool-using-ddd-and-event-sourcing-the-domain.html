@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/2022/08/17/dime_01.jpg" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2022/08/17/dime_01.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
@@ -43,7 +43,7 @@
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
   <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: the domain">
-  <meta name="twitter:image" content="https://tech.osteel.me/images/2022/08/17/dime_01.jpg">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2022/08/17/dime_01.png">
 
   </head>
 
@@ -166,8 +166,8 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><img alt="People in a meeting" src="/images/2022/08/17/dime_01.jpg" title="Photo by Jason Goodman Unsplash" />
-<p class="caption">Time to sit with the experts (photo by <a href="https://unsplash.com/@jasongoodman_youxventures?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Jason Goodman</a> on <a href="https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>)</p></p>
+    <p><img alt="People in a meeting" src="/images/2022/08/17/dime_01.png" title="People in a meeting" />
+<p class="caption">Time to sit with the experts</p></p>
 <p>The first D of DDD stands for <em>Domain</em>. This is where we start.</p>
 <p>The word <em>domain</em> can mean a number of things, but in the context of DDD and of this series, we'll use two definitions from <a href="https://en.wiktionary.org/wiki/domain">Wiktionary</a>:</p>
 <blockquote>
@@ -180,7 +180,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
 <li>The domain  <strong>⬅️ you are here</strong></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
-<li>Code design <em>(coming soon)</em></li>
+<li>Implementation design <em>(coming soon)</em></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -212,7 +212,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="what-is-the-domain-for">What is the domain for?</h2>
 <p>The process roughly goes like this – domain experts describe what they do and go through the rules applying to various scenarios, guided by our questions and what we aim to achieve with the software. The goal is to gather as much information as possible to later try and identify the key concepts of the domain.</p>
 <p>Expressing the domain is also a way to get familiar with its lexical field, to remove ambiguity from terms that may eventually find their way to the model. In doing so, we lay the foundation of the <em>ubiquitous language</em>, the language to be used consistently across all communications, both by the team and the experts.</p>
-<p>The result won't be 100% complete nor correct, but it's a starting point. The next phases – modelling and code design – will help further determine what bits of information are important and what can be ignored. Sometimes, these steps will uncover elements missing from the domain, which we will need to amend with the help of the experts.</p>
+<p>The result won't be 100% complete nor correct, but it's a starting point. The next phases – modelling and implementation design – will help further determine what bits of information are important and what can be ignored. Sometimes, these steps will uncover elements missing from the domain, which we will need to amend with the help of the experts.</p>
 <p>In turn, these new elements will reshape the model and flow into the code, each phase feeding into the others, creating a feedback loop where each iteration gets us closer to the truth.</p>
 <h2 id="who-are-the-experts">Who are the experts?</h2>
 <p>A key element of DDD is to identify the relevant experts. When it comes to the tool serving as a backdrop for this series, one group of professionals naturally comes to mind – accountants. They know the rules that apply to crypto transactions and can confirm whether the implemented logic yields the correct results.</p>
