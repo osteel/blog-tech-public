@@ -166,9 +166,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 
     <p><img alt="A pencil on a sheet of paper with drawn lines" src="/images/1/dime_01.png" title="A pencil on a sheet of paper with drawn lines" /></p>
 <p>When I started this series, I wasn't sure whether this post would be necessary.</p>
-<p>What I'm referring to as "software design" here is arguably still part of the model, and when searching for inspiration online I found many examples of models featuring some rather specific implementation details.</p>
-<p>As per DDD, however, the model is also supposed to be accessible to domain experts, who should be able to validate it. But how can we expect an accountant to know what a repository or a value object is?</p>
-<p>This is where I decided to draw the line between what non-developers could reasonably understand and what they wouldn't, which led me to publishing two articles – one covering the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model"><em>abstract</em> model</a>, and the other covering the <em>implementation</em> model (this post). This also meant I could go as technical as necessary in the latter.</p>
+<p>What I'm referring to as software design here is arguably still part of the model, and when searching for inspiration online I found many examples of models featuring some rather specific implementation details.</p>
+<p>As per Domain-Driven Design (DDD), however, the model is also supposed to be accessible to domain experts, who should be able to validate it. But how can we expect an accountant to know what a repository or a value object is?</p>
+<p>I decided to draw a line between what non-developers would and wouldn't understand and to publish two articles – one covering the <em>abstract</em> model (<a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">the previous post</a>), and the other the <em>implementation</em> model (this post). This also meant I could go as technical as I wanted to in the latter.</p>
 <h2 id="in-this-series">In this series</h2>
 <ul>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
@@ -196,8 +196,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="domain-driven-design">Domain-Driven Design</h2>
-<p>Before I get into the nitty-gritty of the implementation, I need to lay some base concepts out. I'm going to start with DDD, so feel free to skip this section if you're already familiar with the topic.</p>
-<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach and a set of tools that includes a bunch of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code. This is also why you will most likely recognise some of the patterns described below, even if you're not familiar with DDD:</p>
+<p>Before I get into the nitty-gritty of the implementation, I need to lay out some base concepts. I'm going to start with DDD, so feel free to skip this section if you're already familiar with the topic.</p>
+<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach and a set of tools that includes a number of object-oriented design patterns. DDD and Object-Oriented Programming (OOP) work well together because they both aim at representing real world concepts and relationships as code.</p>
+<p>This is also why you will most likely recognise some of the patterns described below even if you're not familiar with DDD:</p>
 <ol>
 <li>
 <p><em>Entity:</em> An entity is a domain object that has a unique identity and a lifecycle that spans multiple interactions with the system. Entities are often referred to as <em>models</em> in non-DDD contexts.</p>
@@ -206,20 +207,20 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><em>Value Object:</em> A value object is a domain object that has no identity and is defined entirely by its properties. Unlike entities, value objects are immutable and can be freely shared and copied between different parts of the system without any side effects.</p>
 </li>
 <li>
-<p><em>Service:</em> A service is a domain object that encapsulates a specific behavior or process within the domain. Services are stateless and typically operate on one or more entities or value objects to accomplish a specific goal. Services don't always belong to the domain, however – they can also provide utility for other layers (see <a href="#layered-architecture">Layered Architecture</a> further down).</p>
+<p><em>Service:</em> A service is a domain object that encapsulates a specific behavior or process within the domain. Services are stateless and typically operate on one or more entities and/or value objects to accomplish a specific goal. Services don't always belong to the domain, however – they can also provide utility for other layers (see <a href="#layered-architecture">Layered Architecture</a> further down).</p>
 </li>
 <li>
 <p><em>Factory:</em> A factory is a domain object that encapsulates the creation of other domain objects, such as entities or value objects. Factories are often used to simplify the creation of complex objects or to ensure that objects are created consistently and according to specific rules or constraints.</p>
 </li>
 <li>
-<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create entities (that's the factory's job) but persists them in the storage layer. It contains any logic related to retrieving specific objects from that layer, including filters. Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
+<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create entities (that's a factory's job) but persists them in the storage layer. It contains the logic related to retrieving specific objects from that layer, including filters. Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
 </li>
 </ol>
-<p>Some other DDD patterns that I need to cover belong to a larger pattern that is worth dedicating an entire section to – Event Sourcing.</p>
+<p>Some other DDD patterns that I'll be using belong to a larger pattern that is worth covering in a separate section – Event Sourcing.</p>
 <h2 id="event-sourcing">Event Sourcing</h2>
 <p><a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">Event Sourcing</a> is a software design pattern whereby the state of a system is stored as a sequence of events, rather than as the current snapshot of that state. Each event represents a change to the system's state and can be used to reconstruct that state at any point in time.</p>
-<p>A typical example is a bank statement – instead of displaying the amount currently available on your account and nothing else, the statement lists all the operations performed on the account, which resulted in the current amount.</p>
-<p>Event Sourcing is considered a pattern of DDD and it has its own sub-patterns and concepts, some of which are briefly defined below:</p>
+<p>A typical example is a bank statement – instead of displaying the amount currently available on your account and nothing else, the statement lists all the operations performed on the account, the sequence of which resulted in the current amount.</p>
+<p>Event Sourcing is considered a DDD pattern and has its own sub-patterns and concepts, some of which are briefly described below:</p>
 <ol>
 <li>
 <p><em>Aggregate:</em> An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules (invariants) within the domain.</p>
@@ -240,23 +241,23 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><em>Projection:</em> A projection (also called "read model") is the output of a projector, and represents a read-only view of the system's state at a specific point in time. Projections can be used for querying and reporting purposes, and are typically optimised for specific use cases.</p>
 </li>
 <li>
-<p><em>Reactor:</em> A reactor is an object that reacts to specific events by triggering other actions within the system. The main difference with projectors is that they react to an event only once, even if the event is then replayed to reconstruct the system's state at a specific point in time, for instance.</p>
+<p><em>Reactor:</em> A reactor is an object that reacts to specific events and triggers other actions within the system as a result. The main difference with projectors is that reactors respond to an event only once, even if the event is replayed later on (to reconstruct the system's state at a specific point in time, for instance).</p>
 </li>
 </ol>
-<p>If you're new to all this, these definitions may feel a bit abstract. That's OK – each of these patterns will be illustrated with concrete examples later on, either in this article or in future posts.</p>
+<p>If you're new to all this, these definitions probably sound a bit abstract. That's OK – each of these patterns will be illustrated with concrete examples at some point, either in this article or in future posts.</p>
 <h2 id="layered-architecture">Layered Architecture</h2>
-<p>The last concept I want to introduce before getting into the implementation details is that of <a href="https://www.baeldung.com/cs/layered-architecture">Layered Architecture</a>.</p>
-<p>A layered architecture is a software design pattern that involves breaking a system down into a series of logical layers, each of which is responsible for a specific set of functions or responsibilities within the system.</p>
-<p>Each layer communicates with adjacent layers only and provides a well-defined interface that can be used by higher-level layers.</p>
-<p>These layers are given various names and their number sometimes varies, but they're usually along these lines:</p>
+<p>The last concept I want to introduce is that of <a href="https://www.baeldung.com/cs/layered-architecture">Layered Architecture</a>.</p>
+<p>A layered architecture is a software design pattern that involves breaking a system down into logical layers, each of which is responsible for a specific set of functions within the system.</p>
+<p>Each layer communicates with lower-level layers only and provides a well-defined interface that can be used by higher-level layers.</p>
+<p>These layers are sometimes given different names and their number may vary, but they're usually variations of the following:</p>
 <p><img alt="Layers, top to bottom: Presentation, Application, Domain, Infrastructure" src="/images/1/dime_02.png" title="Layered Architecture" /></p>
 <p>Here's a brief definition for each of them:</p>
 <ol>
 <li>
-<p><em>Presentation:</em> The presentation layer is responsible for handling user interaction and input, and presenting information back to the user.</p>
+<p><em>Presentation:</em> The presentation layer is responsible for handling user interaction and input, and for presenting information back to the user.</p>
 </li>
 <li>
-<p><em>Application:</em> The application layer orchestrates the interactions between the presentation layer, the domain layer, and the infrastructure layer. It does not contain any business logic.</p>
+<p><em>Application:</em> The application layer orchestrates the interactions between the presentation, domain, and infrastructure layers. It does not contain any business logic.</p>
 </li>
 <li>
 <p><em>Domain:</em> The domain layer represents the core business concepts and rules/invariants of the system, and is responsible for ensuring the consistency and correctness of the system's behaviour.</p>
@@ -265,18 +266,21 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p><em>Infrastructure:</em> The infrastructure layer provides the underlying technical infrastructure and services that support the application, such as databases, messaging systems, and network communication.</p>
 </li>
 </ol>
-<p>We can already see that the Layered Architecture, Event Sourcing and Domain-Driven Design patterns overlap to some extent. Let's now combine them properly to map out the various moving parts of the application.</p>
+<p>We can already see that the Layered Architecture, Event Sourcing and Domain-Driven Design patterns overlap to some extent.</p>
+<p>Let's combine them properly and map out the various moving parts of the application.</p>
 <h2 id="implementation-map">Implementation map</h2>
-<p>This is where we leave the theory aside to enter a more concrete phase of the implementation. The goal is to come up with classes to represent model concepts and fulfill the user stories – we want the code to become an expression of the model.</p>
-<p>This is also an opportunity to determine which layer each of these classes belongs to, thus avoiding mixing up responsibilities, keeping each layer highly focussed and, overall, making the whole system much easier to reason about and maintain.</p>
-<p>Let's cut to the chase and unveil the resulting <em>implementation map</em> (not an official term – just has a nice ring to it):</p>
+<p>This is where we leave the theory aside to focus on a more concrete phase of the design. The goal is to come up with classes that will represent model concepts and fulfill user stories – to make the code an expression of the model.</p>
+<p>This is also an opportunity to determine to which layer each of these classes belongs, to avoid mixing up responsibilities, to keep each layer highly focussed and to make the system much easier to reason about and maintain overall.</p>
+<p>Let's cut to the chase and unveil the resulting <em>implementation map</em> (not an official term but has a nice ring to it):</p>
 <p><img alt="Layers from the layered architecture, with the various objects that belong to them and how they interact with each other" src="/images/1/dime_03.png" title="Implementation map" />
 <p class="caption">Implementation map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/1/layers-big.png">here</a> for a higher definition)</p></p>
-<p>As with the previous phases of this series, what you're looking at is the outcome of multiple iterations already – initial assumptions were adjusted over time, based on development feedback which also led to model and domain updates.</p>
+<p>Like the previous parts of thise series, what you're looking at is the outcome of multiple iterations already. Initial assumptions were adjusted over time, based on implementation feedback that also found its way to the model and domain.</p>
 <p>Let's work our way through each layer, top to bottom.</p>
 <h3 id="presentation-layer">Presentation layer</h3>
-<p>As the presentation layer is responsible for getting input from the user and outputting data in the console, this is where the Artisan commands go (Artisan is Laravel's <a href="https://laravel.com/docs/artisan" title="Artisan documentation">console component</a>, also part of <a href="https://laravel-zero.com/" title="Laravel Zero">Laravel Zero</a>, the framework used for this application).</p>
-<p>There are three commands – <code>Process</code>, <code>Review</code> and <code>Export</code>. <code>Process</code> will take the spreadsheet of transactions as an input, and pass it on to lower layers for processing. Once that's done, the <code>Review</code> command will retrieve the results (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model#ubiquitous-language" title="Ubiquitous language">tax year summaries</a>) and display them back in the console. Having a separate command for this will allow users not to have to process the whole file every time, and to display the results of a previous run directly. The <code>Process</code> command will call the <code>Review</code> one once it's done though, to save the user from an extra step.</p>
+<p>As the presentation layer is responsible for collecting user input and returning data to the console, is it home to the Artisan commands (<a href="https://laravel.com/docs/artisan" title="Artisan documentation">Artisan</a> is Laravel's console component, which is also part of <a href="https://laravel-zero.com/" title="Laravel Zero">Laravel Zero</a>, the framework used for this application).</p>
+<p>There are three commands – <code>Process</code>, <code>Review</code> and <code>Export</code>.</p>
+<p><code>Process</code> will take the transaction spreadsheet as an input and pass it on to lower layers for processing.</p>
+<p>Once processed, the <code>Review</code> command will retrieve the results (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model#ubiquitous-language" title="Ubiquitous language"><em>tax year summaries</em></a>) and display them back in the console. Having a separate command for this will save the users from having to process the whole file every time, allowing them to display the results from a previous run instead. The <code>Process</code> command will call the <code>Review</code> one once it's done though, to spare the user an extra step.</p>
 <p>The <code>Export</code> command will be responsible for outputting the results in a different format, like a CSV file. The <code>Review</code> command will ask the user if they want to save the results to a file, and call the <code>Export</code> command if that is the case.</p>
 <p>Finally, a <code>Presenter</code> service will abstract away the formatting of the console output, to avoid cluttering the commands with the related logic.</p>
 <h3 id="application-layer">Application layer</h3>
