@@ -151,7 +151,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-04-03 ::
+          Last updated: 2023-04-05 ::
         Published: 2022-09-01
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model.html">history</a> ]
       </small>
@@ -179,7 +179,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
 <li>The model <strong>⬅️ you are here</strong></li>
-<li>Software design <em>(coming soon)</em></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
+<li>Setting up Laravel Zero <em>(coming soon)</em></li>
+<li>Setting up EventSauce using TDD with Pest <em>(coming soon)</em></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -220,7 +222,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>As a user, I want my swaps to be processed as such, so I can get the correct figures</em></li>
 <li><em>As a user, I want my transfers to be processed as such, so I can get the correct figures</em></li>
 <li><em>As a user, I want fees to be identified in my transactions, so I can get the correct figures</em></li>
-<li><em>As a user, I want share pooling assets to be identified in my transactions, so I can get the correct figures</em></li>
+<li><em>As a user, I want share-pooling assets to be identified in my transactions, so I can get the correct figures</em></li>
 <li><em>As a user, I want non-fungible assets to be identified in my transactions, so I can get the correct figures</em></li>
 <li><em>As a user, I want airdrops to be identified in my transactions, so I can get the correct figures</em></li>
 </ul>
@@ -296,7 +298,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>We can go through the domain and analyse the diagrams and user stories to extract a glossary of key terms that will also be used within the software:</p>
 <ul>
 <li><em>30-day period</em>: The 30 days following the end of a tax year. Transactions occurring during that period may still count for the tax year that has just ended, because of the 30-days rule of pooling;</li>
-<li><em>30-days rule</em>: A share pooling tax rule whereby assets acquired within 30 days of being disposed of must be matched with those disposals;</li>
+<li><em>30-days rule</em>: A share-pooling tax rule whereby assets acquired within 30 days of being disposed of must be matched with those disposals;</li>
 <li><em>Acquisition</em>: An asset being acquired, in whichever way it may be;</li>
 <li><em>Airdrop</em>: An asset being acquired in the context of a promotional operation;</li>
 <li><em>Allowable cost</em>: A cost that can be deducted from other revenues, attributable to either an acquisition or a disposal;</li>
@@ -307,7 +309,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Capital loss</em>: A loss realised when the proceeds of an asset disposal are less than the cost basis of the acquisition, for assets falling under the Capital Gains Tax regime;</li>
 <li><em>Cost basis</em>: The cost of acquisition of an asset, in fiat terms;</li>
 <li><em>Disposal</em>: An asset being disposed of, in whichever way it may be;</li>
-<li><em>Disposal reversion</em>: When an already processed disposal must be reverted due to a subsequent transaction falling under one of the share pooling rules;</li>
+<li><em>Disposal reversion</em>: When an already processed disposal must be reverted due to a subsequent transaction falling under one of the share-pooling rules;</li>
 <li><em>Fee</em>: An amount paid in exchange for a service;</li>
 <li><em>Fiat</em>: A government-issued currency;</li>
 <li><em>Gift</em>: An asset either received or given away for free;</li>
@@ -315,22 +317,22 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><em>Income</em>: An amount falling under the Income Tax regime;</li>
 <li><em>Market value</em>: The value of an asset at a certain point in time, in fiat terms;</li>
 <li><em>Mint</em>: The action of creating a non-fungible asset;</li>
-<li><em>NFT</em>: A type of asset that isn't subject to share pooling rules;</li>
+<li><em>NFT</em>: A type of asset that isn't subject to share-pooling rules;</li>
 <li><em>Non-attributable allowable cost</em>: A cost that can be deducted from other revenues, that can't be attributed either to an acquisition or a disposal;</li>
-<li><em>Non-Fungible Asset</em>: A type of asset that isn't subject to share pooling rules, like a NFT;</li>
+<li><em>Non-Fungible Asset</em>: A type of asset that isn't subject to share-pooling rules, like a NFT;</li>
 <li><em>Operation</em>: Any operation involving an asset, as reported by the user;</li>
 <li><em>Proceeds</em>: The amount obtained for an asset disposal, in fiat terms;</li>
 <li><em>Quantity</em>: Any amount of an asset or fiat expressed as a number;</li>
-<li><em>Quantity allocation</em>: Any quantity of a transaction that must be matched with another transaction's according to share pooling rules;</li>
-<li><em>Remaining quantity</em>: Any quantity left after one of the share pooling rules has been applied;</li>
+<li><em>Quantity allocation</em>: Any quantity of a transaction that must be matched with another transaction's according to share-pooling rules;</li>
+<li><em>Remaining quantity</em>: Any quantity left after one of the share-pooling rules has been applied;</li>
 <li><em>Report/Reporting</em>: A user recording a set of transactions in a spreadsheet;</li>
 <li><em>Revenue</em>: Generic term to design any type of income, be it dividends, capital gains, or anything else;</li>
 <li><em>Review/Reviewing</em>: A user going through the application's output;</li>
-<li><em>Same-day rule</em>: A share pooling tax rule whereby assets acquired or disposed of on the same day must be matched with those acquisitions and disposals;</li>
-<li><em>Section 104 pool</em>: An abstract container used as part of the share pooling rules and in which the acquisitions of an asset are flowing to calculate the average cost basis;</li>
-<li><em>Section 104 pool rule</em>: A share pooling tax rule whereby the acquisitions of an asset are flowing into a pool to calculate the average cost basis;</li>
+<li><em>Same-day rule</em>: A share-pooling tax rule whereby assets acquired or disposed of on the same day must be matched with those acquisitions and disposals;</li>
+<li><em>Section 104 pool</em>: An abstract container used as part of the share-pooling rules and in which the acquisitions of an asset are flowing to calculate the average cost basis;</li>
+<li><em>Section 104 pool rule</em>: A share-pooling tax rule whereby the acquisitions of an asset are flowing into a pool to calculate the average cost basis;</li>
 <li><em>Share pooling</em>: A set of tax rules applying to certain types of assets;</li>
-<li><em>Share pooling asset</em>: A type of asset that is subject to share pooling rules;</li>
+<li><em>Share-pooling asset</em>: A type of asset that is subject to share-pooling rules;</li>
 <li><em>Software</em>: The software processing the transaction spreadsheet and outputting results;</li>
 <li><em>Spouse or civil partner gift</em>: An asset either received or given away for free, from or to a spouse or civil partner;</li>
 <li><em>Spreadsheet</em>: A list of transactions as reported by the user;</li>
@@ -372,7 +374,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-04-03" pubdate>2023-04-03</time>
+          <time datetime="2023-04-05" pubdate>2023-04-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/userstory">userstory</a>

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2023/04/05/dime_01.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>Building a PHP CLI tool using DDD and Event Sourcing: software design &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+  <meta name="description" content="How can we combine Domain-Driven Design, Event Sourcing and the Layered Architecture pattern to design a piece of software? This is the focus of this new instalment of a series exploring building a complex console application with PHP." />
+  <meta name="twitter:description" content="How can we combine Domain-Driven Design, Event Sourcing and the Layered Architecture pattern to design a piece of software? This is the focus of this new instalment of a series exploring building a complex console application with PHP.">
+
+  <meta name="tags" content="ddd" />
+  <meta name="tags" content="eventsourcing" />
+  <meta name="tags" content="layeredarchitecture" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: software design">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2023/04/05/dime_01.png">
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+    </ul>
+  </section>
+
+  <section>
+    <h2>Newsletter</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="Email address" required>
+      <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+      <input type="submit" hidden />
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/news">News</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2023
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Building a PHP CLI tool using DDD and Event Sourcing: software design
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2023-04-05 ::
+        Published: 2023-04-05
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><img alt="A pencil on a sheet of paper with drawn lines" src="/images/2023/04/05/dime_01.png" title="A pencil on a sheet of paper with drawn lines" /></p>
+<p>When I started this series, I wasn't sure whether this post would be necessary.</p>
+<p>What I'm referring to as software design here is arguably still part of the model, and when searching for inspiration online, I did find many examples of models featuring some rather specific implementation details.</p>
+<p>As per Domain-Driven Design (DDD), however, the model is also supposed to be accessible to domain experts, so that they can validate it. But should we expect an accountant to know what a repository or a value object is?</p>
+<p>That led me to draw the line between what developers and non-developers would understand, and to publish two separate articles – one covering the <em>abstract</em> model (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">previous post</a>), and the other the <em>implementation</em> model (this post).</p>
+<p>This also meant I could go as technical as necessary in the latter.</p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
+<li>Software design <strong>⬅️ you are here</strong></li>
+<li>Setting up Laravel Zero <em>(coming soon)</em></li>
+<li>Setting up EventSauce using TDD with Pest <em>(coming soon)</em></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#domain-driven-design">Domain-Driven Design</a></li>
+<li><a href="#event-sourcing">Event Sourcing</a></li>
+<li><a href="#layered-architecture">Layered Architecture</a></li>
+<li><a href="#mix-and-match">Mix and match</a><ul>
+<li><a href="#presentation-layer">Presentation layer</a></li>
+<li><a href="#application-layer">Application layer</a></li>
+<li><a href="#domain-layer">Domain layer</a></li>
+<li><a href="#infrastructure-layer">Infrastructure layer</a></li>
+</ul>
+</li>
+<li><a href="#application-structure">Application structure</a></li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul>
+</div>
+<h2 id="domain-driven-design">Domain-Driven Design</h2>
+<p>Before I get into the nitty-gritty of the implementation, I need to get some base concepts out of the way. I'm going to start with DDD, so feel free to skip this section if you're already familiar with the topic.</p>
+<p><a href="https://martinfowler.com/bliki/DomainDrivenDesign.html" title="DomainDrivenDesign">Domain-Driven Design</a> is both an approach to software design and a set of tools that includes several object-oriented patterns. DDD and Object-Oriented Programming (OOP) work well together because they share a common goal of representing real-world concepts and relationships as code.</p>
+<p>This is also why you will most likely recognise some of the patterns described below, even if you're not familiar with DDD:</p>
+<ol>
+<li>
+<p><em>Entity:</em> An entity is a domain object that has a unique identity and a lifecycle that spans multiple interactions with the system. Entities are often referred to as <em>models</em> in non-DDD contexts.</p>
+</li>
+<li>
+<p><em>Value Object:</em> A value object is a domain object that has no identity and is defined entirely by its properties. Unlike entities, value objects are immutable and can be freely shared and copied between different parts of the system without any side effects.</p>
+</li>
+<li>
+<p><em>Service:</em> A service can refer to a domain object that encapsulates a specific behaviour or process within the domain. All services do not always belong to the domain, however – a service can also provide utility for other layers (see <a href="#layered-architecture">Layered Architecture</a> further down). Services are stateless and typically operate on one or more entities and/or value objects to accomplish a specific goal.</p>
+</li>
+<li>
+<p><em>Factory:</em> A factory is a domain object that encapsulates the creation of other domain objects, such as entities or value objects. Factories are often used to simplify the creation of complex objects or to ensure that objects are created consistently and according to specific rules or constraints.</p>
+</li>
+<li>
+<p><em>Repository:</em> A repository is a domain object used to save and retrieve entities. A repository doesn't create entities (that's what factories are for) but persists them in the storage layer. It also encapsulates the logic related to retrieving objects from that layer (e.g. filters). Repositories are a way to decouple the domain from the underlying storage infrastructure.</p>
+</li>
+</ol>
+<p>There are other DDD patterns that I need to address but they belong to a larger pattern that is worth covering in a separate section – Event Sourcing.</p>
+<h2 id="event-sourcing">Event Sourcing</h2>
+<p><a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">Event Sourcing</a> is a software design pattern whereby the state of a system is stored as a sequence of events, rather than as the latest snapshot of that state. Each event represents a change to the system's state and can be used to reconstruct that state at any point in time.</p>
+<p>A typical example is a bank statement – rather than displaying your account's currently available amount only, a bank statement will list all the operations performed in the covered period, leading to the current amount.</p>
+<p>Event Sourcing is considered a DDD pattern with its own sub-patterns, some of which are described below:</p>
+<ol>
+<li>
+<p><em>Aggregate:</em> An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules (invariants) within the domain.</p>
+</li>
+<li>
+<p><em>Aggregate Root:</em> An aggregate root is a special type of aggregate that serves as the entry point for all operations on the aggregate. The aggregate root is responsible for ensuring the consistency of the entire aggregate, and is the only object that can modify the state of the aggregate.</p>
+</li>
+<li>
+<p><em>Invariant:</em> An invariant is a business rule. It's a condition or set of conditions that must always be true within a domain. Invariants are typically enforced by aggregates or aggregate roots and are checked and maintained whenever an event is applied to the system.</p>
+</li>
+<li>
+<p><em>Event:</em> An event is a record of a change to the system's state. Events are typically immutable and represent a historical record of everything that has happened within the system.</p>
+</li>
+<li>
+<p><em>Projector:</em> A projector is an object that transforms a stream of events into a separate read model, or projection. Projectors typically subscribe to events and update the projection accordingly.</p>
+</li>
+<li>
+<p><em>Projection:</em> A projection (also called "read model") is the output of a projector, and represents a read-only view of the system's state at a specific point in time. Projections can be used for querying and reporting purposes, and are typically optimised for specific use cases.</p>
+</li>
+<li>
+<p><em>Reactor:</em> A reactor is an object that listens to specific events and triggers other actions within the system as a result. The main difference with projectors is that reactors respond to an event only once, even if the event is replayed later on (to reconstruct the system's state at a specific point in time, for instance).</p>
+</li>
+</ol>
+<p>If you're new to all this, these definitions probably sound a bit abstract. That's OK – each of these patterns will be illustrated with concrete examples at some point, either in this article or in future posts.</p>
+<h2 id="layered-architecture">Layered Architecture</h2>
+<p>The last concept I want to introduce is that of <a href="https://www.baeldung.com/cs/layered-architecture">Layered Architecture</a>.</p>
+<p>A layered architecture is a software design pattern that involves breaking a system down into logical layers, each of which is responsible for a specific set of functions within the system.</p>
+<p>Each layer communicates with lower-level layers only and provides an interface that can be used by higher-level layers.</p>
+<p>You may encounter different names for these layers and their number sometimes varies, but they're usually along these lines:</p>
+<p><img alt="Layers, top to bottom: Presentation, Application, Domain, Infrastructure" src="/images/2023/04/05/dime_02.png" title="Layered Architecture" /></p>
+<p>Here's a brief definition for each of them:</p>
+<ol>
+<li>
+<p><em>Presentation:</em> The presentation layer is responsible for handling user interaction and input, and for presenting information back to the user.</p>
+</li>
+<li>
+<p><em>Application:</em> The application layer orchestrates the interactions between the presentation, domain, and infrastructure layers. It does not contain any business logic.</p>
+</li>
+<li>
+<p><em>Domain:</em> The domain layer represents the core business concepts and rules of the system, and is responsible for ensuring the consistency and correctness of the system's behaviour.</p>
+</li>
+<li>
+<p><em>Infrastructure:</em> The infrastructure layer provides the underlying technical infrastructure and services that support the application, such as databases, messaging systems, and network communication.</p>
+</li>
+</ol>
+<p>We can already see that the Layered Architecture, Event Sourcing and Domain-Driven Design patterns overlap to some extent.</p>
+<p>Let's combine them further and map out the various moving parts of the application.</p>
+<h2 id="mix-and-match">Mix and match</h2>
+<p>This is where we leave the theory aside to enter a more concrete phase of the design. The goal is to come up with classes that will represent model concepts and fulfil user stories, the code thus becoming an expression of the model.</p>
+<p>This is also where we determine which layer each of these classes belongs to, intending to keep each layer highly focussed. This is a way to enforce a clear separation of concerns and increase the maintainability of the system, which becomes much easier to reason about.</p>
+<p>Let's cut to the chase and unveil the resulting <em>implementation map</em> (not an official term, but it has a nice ring to it):</p>
+<p><img alt="Layers from the layered architecture, with the various objects that belong to them and how they interact with each other" src="/images/2023/04/05/dime_03.png" title="Implementation map" />
+<p class="caption">Implementation map (made with <a href="https://excalidraw.com/">Excalidraw</a> – click <a href="/images/2023/04/05/layers-big.png">here</a> for a higher definition)</p></p>
+<p>Like other charts in this series, what you're looking at is already the outcome of multiple iterations. Initial assumptions were adjusted over time, based on implementation feedback that also led to changes to the model and domain.</p>
+<p>Let's break the map down layer by layer, top to bottom.</p>
+<h3 id="presentation-layer">Presentation layer</h3>
+<p>As the presentation layer is responsible for collecting user input and displaying output in the console, is it home to the <a href="https://laravel.com/docs/artisan" title="Artisan documentation">Artisan</a> commands (Artisan is Laravel's console component, which is also part of <a href="https://laravel-zero.com/" title="Laravel Zero">Laravel Zero</a>, the framework used for this application):</p>
+<p><img alt="Close-up of the presentation layer" src="/images/2023/04/05/dime_04.png" title="Presentation layer" />
+<p class="caption">The presentation layer</p></p>
+<p>There are three commands – <code>Process</code>, <code>Review</code> and <code>Export</code>.</p>
+<p><code>Process</code> will take the transaction spreadsheet as input and pass it on to lower layers for processing.</p>
+<p>Once done, the <code>Review</code> command will retrieve the results (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model#ubiquitous-language" title="Ubiquitous language"><em>tax year summaries</em></a>) and display them in the console.</p>
+<p>Having a separate command for this means users won't have to process the whole file every time, allowing them to display the results from a previous run instead. The <code>Process</code> command will call <code>Review</code> once it's done though, to spare the user an extra step.</p>
+<p>The <code>Export</code> command will be responsible for outputting the results in different formats (e.g. CSV). The <code>Review</code> command will ask the user if they want to save the results to a file, and call the <code>Export</code> command if that is the case.</p>
+<p>Finally, a <code>Presenter</code> service will abstract away the code related to output formatting, to avoid cluttering the commands with the corresponding logic.</p>
+<h3 id="application-layer">Application layer</h3>
+<p>One level down is the application layer. The definition of the application layer is a little vague but we can see it as the glue between the other layers. Here, the application layer mostly consists of services and concrete repositories:</p>
+<p><img alt="Close-up of the application layer" src="/images/2023/04/05/dime_05.png" title="Application layer" />
+<p class="caption">The application layer</p></p>
+<p>On the service side, we've got <code>TransactionReader</code>, a class whose responsibility is to parse the spreadsheet and return raw transactions to the <code>Process</code> command.</p>
+<p>In turn, the <code>Process</code> command passes the raw transactions to <code>TransactionProcessor</code>, another service from the application layer. Its job is to turn each raw transaction into an object from the domain layer that then passes to it for further processing:</p>
+<p><img alt="Interaction between the Process command and the TransactionReader and TransactionProcessor services" src="/images/2023/04/05/dime_06.png" title="Interaction between the Process command and the TransactionReader and TransactionProcessor services" /></p>
+<p>In short, as far as transaction processing goes, the application layer serves as a translation layer between the presentation and domain layers.</p>
+<p>The third and last service of the application layer is <code>TaxYearSummaryExporter</code>, a class whose job is to export the tax year summaries to various file formats. It receives the summaries from the <code>Export</code> command, which has previously obtained them from the <code>TaxYearSummaryRepository</code> repository, which is also part of the application layer (as a quick reminder, a repository is responsible for fetching and recording entities, although this one only does the former):</p>
+<p><img alt="Interaction between the Export command, the TaxYearSummaryExporter service and the TaxYearSummaryRepository repository" src="/images/2023/04/05/dime_07.png" title="Interaction between the Export command, the TaxYearSummaryExporter service and the TaxYearSummaryRepository repository" /></p>
+<p>Now, what's interesting here is that this repository is a <em>concrete</em> repository – the concrete implementation of an <em>abstract</em> repository, which in our case is a PHP interface living in the domain layer.</p>
+<p>We'll get to the detail of the domain layer in the next section, but for now, the reason why the concrete repositories live in the application layer and the interfaces they implement in the domain layer is because the former are considered an implementation detail. Within Laravel Zero, concrete repositories will use the <a href="https://laravel.com/docs/eloquent" title="Eloquent documentation">Eloquent</a> ORM to interact with the database, but the domain should not be aware of such technicalities, which are infrastructure concerns.</p>
+<p>Note that once again, the application layer acts as a translation layer, although this time between the domain and infrastructure layers.</p>
+<p>Also note that while <code>TaxYearSummaryRepository</code> is the only repository represented on the implementation map, other repositories will be necessary for other entities. This is why the application layer features a generic "Concrete repositories" component, and why the domain layer holds its "Repository interfaces" counterpart.</p>
+<h3 id="domain-layer">Domain layer</h3>
+<p>The domain layer is where the bulk of the application – the "core business concepts and invariants of the system" – lives. We've already come across some of its components, in relation to higher levels:</p>
+<p><img alt="Close-up of the domain layer" src="/images/2023/04/05/dime_08.png" title="Domain layer" />
+<p class="caption">The domain layer</p></p>
+<p>One of these components is the <code>Transaction</code> value object, which the application layer's <code>TransactionProcessor</code> service creates from raw transactions before it passes it on to <code>TransactionDispatcher</code>, a domain service that I will touch on in a bit:</p>
+<p><img alt="Interaction between the Transaction value object and the TransactionProcessor and TransactionDispatcher services" src="/images/2023/04/05/dime_09.png" title="Interaction between the Transaction value object and the TransactionProcessor and TransactionDispatcher services" /></p>
+<p>While <code>Transaction</code> is the only value object featured on the implementation map, there will be many more. Value objects are a core concept of DDD that are more powerful than they seem at first glance – far from being mere data containers, they encapsulate domain concepts whose correctness they guarantee through a set of validation rules.</p>
+<p>Take <code>Transaction</code> as an example – this value object will make sure that the raw transaction data it receives is correctly formatted and valid, and return an error otherwise. In other words, any part of the domain receiving a <code>Transaction</code> value object is assured of the validity of its properties.</p>
+<p>Value objects are also immutable, meaning they can be passed around safely without worrying that their state may change.</p>
+<p>I won't turn this section into a course about value objects, but if you'd like to dig deeper, <a href="https://matthiasnoback.nl/2022/09/is-it-a-dto-or-a-value-object/" title="Is it a DTO or a Value Object?">this article</a> by <a href="https://twitter.com/matthiasnoback" title="Twitter profile">Matthias Noback</a> does a good job of explaining what they are and how they differ from Data Transfer Objects (DTOs), another pattern they're often confused with.</p>
+<p>Another component of the domain layer we've touched upon earlier is the <code>TaxYearSummaryRepository</code> interface, whose concrete implementation lives in the application layer. As stated before, repositories are responsible for retrieving and storing entities – in this case, <code>TaxYearSummaryRepository</code>'s job is to retrieve <code>TaxYearSummary</code> entities from the database:</p>
+<p><img alt="Interaction between the TaxYearSummaryRepository repository and the TaxYearSummary entity" src="/images/2023/04/05/dime_10.png" title="Interaction between the TaxYearSummaryRepository repository and the TaxYearSummary entity" /></p>
+<p>These entities are also <em>projections</em>, and this is where we enter the realm of Event Sourcing.</p>
+<p>Projections are created by <em>projectors</em> and are basically views – data representations of specific events happening in the system.</p>
+<p>A tax year summary is a report of any capital gain, income or non-attributable allowable cost incurred during a specific tax year. To come up with them, <code>TaxYearSummaryProjector</code> listens to any events that would cause these figures to change and creates or updates the relevant <code>TaxYearSummary</code> projections when they occur.</p>
+<p>But where do these events come from? From the <code>TaxYear</code> <em>aggregate</em>, which encapsulates everything that happens during any given tax year. Or, to put it differently, the <code>TaxYear</code> aggregate keeps track of and records all the events belonging to the tax year it represents:</p>
+<p><img alt="Interaction between the TaxYear aggregate, the TaxYearSummaryProjector projector and the TaxYearSummary projection" src="/images/2023/04/05/dime_11.png" title="Interaction between the TaxYear aggregate, the TaxYearSummaryProjector projector and the TaxYearSummary projection" /></p>
+<p>Another component that is implied in the above is the <code>TaxYear</code> <em>aggregate root</em>, which is the entry point for anything happening to the aggregate.</p>
+<p>The only way to record a new state for the aggregate – to apply an event – is to ask the aggregate root to do so. The aggregate root is the aggregate's guardian, and it won't update the aggregate's state before making sure no invariant is being violated.</p>
+<p>An example of invariant violation would be trying to record a capital gain for a date that isn't within the tax year represented by the aggregate. The aggregate root will check the event's date first, and reject it as it doesn't belong to the tax year.</p>
+<p>But who asks the <code>TaxYear</code> aggregate root to update the aggregate's state? Other domain components.</p>
+<p>Let's come back to the <code>TransactionDispatcher</code> service we came across earlier. It's the domain service that receives the <code>Transaction</code> value objects from the application layer's <code>TransactionProcessor</code> service, after the latter created them from raw transaction data:</p>
+<p><img alt="Interaction between the Transaction value object and the TransactionProcessor and TransactionDispatcher services" src="/images/2023/04/05/dime_09.png" title="Interaction between the Transaction value object and the TransactionProcessor and TransactionDispatcher services" /></p>
+<p>The <code>TransactionDispatcher</code> service is an implementation of the <a href="https://en.wikipedia.org/wiki/Strategy_pattern" title="Strategy pattern">strategy design pattern</a>.</p>
+<p>Upon receiving a transaction, it selects the <em>handlers</em> that will deal with it, based on the transaction's type and properties:</p>
+<p><img alt="Interaction between the TransactionDispatcher service and the various transaction handlers" src="/images/2023/04/05/dime_12.png" title="Interaction between the TransactionDispatcher service and the various transaction handlers" /></p>
+<p>If it detects that the transaction is a transfer (i.e. between two wallets belonging to the user), it will dispatch it to the <code>TransferHandler</code> service. If the transaction has a fee, the handler will tell the <code>TaxYear</code> aggregate root to record a new non-attributable allowable cost for the tax year (I invite you to check the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#fees-in-cryptocurrency" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Fees in cryptocurrency">domain article</a> if you want to know why).</p>
+<p>Likewise, if <code>TransactionDispatcher</code> detects that the transaction incurs some income, it will pass it on to the <code>IncomeHandler</code> service, which will then tell the <code>TaxYear</code> aggregate root to record the corresponding income for the relevant tax year:</p>
+<p><img alt="Interaction between the TransferHandler and IncomeHandler services and the TaxYear aggregate" src="/images/2023/04/05/dime_13.png" title="Interaction between the TransferHandler and IncomeHandler services and the TaxYear aggregate" /></p>
+<p>While these two handlers are fairly simple, things get a little more complicated with the last two ones – <code>NonFungibleAssetHandler</code> and <code>SharePoolingAssetHandler</code>. Let's start with the former.</p>
+<p>If <code>TransactionDispatcher</code> detects that a transaction involves an NFT (you know – monkey JPEGs), it will pass that transaction to the <code>NonFungibleAssetHandler</code> service.</p>
+<p>Now, NFTs are a bit special, because several things can happen to them while a user holds them. After an NFT is acquired, its cost basis can change before it is sold again (disposed of), which is typically the case when the NFT was minted from several other NFTs (again, please refer to the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#non-fungible-tokens" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Non-Fungible Tokens">domain article</a> for details).</p>
+<p>All these scenarios (acquisition, cost basis update, disposal) represent events that change the state of the NFT, and that we need to keep track of. You guessed it – we've got another aggregate on our hands:</p>
+<p><img alt="The NonFungibleAsset aggregate" src="/images/2023/04/05/dime_14.png" title="The NonFungibleAsset aggregate" /></p>
+<p>Like <code>TaxYear</code>, <code>NonFungibleAsset</code> is implicitly both an aggregate and an aggregate root, the latter responsible for validating events before recording them within the former.</p>
+<p>Some of these events are also taxable events that the <code>TaxYear</code> aggregate must be aware of so that, in turn, the <code>TaxYearSummaryProjector</code> class can update the right <code>TaxYearSummary</code> projections.</p>
+<p>How does that happen? Through a <em>reactor</em>:</p>
+<p><img alt="Interaction between the NonFungibleAsset aggregate, the NonFungibleAssetReactor reactor and the TaxYear aggregate" src="/images/2023/04/05/dime_15.png" title="Interaction between the NonFungibleAsset aggregate, the NonFungibleAssetReactor reactor and the TaxYear aggregate" /></p>
+<p>Like projectors, reactors listen to events, but instead of updating a projection, they trigger various actions. They do so only once, whereas a projector will respond to an event as many times as it is replayed.</p>
+<p>Here, <code>NonFungibleAssetReactor</code> will listen to any NFT-related events that are taxable events (typically, disposals) and, when it catches one, will tell the relevant <code>TaxYear</code> aggregate root to update its aggregate's state.</p>
+<p>That's it for <code>NonFungibleAssetHandler</code>, which leaves us with the <code>SharePoolingAssetHandler</code> class. This service deals with the other kind of cryptoassets – the ones that fall under the rules of <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#selling-an-asset-for-fiat-currency" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain – Selling an asset for fiat currency">share pooling</a>. And on the surface, it works similarly to the <code>NonFungibleAssetHandler</code> class:</p>
+<p><img alt="Interaction between the SharePoolingAsset aggregate, the SharePoolingAssetReactor reactor and the TaxYear aggregate" src="/images/2023/04/05/dime_16.png" title="Interaction between the NonFungibleAsset aggregate, the NonFungibleAssetReactor reactor and the TaxYear aggregate" /></p>
+<p>Depending on the transaction type, different things happen to the share-pooling asset held by the user (she can acquire more of it, dispose of some, exchange some of it for another asset, etc.). All these events are recorded within the <code>SharePoolingAsset</code> aggregate through its root, which updates the aggregate's state so long as the invariants are observed.</p>
+<p>There is a <code>SharePoolingAssetReactor</code> class listening to any taxable events coming from <code>SharePoolingAsset</code> aggregates, which tells the relevant <code>TaxYear</code> aggregate root to update its aggregate's state when it catches one.</p>
+<p>While this high-level explanation is enough for this article, under the hood the <code>SharePoolingAsset</code> aggregate is far more complex than the <code>NonFungibleAsset</code> aggregate. It involves many value objects, and guards convoluted invariants related to share-pooling rules.</p>
+<h3 id="infrastructure-layer">Infrastructure layer</h3>
+<p>Lastly, the infrastructure layer is essentially the plumbing of the software, of which the database is a common example:</p>
+<p><img alt="Close-up of the infrastructure layer" src="/images/2023/04/05/dime_17.png" title="Infrastructure layer" />
+<p class="caption">The infrastructure layer</p></p>
+<p>It also comprises the configuration files, external dependencies and, in the context of Laravel, the <a href="https://laravel.com/docs/providers" title="Service providers documentation">service providers</a> (used to bootstrap various parts of the application).</p>
+<h2 id="application-structure">Application structure</h2>
+<p>We now have a pretty good idea of the layers and classes that will make up the application.</p>
+<p>We've introduced concepts and patterns borrowed from DDD and Event Sourcing and used terms coming from the ubiquitous language to name our components.</p>
+<p>We've even started integrating Laravel concepts, but there's more work to be done on that front. This is the focus of this section.</p>
+<p>Laravel does not enforce any particular architectural style and doesn't get in the way of most DDD patterns (e.g. you can easily introduce value objects or services), and even provides built-in support for some of them (e.g. models, which are entities although the Active Record pattern underlying its ORM is <a href="https://shawnmc.cool/2023-02-13_active-record-how-we-got-persistence-perfectly-wrong" title="Active Record: How We Got Persistence Perfectly Wrong">not without criticism</a>). Laravel also has great support for events and queues, which are essential components of Event Sourcing.</p>
+<p>Things get a little confusing when it comes to the Layered Architecture pattern, however.</p>
+<p>I have read many articles on the topic but there's one that truly stood out and got me on the right track – <a href="https://lorisleiva.com/conciliating-laravel-and-ddd">Conciliating Laravel and DDD</a>, by <a href="https://twitter.com/lorismatic" title="Twitter profile">Loris Leiva</a>. The main takeaway from this post is that fighting the framework is counterproductive.</p>
+<p>When it comes to Laravel and Laravel Zero, not fighting the framework means ending up with a mix of components from the presentation, application and infrastructure layers in the <code>app</code> folder:</p>
+<div class="highlight"><pre><span></span>dime/
+├── app/
+│   ├── Aggregates/
+│   ├── Commands/
+│   ├── Providers/
+│   └── Services/
+├── bootstrap/
+├── config/
+├── database/
+├── domain/
+│   ├── src/
+│   └── tests/
+├── tests/
+└── vendor/
+</pre></div>
+
+
+<p><p class="caption">Application structure</p></p>
+<p>On the above, the <code>app</code> folder's <code>Aggregates</code> sub-folder contains aggregate-specific <a href="https://laravel.com/docs/10.x/providers" title="Service Providers documentation">service providers</a> (infrastructure layer), as well as concrete repositories (application layer).</p>
+<p>The <code>Commands</code> folder is part of Laravel's default structure and contains the Artisan commands (presentation layer).</p>
+<p><code>Providers</code> holds the global service providers (infrastructure layer), and <code>Services</code> the services used by the presentation layer (e.g. <code>TransactionReader</code>, which is part of the application layer).</p>
+<p>One level up, <code>bootstrap</code>, <code>config</code> and <code>database</code> are also Laravel-native folders, belonging to the infrastructure layer. The <code>tests</code> folder contains the test suite covering the application layer, and <code>vendor</code> is home to external dependencies (infrastructure layer).</p>
+<p>That leaves us with the <code>domain</code> folder, which is the only one that isn't part of Laravel's default structure at this level. The <code>domain</code> folder is dedicated to the domain layer, and comes with its own test suite (in the <code>tests</code> subfolder), while the rest of the source code lives in <code>src</code>.</p>
+<p>I've seen <a href="https://www.juststeveking.uk/blog/getting-started-with-ddd-in-laravel/" title="Laravel DDD - Getting started with DDD in Laravel">other approaches</a> further separating the different layers within a Laravel application (successfully so), but still think that the more we bend a framework, the more issues we're likely to come across in the future.</p>
+<p>As long as the domain layer is properly isolated, my opinion is that it's OK to compromise a little on the other ones, for the sake of framework compliance. You may of course disagree.</p>
+<p>Still, that extra <code>domain</code> folder needs to be referenced from the PSR-4 autoload mapping sections of <code>composer.json</code>, so it can get its own namespace:</p>
+<div class="highlight"><pre><span></span>...
+<span class="s2">&quot;autoload&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;psr-4&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;App\\&quot;</span>: <span class="s2">&quot;app/&quot;</span>,
+        <span class="s2">&quot;Domain\\&quot;</span>: <span class="s2">&quot;domain/src/&quot;</span>,
+        <span class="s2">&quot;Database\\Factories\\&quot;</span>: <span class="s2">&quot;database/factories/&quot;</span>,
+        <span class="s2">&quot;Database\\Seeders\\&quot;</span>: <span class="s2">&quot;database/seeders/&quot;</span>
+    <span class="o">}</span>
+<span class="o">}</span>,
+<span class="s2">&quot;autoload-dev&quot;</span>: <span class="o">{</span>
+    <span class="s2">&quot;psr-4&quot;</span>: <span class="o">{</span>
+        <span class="s2">&quot;Tests\\&quot;</span>: <span class="s2">&quot;tests/&quot;</span>,
+        <span class="s2">&quot;Domain\\Tests\\&quot;</span>: <span class="s2">&quot;domain/tests/&quot;</span>
+    <span class="o">}</span>
+<span class="o">}</span>,
+...
+</pre></div>
+
+
+<p>With the above, the regular <code>App</code> namespace that Laravel developers are used to is present as usual, but a new <code>Domain</code> namespace is also introduced and mapped onto the <code>domain</code> folder.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Now that we've established the overall structure of the application, identified the main components making up its various layers, as well as the way they interact with each other, we're in a solid position to begin the implementation.</p>
+<p>But where shall we start, exactly?</p>
+<p>Setting up the framework is the obvious first step (and will be the object of the next post), but once that's done we still need to decide how to tackle the domain.</p>
+<p>A characteristic of aggregates is that they constitute their own little isolated domains, which conveniently breaks down an application into smaller, independent components.</p>
+<p>Of the three aggregates identified in this article, the <code>NonFungibleAsset</code> one is arguably the simplest, so it makes sense to make it our starting point. This will be the focus of another part of this series.</p>
+<p>Once all the aggregates are in place, we'll be able to implement the logic connecting them, thus completing the domain layer. That will leave us with the presentation layer, which we can address last.</p>
+<p>This post is likely the last purely within the framework of Domain-Driven Design. The software design phase covered above completes the feedback loop opened with the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">description of the domain</a> and continued with the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">expression of the model</a>.</p>
+<p>These three phases will now keep feeding into each other, producing an ever clearer picture of both the domain issues and their solutions, informed by the software's implementation.</p>
+<p>Subscribe to email alerts below so you don't miss the next posts, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share them as soon as they are available.</p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="2023-04-05" pubdate>2023-04-05</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/ddd">ddd</a>
+          <a href="https://tech.osteel.me/tag/eventsourcing">eventsourcing</a>
+          <a href="https://tech.osteel.me/tag/layeredarchitecture">layeredarchitecture</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design";
+              var disqus_url = "https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: software design";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
+</script>
+
+     </div>
+  </body>
+</html>

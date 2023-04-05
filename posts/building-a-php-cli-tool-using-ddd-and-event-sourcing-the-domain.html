@@ -147,7 +147,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-04-03 ::
+          Last updated: 2023-04-05 ::
         Published: 2022-08-17
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain.html">history</a> ]
       </small>
@@ -180,7 +180,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
 <li>The domain  <strong>⬅️ you are here</strong></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
-<li>Software design <em>(coming soon)</em></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
+<li>Setting up Laravel Zero <em>(coming soon)</em></li>
+<li>Setting up EventSauce using TDD with Pest <em>(coming soon)</em></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -309,7 +311,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>When the good isn't priced in fiat at all, the investor is supposed to figure out its fair market value. Typically, that’s the market value of the asset sold for the good at the time of the transaction, as reported by a price-tracking platform like mentioned earlier.</p>
 <p class="info"><span class="title">Example</span> Charlie buys 0.5 bitcoins for £10,000, at a unit price of £20,000 per bitcoin. He wants to attend an event whose tickets are exclusively priced in bitcoin, at 0.1 bitcoins each. Charlie looks up the market value of the BTC token at the time of the purchase and notes that it was £21,000 per bitcoin. As a result, Charlie made a <code>(£21,000 * 0.1) - (£20,000 * 0.1) = £100</code> gain with this transaction, which is subject to Capital Gains Tax.</p>
 
-<p>Keep in mind that here too, share pooling rules apply.</p>
+<p>Keep in mind that here too, share-pooling rules apply.</p>
 <h3 id="fees-in-fiat">Fees in fiat</h3>
 <p>Most exchanges charge a fee for the following operations:</p>
 <ul>
@@ -345,7 +347,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Most cryptoasset transactions require the person disposing of the tokens to pay a fee. This fee will often be satisfied in tokens. If the transaction fee is satisfied in tokens then you need to consider that fee as one of the costs for the disposal of the tokens, but you also need to consider the fee as a disposal in its own right.</p>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22280" title="CRYPTO22280 - Cryptoassets for individuals: Capital Gains Tax: Fees satisfied in tokens">The Cryptoassets Manual</a></p>
 </blockquote>
-<p>This means that in a swapping transaction whose fee is settled in cryptocurrency, and when following the fee-split rule, not only 50% of the market value of the fee must be excluded from the proceeds of the disposed asset and the other 50% included in the cost basis of the acquired asset, but the entire market value of the fee must also be counted as a disposal, <em>following the share pooling rules</em>. Read that again.</p>
+<p>This means that in a swapping transaction whose fee is settled in cryptocurrency, and when following the fee-split rule, not only 50% of the market value of the fee must be excluded from the proceeds of the disposed asset and the other 50% included in the cost basis of the acquired asset, but the entire market value of the fee must also be counted as a disposal, <em>following the share-pooling rules</em>. Read that again.</p>
 <div class="info"><p><span class="title">Example</span> Bob buys 0.2 bitcoins for £4,000 on an exchange, at a unit price of £20,000 per bitcoin. A few weeks later he swaps 0.1 bitcoins for 2 ethers. The exchange charges a 0.001 BTC fee for the transaction. Bob looks up the market value of the BTC token at the time of the transaction and notes that it was £30,000 per bitcoin.</p><p>As 50% of the market value of the fee must be excluded from the market value of the disposed bitcoins, Bob made a <code>(£30,000 * 0.1) - (£30,000 * 0.001 / 2) - (£20,000 * 0.1) = £985</code> gain with this transaction, which is subject to Capital Gains Tax.</p><p>As 50% of the market value of the fee must be included in the cost basis of the acquired ethers, the corresponding amount is <code>(£30,000 * 0.1) + (£30,000 * 0.001 / 2) = £3,015</code>.</p><p>As the fee also constitutes a disposal, Bob made another <code>(£30,000 * 0.001) - (£20,000 * 0.001) = £10</code> gain with this transaction, which is subject to Capital Gains Tax. But as both disposals happened on the same day, they must be treated as a single transaction.</p><p>In the end, Bob made a <code>(£30,000 * (0.1 + 0.001)) - (£30,000 * 0.001 / 2) - (£20,000 * (0.1 + 0.001)) = £995</code> gain with this transaction, which is subject to Capital Gains Tax.</p></div>
 
 <p>How about transferring an asset from one wallet to another? As long as you are the owner of both wallets, there is no capital gain to report on the transferred amount:</p>
@@ -366,12 +368,12 @@ styles, `#sidebar-checkbox` for behavior. -->
 <div class="info"><p><span class="title">Example</span> Alice lends 3 ethers previously acquired for £6,000 to a DeFi protocol that doesn't guarantee a specific return. She gets 3 zETH in exchange, a token that represents her lending. Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3,000 per ether. Alice made a <code>(£3,000 * 3) - £6,000 = £3,000</code> gain, which is subject to Capital Gains Tax. The cost basis of the 3 zETH tokens is <code>£3,000 * 3 = £9,000</code>.</p><p>A few months later she decides to withdraw her ethers from the DeFi protocol. She returns the 3 zETH and gets back 3.1 ethers. There is no price-tracking information for the zETH token, so Alice looks up the market value of the ETH token at the time of the transaction and notes that it was £3,200 per ether. Alice made a <code>(£3,200 * 3.1) - £9,000 = £920</code> gain, which is subject to Capital Gains Tax.</p></div>
 
 <h3 id="non-fungible-tokens">Non-Fungible Tokens</h3>
-<p><em>Non-Fungible Tokens</em> or <em>NFTs</em> are also subject to Capital Gains Tax. But the key difference with <em>fungible tokens</em> (e.g. bitcoins or ethers) is that, because of their uniqueness, share pooling rules don't apply to them:</p>
+<p><em>Non-Fungible Tokens</em> or <em>NFTs</em> are also subject to Capital Gains Tax. But the key difference with <em>fungible tokens</em> (e.g. bitcoins or ethers) is that, because of their uniqueness, share-pooling rules don't apply to them:</p>
 <blockquote>
 <p>Non-Fungible Tokens (NFTs) are separately identifiable and so are not pooled.</p>
 <p>– <a href="https://www.gov.uk/hmrc-internal-manuals/cryptoassets-manual/crypto22200" title="CRYPTO22200 - Cryptoassets for individuals: Capital Gains Tax: pooling">The Cryptoassets Manual</a></p>
 </blockquote>
-<p class="info"><span class="title">Example</span> Bob buys an NFT on a platform for £500. Later that day, he sells it for £600, making a £100 gain which is subject to Capital Gains Tax. A week later, he buys the same NFT again for £400. Because share pooling rules don't apply, the cost basis of the sold NFT is still £500. Bob made a <code>£600 - £500 = £100</code> gain, which is subject to Capital Gains Tax.</p>
+<p class="info"><span class="title">Example</span> Bob buys an NFT on a platform for £500. Later that day, he sells it for £600, making a £100 gain which is subject to Capital Gains Tax. A week later, he buys the same NFT again for £400. Because share-pooling rules don't apply, the cost basis of the sold NFT is still £500. Bob made a <code>£600 - £500 = £100</code> gain, which is subject to Capital Gains Tax.</p>
 
 <p>Where it gets tricky in my case is that I <em>minted</em> (created) some NFTs in exotic ways, for instance by <em>burning</em> several NFTs to create a new one. In that case, the cost basis of the new NFT is the sum of the cost bases of the burnt NFTs.</p>
 <p class="info"><span class="title">Example</span> Charlie buys an NFT depicting a lion for £500. He then successively buys an NFT of a goat for £300 and an NFT of a snake for £400. He burns the three NFTs to mint a new NFT, depicting the Chimera. A few days later, he sells the Chimera NFT for £2,000. Charlie made a <code>£2,000 - (£500 + £300 + £400) = £800</code> gain, which is subject to Capital Gains Tax.</p>
@@ -449,7 +451,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-04-03" pubdate>2023-04-03</time>
+          <time datetime="2023-04-05" pubdate>2023-04-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           ]
