@@ -149,7 +149,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-02-19 ::
+          Last updated: 2023-04-17 ::
         Published: 2020-03-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-1-a-basic-lemp-stack.html">history</a> ]
       </small>
@@ -558,7 +558,7 @@ nginx_1 exited with code <span class="m">1</span>
       <span class="nt">MYSQL_ROOT_HOST</span><span class="p">:</span> <span class="s">&quot;%&quot;</span>
       <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
     <span class="nt">volumes</span><span class="p">:</span>
-      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
+      <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/my.cnf</span>
       <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
     <span class="nt">healthcheck</span><span class="p">:</span>
       <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD</span>
@@ -689,7 +689,7 @@ nginx_1 exited with code <span class="m">1</span>
     <span class="nt">MYSQL_ROOT_HOST</span><span class="p">:</span> <span class="s">&quot;%&quot;</span>
     <span class="nt">MYSQL_DATABASE</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">demo</span>
   <span class="nt">volumes</span><span class="p">:</span>
-    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">./.docker/mysql/my.cnf:/etc/mysql/my.cnf</span>
     <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">mysqldata:/var/lib/mysql</span>
   <span class="nt">healthcheck</span><span class="p">:</span>
     <span class="nt">test</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">mysqladmin ping -h 127.0.0.1 -u root --password=$$MYSQL_ROOT_PASSWORD</span>
@@ -966,7 +966,7 @@ character-set-server <span class="o">=</span> utf8mb4
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-02-19" pubdate>2022-02-19</time>
+          <time datetime="2023-04-17" pubdate>2023-04-17</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>
