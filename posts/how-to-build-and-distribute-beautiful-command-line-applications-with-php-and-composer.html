@@ -34,8 +34,8 @@
 
 
 
-  <meta name="description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console Component as a bedrock, GitHub Actions for testing, and Composer for distribution." />
-  <meta name="twitter:description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console Component as a bedrock, GitHub Actions for testing, and Composer for distribution.">
+  <meta name="description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console component as a bedrock, GitHub Actions for testing, and Composer for distribution." />
+  <meta name="twitter:description" content="When you think of command-line applications, PHP doesn't immediately come to mind. Yet the language powers many popular tools, either as independent programs or to be used within projects. This tutorial will walk you through the process of creating a simple game running in the terminal, using Symfony's Console component as a bedrock, GitHub Actions for testing, and Composer for distribution.">
 
   <meta name="tags" content="cli" />
   <meta name="tags" content="composer" />
@@ -183,7 +183,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="https://github.com/tighten/takeout">Takeout</a></li>
 </ul>
 <p>Be it through its vast ecosystem of libraries and frameworks, its ability to interact with the host, or the versatility of its dependency manager, PHP features everything you need to build and ship powerful CLI applications.</p>
-<p>This tutorial will walk you through the process of creating a simple game running in the terminal, using <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component</a> as a bedrock, <a href="https://github.com/features/actions">GitHub Actions</a> for compatibility checking, and <a href="https://getcomposer.org">Composer</a> for distribution.</p>
+<p>This tutorial will walk you through the process of creating a simple game running in the terminal, using <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console component</a> as a bedrock, <a href="https://github.com/features/actions">GitHub Actions</a> for compatibility checking, and <a href="https://getcomposer.org">Composer</a> for distribution.</p>
 <p>We won't use specialised frameworks like <a href="https://github.com/minicli/minicli">Minicli</a> or <a href="https://laravel-zero.com">Laravel Zero</a> because the goal is not so much to focus on features but to better understand the development, testing, and distribution phases of command-line programs.</p>
 <p>You will find that you can build a lot of things on top of such a simple foundation, but you can always check out these frameworks later on, should you need extra capabilities.</p>
 <h2 id="in-this-post">In this post</h2>
@@ -244,7 +244,7 @@ $ <span class="nb">cd</span> php-cli-demo
 <p>The last question is about adding the <code>vendor</code> directory to the <code>.gitignore</code> file, to which you should reply <code>yes</code>.</p>
 <p>That should be it for <code>composer init</code> – it will generate a <code>composer.json</code> file at the root of your project based on the values you've selected.</p>
 <p>Before we instal any dependency, let's create a <code>LICENSE</code> file at the top of our project and paste the content of the chosen license in it (<a href="https://choosealicense.com/licenses/mit">here's the MIT one</a> – you will find the others <a href="https://choosealicense.com">here</a>). Make sure to edit the placeholders for the name and year.</p>
-<p>Let's now require <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component</a> as a dependency:</p>
+<p>Let's now require <a href="https://symfony.com/doc/current/components/console.html">Symfony's Console component</a> as a dependency:</p>
 <div class="highlight"><pre><span></span>$ composer require symfony/console
 </pre></div>
 
@@ -260,7 +260,7 @@ $ <span class="nb">cd</span> php-cli-demo
 
 <h2 id="entry-point">Entry point</h2>
 <p>Console programs, like web applications, need an entry point through which all "requests" come through. In other words, we need an <code>index.php</code> for our commands.</p>
-<p>To get started, we will reuse the example given in the Console Component's <a href="https://symfony.com/doc/current/components/console.html#creating-a-console-application">documentation</a>. Create a new folder named <code>bin</code> at the root of the project and add a <code>demo</code> file to it, with the following content:</p>
+<p>To get started, we will reuse the example given in the Console component's <a href="https://symfony.com/doc/current/components/console.html#creating-a-console-application">documentation</a>. Create a new folder named <code>bin</code> at the root of the project and add a <code>demo</code> file to it, with the following content:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -729,7 +729,7 @@ $application->run();</pre>
 <p><img alt="New look" src="/images/2022/01/31/cli_07.png" title="New look" />
 <p class="caption">Bit nicer, isn't it?</p></p>
 <p>Now, you might be wondering why I created new methods instead of extending the <code>ask</code>, <code>success</code> and <code>error</code> methods. The quick answer is that doing so increases compatibility across library versions.</p>
-<p>Extending a method means the signature of the child method must be identical to that of the parent (with some <a href="https://www.npopov.com/2021/11/08/Type-variance-in-PHP.html">subtleties</a>), which is fine as long as the parent class doesn't change. For the sake of portability, however, we want our application to be compatible with various PHP and dependency versions, and in the case of the Console Component, method signatures vary from one major version to another.</p>
+<p>Extending a method means the signature of the child method must be identical to that of the parent (with some <a href="https://www.npopov.com/2021/11/08/Type-variance-in-PHP.html">subtleties</a>), which is fine as long as the parent class doesn't change. For the sake of portability, however, we want our application to be compatible with various PHP and dependency versions, and in the case of the Console component, method signatures vary from one major version to another.</p>
 <p>In short, creating new methods instead of extending existing ones allows us to avoid errors related to signature mismatch across versions.</p>
 <p>The above is a quick example of how you can customise the style of console outputs. It also gives you an idea of how you can structure your application, with the introduction of the <code>Services</code> folder where you can put utility classes to decouple your code.</p>
 <p>Concerning styling, if you need to push the appearance of your console program a bit further, you might want to take a look at <a href="https://github.com/nunomaduro/termwind">Termwind</a>, a promising new framework described as "Tailwind CSS, but for PHP command-line applications".</p>
@@ -834,7 +834,7 @@ $application->run();</pre>
 
 <p>We need to specify the PHP version because down the line we won't know which versions our users are running. By making it explicit, Composer will then be able to check whether a compatible version of PHP is available and refuse to proceed with the installation if that's not the case.</p>
 <p>Right now we're only interested in running a distribution test on our current machine though, so specifying your local PHP version is enough (adjust it if it's different from the above – if you're not sure, run <code>php -v</code> from a terminal).</p>
-<p>You'll notice that I also added version <code>5.0</code> of the Console Component – that's because while running my own tests, I experienced some compatibility issues with my local instance of Laravel Valet, which needed Console <code>5.0</code> at the time.</p>
+<p>You'll notice that I also added version <code>5.0</code> of the Console component – that's because while running my own tests, I experienced some compatibility issues with my local instance of Laravel Valet, which needed Console <code>5.0</code> at the time.</p>
 <p>Based on when you're completing this tutorial, versions may have changed and this constraint may not be true anymore, but it's a good example of the kind of compatibility issues you may have to deal with.</p>
 <p>There's one last change we need to make to this file, and that is the addition of a <code>bin</code> section:</p>
 <div class="highlight"><pre><span></span><span class="s2">&quot;require&quot;</span>: <span class="o">{</span>
@@ -932,7 +932,7 @@ $application->run();</pre>
 </td></tr></table>
 
 <p>As usual, make sure to update the vendor in the namespace and <code>use</code> statement.</p>
-<p>As per the <a href="https://symfony.com/doc/current/console.html#testing-commands">documentation</a>, the Console Component comes with a <code>CommandTester</code> helper class that will simplify testing the <code>Play</code> command.</p>
+<p>As per the <a href="https://symfony.com/doc/current/console.html#testing-commands">documentation</a>, the Console component comes with a <code>CommandTester</code> helper class that will simplify testing the <code>Play</code> command.</p>
 <p>We instantiate the latter and pass it to the tester, which allows us to <a href="https://symfony.com/doc/current/components/console/helpers/questionhelper.html#testing-a-command-that-expects-input">simulate a series of inputs</a>.</p>
 <p>The sequence is as follows:</p>
 <ol>
@@ -1244,7 +1244,7 @@ $application->run();</pre>
 <p>Let's be honest – if your goal is the widespread use of a standalone CLI application, PHP is probably not the best language. Users would still need an environment that supports it, a local instal of Composer, and also to edit their local <code>PATH</code> to include Composer's <code>bin</code> directory. These are all steps that most people won't be comfortable taking.</p>
 <p>But if you're already a PHP developer, your environment is very likely to satisfy these conditions already, and as a result, the barrier to building your own CLI tools is very low.</p>
 <p>Think of repetitive tasks that you perform regularly, and that could be automated away without the need of a full-blown website. I, for instance, grew tired of having to manually import my Kobo annotations to <a href="https://readwise.io">Readwise</a>, so came up with a <a href="https://github.com/osteel/kobwise">tool</a> to make the conversion easier.</p>
-<p>PHP has no issue running <a href="https://www.php.net/manual/en/function.system.php">system commands</a> and if you need more muscle than what the Console Component alone has to offer, frameworks like <a href="https://laravel-zero.com">Laravel Zero</a> will greatly expand the realm of possibility.</p>
+<p>PHP has no issue running <a href="https://www.php.net/manual/en/function.system.php">system commands</a> and if you need more muscle than what the Console component alone has to offer, frameworks like <a href="https://laravel-zero.com">Laravel Zero</a> will greatly expand the realm of possibility.</p>
 <p>You don't necessarily have to distribute your programs via Packagist for a strictly personal use, but it's a way to share your work with others who might have similar needs and a potential foray into open-source development.</p>
 <p>Besides, the process of writing and distributing your own CLI tools is not so dissimilar to that of application libraries – once you're comfortable with the former, the latter becomes more accessible, and both are ways to give back to the community.</p>
 <h2 id="resources">Resources</h2>
@@ -1252,7 +1252,7 @@ $application->run();</pre>
 <ul>
 <li><a href="https://github.com/osteel/php-cli-demo">Article repository</a></li>
 <li><a href="https://getcomposer.org/doc/00-intro.md">Composer documentation</a></li>
-<li><a href="https://symfony.com/doc/current/components/console.html">Symfony's Console Component documentation</a></li>
+<li><a href="https://symfony.com/doc/current/components/console.html">Symfony's Console component documentation</a></li>
 <li><a href="https://choosealicense.com">Choose an open source license</a></li>
 <li><a href="https://unix.stackexchange.com/questions/29608/why-is-it-better-to-use-usr-bin-env-name-instead-of-path-to-name-as-my">Why is it better to use "#!/usr/bin/env NAME" instead of "#!/path/to/NAME" as my shebang?</a></li>
 <li><a href="https://tldp.org/LDP/abs/html/exitcodes.html">Appendix E. Exit Codes With Special Meanings</a></li>

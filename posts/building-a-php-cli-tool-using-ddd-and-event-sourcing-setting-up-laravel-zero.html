@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2023/05/04/dime_01.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+  <meta name="description" content="This post is part of the "Building a PHP CLI tool using DDD and Event Sourcing" series but can also be read as an independent guide to getting started with Laravel Zero, a micro-framework for console applications." />
+  <meta name="twitter:description" content="This post is part of the "Building a PHP CLI tool using DDD and Event Sourcing" series but can also be read as an independent guide to getting started with Laravel Zero, a micro-framework for console applications.">
+
+  <meta name="tags" content="laravelzero" />
+  <meta name="tags" content="laravelpint" />
+  <meta name="tags" content="phpstan" />
+  <meta name="tags" content="github" />
+  <meta name="tags" content="workflow" />
+  <meta name="tags" content="cli" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2023/05/04/dime_01.png">
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+    </ul>
+  </section>
+
+  <section>
+    <h2>Newsletter</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="Email address" required>
+      <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+      <input type="submit" hidden />
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/news">News</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2023
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2023-05-04 ::
+        Published: 2023-05-04
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><img alt="A heap of cogwheels on a wooden surface" src="/images/2023/05/04/dime_01.png" title="A heap of cogwheels on a wooden surface" /></p>
+<p><em>Although this post is part of the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">"Building a PHP CLI tool using DDD and Event Sourcing" series</a>, you can also read it as an independent guide to getting started with Laravel Zero.</em></p>
+<p>While Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console component – Symfony Documentation">Console component</a> caters for most of my <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">PHP CLI tools</a> needs, some projects require a more feature-rich environment. <a href="https://github.com/osteel/dime">Dime</a> is a fairly complex piece of software involving things like a database and a comprehensive test suite, which is why I decided to use <a href="https://laravel-zero.com/">Laravel Zero</a> as a foundation.</p>
+<p>Laravel Zero is a micro-framework for console applications. It's a stripped-down version of <a href="https://laravel.com/">Laravel</a>, optimised for the command line. Most of the features Laravel developers are used to are also present in Laravel Zero, including database migrations and similar testing capabilities.</p>
+<p>This post is a step-by-step guide to setting up Laravel Zero. While it is fine-tuned for Dime and opinionated at times, its content can easily be reused and adapted for your own projects.</p>
+<p>The guide assumes some familiarity with Git and access to a terminal with local instals of PHP and Composer.</p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
+<li>Setting up Laravel Zero <strong>⬅️ you are here</strong></li>
+<li>Getting started with EventSauce <em>(coming soon)</em></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#initial-setup">Initial setup</a></li>
+<li><a href="#project-information">Project information</a></li>
+<li><a href="#framework-configuration">Framework configuration</a><ul>
+<li><a href="#add-ons">Add-ons</a></li>
+<li><a href="#safety-mechanisms">Safety mechanisms</a></li>
+</ul>
+</li>
+<li><a href="#static-analysis">Static analysis</a><ul>
+<li><a href="#laravel-pint">Laravel Pint</a></li>
+<li><a href="#phpstan">PHPStan</a></li>
+<li><a href="#composer-scripts">Composer scripts</a></li>
+</ul>
+</li>
+<li><a href="#testing">Testing</a><ul>
+<li><a href="#phpunit-configuration">PHPUnit configuration</a></li>
+<li><a href="#test-database">Test database</a></li>
+</ul>
+</li>
+<li><a href="#continuous-integration">Continuous integration</a></li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul>
+</div>
+<h2 id="initial-setup">Initial setup</h2>
+<p>The first step I took was to create a <a href="https://github.com/osteel/dime">GitHub repository</a> for Dime. While there are other platforms to choose from, some parts of this guide rely on the code being hosted on GitHub.</p>
+<p>Open a terminal on your local machine and create a new Laravel Zero project <a href="https://laravel-zero.com/docs/installation#via-composer-create-project" title="Laravel Zero – Installation Via Composer Create-Project">using Composer</a>:</p>
+<div class="highlight"><pre><span></span>$ composer create-project --prefer-dist laravel-zero/laravel-zero dime
+</pre></div>
+
+
+<p>(Note that most commands in this guide will refer to Dime specifically – make sure to adjust them as appropriate.)</p>
+<p>Enter the newly created directory and <a href="https://laravel-zero.com/docs/installation#via-composer-create-project" title="Laravel Zero – Installation Via Composer Create-Project">rename the project</a>:</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> dime
+$ php application app:rename dime
+</pre></div>
+
+
+<p>Create an empty Git repository in the directory and link it to GitHub:</p>
+<div class="highlight"><pre><span></span>$ git init
+$ git branch -M main
+$ git remote add origin git@github.com:osteel/dime.git
+</pre></div>
+
+
+<p>While this step is not required, I always add <code>composer.lock</code> to the <code>.gitignore</code> file in my CLI projects:</p>
+<div class="highlight"><pre><span></span>$ touch .gitignore
+$ <span class="nb">echo</span> composer.lock &gt;&gt; .gitignore
+</pre></div>
+
+
+<p>When you distribute command-line applications through <a href="https://packagist.org/">Packagist</a> (and PHP packages in general), you know almost nothing about the systems they will be installed on. Because of that, PHP packages are distributed without the <code>composer.lock</code> file, so that Composer can figure out the most appropriate dependency versions to instal instead.</p>
+<p>The <code>composer.lock</code> file won't be distributed whether you push it to the Git repository or not, but by adding it to the <code>.gitignore</code> file from the outset, we're a little bit closer to "production" conditions.</p>
+<p>Let's issue our first commit and push it to GitHub:</p>
+<div class="highlight"><pre><span></span>$ git add .
+$ git commit -m <span class="s1">&#39;Laravel Zero&#39;</span>
+$ git push -u origin main
+</pre></div>
+
+
+<p>Now that our local project and branch are fully linked to the GitHub repository, I won't mention pushing the code again. Feel free to do so whenever you feel is a good time.</p>
+<h2 id="project-information">Project information</h2>
+<p>While the <code>app:rename</code> command we ran earlier renamed the project, there are other attributes in <code>composer.json</code> that you may want to update as well.</p>
+<p>Here's the relevant section from <a href="https://github.com/osteel/dime/blob/main/composer.json" title="Dime – composer.json">Dime's</a>, if you need some inspiration:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;osteel/dime&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Extract tax-related data from crypto transactions&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;crypto&quot;</span><span class="p">,</span> <span class="s2">&quot;taxes&quot;</span><span class="p">,</span> <span class="s2">&quot;hmrc&quot;</span><span class="p">,</span> <span class="s2">&quot;php&quot;</span><span class="p">,</span> <span class="s2">&quot;console&quot;</span><span class="p">,</span> <span class="s2">&quot;cli&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;homepage&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/osteel/dime&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;project&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;license&quot;</span><span class="p">:</span> <span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;support&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;issues&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/osteel/dime/issues&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/osteel/dime&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;authors&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Yannick Chenot&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="s2">&quot;yannick@yellowraincoat.co.uk&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;homepage&quot;</span><span class="p">:</span> <span class="s2">&quot;https://github.com/osteel&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;Maintainer&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="err">...</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>You might also want to have a look at the <a href="https://getcomposer.org/doc/04-schema.md" title="Composer – The composer.json schema"><code>composer.json</code> schema reference</a> to learn more about these attributes and make changes as you see fit.</p>
+<h2 id="framework-configuration">Framework configuration</h2>
+<p>These steps relate to the configuration of Laravel Zero itself.</p>
+<h3 id="add-ons">Add-ons</h3>
+<p>As mentioned earlier, Dime requires a database and, in Laravel Zero, that comes as an <a href="https://laravel-zero.com/docs/database" title="Laravel Zero – Database">add-on</a> to instal separately:</p>
+<div class="highlight"><pre><span></span>$ php dime app:install database
+</pre></div>
+
+
+<p>(Note that the <code>application</code> binary file was renamed for <code>dime</code> when we ran <code>app:rename</code> earlier, which will be reflected in the commands from now on.)</p>
+<p>The default database engine is <a href="https://sqlite.org/index.html" title="What Is SQLite?">SQLite</a>, but <a href="https://redis.io/" title="Redis">Redis</a> is also <a href="https://laravel-zero.com/docs/database#redis" title="Laravel Zero – Database (Redis)">supported</a>.</p>
+<p>Most Laravel developers will already be familiar with <a href="https://laravel.com/docs/artisan#tinker" title="Laravel – Artisan (Tinker)">Tinker</a>, a command-line environment to interact with Laravel applications. While Tinker ships with Laravel by default, in Laravel Zero it exists as a <a href="https://github.com/intonate/tinker-zero" title="Tinker Zero">community-maintained package</a> to instal separately:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev intonate/tinker-zero
+</pre></div>
+
+
+<p>The documentation then instructs us to add <code>TinkerZeroServiceProvider</code> to <code>config/app.php</code>, but since I don't want Tinker to be available on "production" environments, I register it through <code>AppServiceProvider</code> instead, allowing me to do so conditionally:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Providers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Support\ServiceProvider</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Intonate\TinkerZero\TinkerZeroServiceProvider</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">AppServiceProvider</span> <span class="k">extends</span> <span class="nx">ServiceProvider</span>
+<span class="p">{</span>
+    <span class="sd">/** Register any application services. */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">register</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">app</span><span class="o">-&gt;</span><span class="na">environment</span><span class="p">()</span> <span class="o">!==</span> <span class="s1">&#39;production&#39;</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">app</span><span class="o">-&gt;</span><span class="na">register</span><span class="p">(</span><span class="nx">TinkerZeroServiceProvider</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Tinker is now available with this command:</p>
+<div class="highlight"><pre><span></span>$ php dime tinker
+</pre></div>
+
+
+<p>And that's it for the section about add-ons. The database and Tinker were the only ones I needed at the time, but many more are available – have a look at the "Add-ons" section of the <a href="https://laravel-zero.com/docs/introduction" title="Laravel Zero – Documentation">documentation</a>.</p>
+<h3 id="safety-mechanisms">Safety mechanisms</h3>
+<p>There are <a href="https://planetscale.com/blog/laravels-safety-mechanisms" title="Laravel’s safety mechanisms">quite a few safety mechanisms</a> you can activate to prevent common mistakes in your Laravel applications. Not all of them are relevant to Dime, but some related to <a href="https://laravel.com/docs/eloquent" title="Laravel – Eloquent: Getting Started">Eloquent</a> can definitely help.</p>
+<p>Since I personally do not shy away from using Laravel's ORM (despite some <a href="https://shawnmc.cool/2023-02-13_active-record-how-we-got-persistence-perfectly-wrong" title="Active Record: How We Got Persistence Perfectly Wrong">compelling criticism</a> towards the Active Record pattern in general), Dime currently uses the following safety rules: <a href="https://laravel.com/docs/eloquent-relationships#preventing-lazy-loading" title="Laravel – Eloquent: Relationships – Preventing Lazy Loading">preventing lazy loading</a>, <a href="https://planetscale.com/blog/laravels-safety-mechanisms#attribute-typos-and-renamed-columns" title="Laravel’s safety mechanisms – Attribute typos and renamed columns">preventing accessing missing attributes</a>, and <a href="https://laravel.com/docs/eloquent#configuring-eloquent-strictness" title="Laravel – Eloquent: Getting Started – Configuring Eloquent Strictness">preventing silently discarding attributes</a>.</p>
+<p>You will find a more detailed explanation and some examples if you follow the links, but here's a brief description for each of them:</p>
+<ul>
+<li><em>Preventing lazy loading:</em> This rule will trigger an exception any time some relationship data is retrieved using one database query for the main model as well as one separate query for each of the related models (the infamous "N+1 problem");</li>
+<li><em>Preventing accessing missing attributes:</em> This rule will trigger an exception any time the program tries to access a model attribute that doesn't exist, instead of failing silently. This sometimes happens because of a typo in an attribute's name, for instance;</li>
+<li><em>Preventing silently discarding attributes:</em> Related to the previous rule, this one will trigger an exception any time the program tries to assign a value to an attribute that doesn't exist, instead of failing silently.</li>
+</ul>
+<p>These rules are to be enabled in <code>AppServiceProvider</code>'s <code>boot</code> method:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">App\Providers</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Illuminate\Database\Eloquent\Model</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Illuminate\Support\ServiceProvider</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Intonate\TinkerZero\TinkerZeroServiceProvider</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">AppServiceProvider</span> <span class="k">extends</span> <span class="nx">ServiceProvider</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="sd">/** Bootstrap any application services. */</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">boot</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nx">Model</span><span class="o">::</span><span class="na">preventAccessingMissingAttributes</span><span class="p">();</span>
+        <span class="nx">Model</span><span class="o">::</span><span class="na">preventLazyLoading</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">app</span><span class="o">-&gt;</span><span class="na">environment</span><span class="p">()</span> <span class="o">!==</span> <span class="s1">&#39;production&#39;</span><span class="p">);</span>
+        <span class="nx">Model</span><span class="o">::</span><span class="na">preventSilentlyDiscardingAttributes</span><span class="p">();</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>I'm also disabling the lazy loading safety mechanism in production, in a similar way I did Tinker earlier.</p>
+<h2 id="static-analysis">Static analysis</h2>
+<p>Static analysis refers to inspecting the source code of a program without actually executing it. This is typically done by automated tools that can identify potential issues, such as syntax errors and security vulnerabilities.</p>
+<p>I'm using two static analysis tools for Dime – <a href="https://laravel.com/docs/pint" title="Laravel Pint">Laravel Pint</a> and <a href="https://phpstan.org/" title="PHPStan">PHPStan</a>.</p>
+<h3 id="laravel-pint">Laravel Pint</h3>
+<p><a href="https://laravel.com/docs/pint" title="Laravel Pint">Laravel Pint</a> is a Laravel package built on top of <a href="https://github.com/PHP-CS-Fixer/PHP-CS-Fixer" title="PHP Coding Standards Fixer">PHP CS Fixer</a>. It aims at verifying your code's conformity to a specific style guide and will automatically fix violations where possible.</p>
+<p>Installation is straightforward:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev laravel/pint
+</pre></div>
+
+
+<p>Pint uses the <a href="https://github.com/laravel/pint/blob/main/resources/presets/laravel.php">Laravel preset</a> by default, so you can run it straight away to apply the corresponding rules:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pint
+</pre></div>
+
+
+<p>If you wish to configure it further though, you can do so by adding a <code>pint.json</code> file to the root of your project.</p>
+<p>This is how you would use the <a href="https://www.php-fig.org/psr/psr-12/" title="PSR-12: Extended Coding Style">PSR-12</a> preset instead of Laravel's, for instance:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;preset&quot;</span><span class="p">:</span> <span class="s2">&quot;psr12&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>As Pint is essentially a wrapper around PHP CS Fixer, you can also use and configure any of its <a href="https://mlocati.github.io/php-cs-fixer-configurator" title="PHP CS Fixer Configurator">rules</a>.</p>
+<p>Here is one used by Dime, for instance:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;preset&quot;</span><span class="p">:</span> <span class="s2">&quot;psr12&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;rules&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;align_multiline_comment&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;comment_type&quot;</span><span class="p">:</span> <span class="s2">&quot;all_multiline&quot;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>This is just a small sample though – Dime's full configuration is quite long and can be found <a href="https://github.com/osteel/dime/blob/main/pint.json" title="Dime – pint.json">here</a>.</p>
+<p>There's also more to Pint, like some other useful commands and options – check out the <a href="https://laravel.com/docs/pint" title="Laravel Pint">documentation</a> for details.</p>
+<h3 id="phpstan">PHPStan</h3>
+<p>The other static analysis tool I'm using for Dime is <a href="https://phpstan.org/" title="PHPStan">PHPStan</a>. Where Laravel Pint checks your code for style guide violations, PHPStan looks for potential typing issues and other bugs.</p>
+<p>Installation is done via Composer as well:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev phpstan/phpstan
+</pre></div>
+
+
+<p>And just like Pint, you can use PHPStan straight away, without configuration:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/phpstan analyse app
+</pre></div>
+
+
+<p>The default setup will perform very basic checks, however. PHPStan has <a href="https://phpstan.org/user-guide/rule-levels" title="PHPStan – Rule Levels">ten different levels of strictness</a>, ranging from 0 to 9. The default level is 0, which is the most permissive one.</p>
+<p>While it is possible to specify the level to use as a <a href="https://phpstan.org/user-guide/command-line-usage#--level%7C-l" title="PHPStan – Command Line Usage">command option</a>, I prefer to add a <a href="https://phpstan.org/config-reference" title="PHPStan – Config Reference"><code>phpstan.neon</code> configuration file</a> to the root of the project, similar to Pint.</p>
+<p>Here is Dime's, followed by an explanation of the various parameters:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">parameters</span><span class="p">:</span>
+    <span class="nt">level</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">9</span>
+
+    <span class="nt">paths</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">app</span>
+        <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">domain/src</span>
+
+    <span class="nt">checkMissingCallableSignature</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+    <span class="nt">type_coverage</span><span class="p">:</span>
+        <span class="nt">return_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+        <span class="nt">param_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+        <span class="nt">property_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">100</span>
+        <span class="nt">print_suggestions</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</td></tr></table>
+
+<p>The first parameter is the level, which is set to the highest value <code>9</code>. PHPStan's strictness spectrum is convenient when working with existing code, as you can set a low level to begin with and work your way up progressively, without having to deal with too many issues at once. But since we're starting a project from scratch, we might as well go for the maximum strictness straight away.</p>
+<p>You can also specify the folders to analyse in the <code>paths</code> section. Dime follows a <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">Domain-Driven Design approach</a> and has code in both the <code>app</code> and <code>domain/src</code> folders.</p>
+<p>Next is the <code>checkMissingCallableSignature</code> property. By default, PHPStan <a href="https://phpstan.org/config-reference#vague-typehints" title="PHPStan – Config Reference">won't flag</a> any missing signature for <a href="https://www.php.net/manual/en/language.types.callable.php" title="PHP Documentation – Callbacks / Callables">callables</a> and <a href="https://www.php.net/manual/en/class.closure.php" title="PHP Documentation – The Closure class">closures</a>. Enabling <code>checkMissingCallableSignature</code> will ensure it does.</p>
+<p>Finally, <code>type_coverage</code> comes from a PHPStan <a href="https://github.com/TomasVotruba/type-coverage" title="Require Minimal Type Coverage">extension</a> that determines what percentage of your code base is typed. You can set the desired percentage for each category (return types, argument types and property types) and the analysis will fail if the actual percentage is less than that. By enabling <code>print_suggestions</code>, the extension will also tell you where exactly the types are missing.</p>
+<p>The extension is installed via Composer as well but requires setting up PHPStan's <a href="https://github.com/phpstan/extension-installer" title="PHPStan Extension Installer">extension installer</a> first:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev phpstan/extension-installer
+</pre></div>
+
+
+<p>Then the extension:</p>
+<div class="highlight"><pre><span></span>$ composer require --dev tomasvotruba/type-coverage
+</pre></div>
+
+
+<p>You can now run this command and it will automatically pick up the configuration file:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/phpstan
+</pre></div>
+
+
+<p>Then again, this is the configuration I came up with for Dime. Feel free to adjust it to your needs, or even skip some parts altogether if they feel like overkill.</p>
+<h3 id="composer-scripts">Composer scripts</h3>
+<p>While the commands to run Pint and PHPStan are fairly simple, especially when using configuration files, we can further improve the developer experience by leveraging <a href="https://getcomposer.org/doc/articles/scripts.md" title="Composer – Scripts">Composer scripts</a>.</p>
+<p>Open <code>composer.json</code> and add the following section to the end, before the last closing bracket:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;scripts&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;pint&quot;</span><span class="p">:</span> <span class="s2">&quot;pint&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;stan&quot;</span><span class="p">:</span> <span class="s2">&quot;phpstan&quot;</span>
+    <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;@pint&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@stan&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>You can now run Pint with the command <code>composer pint</code>, PHPStan with <code>composer stan</code>, and both of them with <code>composer all</code>.</p>
+<h2 id="testing">Testing</h2>
+<p>Laravel Zero provides a testing environment similar to Laravel's out of the box. There's a <code>tests</code> folder with some <code>Feature</code> and <code>Unit</code> sub-folders and some example tests, and a <code>phpunit.xml.dist</code> file at the root.</p>
+<p>The main difference is that Laravel Zero uses <a href="https://pestphp.com/" title="Pest – The elegant PHP testing framework">Pest</a> by default.</p>
+<p>Pest is an extra layer on top of <a href="https://phpunit.de/" title="PHPUnit – The PHP Testing Framework">PHPUnit</a>, introducing a simple and elegant syntax while being fully compatible with existing PHPUnit test suites.</p>
+<p>I won't spend too much time covering Pest here, because the next part of this series will focus on Test-Driven Development with Pest. I'll just explain how Pest is set up in Dime.</p>
+<h3 id="phpunit-configuration">PHPUnit configuration</h3>
+<p>As I'm following a DDD approach for this project, most of the source code is in the <code>domain</code> folder, whose <code>tests</code> directory needs to be added to <code>phpunit.xml.dist</code>:</p>
+<div class="highlight"><pre><span></span>...
+<span class="nt">&lt;testsuites&gt;</span>
+    <span class="nt">&lt;testsuite</span> <span class="na">name=</span><span class="s">&quot;Application&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">&quot;Test.php&quot;</span><span class="nt">&gt;</span>./tests<span class="nt">&lt;/directory&gt;</span>
+    <span class="nt">&lt;/testsuite&gt;</span>
+    <span class="nt">&lt;testsuite</span> <span class="na">name=</span><span class="s">&quot;Domain&quot;</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">&quot;Test.php&quot;</span><span class="nt">&gt;</span>./domain/tests<span class="nt">&lt;/directory&gt;</span>
+    <span class="nt">&lt;/testsuite&gt;</span>
+<span class="nt">&lt;/testsuites&gt;</span>
+...
+</pre></div>
+
+
+<p>As I'm interested in the code coverage metric as well, the domain's <code>src</code> directory also needs to be included in the list of source code files:</p>
+<div class="highlight"><pre><span></span>...
+<span class="nt">&lt;source&gt;</span>
+    <span class="nt">&lt;include&gt;</span>
+        <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">&quot;.php&quot;</span><span class="nt">&gt;</span>./app<span class="nt">&lt;/directory&gt;</span>
+        <span class="nt">&lt;directory</span> <span class="na">suffix=</span><span class="s">&quot;.php&quot;</span><span class="nt">&gt;</span>./domain/src<span class="nt">&lt;/directory&gt;</span>
+    <span class="nt">&lt;/include&gt;</span>
+<span class="nt">&lt;/source&gt;</span>
+...
+</pre></div>
+
+
+<h3 id="test-database">Test database</h3>
+<p>Some tests directly run against the database, so I need a separate one to avoid tampering with real data.</p>
+<p>Dime has two database connections in <a href="https://github.com/osteel/dime/blob/main/config/database.php" title="Dime – database.php"><code>config/database.php</code></a> – <code>production</code> and <code>testing</code>. The former is the default connection:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">return</span> <span class="p">[</span>
+
+    <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_CONNECTION&#39;</span><span class="p">,</span> <span class="s1">&#39;production&#39;</span><span class="p">),</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;connections&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+
+        <span class="s1">&#39;production&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;driver&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;url&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DATABASE_URL&#39;</span><span class="p">),</span>
+            <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_DATABASE&#39;</span><span class="p">,</span> <span class="nx">database_path</span><span class="p">(</span><span class="s1">&#39;database.sqlite&#39;</span><span class="p">)),</span>
+            <span class="s1">&#39;prefix&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;foreign_key_constraints&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_FOREIGN_KEYS&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">),</span>
+        <span class="p">],</span>
+
+        <span class="s1">&#39;testing&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+            <span class="s1">&#39;driver&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;:memory:&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;prefix&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="p">],</span>
+
+    <span class="p">],</span>
+
+    <span class="c1">// ...</span>
+<span class="p">]</span>
+</pre></div>
+
+
+<p>Both are using the <code>sqlite</code> driver, but the test database is stored in memory for increased performance.</p>
+<p>The value of the <code>DB_CONNECTION</code> environment variable needs to change while running the tests, so the test database is picked up instead of the production one.</p>
+<p>This is done by adding the following section to the <code>&lt;phpunit&gt;</code> tag in <code>phpunit.xml.dist</code>:</p>
+<div class="highlight"><pre><span></span>...
+<span class="nt">&lt;php&gt;</span>
+    <span class="nt">&lt;server</span> <span class="na">name=</span><span class="s">&quot;DB_CONNECTION&quot;</span> <span class="na">value=</span><span class="s">&quot;testing&quot;</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/php&gt;</span>
+...
+</pre></div>
+
+
+<p>The testing environment is now complete – you should be able to run the example tests:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest
+</pre></div>
+
+
+<p>For consistency and convenience, we can also add this command to the Composer scripts in <code>composer.json</code>, so we can run the tests with <code>composer test</code>:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;scripts&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;pint&quot;</span><span class="p">:</span> <span class="s2">&quot;pint&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;stan&quot;</span><span class="p">:</span> <span class="s2">&quot;phpstan&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;pest --coverage&quot;</span>
+    <span class="s2">&quot;all&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;@pint&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@stan&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;@test&quot;</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>Try out the new command – you will notice some extra information at the end of the execution. This is due to the <code>--coverage</code> <a href="https://pestphp.com/docs/test-coverage" title="Pest – Test Coverage">flag</a> that I added to the Composer script command.</p>
+<p>With this option, Pest will return the percentage of code that is executed by the tests on top of running the test suites. That's the code coverage metric I mentioned earlier, and I will talk about it more in the next section.</p>
+<h2 id="continuous-integration">Continuous integration</h2>
+<p>While Pint, PHPStan and the tests can all be run locally to help us write better code overall, we are not being forced to use these tools.</p>
+<p>In theory, we could push some code that breaks the tests or violates the rules and get away with it, intentionally or not. What's to stop us?</p>
+<p>This is where a <a href="https://www.martinfowler.com/articles/continuousIntegration.html" title="Continuous Integration">continuous integration</a> workflow can help.</p>
+<p>Continuous integration (CI) refers to a practice whereby team members merge their work regularly, using some kind of build process (the workflow) to ensure no error slips through.</p>
+<p>While Dime is a one-man show and the first part of this definition doesn't really apply to it, the second part is interesting because it involves automating the checks we've just put in place. This is what this section is about.</p>
+<p>The goal of CI in this case is to prevent any code violating the rules from being merged into the <code>main</code> branch. GitHub conveniently offers <a href="https://docs.github.com/en/actions/using-workflows" title="Using workflows">many continuous integration features</a>, which we are going to use.</p>
+<p>Create the following <a href="https://github.com/osteel/dime/blob/main/.github/workflows/ci.yml" title="Dime – ci.yml"><code>ci.yml</code> file</a> in a new <code>.github/workflows</code> folder, at the root of your project:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">CI</span>
+
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+  <span class="nt">pull_request</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+
+  <span class="nt">style</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Style</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check coding style</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/pint --test</span>
+
+  <span class="nt">analysis</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Analysis</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Analyse code</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/phpstan</span>
+
+  <span class="nt">tests</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Tests</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">strategy</span><span class="p">:</span>
+      <span class="nt">fail-fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+      <span class="nt">matrix</span><span class="p">:</span>
+        <span class="nt">php-version</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;8.2&quot;</span>
+        <span class="nt">dependency-versions</span><span class="p">:</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;lowest&quot;</span>
+          <span class="p p-Indicator">-</span> <span class="s">&quot;highest&quot;</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">php-version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.php-version }}</span>
+          <span class="nt">coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">dependency-versions</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.dependency-versions }}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Run test suite</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/pest --coverage --min=100</span>
+</pre></div>
+</td></tr></table>
+
+<p>At the very top is the name of the workflow (I came up with "CI" in a moment of mad inspiration), followed by the conditions on which it should trigger:</p>
+<div class="highlight"><pre><span></span><span class="nt">on</span><span class="p">:</span>
+  <span class="nt">push</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+  <span class="nt">pull_request</span><span class="p">:</span>
+    <span class="nt">branches</span><span class="p">:</span> <span class="p p-Indicator">[</span><span class="nv">main</span><span class="p p-Indicator">]</span>
+</pre></div>
+
+
+<p>Here, the workflow will trigger any time the <code>main</code> branch receives a new commit, or any time a pull request targetting the <code>main</code> branch is opened.</p>
+<p>Next are the jobs that make up the workflow – <code>style</code>, <code>analysis</code>, and <code>tests</code>.</p>
+<p>Each job has a name (<code>name</code>), a platform it should run on (<code>runs-on</code>) and a series of steps to execute (<code>steps</code>). The jobs all run on the latest Ubuntu version, which is fairly standard when it comes to CI workflows, especially when there is no clearly defined production environment.</p>
+<p>The <code>style</code> job runs Laravel Pint to check whether the code follows a specific style guide:</p>
+<div class="highlight"><pre><span></span><span class="nt">style</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Style</span>
+  <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+  <span class="nt">steps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check coding style</span>
+      <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/pint --test</span>
+</pre></div>
+
+
+<p>The first three steps are the same for all three jobs – <a href="https://github.com/actions/checkout" title="Checkout V3">checking out the code</a>, <a href="https://github.com/shivammathur/setup-php" title="Setup PHP in GitHub Actions">setting up PHP</a>, and <a href="https://github.com/ramsey/composer-install" title="ramsey/composer-install">installing the Composer dependencies</a>. They all use GitHub <a href="https://github.com/features/actions" title="Automate your workflow
+from idea to production">Actions</a>, which are some kind of building blocks for your workflows.</p>
+<p>The fourth step of the job is the actual Pint command, triggering the analysis. Note the presence of the <code>--test</code> <a href="https://laravel.com/docs/pint#running-pint" title="Laravel Pint – Running Pint">flag</a>, ensuring errors are reported but no file is updated. Aside from this flag, the command works the same as locally – Pint will read the <code>pint.json</code> configuration file as well.</p>
+<p>The second job – <code>analysis</code> – runs PHPStan:</p>
+<div class="highlight"><pre><span></span><span class="nt">analysis</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Analysis</span>
+  <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+  <span class="nt">steps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Analyse code</span>
+      <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/phpstan</span>
+</pre></div>
+
+
+<p>It's very similar to <code>style</code> apart from its fourth step, which runs PHPStan instead of Pint. Just like Pint though, PHPStan will pick up the <code>phpstan.neon</code> configuration file, same as it would locally.</p>
+<p>The third and last job – <code>tests</code> – deals with running the test suites:</p>
+<div class="highlight"><pre><span></span><span class="nt">tests</span><span class="p">:</span>
+  <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Tests</span>
+  <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+  <span class="nt">strategy</span><span class="p">:</span>
+    <span class="nt">fail-fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+    <span class="nt">matrix</span><span class="p">:</span>
+      <span class="nt">php-version</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;8.2&quot;</span>
+      <span class="nt">dependency-versions</span><span class="p">:</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;lowest&quot;</span>
+        <span class="p p-Indicator">-</span> <span class="s">&quot;highest&quot;</span>
+
+  <span class="nt">steps</span><span class="p">:</span>
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">php-version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.php-version }}</span>
+        <span class="nt">coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+      <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+      <span class="nt">with</span><span class="p">:</span>
+        <span class="nt">dependency-versions</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.dependency-versions }}</span>
+
+    <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Run test suite</span>
+      <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/pest --coverage --min=100</span>
+</pre></div>
+
+
+<p>It's got an extra section that the others don't – <code>strategy</code>.</p>
+<p>We already mentioned that we don't know the exact configuration of the systems our application will be installed on. Composer will do its best to figure out the dependency versions that are compatible with what's already on the host, which is another way to say that it could potentially instal any of the dependency versions within the range of what <code>composer.json</code> says is valid.</p>
+<p>But how do we know that our application is compatible with all these dependency versions?</p>
+<p>I've published <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">a whole article</a> about compatibility checking that you may want to check out later, but the gist of it is that we can run the tests for various dependency versions by defining a <a href="https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategy" title="GitHub Actions – Job Strategy">strategy</a> for our job.</p>
+<p>Our goal here is to run the tests twice – once using the lowest available dependency versions and once using the highest ones. If the tests pass in both cases, we can be fairly confident our application is compatible with the whole range of dependency versions.</p>
+<p>The strategy uses a <a href="https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs" title="GitHub Actions – Using a matrix for your jobs">matrix</a>:</p>
+<div class="highlight"><pre><span></span><span class="nt">strategy</span><span class="p">:</span>
+  <span class="nt">fail-fast</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">false</span>
+  <span class="nt">matrix</span><span class="p">:</span>
+    <span class="nt">php-version</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;8.2&quot;</span>
+    <span class="nt">dependency-versions</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;lowest&quot;</span>
+      <span class="p p-Indicator">-</span> <span class="s">&quot;highest&quot;</span>
+</pre></div>
+
+
+<p>This means the job's steps will run for each combination of <code>php-version</code> and <code>dependency-versions</code>. The job will essentially run twice – once using PHP 8.2 with the lowest compatible dependency versions, and once using PHP 8.2 with the highest compatible dependency versions.</p>
+<p>We could arguably do away with <code>php-version</code> here since it contains a single value. But adding it to the matrix now means we'll be able to support other versions down the line if necessary (e.g. PHP 8.3).</p>
+<p>The <code>fail-fast</code> attribute means that the workflow won't stop at the first error and will execute the whole matrix instead, ensuring we get thorough feedback.</p>
+<p>This is how the matrix's values are injected into the relevant steps:</p>
+<div class="highlight"><pre><span></span><span class="nt">steps</span><span class="p">:</span>
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Check out</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Setup PHP</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">php-version</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.php-version }}</span>
+      <span class="nt">coverage</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">none</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install composer dependencies</span>
+    <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+    <span class="nt">with</span><span class="p">:</span>
+      <span class="nt">dependency-versions</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ matrix.dependency-versions }}</span>
+
+  <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Run test suite</span>
+    <span class="nt">run</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">vendor/bin/pest --coverage --min=100</span>
+</pre></div>
+
+
+<p>The last step is the Pest command itself, running the tests and measuring the percentage of coverage with the <code>--coverage</code> flag.</p>
+<p>But there's also a second flag that we haven't seen yet – <code>--min=100</code>. This <a href="https://pestphp.com/docs/cli-api-reference#content-code-coverage" title="Pest – CLI API Reference">option</a> means that Pest will return an error unless there is 100% test coverage. This may seem a bit ambitious, but then again it's easier to set the bar high at the beginning of the project.</p>
+<p>Also, the broader our test suite is, the more relevant our job strategy will be. If only 10% of our code base is covered with tests, all the job demonstrates is that 10% of the code base is compatible with the dependency versions we claim it is.</p>
+<p>Still, 100% may be unrealistic in some cases, so feel free to change the value for something more appropriate.</p>
+<p>That's it for the section about continuous integration. While no setup is perfect, this combination of a fine-tuned Laravel Pint, of PHPStan set to its strictest level, and a test suite that expects 100% coverage is already a solid starting point.</p>
+<p>Add to the mix a CI workflow that enshrines these rules and won't let any violation through and you've got yourself a robust setup that will help you maintain quality over time, whether you work on your own or with a team.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>I've been exploring the topic of PHP on the command line quite a bit recently, <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">writing about it</a> and also <a href="https://www.youtube.com/watch?v=qU8MIxMt3K4" title="PHP for the Console | PHP Sussex">talking about it</a> at meetups.</p>
+<p>And something I've been saying in my talk is that building for the console means backend developers can create and ship entire products too, since no frontend nor infrastructure skills are required. I don't know about monetising, but it's a great way to put together a portfolio.</p>
+<p>The aforementioned tutorial and talk are about leveraging Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console component – Symfony Documentation">Console component</a> to develop small CLI programs, but the library will fall short when it comes to complex software. This is where frameworks like Laravel Zero shine, by bringing advanced features to shell environments and empowering developers to build and ship sophisticated products for the console.</p>
+<p>The next instalment of this series will cover how to get started with <a href="https://eventsauce.io/" title="Event sourcing for PHP with easy test tooling">EventSauce</a> within a Laravel environment. EventSauce is an <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design#event-sourcing" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Event Sourcing</a> library for PHP, and the post will be a step-by-step guide to building an aggregate from scratch, following a Test-Driven Development approach using Pest.</p>
+<p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share it as soon as it is available.</p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="2023-05-04" pubdate>2023-05-04</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/laravelzero">laravelzero</a>
+          <a href="https://tech.osteel.me/tag/laravelpint">laravelpint</a>
+          <a href="https://tech.osteel.me/tag/phpstan">phpstan</a>
+          <a href="https://tech.osteel.me/tag/github">github</a>
+          <a href="https://tech.osteel.me/tag/workflow">workflow</a>
+          <a href="https://tech.osteel.me/tag/cli">cli</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero";
+              var disqus_url = "https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
+</script>
+
+     </div>
+  </body>
+</html>
