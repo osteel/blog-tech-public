@@ -152,7 +152,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-05-04 ::
+          Last updated: 2023-05-05 ::
         Published: 2023-05-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero.html">history</a> ]
       </small>
@@ -192,7 +192,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#in-this-series">In this series</a></li>
 <li><a href="#in-this-post">In this post</a></li>
 <li><a href="#initial-setup">Initial setup</a></li>
-<li><a href="#project-information">Project information</a></li>
+<li><a href="#composer-configuration">Composer configuration</a></li>
 <li><a href="#framework-configuration">Framework configuration</a><ul>
 <li><a href="#add-ons">Add-ons</a></li>
 <li><a href="#safety-mechanisms">Safety mechanisms</a></li>
@@ -205,7 +205,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </li>
 <li><a href="#testing">Testing</a><ul>
-<li><a href="#phpunit-configuration">PHPUnit configuration</a></li>
+<li><a href="#environment-configuration">Environment configuration</a></li>
 <li><a href="#test-database">Test database</a></li>
 </ul>
 </li>
@@ -250,7 +250,7 @@ $ git push -u origin main
 
 
 <p>Now that our local project and branch are fully linked to the GitHub repository, I won't mention pushing the code again. Feel free to do so whenever you feel is a good time.</p>
-<h2 id="project-information">Project information</h2>
+<h2 id="composer-configuration">Composer configuration</h2>
 <p>While the <code>app:rename</code> command we ran earlier renamed the project, there are other attributes in <code>composer.json</code> that you may want to update as well.</p>
 <p>Here's the relevant section from <a href="https://github.com/osteel/dime/blob/main/composer.json" title="Dime – composer.json">Dime's</a>, if you need some inspiration:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
@@ -298,6 +298,18 @@ $ git push -u origin main
 </td></tr></table>
 
 <p>You might also want to have a look at the <a href="https://getcomposer.org/doc/04-schema.md" title="Composer – The composer.json schema"><code>composer.json</code> schema reference</a> to learn more about these attributes and make changes as you see fit.</p>
+<p>Also, as I'm following a DDD approach for this project, most of the source code is in the <code>domain</code> folder, whose <code>src</code> directory needs its own domain name, which must be declared in the <code>autoload</code> section of <code>composer.json</code>:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;autoload&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;App\\&quot;</span><span class="p">:</span> <span class="s2">&quot;app/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Domain\\&quot;</span><span class="p">:</span> <span class="s2">&quot;domain/src/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Database\\Factories\\&quot;</span><span class="p">:</span> <span class="s2">&quot;database/factories/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Database\\Seeders\\&quot;</span><span class="p">:</span> <span class="s2">&quot;database/seeders/&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="err">,</span>
+</pre></div>
+
+
 <h2 id="framework-configuration">Framework configuration</h2>
 <p>These steps relate to the configuration of Laravel Zero itself.</p>
 <h3 id="add-ons">Add-ons</h3>
@@ -532,8 +544,8 @@ $ git push -u origin main
 <p>The main difference is that Laravel Zero uses <a href="https://pestphp.com/" title="Pest – The elegant PHP testing framework">Pest</a> by default.</p>
 <p>Pest is an extra layer on top of <a href="https://phpunit.de/" title="PHPUnit – The PHP Testing Framework">PHPUnit</a>, introducing a simple and elegant syntax while being fully compatible with existing PHPUnit test suites.</p>
 <p>I won't spend too much time covering Pest here, because the next part of this series will focus on Test-Driven Development with Pest. I'll just explain how Pest is set up in Dime.</p>
-<h3 id="phpunit-configuration">PHPUnit configuration</h3>
-<p>As I'm following a DDD approach for this project, most of the source code is in the <code>domain</code> folder, whose <code>tests</code> directory needs to be added to <code>phpunit.xml.dist</code>:</p>
+<h3 id="environment-configuration">Environment configuration</h3>
+<p>The <code>domain</code> folder has its own <code>tests</code> directory, which needs to be added to <code>phpunit.xml.dist</code>:</p>
 <div class="highlight"><pre><span></span>...
 <span class="nt">&lt;testsuites&gt;</span>
     <span class="nt">&lt;testsuite</span> <span class="na">name=</span><span class="s">&quot;Application&quot;</span><span class="nt">&gt;</span>
@@ -556,6 +568,16 @@ $ git push -u origin main
     <span class="nt">&lt;/include&gt;</span>
 <span class="nt">&lt;/source&gt;</span>
 ...
+</pre></div>
+
+
+<p>Finally, the domain's <code>tests</code> folder also needs its own domain name, which must be declared in the <code>autoload-dev</code> section of <code>composer.json</code>:</p>
+<div class="highlight"><pre><span></span><span class="s2">&quot;autoload-dev&quot;</span><span class="err">:</span> <span class="p">{</span>
+    <span class="nt">&quot;psr-4&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;Tests\\&quot;</span><span class="p">:</span> <span class="s2">&quot;tests/&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;Domain\\Tests\\&quot;</span><span class="p">:</span> <span class="s2">&quot;domain/tests/&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span><span class="err">,</span>
 </pre></div>
 
 
@@ -947,7 +969,7 @@ from idea to production">Actions</a>, which are some kind of building blocks for
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-05-04" pubdate>2023-05-04</time>
+          <time datetime="2023-05-05" pubdate>2023-05-05</time>
           :: [
           <a href="https://tech.osteel.me/tag/laravelzero">laravelzero</a>
           <a href="https://tech.osteel.me/tag/laravelpint">laravelpint</a>
