@@ -149,7 +149,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-05-04 ::
+          Last updated: 2023-05-18 ::
         Published: 2023-04-05
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design.html">history</a> ]
       </small>
@@ -181,7 +181,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
 <li>Software design <strong>⬅️ you are here</strong></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero" title="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">Setting up Laravel Zero</a></li>
-<li>Getting started with EventSauce <em>(coming soon)</em></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">Getting started with EventSauce</a></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -414,7 +414,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <h2 id="closing-thoughts">Closing thoughts</h2>
 <p>Now that we've established the overall structure of the application, identified the main components making up its various layers, as well as the way they interact with each other, we're in a solid position to begin the implementation.</p>
 <p>But where shall we start, exactly?</p>
-<p>Setting up the framework is the obvious first step (and will be the object of the next post), but once that's done we still need to decide how to tackle the domain.</p>
+<p>Setting up the framework is the obvious first step (and will be the object of the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero" title="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">next post</a>), but once that's done we still need to decide how to tackle the domain.</p>
 <p>A characteristic of aggregates is that they constitute their own little isolated domains, which conveniently breaks down an application into smaller, independent components.</p>
 <p>Of the three aggregates identified in this article, the <code>NonFungibleAsset</code> one is arguably the simplest, so it makes sense to make it our starting point. This will be the focus of another part of this series.</p>
 <p>Once all the aggregates are in place, we'll be able to implement the logic connecting them, thus completing the domain layer. That will leave us with the presentation layer, which we can address last.</p>
@@ -440,7 +440,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-05-04" pubdate>2023-05-04</time>
+          <time datetime="2023-05-18" pubdate>2023-05-18</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/eventsourcing">eventsourcing</a>

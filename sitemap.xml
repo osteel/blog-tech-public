@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
   <url>
+    <loc>https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce</loc>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
     <loc>https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero</loc>
     <priority>0.8</priority>
   </url>

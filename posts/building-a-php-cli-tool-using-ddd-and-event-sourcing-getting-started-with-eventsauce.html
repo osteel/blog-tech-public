@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/2023/05/18/dime_01.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+  <meta name="description" content="This post is a step-by-step guide to getting started with EventSauce, an Event Sourcing library for PHP. While it is part of a series and uses Laravel Zero as a starting point, it requires no prior knowledge of past articles and can easily be adapted for any PHP application." />
+  <meta name="twitter:description" content="This post is a step-by-step guide to getting started with EventSauce, an Event Sourcing library for PHP. While it is part of a series and uses Laravel Zero as a starting point, it requires no prior knowledge of past articles and can easily be adapted for any PHP application.">
+
+  <meta name="tags" content="eventsourcing" />
+  <meta name="tags" content="eventsauce" />
+  <meta name="tags" content="pest" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2023/05/18/dime_01.png">
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+    </ul>
+  </section>
+
+  <section>
+    <h2>Newsletter</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="Email address" required>
+      <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+      <input type="submit" hidden />
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/news">News</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2023
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 2023-05-18 ::
+        Published: 2023-05-18
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><em>This post is part of the Building a PHP CLI tool using DDD and Event Sourcing <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a> and uses Laravel Zero as a starting point, but you can also read it as an independent guide to getting started with EventSauce in any PHP application.</em></p>
+<p><img alt="A painting of a river quitly flowing in-between mountains" src="/images/2023/05/18/dime_01.png" title="A painting of a river quitly flowing in-between mountains" /></p>
+<p><a href="https://eventsauce.io/">EventSauce</a> is a library allowing you to implement <a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">Event Sourcing</a> in your PHP applications, an approach to data management involving sequences of events.</p>
+<p>I've covered Event Sourcing in a <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design#event-sourcing" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">previous part</a> of this series, where I gave the following definition:</p>
+<blockquote>
+<p>Event Sourcing is a software design pattern whereby the state of a system is stored as a sequence of events, rather than as the latest snapshot of that state. Each event represents a change to the system's state and can be used to reconstruct that state at any point in time.</p>
+</blockquote>
+<p>Even though this practice has been around for a while (Martin Fowler's <a href="https://martinfowler.com/eaaDev/EventSourcing.html" title="Event Sourcing">article</a> is from 2005, for instance), I haven't seen it much in PHP applications so far.</p>
+<p>It's possible to implement Event Sourcing manually, but some libraries will make that easier for you by providing a base structure and essential components.</p>
+<p>There's Spatie's <a href="https://spatie.be/index.php/docs/laravel-event-sourcing" title="Laravel-event-sourcing – Introduction">Laravel-event-sourcing</a> package, built for Laravel and that makes a lot of decisions for you. It's great to get started, but some may find it too opinionated and will prefer EventSauce, a framework-agnostic alternative that gives you more control over the components you wish to use.</p>
+<p>This post is a step-by-step guide to setting up EventSauce and creating a simple aggregate, following a Test-Driven Development (TDD) approach with <a href="https://pestphp.com/">Pest</a>.</p>
+<p>While it's part of a wider <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, no prior knowledge of past articles is required. It uses Laravel Zero as a <a href="https://github.com/osteel/eventsauce-tutorial">starting point</a> but can easily be adapted for any PHP application.</p>
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero" title="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">Setting up Laravel Zero</a></li>
+<li>Getting started with EventSauce <strong>⬅️ you are here</strong></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#the-context">The context</a><ul>
+<li><a href="#aggregates-and-other-key-patterns">Aggregates and other key patterns</a></li>
+<li><a href="#non-fungible-assets">Non-fungible assets</a></li>
+<li><a href="#the-work">The work</a></li>
+</ul>
+</li>
+<li><a href="#initial-setup">Initial setup</a></li>
+<li><a href="#implementing-the-aggregate">Implementing the aggregate</a><ul>
+<li><a href="#base-test-case">Base test case</a></li>
+<li><a href="#first-test">First test</a></li>
+<li><a href="#aggregate-root-id">Aggregate root ID</a></li>
+<li><a href="#first-action">First action</a></li>
+<li><a href="#first-event">First event</a></li>
+<li><a href="#the-aggregate">The aggregate</a></li>
+<li><a href="#first-invariant">First invariant</a></li>
+<li><a href="#testing-an-aggregates-state">Testing an aggregate's state</a></li>
+<li><a href="#increasing-the-nfts-cost-basis">Increasing the NFT's cost basis</a></li>
+<li><a href="#disposing-of-the-nft">Disposing of the NFT</a></li>
+</ul>
+</li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul>
+</div>
+<h2 id="the-context">The context</h2>
+<p>This article is part of a series about my journey building <a href="https://github.com/osteel/dime">Dime</a>, a PHP command-line tool to help UK taxpayers calculate their crypto-related taxes.</p>
+<p>In previous posts, I <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">described the domain</a> of the application, <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">modelled</a> some of its essential aspects and established an <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">implementation plan</a> where I identified appropriate design patterns to use.</p>
+<p>I also singled out one of the <em>aggregates</em> as a good starting point for the implementation.</p>
+<h3 id="aggregates-and-other-key-patterns">Aggregates and other key patterns</h3>
+<p>An aggregate is a Domain-Driven Design (DDD) concept I've already talked about in the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">software design</a> article:</p>
+<blockquote>
+<p>An aggregate is a group of domain objects that are treated as a single, consistent unit within the domain. Aggregates typically consist of one or more entities and/or value objects, and are responsible for enforcing business rules (invariants) within the domain.</p>
+</blockquote>
+<p>I also gave definitions for the <em>entity</em>, <em>value object</em> and <em>invariant</em> patterns:</p>
+<blockquote>
+<p>An entity is a domain object that has a unique identity and a lifecycle that spans multiple interactions with the system. Entities are often referred to as <em>models</em> in non-DDD contexts.</p>
+<p>A value object is a domain object that has no identity and is defined entirely by its properties. Unlike entities, value objects are immutable and can be freely shared and copied between different parts of the system without any side effects.</p>
+<p>An invariant is a business rule. It's a condition or set of conditions that must always be true within a domain. Invariants are typically enforced by aggregates or aggregate roots and are checked and maintained whenever an event is applied to the system.</p>
+</blockquote>
+<p>And here's a definition for <em>aggregate root</em>, another pattern we are going to use:</p>
+<blockquote>
+<p>An aggregate root is a special type of aggregate that serves as the entry point for all operations on the aggregate. The aggregate root is responsible for ensuring the consistency of the entire aggregate, and is the only object that can modify the state of the aggregate.</p>
+</blockquote>
+<p>Don't worry if it all sounds a bit abstract for now – there will be concrete examples illustrating these concepts throughout the article.</p>
+<h3 id="non-fungible-assets">Non-fungible assets</h3>
+<p>The aggregate we're going to tackle today is the one covering <em>non-fungible assets</em>, otherwise known as NFTs.</p>
+<p>NFTs are subject to Capital Gains Tax like any other cryptoasset, but contrary to their fungible counterparts (e.g. Bitcoin), the calculation rules are fairly straightforward.</p>
+<p>Let me reuse an example from the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain#non-fungible-tokens" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">domain article</a>:</p>
+<p class="info"><span class="title">Example</span> Bob buys an NFT on a platform for £500. Later that day, he sells it for £600. Bob made a <code>£600 - £500 = £100</code> gain, which is subject to Capital Gains Tax.</p>
+
+<p>Simple. But some use cases are slightly more complicated than that.</p>
+<p>Quoting from the domain article again:</p>
+<blockquote>
+<p>Where it gets tricky in my case is that I <em>minted</em> (created) some NFTs in exotic ways, for instance by <em>burning</em> several NFTs to create a new one. In that case, the cost basis* of the new NFT is the sum of the cost bases of the burnt NFTs.</p>
+</blockquote>
+<p><em>* The cost basis is the cost of acquisition of an asset</em></p>
+<p>I used the following example to illustrate this scenario:</p>
+<p class="info"><span class="title">Example</span> Charlie buys an NFT depicting a lion for £500. He then successively buys an NFT of a goat for £300 and an NFT of a snake for £400. He burns the three NFTs to mint a new NFT, depicting the Chimera. A few days later, he sells the Chimera NFT for £2,000. Charlie made a <code>£2,000 - (£500 + £300 + £400) = £800</code> gain, which is subject to Capital Gains Tax.</p>
+
+<h3 id="the-work">The work</h3>
+<p>The goal of today's post is to track everything that happens to an NFT from the moment it is <em>acquired</em> (bought) to the moment it is <em>disposed of</em> (sold), so we can determine the capital gain or loss to declare.</p>
+<p>In other words, anything that changes its <em>state</em>:</p>
+<ul>
+<li>Acquiring the NFT;</li>
+<li>Acquiring the same NFT again, which increases its cost basis; and</li>
+<li>Disposing of the NFT.</li>
+</ul>
+<p>We're going to keep track of these changes in an aggregate that can only be updated through an aggregate root.</p>
+<p>But hang on – aren't NFTs supposed to be unique? How can we acquire the same NFT more than once?</p>
+<p>I came up with this solution to the problem of burning several NFTs to create a new one.</p>
+<p>To reuse the previous example, while creating the Chimera out of the lion, goat and snake is technically a single transaction, from an accounting perspective it can also be broken down into three successive transactions, each of them increasing the cost basis of the created NFT:</p>
+<ol>
+<li>Burn the Lion NFT ➡️ The Chimera's cost basis is <code>£500</code>;</li>
+<li>Burn the Goat NFT ➡️ The Chimera's cost basis is now <code>£500 + £300 = £800</code>;</li>
+<li>Burn the Snake NFT ➡️ The Chimera's cost basis is now <code>£800 + £400 = £1,200</code>.</li>
+</ol>
+<p>The way Dime works is it takes a spreadsheet of transactions as input, which it then reads and processes one transaction at a time.</p>
+<p>Reporting the three NFT burns as a single row is tricky, so I'm using this method to report one transaction per row instead and keep things clean.</p>
+<div class="info">
+    <p><span class="title">Domain misrepresentation?</span> It could be argued that splitting a single transaction into several ones is misrepresenting the domain.</p>
+    <p>While there is some truth to that, I couldn't think of another way to report these transactions that wouldn't be confusing to the end user. The selected method also happens to greatly simplify the implementation, which makes it a win from both perspectives.</p>
+    <p>For these reasons, I'm personally comfortable with this small transgression.</p>
+</div>
+
+<h2 id="initial-setup">Initial setup</h2>
+<p>As I'm following a DDD approach to building Dime, most of the action happens in a <code>domain</code> folder at the root of the project.</p>
+<p>This requires properly declaring the <code>domain</code> folder and its sub-folders in <a href="https://github.com/osteel/dime/blob/main/composer.json" title="Dime – composer.json"><code>composer.json</code></a> and <a href="https://github.com/osteel/dime/blob/main/phpunit.xml.dist" title="Dime – phpunit.xml.dist"><code>phpunit.xml.dist</code></a>, which I've covered in the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero" title="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">previous post</a>.</p>
+<p>To make things easier though, I've created a separate <a href="https://github.com/osteel/eventsauce-tutorial" title="EventSauce Tutorial">GitHub repository</a> where everything is set up for you. I invite you to fork and/or clone it on your local machine so you can complete the steps as you go:</p>
+<div class="highlight"><pre><span></span>$ git clone git@github.com:osteel/eventsauce-tutorial.git
+</pre></div>
+
+
+<p>The working branch is <code>start</code> (which is also the default branch), but you can also see the final result in the <a href="https://github.com/osteel/eventsauce-tutorial/tree/finish" title="EventSauce Tutorial (finish)"><code>finish</code> branch</a>. Feel free to refer to it at any time.</p>
+<p>Once you've cloned the project, instal the Composer dependencies:</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">cd</span> eventsauce-tutorial
+$ composer intall
+</pre></div>
+
+
+<p>They already include EventSauce and some optional <a href="https://github.com/EventSaucePHP/PestUtilities">test utilities</a> optimised for Pest (projects not using Pest can import the <a href="https://github.com/EventSaucePHP/TestUtilities">underlying library</a> instead).</p>
+<p>For reference, this is how these were installed:</p>
+<div class="highlight"><pre><span></span>$ composer require eventsauce/eventsauce
+$ composer require --dev eventsauce/pest-utilities
+</pre></div>
+
+
+<p>This is what the folder structure looks like at this point:</p>
+<div class="highlight"><pre><span></span>eventsauce-tutorial/
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── domain/
+│   ├── src/
+│   └── tests/
+├── tests/
+└── vendor/
+</pre></div>
+
+
+<h2 id="implementing-the-aggregate">Implementing the aggregate</h2>
+<p>In a typical TDD fashion, the first thing we do is write a test.</p>
+<p>We don't know much about the implementation yet, but we know which aggregate we're starting with and what it is about.</p>
+<p>Let's call it <code>NonFungibleAsset</code>.</p>
+<h3 id="base-test-case">Base test case</h3>
+<p>EventSauce's documentation has a section about <a href="https://eventsauce.io/docs/testing" title="Testing Aggregates">testing aggregates</a> where it recommends creating a base test case for the aggregate root, so this is what we will do.</p>
+<p>In the <code>domain/tests</code> folder, create the <code>Aggregates/NonFungibleAsset</code> folder and add the following <code>NonFungibleAssetTestCase.php</code> file to it:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Tests\Aggregates\NonFungibleAsset</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\ValueObjects\NonFungibleAssetId</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRootId</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase</span><span class="p">;</span>
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">NonFungibleAssetTestCase</span> <span class="k">extends</span> <span class="nx">AggregateRootTestCase</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">newAggregateRootId</span><span class="p">()</span><span class="o">:</span> <span class="nx">AggregateRootId</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">NonFungibleAssetId</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">aggregateRootClassName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">NonFungibleAsset</span><span class="o">::</span><span class="na">class</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">object</span> <span class="nv">$action</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>It's basically a copy-and-paste of the <a href="https://eventsauce.io/docs/testing/#1-create-a-base-test-case-for-your-aggregate" title="Create a base test case for your aggregate">example</a> given in the documentation, with a few adjustments to match our aggregate.</p>
+<p>We will revisit this class later, but for now, suffice it to say that the <code>AggregateRootTestCase</code> class it extends will help us test the aggregate root.</p>
+<h3 id="first-test">First test</h3>
+<p>Let's write our first test. Create the following <code>NonFungibleAssetTest.php</code> file in the same directory as <code>NonFungibleAssetTestCase.php</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">use</span> <span class="nx">Domain\Tests\Aggregates\NonFungibleAsset\NonFungibleAssetTestCase</span><span class="p">;</span>
+<span class="k">use</span> <span class="k">function</span> <span class="nf">EventSauce\EventSourcing\PestTooling\then</span><span class="p">;</span>
+<span class="k">use</span> <span class="k">function</span> <span class="nf">EventSauce\EventSourcing\PestTooling\when</span><span class="p">;</span>
+
+<span class="nx">uses</span><span class="p">(</span><span class="nx">NonFungibleAssetTestCase</span><span class="o">::</span><span class="na">class</span><span class="p">);</span>
+
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;can acquire a non-fungible asset&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">when</span><span class="p">(</span><span class="k">new</span> <span class="nx">AcquireNonFungibleAsset</span><span class="p">(</span>
+        <span class="nx">asset</span><span class="o">:</span> <span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">,</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">then</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table>
+
+<p>Note how we imported the <code>NonFungibleAssetTestCase</code> class using <a href="https://pestphp.com/docs/configuring-tests" title="Configuring Tests">Pest's <code>uses</code> function</a> at the top. We're also leveraging EventSauce's <a href="https://github.com/EventSaucePHP/PestUtilities">Pest utilities</a> for the test's syntax, which I will talk about in a minute.</p>
+<p>Your folder structure should now look like this:</p>
+<div class="highlight"><pre><span></span>eventsauce-tutorial/
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── domain/
+│   ├── src/
+│   └── tests/
+│       └── Aggregates/
+│           └── NonFungibleAsset/
+│               ├── NonFungibleAssetTest.php
+│               └── NonFungibleAssetTestCase.php
+├── tests/
+└── vendor/
+</pre></div>
+
+
+<p>To explain what's going on in the test, we need to understand EventSauce's <a href="https://eventsauce.io/docs/lifecycle/" title="Lifecyle">lifecycle</a>. I invite you to read the whole section from the documentation, but the bit that concerns us right now is about performing actions on the aggregate.</p>
+<p>We can only change an aggregate's state through its aggregate root. The way it works is we pass an action to the aggregate root, which then checks whether the action violates any of the invariants (the business rules) and records the corresponding event if it doesn't.</p>
+<p>In the above test, <code>AcquireNonFungibleAsset</code> is an action (more specifically a <em>command</em>, but I'll get back to that) – a class with a bunch of properties. <code>NonFungibleAssetAcquired</code> is the event to be recorded following the action, provided no invariant was violated.</p>
+<p>In other words, what we are testing here is that <em>when</em> a valid <code>AcquireNonFungibleAsset</code> action is performed, <em>then</em> a <code>NonFungibleAssetAcquired</code> event should be recorded:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nx">when</span><span class="p">(</span><span class="k">new</span> <span class="nx">AcquireNonFungibleAsset</span><span class="p">(</span>
+    <span class="nx">asset</span><span class="o">:</span> <span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">,</span>
+    <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+    <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">));</span>
+
+<span class="nx">then</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+    <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+    <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+<span class="p">));</span>
+</pre></div>
+
+
+<p>The <em>when... then</em> structure (and also <em>given</em>, which we'll see later) comes from the <a href="https://en.wikipedia.org/wiki/Behavior-driven_development" title="Behavior-driven development">Behavior-Driven Development</a> practice (BDD) and is provided by the <code>AggregateRootTestCase</code> class we mentioned in the previous section. The <code>when</code> and <code>then</code> functions themselves come with the Pest utilities (see the <a href="https://github.com/EventSaucePHP/PestUtilities">documentation</a> for alternative syntaxes).</p>
+<p>There'd be more to say about this but for now, let's try and run our test and proceed from there:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>It fails because of this error:</p>
+<div class="highlight"><pre><span></span>Class &quot;Domain\Tests\Aggregates\NonFungibleAsset\NonFungibleAssetId&quot; not found
+</pre></div>
+
+
+<p>We're indeed referencing the <code>NonFungibleAssetId</code> class from the <code>NonFungibleAssetTestCase</code> class, but it doesn't exist yet.</p>
+<p>Let's create it.</p>
+<h3 id="aggregate-root-id">Aggregate root ID</h3>
+<p><code>NonFungibleAssetId</code> is an <em>aggregate root ID</em>, an object EventSauce <a href="https://eventsauce.io/docs/event-sourcing/create-an-aggregate-root/#aggregate-construction" title="Aggregate Construction">requires us</a> to provide:</p>
+<blockquote>
+<p>An aggregate root has an identifier. This is called the “aggregate root ID”. It’s good practice to have a unique ID class for every aggregate root.</p>
+</blockquote>
+<p>To make our lives easier though, EventSauce comes with an <code>AggregateRootId</code> interface that we can implement.</p>
+<p>Create a new <code>Aggregates/NonFungibleAsset/ValueObjects</code> folder in <code>domain/src</code> and add the following <code>NonFungibleAssetId.php</code> file to it:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\ValueObjects</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRootId</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="nx">readonly</span> <span class="k">class</span> <span class="nc">NonFungibleAssetId</span> <span class="k">implements</span> <span class="nx">AggregateRootId</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="k">private</span> <span class="nx">string</span> <span class="nv">$id</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">toString</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">id</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">fromString</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$aggregateRootId</span><span class="p">)</span><span class="o">:</span> <span class="k">static</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">self</span><span class="p">(</span><span class="nv">$aggregateRootId</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Your folder structure should now look like this:</p>
+<div class="highlight"><pre><span></span>eventsauce-tutorial/
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── domain/
+│   ├── src/
+│   │   └── Aggregates/
+│   │       └── NonFungibleAsset/
+│   │           └── ValueObjects/
+│   │               └── NonFungibleAssetId.php
+│   └── tests/
+│       └── Aggregates/
+│           └── NonFungibleAsset/
+│               ├── NonFungibleAssetTest.php
+│               └── NonFungibleAssetTestCase.php
+├── tests/
+└── vendor/
+</pre></div>
+
+
+<p>Aggregate root IDs are value objects, because they don't have an identity (they are defined by the properties they are made of) and are immutable (which here is enforced by the <code>readonly</code> class attribute, available since PHP 8.2).</p>
+<p>This can be a bit confusing because, on the other hand, aggregate roots are entities identified by their aggregate root ID, but the latter itself is not an entity.</p>
+<p>The <code>fromString</code> method is a static constructor that takes the NFT ID (a string) as an argument and passes it to the class' private constructor. NFT IDs are already supposed to be unique, so there is no need to use another value to identify the aggregate root.</p>
+<p>Let's import the <code>NonFungibleAssetId</code> class in <code>NonFungibleAssetTestCase</code> and run the test again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>We're now getting this error:</p>
+<div class="highlight"><pre><span></span>Class &quot;AcquireNonFungibleAsset&quot; not found
+</pre></div>
+
+
+<p>It's time to build our first action.</p>
+<h3 id="first-action">First action</h3>
+<p>A <code>NonFungibleAsset</code> aggregate's lifecycle starts with the acquisition of an NFT.</p>
+<p>The corresponding action is represented by the <code>AcquireNonFungibleAsset</code> class, which we need to create in a new <code>domain/src/Aggregates/NonFungibleAsset/Actions</code> folder:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Actions</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="nx">readonly</span> <span class="k">class</span> <span class="nc">AcquireNonFungibleAsset</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$asset</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$date</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">int</span> <span class="nv">$costBasis</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>It doesn't contain any logic because, for the purpose of this article, we only need it to be a Data Transfer Object (DTO). The final implementation will have more to it though (more on this in the blue box below).</p>
+<div class="info">
+    <p><span class="title">Action or Command?</span> I have hinted at this before, but what I've been calling <em>action</em> so far is actually a <em>command</em>.</p>
+    <p>This term is associated with the <a href="https://martinfowler.com/bliki/CQRS.html" title="CQRS">CQRS pattern</a>, for Command and Query Responsibility Segregation. It aims at separating read and write operations, which is a natural fit for Event Sourcing – the write operations are the events being recorded and the read operations concern data coming from <a href="https://eventsauce.io/docs/reacting-to-events/projections-and-read-models/" title="Projections and Read Models">projections</a>.</p>
+    <p>The first reason why I'm sticking to <em>action</em> here is that in Laravel, <em>command</em> already describes another kind of object – the console commands handled by <a href="https://laravel.com/docs/artisan" title="Laravel – Artisan Console">Artisan</a>. This is another instance of the "do not fight the framework" principle, which I've talked about in a <a href="https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design#application-structure" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">previous post</a>.</p>
+    <p>The second reason is that, while actions only need to be DTOs for the scope of this article, in Dime's source code they also contain the logic to perform themselves on the aggregate. Which makes them actions, rather than commands. They do so by leveraging Laravel's command bus, to which they are dispatched as synchronous jobs.</p>
+    <p>If you want to see what this looks like in practice, go check out Dime's <a href="https://github.com/osteel/dime/blob/main/domain/src/Aggregates/NonFungibleAsset/Actions/AcquireNonFungibleAsset.php" title="AcquireNonFungibleAsset.php"><code>AcquireNonFungibleAsset</code> class</a> on GitHub as well as the <a href="https://github.com/osteel/dime/blob/main/domain/tests/Aggregates/NonFungibleAsset/Actions/AcquireNonFungibleAssetTest.php" title"AcquireNonFungibleAssetTest.php">corresponding tests</a>.</p>
+</div>
+
+<p>Let's import the new <code>AcquireNonFungibleAsset</code> class in <code>NonFungibleAssetTest</code> and run the test again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>It's now complaining about the missing <code>NonFungibleAssetAcquired</code> class:</p>
+<div class="highlight"><pre><span></span>Class &quot;NonFungibleAssetAcquired&quot; not found
+</pre></div>
+
+
+<p>Let's fix this.</p>
+<h3 id="first-event">First event</h3>
+<p>Now that we have the action, we need the event.</p>
+<p>Create a new <code>domain/src/Aggregates/NonFungibleAsset/Events</code> folder and add the following <code>NonFungibleAssetAcquired.php</code> file to it:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Events</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="nx">readonly</span> <span class="k">class</span> <span class="nc">NonFungibleAssetAcquired</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$date</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">int</span> <span class="nv">$costBasis</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>It is almost identical to the action. It does not feature the asset (the NFT ID) though, because as part of EventSauce's <a href="https://eventsauce.io/docs/lifecycle/" title="Lifecycle">lifecycle</a>, events are wrapped in <code>Message</code> objects that expose the aggregate root ID through the <code>aggregateRootId</code> method. Since the aggregate root ID is the NFT ID itself, events are already dispatched with the latter, which is then accessible to all event consumers.</p>
+<p>One thing to keep in mind when creating events is that they must contain the data you're willing to record. Some of this data will come from the action, and some from the aggregate root itself.</p>
+<p>That's all there is to this event for now, so let's import it into <code>NonFungibleAssetTest</code> and run the test again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>We're now running into this error:</p>
+<div class="highlight"><pre><span></span>Domain\tests\Aggregates\NonFungibleAsset\NonFungibleAssetTest &gt; it can acquire a non-fungible asset
+expected event count doesnt match recorded event count
+Failed asserting that actual size 0 matches expected size 1.
+</pre></div>
+
+
+<p>We're making progress – we're now dealing with the test's assertions themselves. The error comes from the fact that while we now have the action and its event, we're still missing the logic connecting them.</p>
+<h3 id="the-aggregate">The aggregate</h3>
+<p>We perform actions on the aggregate through its aggregate root, whose role is to ensure an action doesn't violate any invariant before recording the corresponding event.</p>
+<p>In other words, the aggregate root is where an action becomes an event. Let's create it.</p>
+<p>Add the following <code>NonFungibleAsset.php</code> file to the <code>domain/src/Aggregates/NonFungibleAsset</code> folder:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Actions\AcquireNonFungibleAsset</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Events\NonFungibleAssetAcquired</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRoot</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRootBehaviour</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">NonFungibleAsset</span> <span class="k">implements</span> <span class="nx">AggregateRoot</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">AggregateRootBehaviour</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">acquire</span><span class="p">(</span><span class="nx">AcquireNonFungibleAsset</span> <span class="nv">$action</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">recordThat</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+            <span class="nb">date</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">,</span>
+            <span class="nx">costBasis</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">applyNonFungibleAssetAcquired</span><span class="p">(</span><span class="nx">NonFungibleAssetAcquired</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>The class implements the <code>AggregateRoot</code> interface, which is <a href="https://eventsauce.io/docs/event-sourcing/create-an-aggregate-root/" title="Creating an Aggregate Root">provided by EventSauce</a>. There's also an <code>AggregateRootBehaviour</code> trait implementing the corresponding behaviour, including a private constructor expecting an aggregate root ID.</p>
+<p>The <code>acquire</code> method allows us to perform an <code>AcquireNonFungibleAsset</code> action on the aggregate. All it does at the moment is build a new <code>NonFungibleAssetAcquired</code> event from the action's properties that it passes to the <code>recordThat</code> method for recording. This method is provided by the <code>AggregateRootBehaviour</code> trait and adds the event to the aggregate root.</p>
+<p>It also <em>applies</em> the event by calling the corresponding <code>apply</code> method, which must be implemented for each event.</p>
+<p>In the case of <code>NonFungibleAssetAcquired</code>, that method is <code>applyNonFungibleAssetAcquired</code>. It's currently empty because we don't need it to do anything at this stage.</p>
+<p>Something to keep in mind though is that whenever an aggregate is reconstructed from recorded events, each event's <code>apply</code> method is called again. I'll get back to that.</p>
+<p>For now, let's import the <code>NonFungibleAsset</code> class in <code>NonFungibleAssetTestCase</code> and run the test again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>We're still getting the same error. That's because the <code>acquire</code> method is not being called on the aggregate root just yet.</p>
+<p>EventSauce's test utilities need a little help to know what to do with the actions. Open <code>NonFungibleAssetTestCase</code> again and change its content for the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Tests\Aggregates\NonFungibleAsset</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Actions\AcquireNonFungibleAsset</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\NonFungibleAsset</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\ValueObjects\NonFungibleAssetId</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRootId</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\TestUtilities\AggregateRootTestCase</span><span class="p">;</span>
+
+<span class="k">abstract</span> <span class="k">class</span> <span class="nc">NonFungibleAssetTestCase</span> <span class="k">extends</span> <span class="nx">AggregateRootTestCase</span>
+<span class="p">{</span>
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">newAggregateRootId</span><span class="p">()</span><span class="o">:</span> <span class="nx">AggregateRootId</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">NonFungibleAssetId</span><span class="o">::</span><span class="na">fromString</span><span class="p">(</span><span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">protected</span> <span class="k">function</span> <span class="nf">aggregateRootClassName</span><span class="p">()</span><span class="o">:</span> <span class="nx">string</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">NonFungibleAsset</span><span class="o">::</span><span class="na">class</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">object</span> <span class="nv">$action</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="nv">$nonFungibleAsset</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">repository</span><span class="o">-&gt;</span><span class="na">retrieve</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">aggregateRootId</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="nv">$action</span> <span class="nx">instanceof</span> <span class="nx">AcquireNonFungibleAsset</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nv">$nonFungibleAsset</span><span class="o">-&gt;</span><span class="na">acquire</span><span class="p">(</span><span class="nv">$action</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">repository</span><span class="o">-&gt;</span><span class="na">persist</span><span class="p">(</span><span class="nv">$nonFungibleAsset</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Most of the changes are in the <code>handle</code> method. The first thing we do is retrieve the aggregate root from <code>$this-&gt;repository</code>, using <code>$this-&gt;aggregateRootId</code>.</p>
+<p>Both these properties come from the parent class <code>AggregateRootTestCase</code>. The former is the default aggregate root repository and the latter was generated through the <code>newAggregateRootId</code> method, which we've implemented in the <code>NonFungibleAssetTestCase</code> class.</p>
+<div class="info">
+    <p><span class="title">Aggregate root repository</span> The aggregate root repository is another key concept of EventSauce. It's somewhat out of scope for this article, but its role is to retrieve and persist aggregate root objects.</p>
+    <p>That's all you need to know for now, but feel free to read about EventSauce's <a href="https://eventsauce.io/docs/architecture/" title="Architecture">architecture</a> for details.</p>
+</div>
+
+<p>Once the aggregate is successfully retrieved, we check the action's type and if it is <code>AcquireNonFungibleAsset</code>, we call the <code>acquire</code> method on the aggregate root and pass the action to it.</p>
+<p>We then have the repository persist the new state of the aggregate root:</p>
+<div class="highlight"><pre><span></span><span class="x">$this-&gt;repository-&gt;persist($nonFungibleAsset);</span>
+</pre></div>
+
+
+<p>Run the test again – it is now successful!</p>
+<p><img alt="The &quot;That Feeling&quot; meme" src="/images/2023/05/18/dime_02.jpg" title="The &quot;That Feeling&quot; meme" /></p>
+<p>Let's take a minute to appreciate our setup so far.</p>
+<p>First, we can test our aggregate root and persist events, yet we haven't once mentioned the database. That's because EventSauce's test tooling records everything in memory by default, leaving storage infrastructure concerns for later.</p>
+<p>Second, having <code>NonFungibleAssetTestCase</code> forward the actions to the right aggregate root methods means we can test the aggregate in complete isolation, without having to rely on external dependencies.</p>
+<p>On top of that, the BDD-style structure (<em>given... when... then</em>) makes our tests easy to write and read, especially using Pest's minimal and elegant syntax.</p>
+<p>We now have everything we need to comfortably implement the rest of the aggregate. Let's see how we can apply event data to the aggregate root and enforce invariants.</p>
+<h3 id="first-invariant">First invariant</h3>
+<p>Recording a <code>NonFungibleAssetAcquired</code> event upon a valid <code>AcquireNonFungibleAsset</code> action is a great first step, but that's not the end of the story.</p>
+<p>As stated before NFTs are unique, so it should not be possible to acquire the same NFT twice. This is our first invariant.</p>
+<p>Let's challenge it with a new test in <code>NonFungibleAssetTest</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;cannot acquire the same non-fungible asset more than once&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">given</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">when</span><span class="p">(</span><span class="k">new</span> <span class="nx">AcquireNonFungibleAsset</span><span class="p">(</span>
+        <span class="nx">asset</span><span class="o">:</span> <span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">,</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-22&#39;</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">expectToFail</span><span class="p">(</span><span class="nx">NonFungibleAssetException</span><span class="o">::</span><span class="na">alreadyAcquired</span><span class="p">(</span><span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">));</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table>
+
+<p>The test introduces the <code>given</code> function (that you'll need to import), allowing us to record events as preconditions for the scenario we're testing.</p>
+<p>The <code>expectToFail</code> function makes its first appearance as well (also to be imported) and allows us to specify the exception that should be thrown.</p>
+<p>Once again the test reads very easily – <em>given</em> we've acquired a non-fungible asset, <em>when</em> we try to acquire the same asset, <em>then</em> we expect it to fail with a <code>NonFungibleAssetException</code> exception.</p>
+<p>But how do we know that the asset of the <code>NonFungibleAssetAcquired</code> event and <code>AcquireNonFungibleAsset</code> action is the same? Because the parent class <code>NonFungibleAssetTestCase</code> always retrieves the same aggregate root (the one identified by the NFT ID "MonkeyJPEG"), meaning we're only operating on this aggregate root in the test class.</p>
+<p>In other words, any event or action we pass to <code>given</code>, <code>when</code> and <code>then</code> in the test class will concern the same aggregate root and thus, the same underlying asset.</p>
+<p>The <code>NonFungibleAssetException</code> exception class doesn't exist yet – let's create it in a new <code>domain/src/Aggregates/NonFungibleAsset/Exceptions</code> folder:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Exceptions</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">RuntimeException</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="k">class</span> <span class="nc">NonFungibleAssetException</span> <span class="k">extends</span> <span class="nx">RuntimeException</span>
+<span class="p">{</span>
+    <span class="k">private</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$message</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">parent</span><span class="o">::</span><span class="na">__construct</span><span class="p">(</span><span class="nv">$message</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">alreadyAcquired</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$asset</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">self</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Non-fungible asset %s has already been acquired&#39;</span><span class="p">,</span> <span class="nv">$asset</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>It's using a static named constructor that calls a private constructor, making the building of exceptions very explicit.</p>
+<p>Let's import this class in <code>NonFungibleAssetTest</code> and run the tests again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>It's complaining about the exception not being thrown:</p>
+<div class="highlight"><pre><span></span>Domain\tests\Aggregates\NonFungibleAsset\NonFungibleAssetTest &gt; it cannot acquire the same non-fungible asset more than once
+FailedToDetectExpectedException
+Failed to detect expected exception, was expecting exception of type Domain\Aggregates\NonFungibleAsset\Exceptions\NonFungibleAssetException
+</pre></div>
+
+
+<p>We now need to guard this invariant at the aggregate root level, which implies knowing when an NFT was already acquired.</p>
+<p>To do this, we're going to add a boolean <code>$acquired</code> property to the aggregate root and set it to <code>true</code> whenever the initial acquisition occurs.</p>
+<p>Update the content of <code>NonFungibleAsset</code> for the following:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Actions\AcquireNonFungibleAsset</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Events\NonFungibleAssetAcquired</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRoot</span><span class="p">;</span>
+<span class="k">use</span> <span class="nx">EventSauce\EventSourcing\AggregateRootBehaviour</span><span class="p">;</span>
+
+<span class="k">class</span> <span class="nc">NonFungibleAsset</span> <span class="k">implements</span> <span class="nx">AggregateRoot</span>
+<span class="p">{</span>
+    <span class="k">use</span> <span class="nx">AggregateRootBehaviour</span><span class="p">;</span>
+
+    <span class="k">private</span> <span class="nx">bool</span> <span class="nv">$acquired</span> <span class="o">=</span> <span class="k">false</span><span class="p">;</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">acquire</span><span class="p">(</span><span class="nx">AcquireNonFungibleAsset</span> <span class="nv">$action</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">recordThat</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+            <span class="nb">date</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">,</span>
+            <span class="nx">costBasis</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">,</span>
+        <span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">applyNonFungibleAssetAcquired</span><span class="p">(</span><span class="nx">NonFungibleAssetAcquired</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">acquired</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>By changing the value of <code>$acquired</code> from the <code>applyNonFungibleAssetAcquired</code> method, we're making sure that the property will always get the correct value upon reconstructing the aggregate root from the events.</p>
+<p>If we did that from the <code>acquire</code> method instead, the value would correctly be set the first time the action is performed, but not whenever the aggregate is reconstructed later on.</p>
+<p>Remember – only the events are replayed, not the actions that caused them.</p>
+<p>So how can we enforce the invariant? By updating the <code>acquire</code> method:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">acquire</span><span class="p">(</span><span class="nx">AcquireNonFungibleAsset</span> <span class="nv">$action</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nx">throw_if</span><span class="p">(</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">acquired</span><span class="p">,</span>
+        <span class="nx">NonFungibleAssetException</span><span class="o">::</span><span class="na">alreadyAcquired</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">aggregateRootId</span><span class="o">-&gt;</span><span class="na">toString</span><span class="p">()),</span>
+    <span class="p">);</span>
+
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">recordThat</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">,</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>If the asset was already acquired, we throw a <code>NonFungibleAssetException::alreadyAcquired</code> exception. We pass the NFT ID to it, coming from <code>$this-&gt;aggregateRootId</code>, which contains the aggregate root ID.</p>
+<p>This time around the logic is in the <code>acquire</code> method because the role of the aggregate root is to block invalid actions. An event can only be recorded if the action was legitimate in the first place – there is no such thing as an invalid event.</p>
+<p>In other words, a <code>NonFungibleAssetAcquired</code> event will only be passed to the <code>applyNonFungibleAssetAcquired</code> method if it's already valid, meaning invariant validation has to happen upstream, from the <code>acquire</code> method.</p>
+<p>Let's run the test again:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/bin/pest --filter<span class="o">=</span>NonFungibleAssetTest
+</pre></div>
+
+
+<p>It is now successful. Note that while we never check the value of the aggregate root's <code>$acquired</code> property directly, we do so indirectly by testing the invariant, as an exception will only be thrown if <code>$acquired</code> was correctly set to <code>true</code> in the first place.</p>
+<p>Let's talk about this for a minute.</p>
+<h3 id="testing-an-aggregates-state">Testing an aggregate's state</h3>
+<p>Say we now want to keep track of the NFT's cost basis at the aggregate root level.</p>
+<p>We can do this by adding a <code>$costBasis</code> property that we populate from <code>applyNonFungibleAssetAcquired</code>:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">private</span> <span class="nx">int</span> <span class="nv">$costBasis</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">applyNonFungibleAssetAcquired</span><span class="p">(</span><span class="nx">NonFungibleAssetAcquired</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">acquired</span> <span class="o">=</span> <span class="k">true</span><span class="p">;</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">costBasis</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The cost basis is now part of the aggregate root. But how shall we test that its value is correct? <code>$costBasis</code> is a private property and there is no invariant relying on its value that we can test instead.</p>
+<p>The short answer is we don't.</p>
+<p>This is something I struggled with initially, but that actually makes sense. As things stand, there's no clean way to directly check the values assigned to the aggregate root through one of the <code>apply</code> methods.</p>
+<p>We could try and make <code>$costBasis</code> public and read-only, but that won't work because its value can change over time (see next section). And if we make it public and not read-only, its value can now be changed from the outside, which defeats the purpose of the aggregate root.</p>
+<p>There is a <a href="https://future500.nl/articles/2020/04/29/dont-test-aggregate-state/" title="Don't test aggregate state">whole explanation</a> as to why you don't test an aggregate's state directly, which is based on a conversation with <a href="https://twitter.com/frankdejonge">Frank de Jonge</a>, the author of EventSauce. The gist is that the aggregate's only job is to generate and record events following decisions based on invariants, and nothing more. So that is what we test.</p>
+<p>Here, we decided to save the cost basis in the aggregate root, but it wasn't a requirement at this stage. When this property is used for other purposes down the line, there will be tests controlling the corresponding behaviours, indirectly validating its value.</p>
+<p>This is actually quite nice because it allows us to follow a "cross that bridge when we get to it" approach, which is also a sign of a clear separation of concerns.</p>
+<p>And as it happens, we'll cross that bridge in the next section.</p>
+<h3 id="increasing-the-nfts-cost-basis">Increasing the NFT's cost basis</h3>
+<p>We are now about to address the second type of state change, which is to increase the NFT's cost basis whenever it was created from several other NFTs.</p>
+<p>As this is going to be somewhat similar to what we've done in previous sections, I will not cover it in so much detail.</p>
+<p>There's only one invariant to enforce – that we cannot increase the cost basis of an NFT that wasn't acquired yet.</p>
+<p>Let's add a test covering a valid cost basis increase:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;can increase the cost basis of a non-fungible asset&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">given</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetAcquired</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">when</span><span class="p">(</span><span class="k">new</span> <span class="nx">IncreaseNonFungibleAssetCostBasis</span><span class="p">(</span>
+        <span class="nx">asset</span><span class="o">:</span> <span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">,</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-22&#39;</span><span class="p">,</span>
+        <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">then</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetCostBasisIncreased</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-22&#39;</span><span class="p">,</span>
+        <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+    <span class="p">));</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table>
+
+<p>And another one checking the invariant:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nx">it</span><span class="p">(</span><span class="s1">&#39;cannot increase the cost basis of a non-fungible asset that has not been acquired&#39;</span><span class="p">,</span> <span class="k">function</span> <span class="p">()</span> <span class="p">{</span>
+    <span class="nx">when</span><span class="p">(</span><span class="k">new</span> <span class="nx">IncreaseNonFungibleAssetCostBasis</span><span class="p">(</span>
+        <span class="nx">asset</span><span class="o">:</span> <span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">,</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-21&#39;</span><span class="p">,</span>
+        <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">));</span>
+
+    <span class="nx">expectToFail</span><span class="p">(</span><span class="nx">NonFungibleAssetException</span><span class="o">::</span><span class="na">notAcquired</span><span class="p">(</span><span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">));</span>
+<span class="p">});</span>
+</pre></div>
+</td></tr></table>
+
+<p>Both tests should fail. A few classes are missing, starting with the action and event.</p>
+<p>Add the following <code>IncreaseNonFungibleAssetCostBasis.php</code> file to <code>domain/src/Aggregates/NonFungibleAsset/Actions</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Actions</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="nx">readonly</span> <span class="k">class</span> <span class="nc">IncreaseNonFungibleAssetCostBasis</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$asset</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$date</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">int</span> <span class="nv">$costBasisIncrease</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>And this <code>NonFungibleAssetCostBasisIncreased.php</code> file to <code>domain/src/Aggregates/NonFungibleAsset/Events</code>:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="k">namespace</span> <span class="nx">Domain\Aggregates\NonFungibleAsset\Events</span><span class="p">;</span>
+
+<span class="k">final</span> <span class="nx">readonly</span> <span class="k">class</span> <span class="nc">NonFungibleAssetCostBasisIncreased</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span>
+        <span class="k">public</span> <span class="nx">string</span> <span class="nv">$date</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">int</span> <span class="nv">$costBasisIncrease</span><span class="p">,</span>
+        <span class="k">public</span> <span class="nx">int</span> <span class="nv">$costBasis</span><span class="p">,</span>
+    <span class="p">)</span> <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>This time around the event has an extra property that the action doesn't – <code>$costBasis</code>. This property will receive the new total cost basis, which is the sum of the previous cost basis plus the increase.</p>
+<p>Import the action and event in <code>NonFungibleAssetTest</code> and update the <code>handle</code> method of <code>NonFungibleAssetTestCase</code>, so it knows what to do when it receives an <code>IncreaseNonFungibleAssetCostBasis</code> action:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">handle</span><span class="p">(</span><span class="nx">object</span> <span class="nv">$action</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="nv">$nonFungibleAsset</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">repository</span><span class="o">-&gt;</span><span class="na">retrieve</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">aggregateRootId</span><span class="p">);</span>
+
+    <span class="nx">match</span> <span class="p">(</span><span class="nv">$action</span><span class="o">::</span><span class="na">class</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">AcquireNonFungibleAsset</span><span class="o">::</span><span class="na">class</span> <span class="o">=&gt;</span> <span class="nv">$nonFungibleAsset</span><span class="o">-&gt;</span><span class="na">acquire</span><span class="p">(</span><span class="nv">$action</span><span class="p">),</span>
+        <span class="nx">IncreaseNonFungibleAssetCostBasis</span><span class="o">::</span><span class="na">class</span> <span class="o">=&gt;</span> <span class="nv">$nonFungibleAsset</span><span class="o">-&gt;</span><span class="na">increaseCostBasis</span><span class="p">(</span><span class="nv">$action</span><span class="p">),</span>
+    <span class="p">};</span>
+
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">repository</span><span class="o">-&gt;</span><span class="na">persist</span><span class="p">(</span><span class="nv">$nonFungibleAsset</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Note that we've replaced the <code>if</code> condition with a <code>match</code> expression, so we can handle more actions without creating a mess.</p>
+<p>We now need to implement the <code>increaseCostBasis</code> method on the <code>NonFungibleAsset</code> aggregate root, as well as the corresponding <code>applyNonFungibleAssetCostBasisIncreased</code> method:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">increaseCostBasis</span><span class="p">(</span><span class="nx">IncreaseNonFungibleAssetCostBasis</span> <span class="nv">$action</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">recordThat</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetCostBasisIncreased</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">,</span>
+        <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasisIncrease</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">costBasis</span> <span class="o">+</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasisIncrease</span><span class="p">,</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">applyNonFungibleAssetCostBasisIncreased</span><span class="p">(</span><span class="nx">NonFungibleAssetCostBasisIncreased</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">costBasis</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Run the tests again – the first one should now pass since we always record a <code>NonFungibleAssetCostBasisIncreased</code> event when performing an <code>IncreaseNonFungibleAssetCostBasis</code> action. We're not enforcing the invariant yet, hence the second test fails.</p>
+<p>At the end of the previous section, we concluded that the only way to make sure the aggregate root's <code>$costBasis</code> property had the correct value would be to test that value indirectly, through some other logic that needs it. And that's exactly what we've just done.</p>
+<p>The test makes sure that the following event is recorded:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="nx">then</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetCostBasisIncreased</span><span class="p">(</span>
+    <span class="nb">date</span><span class="o">:</span> <span class="s1">&#39;2015-10-22&#39;</span><span class="p">,</span>
+    <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="nx">costBasis</span><span class="o">:</span> <span class="mi">150</span><span class="p">,</span>
+<span class="p">));</span>
+</pre></div>
+
+
+<p>Since the <code>costBasis</code> argument is the result of the previous cost basis plus the increase, controlling its value through this event means we're indirectly confirming that the previous cost basis was correct in the first place.</p>
+<p>We know now that the new cost basis passed to the <code>NonFungibleAssetCostBasisIncreased</code> event is correct, but we have no way to be sure that the aggregate root's <code>$costBasis</code> was correctly updated from <code>applyNonFungibleAssetCostBasisIncreased</code>:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">applyNonFungibleAssetCostBasisIncreased</span><span class="p">(</span><span class="nx">NonFungibleAssetCostBasisIncreased</span> <span class="nv">$event</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">costBasis</span> <span class="o">=</span> <span class="nv">$event</span><span class="o">-&gt;</span><span class="na">costBasis</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>That's OK – there will be an opportunity to do just that at some point too, when this value is needed for something else.</p>
+<p>Let's now enforce the invariant so the other test passes as well:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">function</span> <span class="nf">increaseCostBasis</span><span class="p">(</span><span class="nx">IncreaseNonFungibleAssetCostBasis</span> <span class="nv">$action</span><span class="p">)</span><span class="o">:</span> <span class="nx">void</span>
+<span class="p">{</span>
+    <span class="nx">throw_unless</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">acquired</span><span class="p">,</span> <span class="nx">NonFungibleAssetException</span><span class="o">::</span><span class="na">notAcquired</span><span class="p">(</span><span class="s1">&#39;MonkeyJPEG&#39;</span><span class="p">));</span>
+
+    <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">recordThat</span><span class="p">(</span><span class="k">new</span> <span class="nx">NonFungibleAssetCostBasisIncreased</span><span class="p">(</span>
+        <span class="nb">date</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">date</span><span class="p">,</span>
+        <span class="nx">costBasisIncrease</span><span class="o">:</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasisIncrease</span><span class="p">,</span>
+        <span class="nx">costBasis</span><span class="o">:</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">costBasis</span> <span class="o">+</span> <span class="nv">$action</span><span class="o">-&gt;</span><span class="na">costBasisIncrease</span><span class="p">,</span>
+    <span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>We check whether the asset was acquired by making sure <code>$this-&gt;acquired</code> is <code>true</code>, and we throw a <code>NonFungibleAssetException::notAcquired</code> exception if that's not the case.</p>
+<p>This exception doesn't exist yet – we need to add it to the <code>NonFungibleAssetException</code> class:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">notAcquired</span><span class="p">(</span><span class="nx">string</span> <span class="nv">$asset</span><span class="p">)</span><span class="o">:</span> <span class="nx">self</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="nx">self</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;Non-fungible asset %s has not been acquired&#39;</span><span class="p">,</span> <span class="nv">$asset</span><span class="p">));</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table>
+
+<p>Run the test again – it should now be successful.</p>
+<p>A quick note about this section. The above implies that it is the responsibility of external components to know when they should call the aggregate root's <code>acquire</code> or <code>increaseCostBasis</code> method, depending on whether the NFT was acquired.</p>
+<p>This is fine because the aggregate root won't allow for acquiring the same NFT several times anyway, nor will it increase the cost basis of an NFT that hasn't been acquired yet. We've made sure that an invalid state is impossible, so we can safely let external components figure out which actions to perform, knowing they can't make mistakes.</p>
+<p>This is what it means for the aggregate root to be responsible for the consistency of the aggregate.</p>
+<p>If you want to see an example of what the corresponding logic looks like, check out the <a href="https://github.com/osteel/dime/blob/main/domain/src/Aggregates/NonFungibleAsset/Actions/AcquireNonFungibleAsset.php" title="AcquireNonFungibleAsset.php"><code>AcquireNonFungibleAsset</code> action</a> as implemented in Dime.</p>
+<h3 id="disposing-of-the-nft">Disposing of the NFT</h3>
+<p>This is the last state change we need to cover. It is fairly similar to the other ones, so if you're game, I invite you to try and implement it by yourself. I'll just give the instructions.</p>
+<p>Remember that you can check the <a href="https://github.com/osteel/eventsauce-tutorial/tree/finish" title="EventSauce Tutorial (finish)">solution</a> in the repository though, and that you can refer to previous sections if you feel like you've missed something.</p>
+<p>Disposing of an NFT is a separate action and event. The action doesn't feature a cost basis but must contain the <em>proceeds</em> of the disposal instead, which is the amount the NFT was sold for.</p>
+<p>The event, on the other hand, should not only have the proceeds but also the total cost basis and the corresponding capital gain (which can be negative).</p>
+<p>The only invariant is that we cannot dispose of an NFT that wasn't acquired yet.</p>
+<p>Finally, disposing of the NFT should reset the state of the aggregate.</p>
+<p>Good luck!</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>This aggregate is an extremely simplified example and its implementation leaves a lot to be desired.</p>
+<p>Just to name a few issues – dates should not be strings, the various amounts should be decimal values and include a currency, and some invariants are missing, like making sure transactions are in chronological order.</p>
+<p>These are domain concerns that would have got in the way of the article's main purpose, however, which was to introduce EventSauce.</p>
+<p>In that respect, it barely scratches the surface – implementing and testing aggregates in isolation is only one of the many features EventSauce has to offer.</p>
+<p>The <a href="https://eventsauce.io/docs/">documentation</a> is a good place to continue your exploration, and if you need some inspiration you can refer to <a href="https://github.com/osteel/dime">Dime's repository</a> to see how things are implemented there. There's also a Slack workspace for you to <a href="https://join.slack.com/t/eventsauce/shared_invite/zt-dojxdg0k-eBY_kdeRS3rbQh6rxA0bzQ">join</a>, where you can ask for help and chat with other EventSauce users.</p>
+<p>This post is unlikely to be this series' last, although I'm not yet sure what I will cover next. There will probably be one about distributing the application at some point, but others may come before that.</p>
+<p>Subscribe to email alerts below so you don't miss them, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share them as soon as they are available.</p>
+<hr />
+<p><em>Big thanks to <a href="https://twitter.com/RobertBaelde">Robert Baelde</a> and <a href="https://twitter.com/frankdejonge">Frank de Jonge</a> for their feedback.</em></p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="2023-05-18" pubdate>2023-05-18</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/eventsourcing">eventsourcing</a>
+          <a href="https://tech.osteel.me/tag/eventsauce">eventsauce</a>
+          <a href="https://tech.osteel.me/tag/pest">pest</a>
+          ]
+      </small>
+    </p>
+
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce";
+              var disqus_url = "https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
+</script>
+
+     </div>
+  </body>
+</html>

@@ -152,7 +152,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-05-05 ::
+          Last updated: 2023-05-18 ::
         Published: 2023-05-04
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero.html">history</a> ]
       </small>
@@ -171,8 +171,8 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><img alt="A heap of cogwheels on a wooden surface" src="/images/2023/05/04/dime_01.png" title="A heap of cogwheels on a wooden surface" /></p>
-<p><em>Although this post is part of the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">"Building a PHP CLI tool using DDD and Event Sourcing" series</a>, you can also read it as an independent guide to getting started with Laravel Zero.</em></p>
+    <p><em>Although this post is part of the Building a PHP CLI tool using DDD and Event Sourcing <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, you can also read it as an independent guide to getting started with Laravel Zero.</em></p>
+<p><img alt="A heap of cogwheels on a wooden surface" src="/images/2023/05/04/dime_01.png" title="A heap of cogwheels on a wooden surface" /></p>
 <p>While Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console component – Symfony Documentation">Console component</a> caters for most of my <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">PHP CLI tools</a> needs, some projects require a more feature-rich environment. <a href="https://github.com/osteel/dime">Dime</a> is a fairly complex piece of software involving things like a database and a comprehensive test suite, which is why I decided to use <a href="https://laravel-zero.com/">Laravel Zero</a> as a foundation.</p>
 <p>Laravel Zero is a micro-framework for console applications. It's a stripped-down version of <a href="https://laravel.com/">Laravel</a>, optimised for the command line. Most of the features Laravel developers are used to are also present in Laravel Zero, including database migrations and similar testing capabilities.</p>
 <p>This post is a step-by-step guide to setting up Laravel Zero. While it is fine-tuned for Dime and opinionated at times, its content can easily be reused and adapted for your own projects.</p>
@@ -184,7 +184,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
 <li>Setting up Laravel Zero <strong>⬅️ you are here</strong></li>
-<li>Getting started with EventSauce <em>(coming soon)</em></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">Getting started with EventSauce</a></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -543,7 +543,7 @@ $ git push -u origin main
 <p>Laravel Zero provides a testing environment similar to Laravel's out of the box. There's a <code>tests</code> folder with some <code>Feature</code> and <code>Unit</code> sub-folders and some example tests, and a <code>phpunit.xml.dist</code> file at the root.</p>
 <p>The main difference is that Laravel Zero uses <a href="https://pestphp.com/" title="Pest – The elegant PHP testing framework">Pest</a> by default.</p>
 <p>Pest is an extra layer on top of <a href="https://phpunit.de/" title="PHPUnit – The PHP Testing Framework">PHPUnit</a>, introducing a simple and elegant syntax while being fully compatible with existing PHPUnit test suites.</p>
-<p>I won't spend too much time covering Pest here, because the next part of this series will focus on Test-Driven Development with Pest. I'll just explain how Pest is set up in Dime.</p>
+<p>I won't spend too much time covering Pest here, because the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">next part</a> of this series will focus on Test-Driven Development with Pest. I'll just explain how Pest is set up in Dime.</p>
 <h3 id="environment-configuration">Environment configuration</h3>
 <p>The <code>domain</code> folder has its own <code>tests</code> directory, which needs to be added to <code>phpunit.xml.dist</code>:</p>
 <div class="highlight"><pre><span></span>...
@@ -948,7 +948,7 @@ from idea to production">Actions</a>, which are some kind of building blocks for
 <p>I've been exploring the topic of PHP on the command line quite a bit recently, <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">writing about it</a> and also <a href="https://www.youtube.com/watch?v=qU8MIxMt3K4" title="PHP for the Console | PHP Sussex">talking about it</a> at meetups.</p>
 <p>And something I've been saying in my talk is that building for the console means backend developers can create and ship entire products too, since no frontend nor infrastructure skills are required. I don't know about monetising, but it's a great way to put together a portfolio.</p>
 <p>The aforementioned tutorial and talk are about leveraging Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console component – Symfony Documentation">Console component</a> to develop small CLI programs, but the library will fall short when it comes to complex software. This is where frameworks like Laravel Zero shine, by bringing advanced features to shell environments and empowering developers to build and ship sophisticated products for the console.</p>
-<p>The next instalment of this series will cover how to get started with <a href="https://eventsauce.io/" title="Event sourcing for PHP with easy test tooling">EventSauce</a> within a Laravel environment. EventSauce is an <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design#event-sourcing" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Event Sourcing</a> library for PHP, and the post will be a step-by-step guide to building an aggregate from scratch, following a Test-Driven Development approach using Pest.</p>
+<p>The <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">next instalment</a> of this series will cover how to get started with <a href="https://eventsauce.io/" title="Event sourcing for PHP with easy test tooling">EventSauce</a> within a Laravel environment. EventSauce is an <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design#event-sourcing" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Event Sourcing</a> library for PHP, and the post will be a step-by-step guide to building an aggregate from scratch, following a Test-Driven Development approach using Pest.</p>
 <p>Subscribe to email alerts below so you don't miss it, or follow me on <a href="https://twitter.com/osteel">Twitter</a> where I will share it as soon as it is available.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
@@ -969,7 +969,7 @@ from idea to production">Actions</a>, which are some kind of building blocks for
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-05-05" pubdate>2023-05-05</time>
+          <time datetime="2023-05-18" pubdate>2023-05-18</time>
           :: [
           <a href="https://tech.osteel.me/tag/laravelzero">laravelzero</a>
           <a href="https://tech.osteel.me/tag/laravelpint">laravelpint</a>
