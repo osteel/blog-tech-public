@@ -353,7 +353,7 @@ $ composer require darkaonline/l5-swagger -W
 </pre></div>
 </td></tr></table>
 
-<p>Let's unpack the above. If you're unfamiliar with Laravel, <code>$this-&gt;get()</code> is a test method provided by the <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php"><code>MakesHttpRequests</code></a> trait to perform a <code>GET</code> request to the provided endpoint, executing the request's lifecycle without leaving the application. It returns a response that is identical to one you would obtain if you'd perform the same request from the outside.</p>
+<p>Let's unpack the above. If you're unfamiliar with Laravel, <code>$this-&gt;get()</code> is a test method provided by the <code>MakesHttpRequests</code> trait to perform a <code>GET</code> request to the provided endpoint, executing the request's lifecycle without leaving the application. It returns a response that is identical to one you would obtain if you'd perform the same request from the outside.</p>
 <p>We then create a validator using the <code>Osteel\OpenApi\Testing\ValidatorBuilder</code> class, to which we feed the YAML definition we wrote earlier via the <code>fromYamlFile</code> static method (the <code>storage_path</code> function is a helper returning the path to the <code>storage</code> folder, where we placed the definition).</p>
 <p>Had we had a JSON definition instead, we could have used the <code>fromJsonFile</code> method (note that other methods are available and listed in the <a href="https://github.com/osteel/openapi-httpfoundation-testing#usage" title="Usage">documentation</a>).</p>
 <p>The builder returns an instance of <code>Osteel\OpenApi\Testing\Validator</code>, on which we call the <code>get</code> method, passing the path and the response as parameters (<code>$response</code> is an instance of <code>Illuminate\Testing\TestResponse</code> here – a wrapper for the underlying HttpFoundation object, which can be retrieved through the <code>baseResponse</code> public property).</p>
@@ -382,7 +382,7 @@ $ composer require darkaonline/l5-swagger -W
 
 <p>Run the test again – it should now fail because the response contains <code>baz</code> instead of <code>foo</code>, and the OpenAPI definition says the latter is expected.</p>
 <p>Our test is officially backed by our OpenAPI definition!</p>
-<p>The above is an oversimplified example for demonstration purposes, but in real-life situations, a good practice would be to overwrite the <code>MakesHttpRequests</code> trait's <a href="https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Testing/Concerns/MakesHttpRequests.php#L496"><code>call</code></a> method, so it performs both the request and the OpenAPI check.</p>
+<p>The above is an oversimplified example for demonstration purposes, but in real-life situations, a good practice would be to overwrite the <code>MakesHttpRequests</code> trait's <code>call</code> method, so it performs both the request and the OpenAPI check.</p>
 <p>This way, our test would boil down to this line:</p>
 <div class="highlight"><pre><span></span><span class="x">$this-&gt;get(&#39;/api/test&#39;);</span>
 </pre></div>
