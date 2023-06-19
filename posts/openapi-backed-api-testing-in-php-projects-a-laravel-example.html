@@ -375,10 +375,9 @@ $ composer require darkaonline/l5-swagger -W
 
 
 <p>Open <code>routes/api.php</code> again, and change the route for this one:</p>
-<div class="highlight"><pre><span></span>###<span class="nv">php</span>
-<span class="nv">Route</span>::<span class="nv">get</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">/test</span><span class="s1">&#39;</span>, <span class="nv">function</span> <span class="ss">(</span><span class="nv">Request</span> $<span class="nv">request</span><span class="ss">)</span> {
-    <span class="k">return</span> <span class="nv">response</span><span class="ss">()</span><span class="o">-&gt;</span><span class="nv">json</span><span class="ss">(</span>[<span class="s1">&#39;</span><span class="s">baz</span><span class="s1">&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;</span><span class="s">bar</span><span class="s1">&#39;</span>]<span class="ss">)</span><span class="c1">;</span>
-}<span class="ss">)</span><span class="c1">;</span>
+<div class="highlight"><pre><span></span><span class="x">Route::get(&#39;/test&#39;, function (Request $request) {</span>
+<span class="x">    return response()-&gt;json([&#39;baz&#39; =&gt; &#39;bar&#39;]);</span>
+<span class="x">});</span>
 </pre></div>
 
 
