@@ -293,10 +293,9 @@ $ composer require darkaonline/l5-swagger -W
 <p><img alt="Swagger UI" src="/images/2020/11/11/openapi_03.png" title="Swagger UI" /></p>
 <p>Expand the <code>/test</code> endpoint and try it out – it should fail with a <code>404 Not Found</code> error because we haven't implemented it yet.</p>
 <p>Let's fix that now. Open the <code>routes/api.php</code> file and replace the example route with this one:</p>
-<div class="highlight"><pre><span></span>###<span class="nv">php</span>
-<span class="nv">Route</span>::<span class="nv">get</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">/test</span><span class="s1">&#39;</span>, <span class="nv">function</span> <span class="ss">(</span><span class="nv">Request</span> $<span class="nv">request</span><span class="ss">)</span> {
-    <span class="k">return</span> <span class="nv">response</span><span class="ss">()</span><span class="o">-&gt;</span><span class="nv">json</span><span class="ss">(</span>[<span class="s1">&#39;</span><span class="s">foo</span><span class="s1">&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;</span><span class="s">bar</span><span class="s1">&#39;</span>]<span class="ss">)</span><span class="c1">;</span>
-}<span class="ss">)</span><span class="c1">;</span>
+<div class="highlight"><pre><span></span><span class="x">Route::get(&#39;/test&#39;, function (Request $request) {</span>
+<span class="x">    return response()-&gt;json([&#39;foo&#39; =&gt; &#39;bar&#39;]);</span>
+<span class="x">});</span>
 </pre></div>
 
 
