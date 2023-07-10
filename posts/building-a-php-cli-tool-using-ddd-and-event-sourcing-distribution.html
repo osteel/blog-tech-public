@@ -7,7 +7,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
 
     <meta name="author" content="Yannick Chenot"/>
-    <meta property="og:image" content="https://tech.osteel.me/images/1/dime_01.png" />
+    <meta property="og:image" content="https://tech.osteel.me/images/2023/07/10/dime_01.png" />
 
     <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
 
@@ -34,8 +34,8 @@
 
 
 
-  <meta name="description" content="Distribution is about meeting your users where they are – the more options, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example." />
-  <meta name="twitter:description" content="Distribution is about meeting your users where they are – the more options, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example.">
+  <meta name="description" content="Distribution is about meeting your users where they are – the more options you offer, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example." />
+  <meta name="twitter:description" content="Distribution is about meeting your users where they are – the more options you offer, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example.">
 
   <meta name="tags" content="laravelzero" />
   <meta name="tags" content="github" />
@@ -49,7 +49,7 @@
   <meta name="twitter:site" content="@osteel">
   <meta name="twitter:creator" content="@osteel">
   <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: distribution">
-  <meta name="twitter:image" content="https://tech.osteel.me/images/1/dime_01.png">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/2023/07/10/dime_01.png">
 
   </head>
 
@@ -153,9 +153,9 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 1970-01-01 ::
-        Published: 1970-01-01
-          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution.html">history</a> ]
+          Last updated: 2023-07-10 ::
+        Published: 2023-07-10
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution.html">history</a> ]
       </small>
     </span>
 
@@ -172,9 +172,9 @@ styles, `#sidebar-checkbox` for behavior. -->
       <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
     </section>
 
-    <p><em>Although this post is part of the Building a PHP CLI tool using DDD and Event Sourcing <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, you can also read it as a step-by-step guide to setting up a Laravel Zero application for distribution over various channels.</em></p>
-<p><img alt="A painting of a delivery van" src="/images/1/dime_01.png" title="A painting of a delivery van" /></p>
-<p>Distribution is about meeting your users where they are. The more options, the broader public you can reach.</p>
+    <p><em>Although this post is part of the Building a PHP CLI tool using DDD and Event Sourcing <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, you can also read it as a step-by-step guide to distributing a Laravel Zero application.</em></p>
+<p><img alt="A painting of a delivery van" src="/images/2023/07/10/dime_01.png" title="A painting of a delivery van" /></p>
+<p>Distribution is about meeting your users where they are. The more options you offer, the broader public you can reach.</p>
 <p>When it comes to PHP CLI tools, various distribution channels are available:</p>
 <ul>
 <li><a href="https://getcomposer.org/">Composer</a> (via <a href="https://packagist.org/">Packagist</a>);</li>
@@ -184,9 +184,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="https://github.com/ScoopInstaller/Scoop">Scoop</a>;</li>
 <li>Some other ways I'm probably unaware of.</li>
 </ul>
-<p>Dime's distribution strategy relies on PHP archives, or phars. These can either be downloaded manually and used as-is, installed via Composer, or run through Docker containers.</p>
-<p>This post explains how to set up a Laravel Zero application to leverage and automate these distribution channels, using Dime as an example.</p>
-<p class="info"><span class="title">Dime?</span>If you are new to this <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, <a href="https://github.com/osteel/dime">Dime</a> is a free and open-source command-line tool written in PHP to help people calculate their crypto-related taxes in the UK.</p>
+<p>Dime's distribution strategy relies on PHP archives, or phars. Dime's users can either download the phar and use it as-is, instal it via Composer, or run it through a Docker container.</p>
+<p>This post explains how I set up Dime to leverage and automate these distribution channels, laying out steps that can be applied to any Laravel Zero application.</p>
+<p class="info"><span class="title">Dime?</span> If you are new to this <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, <a href="https://github.com/osteel/dime">Dime</a> is a free and open-source command-line tool written in PHP to help people calculate their crypto-related taxes in the UK.</p>
 
 <h2 id="in-this-series">In this series</h2>
 <ul>
@@ -220,7 +220,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="#composer-configuration">Composer configuration</a></li>
 <li><a href="#box-configuration">Box configuration</a></li>
 <li><a href="#exclude-redundant-files">Exclude redundant files</a></li>
-<li><a href="#hiding-the-self-update-command">Hiding the self-update command</a></li>
+<li><a href="#hide-the-self-update-command">Hide the self-update command</a></li>
 <li><a href="#release-and-distribution">Release and distribution</a></li>
 </ul>
 </li>
@@ -235,9 +235,9 @@ styles, `#sidebar-checkbox` for behavior. -->
 </ul>
 </div>
 <h2 id="application-configuration">Application configuration</h2>
-<p>While most Laravel Zero applications can generate phars out-of-the-box, the steps laid out below will optimise the final result and explain how to manage separate development and production environments and databases.</p>
+<p>While most Laravel Zero applications can generate phars out-of-the-box, a few things can be done to optimise the result. The development and <em>production</em> (the app's distribution mode) environments are also likely to require separate configurations.</p>
 <h3 id="hiding-commands">Hiding commands</h3>
-<p>This is what Dime's (and most Laravel Zero applications') menu looks like by default:</p>
+<p>This is what most Laravel Zero application menus will look like by default:</p>
 <div class="highlight"><pre><span></span>Dime  v0.1.2
 
 USAGE: dime &lt;command&gt; [options] [arguments]
@@ -272,7 +272,7 @@ migrate:status   Show the status of each migration
 </pre></div>
 
 
-<p>A lot of these commands are useful for development but should not be available to end users. Thankfully, Laravel Zero provides <a href="https://laravel-zero.com/docs/configuration">a simple way</a> to conditionally add or remove commands, through the <code>app/commands.php</code> configuration file.</p>
+<p>A lot of these commands are mostly used for development and should not be available to end users. Thankfully, Laravel Zero provides <a href="https://laravel-zero.com/docs/configuration">a simple way</a> to conditionally add and remove commands, through the <code>app/commands.php</code> configuration file.</p>
 <p>Here is an extract from <a href="https://github.com/osteel/dime/blob/main/config/commands.php" title="commands.php">Dime's</a>:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
@@ -327,10 +327,11 @@ migrate:status   Show the status of each migration
 </pre></div>
 
 
-<p>Commands in the <code>hidden</code> array won't show in the application's menu but can still be run by the system. On the other hand, commands in the <code>remove</code> array won't be registered at all.</p>
-<p>The reason for the <code>hidden</code> array is that the application still needs these commands even though they should not be available to end users. For instance, Dime will reset the database every time the <code>process</code> command is called, which under the hood runs the <code>migrate:fresh</code>, <code>db:wipe</code> and <code>migrate</code> commands.</p>
-<p>We make sure these commands are still available for development by checking the application's context, here provided by the <a href="https://www.php.net/manual/en/class.phar.php" title="PHP documentation"><code>Phar</code> class</a>. The <code>Phar::running</code> method returns the path to the phar currently being executed, which is an empty string when the command was not run through a phar.</p>
-<p>Once the commands are properly hidden, this is what the phar's application menu looks like:</p>
+<p>There are two arrays – <code>hidden</code> and <code>remove</code>. Commands in the <code>hidden</code> array won't show in the application's menu, but they can still be run by the system. On the other hand, commands in the <code>remove</code> array won't be registered at all.</p>
+<p>The reason we need both is because some commands that should not be available to end users are still needed by the application itself. For instance, Dime will reset the database every time the <code>process</code> command is called, which under the hood runs the <code>migrate:fresh</code>, <code>db:wipe</code> and <code>migrate</code> commands.</p>
+<p>To make sure these commands are still available for development even though they won't show up in production, we check the application's context, here provided by the <a href="https://www.php.net/manual/en/class.phar.php" title="PHP documentation"><code>Phar</code> class</a>. The <code>Phar::running</code> method returns the path to the phar currently being executed, which is an empty string when the command was not run through a phar.</p>
+<p>In other words, when the method returns an empty string, we are not in production.</p>
+<p>Once the commands are properly configured, this is what Dime's menu looks like when displayed through the phar:</p>
 <div class="highlight"><pre><span></span>Dime  v0.1.2
 
 USAGE:  &lt;command&gt; [options] [arguments]
@@ -342,9 +343,8 @@ review      Display a tax year&#39;s summary
 
 
 <h3 id="production-database">Production database</h3>
-<p>Once distributed, a command-line application can be considered in <em>production</em> mode.</p>
-<p>While the development database can live in the <code>database</code> folder without any issue, a PHP archive cannot update its own content, so the production database needs to be located elsewhere, outside the phar.</p>
-<p>This is the configuration of Dime's production database in <code>config/database.php</code>:</p>
+<p>While the development database can live in the <code>database</code> folder without any issue, a PHP archive cannot update the files it contains, so the production database needs to be located elsewhere, outside the phar.</p>
+<p>This is Dime's production database configuration from <code>config/database.php</code>:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
 <span class="c1">// ...</span>
@@ -360,25 +360,25 @@ review      Display a tax year&#39;s summary
 
 
 <p><code>$_SERVER['HOME']</code> resolves to the user's home directory (the one you can access via the <code>~</code> shortcut, e.g. <code>/Users/alice</code>), meaning the SQLite database is located in the <code>~/.dime</code> folder (e.g. <code>/Users/alice/.dime/database.sqlite</code>).</p>
-<p>The rest of the database configuration is the same as the <code>local</code> database's.</p>
-<p>Let's now see how to make sure the right database is picked up based on the environment.</p>
+<p>The rest of the database configuration is the same as the <code>local</code> database.</p>
+<p>Let's now see how to ensure the right database is picked up based on the current environment.</p>
 <h3 id="dotenv-add-on">DotEnv add-on</h3>
-<p>Before distributing Dime, the only environment I had to deal with was <code>local</code>, so I didn't need to worry about other configurations. Now that I was introducing a <code>production</code> environment, however, I needed a way to manage separate configuration values.</p>
-<p>Most framework users will be familiar with <a href="https://github.com/vlucas/phpdotenv">DotEnv</a>, a library to parse and load environment variables in a PHP application.</p>
+<p>Before distributing Dime, the only environment I had to deal with was <code>local</code>, so there was no need to worry about other configurations. With the introduction of a production environment, however, I needed a way to manage separate setups.</p>
+<p>Most framework users will be familiar with <a href="https://github.com/vlucas/phpdotenv">DotEnv</a>, a library to parse and load environment variables in PHP applications.</p>
 <p>In Laravel Zero, it comes as an <a href="https://laravel-zero.com/docs/environment-variables" title="Environment variables">add-on</a>:</p>
 <div class="highlight"><pre><span></span>$ php dime app:install dotenv
 </pre></div>
 
 
-<p>On top of loading the library, this command also creates a <code>.env</code> file with some example value.</p>
-<p>With the way I set things up for Dime, I only need to provide a <code>.env</code> file for the local environment, containing values that override the default ones, which are optimised for production.</p>
-<p>In other words, I don't need to <a href="https://laravel-zero.com/docs/build-a-standalone-application#environment-variables" title="Environment variables">provide a production-specific <code>.env</code> file</a>, which simplifies the build process.</p>
-<p>Since the same values are used as environment and database names, Dime only needs a single entry in the local <code>.env</code> file:</p>
+<p>This command will load the library and create a <code>.env</code> file with some example entries.</p>
+<p>I set Dime in a way that I only need a <code>.env</code> file for the local environment, with values that override the default ones, which are optimised for production.</p>
+<p>In other words, I don't need to provide a <a href="https://laravel-zero.com/docs/build-a-standalone-application#environment-variables" title="Environment variables">production-specific <code>.env</code> file</a>, which simplifies the build process.</p>
+<p>I also set up Dime to match the database and environment names, meaning I only need a single entry in the local <code>.env</code> file:</p>
 <div class="highlight"><pre><span></span><span class="n">APP_ENV</span><span class="o">=</span><span class="k">local</span>
 </pre></div>
 
 
-<p>As a result, this environment variable needs to be set to <code>production</code> by default in two configuration files, starting with <code>config/app.php</code>:</p>
+<p>This environment variable needs to be set to <code>production</code> by default in two configuration files – first, in <code>config/app.php</code>:</p>
 <div class="highlight"><pre><span></span>&#39;env&#39; =&gt; env(&#39;APP_ENV&#39;, &#39;production&#39;),
 </pre></div>
 
@@ -388,10 +388,10 @@ review      Display a tax year&#39;s summary
 </pre></div>
 
 
-<p>The production database configuration is now complete, but we still need to make sure the <code>database.sqlite</code> file exists in <code>~/.dime</code>.</p>
+<p>And that's all there is to the production database's configuration. We're not done yet though – we now need to make sure the <code>database.sqlite</code> file always exists in <code>~/.dime</code>, or the application won't run.</p>
 <h3 id="database-manager">Database manager</h3>
-<p>The database migration commands won't create the database themselves – it needs to exist prior to running them. How to make sure the <code>~/.dime/database.sqlite</code> file will always be there?</p>
-<p>In Dime, this is handled by a separate <a href="https://github.com/osteel/dime/blob/main/app/Services/DatabaseManager/DatabaseManager.php" title="DatabaseManager.php"><code>DatabaseManager</code> service</a>, whose logic roughly goes like this:</p>
+<p>The database migration commands require the database to exist before we can run them, meaning we somehow need to make sure the <code>~/.dime/database.sqlite</code> file is always present.</p>
+<p>In Dime, this is handled by the <a href="https://github.com/osteel/dime/blob/main/app/Services/DatabaseManager/DatabaseManager.php" title="DatabaseManager.php"><code>DatabaseManager</code> service</a>, whose logic roughly goes like this:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
 <span class="c1">// ...</span>
@@ -428,22 +428,22 @@ review      Display a tax year&#39;s summary
 </pre></div>
 
 
-<p>The <code>$this-&gt;config</code>, <code>$this-&gt;process</code> and <code>$this-&gt;artisan</code> properties are injected instances of <code>Illuminate\Contracts\Config\Repository</code>, <code>Illuminate\Process\PendingProcess</code> and <code>Illuminate\Contracts\Console\Kernel</code>, respectively.</p>
-<p>The <code>PendingProcess</code> class comes from Laravel's <a href="https://laravel.com/docs/processes"><code>Process</code> component</a>, based on Symfony's and introduced in version 10.</p>
+<p><code>$this-&gt;config</code>, <code>$this-&gt;process</code> and <code>$this-&gt;artisan</code> are injected instances of <code>Illuminate\Contracts\Config\Repository</code>, <code>Illuminate\Process\PendingProcess</code> and <code>Illuminate\Contracts\Console\Kernel</code>, respectively.</p>
+<p>The <code>PendingProcess</code> class comes from Laravel's <a href="https://laravel.com/docs/processes"><code>Process</code> component</a>, which is based on Symfony's and was introduced in version 10.</p>
 <p><code>NullOutput</code> comes from Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console Component">Console Component</a> and ensures no output will be shown in the console.</p>
 <p>As for the rest, the comments should be self-explanatory.</p>
-<p>We now have the guarantee that the database file will always exist, meaning Dime is officially distribution-ready.</p>
-<p>Let's now go through the distribution channels it uses.</p>
+<p>The <code>DatabaseManager</code> service guarantees that the database will always be there, and since this was the last production requirement, Dime is now distribution-ready.</p>
+<p>Let's now explore the various distribution channels it uses and how to set them up.</p>
 <h2 id="distribution-through-a-php-archive">Distribution through a PHP archive</h2>
-<p>Laravel Zero makes it <a href="https://laravel-zero.com/docs/build-a-standalone-application" title="Build a standalone application">super easy</a> to turn your application into a phar. In fact, in most cases you'll be able to do it out-of-the-box, with a single command that will generate an archive in the <code>builds</code> folder at the root of the application:</p>
+<p>Laravel Zero makes it <a href="https://laravel-zero.com/docs/build-a-standalone-application" title="Build a standalone application">super easy</a> to turn your application into a phar. In fact, in most cases you'll be able to do it out-of-the-box, with this command that will generate an archive in the <code>builds</code> folder at the root:</p>
 <div class="highlight"><pre><span></span>$ php &lt;your-app-name&gt; app:build &lt;your-build-name&gt;
 </pre></div>
 
 
-<p>In some cases, however, you will need to make a few changes to make the archive more user-friendly and streamline its distribution.</p>
+<p>In some cases, however, you will need to make a few changes to make the phar more user-friendly and simplify its distribution.</p>
 <h3 id="include-the-relevant-folders">Include the relevant folders</h3>
-<p>Laravel Zero uses the <a href="https://github.com/box-project/box">Box library</a> under the hood to build phars. It comes with a <code>box.json</code> configuration file that will work for most applications but that will require a few changes in some cases.</p>
-<p>For instance, Dime needs the <code>database</code> and <code>domain/src</code> folders to also be included in the build:</p>
+<p>Laravel Zero uses the <a href="https://github.com/box-project/box">Box library</a> under the hood to build phars. This package comes with a <code>box.json</code> configuration file that will work with most applications but that requires a few changes in some cases.</p>
+<p>For instance, Dime needs the <code>database</code> and <code>domain/src</code> folders to be included in the build:</p>
 <div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;chmod&quot;</span><span class="p">:</span> <span class="s2">&quot;0755&quot;</span><span class="p">,</span>
     <span class="nt">&quot;directories&quot;</span><span class="p">:</span> <span class="p">[</span>
@@ -461,7 +461,7 @@ review      Display a tax year&#39;s summary
 
 <p>That's because using a database is optional in Laravel Zero and comes as an <a href="https://laravel-zero.com/docs/database" title="Database">add-on</a>, meaning the <code>database</code> folder is not included by default. And because Dime was developed following a DDD approach, it has an extra <code>domain</code> folder that needs including too.</p>
 <h3 id="self-update">Self-update</h3>
-<p>Another optional feature is the possibility for the phar to update itself by checking whether a new version is available.</p>
+<p>Another optional feature is the possibility for the phar to update itself if a new version is available.</p>
 <p>This also comes as an <a href="https://laravel-zero.com/docs/build-a-standalone-application#self-update" title="Self-update">add-on</a>:</p>
 <div class="highlight"><pre><span></span>$ php dime app:install self-update
 </pre></div>
@@ -490,7 +490,7 @@ review      Display a tax year&#39;s summary
 <li>Upload the phar as a release asset; and</li>
 <li>Publish the release.</li>
 </ol>
-<p>All of these steps can be automated.</p>
+<p>All these steps can be automated.</p>
 <p>Dime uses a <a href="https://github.com/osteel/dime/blob/main/.github/workflows/release.yml" title="release.yml">GitHub workflow</a> for this, simplified below:</p>
 <table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -609,8 +609,8 @@ review      Display a tax year&#39;s summary
 </td></tr></table>
 
 <p>The workflow is triggered manually from the repository's <em>Actions</em> tab and takes the release's version as input:</p>
-<p><img alt="Manual workflow trigger" src="/images/1/dime_02.png" title="Manual workflow trigger" /></p>
-<p>It only has one job, consisting of the following steps:</p>
+<p><img alt="Manual workflow trigger" src="/images/2023/07/10/dime_02.png" title="Manual workflow trigger" /></p>
+<p>The workflow consists of a single job, with the following steps:</p>
 <ol>
 <li>Validate the tag using a regular expression;</li>
 <li>Check out the code;</li>
@@ -619,14 +619,14 @@ review      Display a tax year&#39;s summary
 <li>Build the archive using the submitted value as the version; and</li>
 <li>Draft the release.</li>
 </ol>
-<p>That last step uses the submitted value as the release's name and also to tag the release, and automatically generates the release notes and uploads the phar as a release asset.</p>
-<p>Also note the presence of the <code>APP_ENV</code> environment variable at the top, set to <code>local</code>. Laravel Zero won't build the archive if the application is in production mode, which is the case by default because of a change we've made in a <a href="#dotenv-add-on">previous section</a>.</p>
+<p>That last step also uses the version as the release name and as the release's tag, and generates the release notes and uploads the phar as a release asset.</p>
+<p>Also note the presence of the <code>APP_ENV</code> environment variable at the top, set to <code>local</code>. Laravel Zero won't build the archive if the application is in production mode, which is the case by default because of a change we've made in a <a href="#dotenv-add-on">previous section</a>. So we override it here.</p>
 <p>Once the workflow completes, the new archive can be downloaded from the latest release and used straight away:</p>
 <div class="highlight"><pre><span></span>$ php dime
 </pre></div>
 
 
-<p>The recommended approach, however, is to make the file executable and to move it to a directory that's in the user's system path:</p>
+<p>The recommended approach, however, is to make the file executable and move it to a directory that's in the user's system path:</p>
 <div class="highlight"><pre><span></span>$ chmod +x dime
 $ mv dime /usr/local/bin/dime
 </pre></div>
@@ -634,14 +634,14 @@ $ mv dime /usr/local/bin/dime
 
 <p>After doing so, the application can be invoked from anywhere running <code>dime</code>.</p>
 <h2 id="distribution-through-composer">Distribution through Composer</h2>
-<p>If you've read some of my <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">previous</a> <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">articles</a>, you may be familiar with distributing command-line tools and packages through Composer and Packagist.</p>
-<p>The gist of it is that, since we don't know much about the systems our work will be deployed on, it's worth making sure it is compatible with more than one dependency versions, to accommodate as many client systems as possible.</p>
-<p>The good news is that phars partially eliminate that need because they include (and isolate) the package's dependencies. In practice, this means we don't need to worry about another PHP application using a depencency version conflicting with ours.</p>
-<p>On the other hand, Phars still rely on the system's PHP version and installed extensions.</p>
-<p>The other good news is that Laravel Zero supports distributing phars through Packagist and Composer almost out-of-the-box, requiring just a few <a href="https://laravel-zero.com/docs/build-a-standalone-application#distribute-via-packagist" title="Distribute via Packagist">tweaks</a>.</p>
+<p>If you've read some of my <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">previous</a> <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">articles</a>, you may be familiar with the distribution of command-line tools and packages through Composer and Packagist.</p>
+<p>The gist of it is that, since we don't know much about the systems our work will end up on, it's worth making sure it is compatible with several dependency versions, to accommodate as many clients as possible.</p>
+<p>The good news is that phars partially eliminate that need because they include (and isolate) the package's dependencies. In practice, this means we don't need to worry about another PHP application using a dependency version conflicting with ours.</p>
+<p>That being said, phars still rely on the system's PHP version and installed extensions, so there is a limit to what can be isolated.</p>
+<p>The other good news is that Laravel Zero supports distributing phars through Packagist and Composer almost natively, with just a few <a href="https://laravel-zero.com/docs/build-a-standalone-application#distribute-via-packagist" title="Distribute via Packagist">tweaks</a>.</p>
 <h3 id="composer-configuration">Composer configuration</h3>
-<p>A Laravel Zero's default Composer configuration isn't optimised to work with phars.</p>
-<p>The first thing to do is change the path to the binary in <code>composer.json</code> to point to the built archive:</p>
+<p>Laravel Zero's default Composer configuration doesn't work with phars out-of-the-box.</p>
+<p>First, the path to the binary needs to point to the archive in <code>composer.json</code>:</p>
 <div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;...&quot;</span><span class="p">,</span>
     <span class="nt">&quot;bin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;builds/dime&quot;</span><span class="p">],</span>
@@ -650,7 +650,7 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 
 
-<p>The other change we need to make in <code>composer.json</code> is move all dependencies to <code>require-dev</code>, aside from the supported PHP versions and required extensions:</p>
+<p>Then, all dependencies but the supported PHP versions and required extensions must be moved to <code>require-dev</code>:</p>
 <div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;...&quot;</span><span class="p">,</span>
     <span class="nt">&quot;require&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -674,10 +674,11 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 
 
-<p>The reason for this is that, since our application's dependencies are already included in the phar, we don't need Composer to instal them again on the client system. Moving the dependencies to <code>require-dev</code> is a way to ensure it won't.</p>
-<p>But how do we tell Box to include the development dependencies in the archive?</p>
+<p>The reason for this is that, since our application's dependencies are already included in the phar, we don't need Composer to instal them again. Moving the dependencies to <code>require-dev</code> is a way to ensure it won't.</p>
+<p>But how do we make sure that Box will include them in the archive?</p>
 <h3 id="box-configuration">Box configuration</h3>
-<p>As mentioned earlier, Laravel Zero relies on <a href="https://github.com/box-project/box">Box</a> to generate phars from applications. We've already made a couple of changes in <code>box.json</code>, but we now also need to make sure development dependencies are included in the build, through the <code>exclude-dev-files</code> attribute:</p>
+<p>As mentioned earlier, Laravel Zero relies on <a href="https://github.com/box-project/box">Box</a> to generate phars from applications. We've already made a couple of changes in <code>box.json</code>, but we now need to make sure development dependencies are also included in the build.</p>
+<p>We do this through the <code>exclude-dev-files</code> attribute:</p>
 <div class="highlight"><pre><span></span><span class="p">{</span>
     <span class="nt">&quot;...&quot;</span><span class="p">,</span>
     <span class="nt">&quot;files&quot;</span><span class="p">:</span> <span class="p">[</span>
@@ -690,11 +691,12 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 
 
-<p>The combination of moving all dependencies to <code>require-dev</code> and setting <code>exclude-dev-files</code> to <code>false</code> ensures that the phar includes all the necessary dependencies while avoiding Composer redundantly installing them as well.</p>
+<p>By moving all dependencies to <code>require-dev</code> and setting <code>exclude-dev-files</code> to <code>false</code>, we ensure that the phar will include all the necessary dependencies while preventing Composer from installing them as well.</p>
 <p>A downside to this approach is that actual development dependencies will also be included in the archive, however.</p>
 <h3 id="exclude-redundant-files">Exclude redundant files</h3>
-<p>When installing a PHP application through Packagist, Composer doesn't only instal the non-development dependencies – it also downloads all of the application's files. Just like the dependencies, however, these files are already included in the phar, so Composer doesn't need to download them again.</p>
-<p>To make sure it doesn't, create a <code>.gitattributes</code> file at the root of the application and list the content you wish to exclude.</p>
+<p>When installing a PHP application through Packagist, Composer doesn't only instal the non-development dependencies – it also downloads the application's files.</p>
+<p>Just like the dependencies, however, these files are already included in the phar, so Composer doesn't need to download them as well.</p>
+<p>To make sure it doesn't, create a <code>.gitattributes</code> file at the root of the application to list the content you wish to exclude.</p>
 <p>Here is <a href="https://github.com/osteel/dime/blob/main/.gitattributes" title=".gitattributes">Dime's</a>, for instance:</p>
 <div class="highlight"><pre><span></span>* text=auto eol=lf
 
@@ -720,10 +722,10 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 
 
-<h3 id="hiding-the-self-update-command">Hiding the self-update command</h3>
-<p>The build process is currently set up in a way that Dime's binary always exposes a <code>self-update</code> command, although it should only be available when the archive is used directly and not through Packagist or Docker.</p>
-<p>The <code>self-update</code> command essentially replaces the archive with a newer version of itself, but when using another distribution channel we want that channel to be responsible for the update, and not the archive itself.</p>
-<p>How do we ensure that the <code>self-update</code> command is only available in the relevant context?</p>
+<h3 id="hide-the-self-update-command">Hide the self-update command</h3>
+<p>The build process is currently set up in a way that Dime's binary always exposes a <code>self-update</code> command, although it should only be available when using the archive directly and not through Packagist or Docker.</p>
+<p>The <code>self-update</code> command essentially replaces the archive with a newer version of itself, but when using another distribution channel, we want that channel to be responsible for the update, and not the archive itself.</p>
+<p>How do we ensure that this command is only available in the relevant context?</p>
 <p>The solution lies within the <code>config/commands.php</code> file again. Dime uses a <a href="https://github.com/osteel/dime/blob/main/app/Commands/Helpers.php" title="Helpers.php">helper class</a> returning the archive's current context, which allows for deciding whether to include the command or not:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
@@ -776,14 +778,32 @@ $ mv dime /usr/local/bin/dime
 <h2 id="distribution-through-docker">Distribution through Docker</h2>
 <p>Phars can also be distributed through Docker images. With this method, Docker is the only dependency – no local versions of PHP or extensions are required.</p>
 <h3 id="building-the-image">Building the image</h3>
-<p>While the Laravel Zero documentation doesn't mention Docker images, the framework allows for building some indirectly, through its reliance on <a href="https://github.com/box-project/box">Box</a>:</p>
+<p>While the Laravel Zero documentation doesn't mention Docker images, the framework allows for building some through its reliance on <a href="https://github.com/box-project/box">Box</a>:</p>
 <div class="highlight"><pre><span></span>$ ./vendor/laravel-zero/framework/bin/box docker builds/dime
 </pre></div>
 
 
-<p>This <a href="https://github.com/box-project/box/blob/main/doc/docker.md#docker-support" title="Docker support">command</a> reads the application's requirements from the archive's <code>composer.json</code> file and generates the corresponding <a href="https://github.com/osteel/dime/blob/main/.docker/Dockerfile" title="Dockerfile">Dockerfile</a>, including the right PHP version and extensions.</p>
+<p>This <a href="https://github.com/box-project/box/blob/main/doc/docker.md#docker-support" title="Docker support">command</a> reads the application's requirements from the archive's <code>composer.json</code> file and generates the corresponding <a href="https://github.com/osteel/dime/blob/main/.docker/Dockerfile" title="Dockerfile">Dockerfile</a>, including the right PHP version and extensions:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">FROM</span><span class="s"> php:8.2-cli-alpine</span>
+
+<span class="k">COPY</span> --from<span class="o">=</span>mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+<span class="k">RUN</span> install-php-extensions zlib bcmath
+
+<span class="k">COPY</span> builds/dime /docker/dime
+
+<span class="k">ENTRYPOINT</span> <span class="p">[</span><span class="s2">&quot;/docker/dime&quot;</span><span class="p">]</span>
+</pre></div>
+</td></tr></table>
+
 <p>While this is optional, I keep Dime's Dockerfile in a <code>.docker</code> folder at the root of the application.</p>
-<p>And this is how to build the image:</p>
+<p>And this is the command to build the image:</p>
 <div class="highlight"><pre><span></span>$ docker build -t ghcr.io/osteel/dime:latest -f .docker/Dockerfile .
 </pre></div>
 
@@ -791,7 +811,7 @@ $ mv dime /usr/local/bin/dime
 <p>The <code>-t</code> flag is to tag the image (<code>ghcr.io/osteel/dime:latest</code>) and the <code>-f</code> flag points to the Dockerfile's location.</p>
 <p>I don't bother keeping track of previous image versions for Dime, so any new version gets the <code>latest</code> tag and overwrites the previous one.</p>
 <h3 id="container-registry">Container registry</h3>
-<p>Once the image is built, we need to distribute it. A common way to do this is to push it to a registry – <a href="https://hub.docker.com/">Docker Hub</a> is a popular one, but I decided to stick to GitHub and to use its <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry" title="Working with the Container registry">Container Registry</a>.</p>
+<p>Once the image is built, we need to distribute it. A common way to do this is to push it to a registry – <a href="https://hub.docker.com/">Docker Hub</a> is a popular one, but I decided to stick to GitHub and use its <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry" title="Working with the Container registry">Container Registry</a>.</p>
 <p>The first thing to do is to log into the platform using an <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" title="Managing your personal access tokens">access token</a>. There are two types of tokens – <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens" title="Fine-grained personal access tokens">fine-grained personal access tokens</a> and <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic" title="Personal access tokens">personal access tokens (PAT)</a>. The former are deemed more modern and secure, but at the time of writing they were still in beta and I couldn't get them to work with Dime's release workflow, so I went for a regular PAT instead.</p>
 <p>The latter can be obtained from the <a href="https://github.com/settings/tokens" title="Tokens">developer settings</a> and must be created with the following permissions: <code>write:packages</code>, <code>read:packages</code> and <code>delete:packages</code>.</p>
 <p>It's also possible to set an optional expiration date.</p>
@@ -806,16 +826,16 @@ $ mv dime /usr/local/bin/dime
 
 
 <p>Once pushed, your image will show up as a package in the <em>Packages</em> tab of your GitHub profile:</p>
-<p><img alt="Packages tab on GitHub" src="/images/1/dime_03.png" title="Packages tab on GitHub" /></p>
-<p>You can also link the package to the repository holding its source code from the package's settings, as well as change its visibility:</p>
-<p><img alt="Package's source repository" src="/images/1/dime_04.png" title="Package's source repository" /></p>
+<p><img alt="Packages tab on GitHub" src="/images/2023/07/10/dime_03.png" title="Packages tab on GitHub" /></p>
+<p>You can link the package to the repository holding its source code from the package's settings, as well as change its visibility:</p>
+<p><img alt="Package's source repository" src="/images/2023/07/10/dime_04.png" title="Package's source repository" /></p>
 <p>After which it will appear on the <a href="https://github.com/osteel/dime">repository's page</a>, under the <em>Releases</em> section on the right-hand side:</p>
-<p><img alt="Repository's packages section" src="/images/1/dime_05.png" title="Repository's packages section" /></p>
+<p><img alt="Repository's packages section" src="/images/2023/07/10/dime_05.png" title="Repository's packages section" /></p>
 <h3 id="release-workflow_1">Release workflow</h3>
-<p>Just like phars, any new release should come with an updated Docker image to be pulled from the container registry. And just like phars, this process can be automated.</p>
+<p>Like phars, any new release should come with an updated Docker image to be pulled from the container registry. And just like phars, this process can be automated.</p>
 <p>This takes the form of a new job in Dime's <a href="https://github.com/osteel/dime/blob/main/.github/workflows/release.yml" title="release.yml">release workflow</a>, but before I give you the details, let's see how to add the PAT as a GitHub secret so the workflow can use it.</p>
-<p>You need to head over to the repository's settings on GitHub, and to the <em>Secrets and variables</em> menu on the left-hand side. It's got an <em>Actions</em> submenu that will take you to this form:</p>
-<p><img alt="Repository actions secrets" src="/images/1/dime_06.png" title="Repository actions secrets" /></p>
+<p>You need to head over to the repository's settings on GitHub and to the <em>Secrets and variables</em> menu on the left-hand side. It's got an <em>Actions</em> submenu that will take you to this form:</p>
+<p><img alt="Repository actions secrets" src="/images/2023/07/10/dime_06.png" title="Repository actions secrets" /></p>
 <p>Create a new repository secret (here named <code>GHCR_TOKEN</code>) and set the PAT as its value.</p>
 <p>The workflow will then be able to use it to log into the registry and push images.</p>
 <p>This is what the corresponding job looks like in Dime's workflow:</p>
@@ -923,9 +943,9 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 
 
-<p>Things get worse when the transaction spreadsheet is involved and it needs to be transferred from the user's computer to the container. The ephemeral nature of the container is also a factor, as whatever data it contains is likely to be lost at some point, including the SQLite database.</p>
-<p>The solution to the above is to use <a href="https://docs.docker.com/storage/bind-mounts/" title="Bind mounts">bind mounts</a>, a way to import local files or directories to a container.</p>
-<p>Using this method, this is what running the <code>process</code> command would look like:</p>
+<p>Things get worse when the transaction spreadsheet is involved and needs to be transferred from the user's computer to the container. The ephemeral nature of the container is also a factor, as whatever data it contains is likely to be lost at some point, including the SQLite database.</p>
+<p>The solution to the above is to use <a href="https://docs.docker.com/storage/bind-mounts/" title="Bind mounts">bind mounts</a>, a way to import local files or directories in a container.</p>
+<p>Using this method, this is what running the <code>process</code> command looks like:</p>
 <div class="highlight"><pre><span></span>$ docker run -it --rm -v ~/.dime/database.sqlite:/root/.dime/database.sqlite -v transactions.csv:/tmp/transactions.csv ghcr.io/osteel/dime:latest process /tmp/transactions.csv
 </pre></div>
 
@@ -969,16 +989,16 @@ $ mv dime /usr/local/bin/dime
 </pre></div>
 </td></tr></table>
 
-<p>It first makes sure the database exists locally, and create it otherwise. It then starts putting together the Docker command, starting with mounting the database file onto the container, since we need it for every command.</p>
-<p>The rest of the script depends on the executed command – if it's <code>process</code>, it mounts the transaction spreadsheet inside the container's <code>tmp</code> folder using the spreadsheet's absolute local path.</p>
-<p>If it's another command, it simply passes it to the container along with any following arguments.</p>
+<p>It first makes sure the database exists locally, and creates it otherwise. It then starts putting together the Docker command, starting with mounting the database file onto the container, since we need it for every command.</p>
+<p>The rest of the script depends on the executed command – if it's <code>process</code>, it mounts the transaction spreadsheet inside the container's <code>tmp</code> folder, using the spreadsheet's absolute local path.</p>
+<p>If it's another command, it passes it to the container along with any arguments.</p>
 <p>Finally, once the <code>docker</code> command is complete, the script executes it with <code>eval</code>.</p>
 <p>End users can download the shell script and use it instead of running complicated Docker commands:</p>
 <div class="highlight"><pre><span></span>$ sh dime.sh
 </pre></div>
 
 
-<p>To further improve the user experience, the recommended approach is to make the file executable and to move it to a directory that's in the local system path:</p>
+<p>For an even better user experience, the recommended approach is to make the file executable and move it to a directory that's in the local system path:</p>
 <div class="highlight"><pre><span></span>$ chmod +x dime.sh
 $ mv dime.sh /usr/local/bin/dime
 </pre></div>
@@ -989,12 +1009,12 @@ $ mv dime.sh /usr/local/bin/dime
 <p>Distributing a PHP application can mean different things based on context.</p>
 <p>Most developers only need to target a specific PHP version and usually freeze the application's dependencies through the <code>composer.lock</code> file. The application is then deployed to some server and made available from there, over HTTP.</p>
 <p>Package maintainers often aim at supporting various PHP and dependency versions and build their continuous integration workflows <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">accordingly</a>.</p>
-<p>Building standalone command-line applications with PHP is a less common use case that poses a different set of questions when it comes to distribution: who am I targeting? On which platforms? Should I assume PHP will be available?</p>
-<p>PHP archives have been around for <a href="https://en.wikipedia.org/wiki/PHAR_(file_format)" title="Wikipedia">20 years</a> and, despite their portable nature and the fact that they solve most conflict issues out-of-the-box, as far as I can tell not many people are using them.</p>
-<p>Phars are very flexible and allow for a variety of distribution channels – they can be downloaded and used as-is or used through Composer or Docker, like this article illustrates. But they can also be distributed through <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-brew/" title="Distributing Laravel Zero apps with Brew">Homebrew</a>, <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-windows-package-managers/" title="Distributing Laravel Zero apps with Windows package managers">Scoop</a>, and soon as <a href="https://twitter.com/marcelpociot/status/1676585881795272709">native programs</a>.</p>
+<p>Building standalone command-line applications with PHP is less common and poses a different set of questions when it comes to distribution: who am I targeting? On which platforms? Should I assume PHP will be available?</p>
+<p>PHP archives have been around for <a href="https://en.wikipedia.org/wiki/PHAR_(file_format)" title="Wikipedia">20 years</a> and, despite their portable nature and the fact that they pretty much solve the <a href="https://en.wikipedia.org/wiki/Dependency_hell" title="Dependency hell">dependency hell</a> out-of-the-box, they seem to be rarely used.</p>
+<p>Phars are very flexible and allow for a variety of distribution channels – they can be downloaded and used as-is or installed through Composer and Docker as this article illustrates. But they can also be distributed through <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-brew/" title="Distributing Laravel Zero apps with Brew">Homebrew</a>, <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-windows-package-managers/" title="Distributing Laravel Zero apps with Windows package managers">Scoop</a>, and maybe soon as <a href="https://twitter.com/marcelpociot/status/1676585881795272709">native programs</a>.</p>
 <p>I've learnt a lot writing this series, but if I were to pick a single takeaway, it would be that PHP is way more versatile than I ever realised. And I've been working with this language for more than 15 years.</p>
-<p>This post concludes the Dime series – at least for now. I still have a fairly long list of improvements I'd like to make and it's possible some of them will constitute enough material to become blog posts.</p>
-<p>You can subscribe to email alerts below so you don't miss future articles, be they about Dime or about something else. You can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I share my content as soon as it is available.</p>
+<p>This post concludes the Dime series – at least for now. I still have a fairly long list of improvements I'd like to make and some of them may constitute enough material to become blog posts.</p>
+<p>You can subscribe to email alerts below so you don't miss future articles, be they about Dime or something else. You can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I share my content as soon as it is available.</p>
 
     <div class="sharethis-inline-share-buttons"></div>
 
@@ -1014,7 +1034,7 @@ $ mv dime.sh /usr/local/bin/dime
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="1970-01-01" pubdate>1970-01-01</time>
+          <time datetime="2023-07-10" pubdate>2023-07-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/laravelzero">laravelzero</a>
           <a href="https://tech.osteel.me/tag/github">github</a>
@@ -1027,6 +1047,10 @@ $ mv dime.sh /usr/local/bin/dime
       </small>
     </p>
 
+    <section>
+      <h2>Comments</h2>
+      <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+    </section>
   </div>
 </div>
       </div>
@@ -1066,8 +1090,8 @@ $ mv dime.sh /usr/local/bin/dime
 
       <script type="text/javascript">
         var disqus_shortname = "osteel";
-              var disqus_identifier = "/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
-              var disqus_url = "https://tech.osteel.me/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
+              var disqus_identifier = "/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
+              var disqus_url = "https://tech.osteel.me/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
               var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: distribution";
         (function() {
           var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
