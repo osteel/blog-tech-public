@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1"/>
+    <link rel="shortcut icon" type="image/x-icon" href="https://tech.osteel.me/favicon.ico" />
+
+    <meta name="author" content="Yannick Chenot"/>
+    <meta property="og:image" content="https://tech.osteel.me/images/1/dime_01.png" />
+
+    <meta name="google-site-verification" content="KhtQOQ0ZVgZ55KSEoXMOWo_seu_e_JbV6xBk_SuewYI" />
+
+    <meta name="monetization" content="$ilp.uphold.com/miU94ZyFdQ6K">
+
+    <title>Building a PHP CLI tool using DDD and Event Sourcing: distribution &mdash; osteel's blog</title>
+
+    <meta charset="utf-8" />
+    <link href="https://tech.osteel.me/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Full Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog Full RSS Feed" />
+    <link href="https://tech.osteel.me/feeds/atom.xml" type="application/atom+xml" rel="alternate" title="osteel's blog Atom Feed" />
+    <link href="https://tech.osteel.me/feeds/rss.xml" type="application/rss+xml" rel="alternate" title="osteel's blog RSS Feed" />
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/poole.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/syntax.css"/>
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/lanyon.css"/>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=PT+Serif:400,400italic,700%7CPT+Sans:400">
+    <link rel="stylesheet" href="https://tech.osteel.me/theme/css/styles.css"/>
+
+    <script
+      type="text/javascript"
+      src="https://platform-api.sharethis.com/js/sharethis.js#property=5e6053b434311400122fd1f8&product=inline-share-buttons"
+      async="async">
+    </script>
+
+
+
+  <meta name="description" content="Distribution is about meeting your users where they are – the more options, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example." />
+  <meta name="twitter:description" content="Distribution is about meeting your users where they are – the more options, the broader public you can reach. This post is a step-by-step guide to setting up a Laravel Zero application for distribution over various channels, using Dime as an example.">
+
+  <meta name="tags" content="laravelzero" />
+  <meta name="tags" content="github" />
+  <meta name="tags" content="cicd" />
+  <meta name="tags" content="phar" />
+  <meta name="tags" content="docker" />
+  <meta name="tags" content="composer" />
+  <meta name="tags" content="packagist" />
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@osteel">
+  <meta name="twitter:creator" content="@osteel">
+  <meta name="twitter:title" content="Building a PHP CLI tool using DDD and Event Sourcing: distribution">
+  <meta name="twitter:image" content="https://tech.osteel.me/images/1/dime_01.png">
+
+  </head>
+
+  <body>
+<!-- Target for toggling the sidebar `.sidebar-checkbox` is for regular
+styles, `#sidebar-checkbox` for behavior. -->
+<input type="checkbox" class="sidebar-checkbox" id="sidebar-checkbox">
+<!-- Toggleable sidebar -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-item">
+    <div class="profile">
+      <img src="https://www.gravatar.com/avatar/158eb527bb4ceb8e1a84e74b39815b71"/>
+    </div>
+  </div>
+
+  <section>
+    <p>Demat ! I'm Yannick, a senior backend developer based in Brighton, UK.</p>
+  </section>
+
+  <section>
+    <ul class="sidebar-nav">
+    </ul>
+  </section>
+
+  <section>
+    <h2>Newsletter</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+      <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="Email address" required>
+      <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+      <input type="submit" hidden />
+      <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+      <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+    </form>
+  </section>
+
+  <section>
+    <h2>Categories</h2>
+    <nav class="sidebar-nav">
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/blogging">Blogging</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/business">Business</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/devops">DevOps</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/laravel">Laravel</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/misc">Misc</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/news">News</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/php">PHP</a>
+        <a class="sidebar-nav-item" href="https://tech.osteel.me/category/productivity">Productivity</a>
+
+    </nav>
+  </section>
+
+  <section>
+    <h2>Search</h2>
+    <form class="sidebar-nav-item sidebar-nav" action="https://tech.osteel.me/search.html" onsubmit="return (this.elements['q'].value.length > 0)">
+        <input class="form-input" type="text" name="q" placeholder="Search" />
+    </form>
+  </section>
+
+    <section>
+        <h2>Find me</h2>
+        <ul class="sidebar-nav">
+            <li><a class="sidebar-nav-item" href="https://github.com/osteel" target="_blank">GitHub</a></li>
+            <li><a class="sidebar-nav-item" href="https://twitter.com/osteel" target="_blank">Twitter</a></li>
+            <li><a class="sidebar-nav-item" href="https://www.linkedin.com/in/yannickchenot" target="_blank">LinkedIn</a></li>
+        </ul>
+    </section>
+
+  <section>
+    <h2>Feeds</h2>
+    <ul class="sidebar-nav">
+      <li class="sidebar-nav-item">All posts&nbsp;
+        [&nbsp;
+ <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a>        &nbsp;
+ <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a>        &nbsp;]
+      </li>
+    </ul>
+  </section>
+
+  <div class="sidebar-item">
+    <p>
+    <a href="https://twitter.com/osteel">&copy; @osteel</a> 2023
+    </p>
+    <p class="tiny-note">
+      Powered by <a href="http://getpelican.com">Pelican</a> :: Theme based on <a class="muted" href="https://github.com/thomaswilley/pelicanyan">Pelicanyan</a>
+    </p>
+  </div>
+</div>    <div class="wrap">
+      <div class="masthead">
+        <div class="container">
+          <h3 class="masthead-title">
+            <a href="https://tech.osteel.me/" title="Home">osteel's blog</a>
+            <small>Web development resources</small>
+          </h3>
+        </div>
+      </div>
+
+      <div class="container content">
+<div class="posts">
+<div class="post">
+    <h1 class="post-title">
+      Building a PHP CLI tool using DDD and Event Sourcing: distribution
+    </h1>
+    <span class="post-date">
+      <small>
+          Last updated: 1970-01-01 ::
+        Published: 1970-01-01
+          :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution.html">history</a> ]
+      </small>
+    </span>
+
+    <section class="info">
+      <span class="title">Been here before?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p><em>Although this post is part of the Building a PHP CLI tool using DDD and Event Sourcing <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, you can also read it as a step-by-step guide to setting up a Laravel Zero application for distribution over various channels.</em></p>
+<p><img alt="A painting of a delivery van" src="/images/1/dime_01.png" title="A painting of a delivery van" /></p>
+<p>Distribution is about meeting your users where they are. The more options, the broader public you can reach.</p>
+<p>When it comes to PHP CLI tools, various distribution channels are available:</p>
+<ul>
+<li><a href="https://getcomposer.org/">Composer</a> (via <a href="https://packagist.org/">Packagist</a>);</li>
+<li><a href="https://www.php.net/manual/en/book.phar.php">PHP archives</a> (phars);</li>
+<li>Containers (e.g. <a href="https://www.docker.com/">Docker</a>);</li>
+<li><a href="https://brew.sh/">Homebrew</a>;</li>
+<li><a href="https://github.com/ScoopInstaller/Scoop">Scoop</a>;</li>
+<li>Some other ways I'm probably unaware of.</li>
+</ul>
+<p>Dime's distribution strategy relies on PHP archives, or phars. These can either be downloaded manually and used as-is, installed via Composer, or run through Docker containers.</p>
+<p>This post explains how to set up a Laravel Zero application to leverage and automate these distribution channels, using Dime as an example.</p>
+<p class="info"><span class="title">Dime?</span>If you are new to this <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">series</a>, <a href="https://github.com/osteel/dime">Dime</a> is a free and open-source command-line tool written in PHP to help people calculate their crypto-related taxes in the UK.</p>
+
+<h2 id="in-this-series">In this series</h2>
+<ul>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-why" title="Building a PHP CLI tool using DDD and Event Sourcing: why?">Why?</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-domain" title="Building a PHP CLI tool using DDD and Event Sourcing: the domain">The domain</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model" title="Building a PHP CLI tool using DDD and Event Sourcing: the model">The model</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-setting-up-laravel-zero" title="Building a PHP CLI tool using DDD and Event Sourcing: setting up Laravel Zero">Setting up Laravel Zero</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">Getting started with EventSauce</a></li>
+<li>Distribution <strong>⬅️ you are here</strong></li>
+</ul>
+<h2 id="in-this-post">In this post</h2>
+<div class="toc">
+<ul>
+<li><a href="#in-this-series">In this series</a></li>
+<li><a href="#in-this-post">In this post</a></li>
+<li><a href="#application-configuration">Application configuration</a><ul>
+<li><a href="#hiding-commands">Hiding commands</a></li>
+<li><a href="#production-database">Production database</a></li>
+<li><a href="#dotenv-add-on">DotEnv add-on</a></li>
+<li><a href="#database-manager">Database manager</a></li>
+</ul>
+</li>
+<li><a href="#distribution-through-a-php-archive">Distribution through a PHP archive</a><ul>
+<li><a href="#include-the-relevant-folders">Include the relevant folders</a></li>
+<li><a href="#self-update">Self-update</a></li>
+<li><a href="#release-workflow">Release workflow</a></li>
+</ul>
+</li>
+<li><a href="#distribution-through-composer">Distribution through Composer</a><ul>
+<li><a href="#composer-configuration">Composer configuration</a></li>
+<li><a href="#box-configuration">Box configuration</a></li>
+<li><a href="#exclude-redundant-files">Exclude redundant files</a></li>
+<li><a href="#hiding-the-self-update-command">Hiding the self-update command</a></li>
+<li><a href="#release-and-distribution">Release and distribution</a></li>
+</ul>
+</li>
+<li><a href="#distribution-through-docker">Distribution through Docker</a><ul>
+<li><a href="#building-the-image">Building the image</a></li>
+<li><a href="#container-registry">Container registry</a></li>
+<li><a href="#release-workflow_1">Release workflow</a></li>
+<li><a href="#shell-script">Shell script</a></li>
+</ul>
+</li>
+<li><a href="#closing-thoughts">Closing thoughts</a></li>
+</ul>
+</div>
+<h2 id="application-configuration">Application configuration</h2>
+<p>While most Laravel Zero applications can generate phars out-of-the-box, the steps laid out below will optimise the final result and explain how to manage separate development and production environments and databases.</p>
+<h3 id="hiding-commands">Hiding commands</h3>
+<p>This is what Dime's (and most Laravel Zero applications') menu looks like by default:</p>
+<div class="highlight"><pre><span></span>Dime  v0.1.2
+
+USAGE: dime &lt;command&gt; [options] [arguments]
+
+help             Display help for a command
+migrate          Run the database migrations
+process          Process a spreadsheet of transactions
+review           Display a tax year&#39;s summary
+test             Run the application tests
+tinker           Interact with your application
+
+app:build        Build a single file executable
+app:install      Install optional components
+app:rename       Set the application name
+
+db:seed          Seed the database with records
+db:wipe          Drop all tables, views, and types
+
+make:command     Create a new command
+make:factory     Create a new model factory
+make:migration   Create a new migration file
+make:model       Create a new Eloquent model class
+make:seeder      Create a new seeder class
+make:test        Create a new test class
+
+migrate:fresh    Drop all tables and re-run all migrations
+migrate:install  Create the migration repository
+migrate:refresh  Reset and re-run all migrations
+migrate:reset    Rollback all database migrations
+migrate:rollback Rollback the last database migration
+migrate:status   Show the status of each migration
+</pre></div>
+
+
+<p>A lot of these commands are useful for development but should not be available to end users. Thankfully, Laravel Zero provides <a href="https://laravel-zero.com/docs/configuration">a simple way</a> to conditionally add or remove commands, through the <code>app/commands.php</code> configuration file.</p>
+<p>Here is an extract from <a href="https://github.com/osteel/dime/blob/main/config/commands.php" title="commands.php">Dime's</a>:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">return</span> <span class="p">[</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;hidden&#39;</span> <span class="o">=&gt;</span> <span class="nb">array_merge</span><span class="p">(</span>
+        <span class="p">[</span>
+            <span class="nx">NunoMaduro\LaravelConsoleSummary\SummaryCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Symfony\Component\Console\Command\DumpCompletionCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Console\Scheduling\ScheduleRunCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Console\Scheduling\ScheduleListCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Console\Scheduling\ScheduleFinishCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Foundation\Console\VendorPublishCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\StubPublishCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="nx">Phar</span><span class="o">::</span><span class="na">running</span><span class="p">()</span> <span class="o">?</span> <span class="p">[</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\FreshCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\InstallCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\MigrateCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\WipeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">:</span> <span class="p">[],</span>
+    <span class="p">),</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;remove&#39;</span> <span class="o">=&gt;</span> <span class="nb">array_merge</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="nx">Phar</span><span class="o">::</span><span class="na">running</span><span class="p">()</span> <span class="o">?</span> <span class="p">[</span>
+            <span class="nx">Illuminate\Database\Console\Factories\FactoryMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Seeds\SeedCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Seeds\SeederMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\MigrateMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\RefreshCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\ResetCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\RollbackCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Migrations\StatusCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\WipeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Foundation\Console\ModelMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\BuildCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\InstallCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\MakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\RenameCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\StubPublishCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">LaravelZero\Framework\Commands\TestMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">:</span> <span class="p">[],</span>
+    <span class="p">),</span>
+<span class="p">];</span>
+</pre></div>
+
+
+<p>Commands in the <code>hidden</code> array won't show in the application's menu but can still be run by the system. On the other hand, commands in the <code>remove</code> array won't be registered at all.</p>
+<p>The reason for the <code>hidden</code> array is that the application still needs these commands even though they should not be available to end users. For instance, Dime will reset the database every time the <code>process</code> command is called, which under the hood runs the <code>migrate:fresh</code>, <code>db:wipe</code> and <code>migrate</code> commands.</p>
+<p>We make sure these commands are still available for development by checking the application's context, here provided by the <a href="https://www.php.net/manual/en/class.phar.php" title="PHP documentation"><code>Phar</code> class</a>. The <code>Phar::running</code> method returns the path to the phar currently being executed, which is an empty string when the command was not run through a phar.</p>
+<p>Once the commands are properly hidden, this is what the phar's application menu looks like:</p>
+<div class="highlight"><pre><span></span>Dime  v0.1.2
+
+USAGE:  &lt;command&gt; [options] [arguments]
+
+help        Display help for a command
+process     Process a spreadsheet of transactions
+review      Display a tax year&#39;s summary
+</pre></div>
+
+
+<h3 id="production-database">Production database</h3>
+<p>Once distributed, a command-line application can be considered in <em>production</em> mode.</p>
+<p>While the development database can live in the <code>database</code> folder without any issue, a PHP archive cannot update its own content, so the production database needs to be located elsewhere, outside the phar.</p>
+<p>This is the configuration of Dime's production database in <code>config/database.php</code>:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="s1">&#39;production&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+    <span class="s1">&#39;driver&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;url&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="nv">$_SERVER</span><span class="p">[</span><span class="s1">&#39;HOME&#39;</span><span class="p">]</span> <span class="o">.</span> <span class="s1">&#39;/.dime/database.sqlite&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;prefix&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;foreign_key_constraints&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+<span class="p">],</span>
+</pre></div>
+
+
+<p><code>$_SERVER['HOME']</code> resolves to the user's home directory (the one you can access via the <code>~</code> shortcut, e.g. <code>/Users/alice</code>), meaning the SQLite database is located in the <code>~/.dime</code> folder (e.g. <code>/Users/alice/.dime/database.sqlite</code>).</p>
+<p>The rest of the database configuration is the same as the <code>local</code> database's.</p>
+<p>Let's now see how to make sure the right database is picked up based on the environment.</p>
+<h3 id="dotenv-add-on">DotEnv add-on</h3>
+<p>Before distributing Dime, the only environment I had to deal with was <code>local</code>, so I didn't need to worry about other configurations. Now that I was introducing a <code>production</code> environment, however, I needed a way to manage separate configuration values.</p>
+<p>Most framework users will be familiar with <a href="https://github.com/vlucas/phpdotenv">DotEnv</a>, a library to parse and load environment variables in a PHP application.</p>
+<p>In Laravel Zero, it comes as an <a href="https://laravel-zero.com/docs/environment-variables" title="Environment variables">add-on</a>:</p>
+<div class="highlight"><pre><span></span>$ php dime app:install dotenv
+</pre></div>
+
+
+<p>On top of loading the library, this command also creates a <code>.env</code> file with some example value.</p>
+<p>With the way I set things up for Dime, I only need to provide a <code>.env</code> file for the local environment, containing values that override the default ones, which are optimised for production.</p>
+<p>In other words, I don't need to <a href="https://laravel-zero.com/docs/build-a-standalone-application#environment-variables" title="Environment variables">provide a production-specific <code>.env</code> file</a>, which simplifies the build process.</p>
+<p>Since the same values are used as environment and database names, Dime only needs a single entry in the local <code>.env</code> file:</p>
+<div class="highlight"><pre><span></span><span class="n">APP_ENV</span><span class="o">=</span><span class="k">local</span>
+</pre></div>
+
+
+<p>As a result, this environment variable needs to be set to <code>production</code> by default in two configuration files, starting with <code>config/app.php</code>:</p>
+<div class="highlight"><pre><span></span>&#39;env&#39; =&gt; env(&#39;APP_ENV&#39;, &#39;production&#39;),
+</pre></div>
+
+
+<p>And also in <code>config/database.php</code>:</p>
+<div class="highlight"><pre><span></span>&#39;default&#39; =&gt; env(&#39;APP_ENV&#39;, &#39;production&#39;),
+</pre></div>
+
+
+<p>The production database configuration is now complete, but we still need to make sure the <code>database.sqlite</code> file exists in <code>~/.dime</code>.</p>
+<h3 id="database-manager">Database manager</h3>
+<p>The database migration commands won't create the database themselves – it needs to exist prior to running them. How to make sure the <code>~/.dime/database.sqlite</code> file will always be there?</p>
+<p>In Dime, this is handled by a separate <a href="https://github.com/osteel/dime/blob/main/app/Services/DatabaseManager/DatabaseManager.php" title="DatabaseManager.php"><code>DatabaseManager</code> service</a>, whose logic roughly goes like this:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">class</span> <span class="nc">DatabaseManager</span>
+<span class="p">{</span>
+    <span class="c1">// ...</span>
+
+    <span class="k">public</span> <span class="k">function</span> <span class="nf">prepare</span><span class="p">()</span><span class="o">:</span> <span class="nx">void</span>
+    <span class="p">{</span>
+        <span class="c1">// Figure out the database connection&#39;s configuration path</span>
+        <span class="nv">$entry</span> <span class="o">=</span> <span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;database.connections.%s.database&#39;</span><span class="p">,</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">config</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="s1">&#39;app.env&#39;</span><span class="p">));</span>
+
+        <span class="c1">// Retrieve the database configuration</span>
+        <span class="nv">$file</span> <span class="o">=</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">config</span><span class="o">-&gt;</span><span class="na">get</span><span class="p">(</span><span class="nv">$entry</span><span class="p">);</span>
+
+        <span class="c1">// Create the database file if it doesn&#39;t exist</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">is_file</span><span class="p">(</span><span class="nv">$file</span><span class="p">))</span> <span class="p">{</span>
+            <span class="nv">$directory</span> <span class="o">=</span> <span class="nb">dirname</span><span class="p">(</span><span class="nv">$file</span><span class="p">);</span>
+
+            <span class="c1">// Create the `~/.dime` directory first if it doesn&#39;t exist</span>
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span> <span class="nb">is_dir</span><span class="p">(</span><span class="nv">$directory</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">process</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;mkdir -m755 %s&#39;</span><span class="p">,</span> <span class="nv">$directory</span><span class="p">));</span>
+            <span class="p">}</span>
+
+            <span class="c1">// Create the file</span>
+            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">process</span><span class="o">-&gt;</span><span class="na">run</span><span class="p">(</span><span class="nb">sprintf</span><span class="p">(</span><span class="s1">&#39;touch %s&#39;</span><span class="p">,</span> <span class="nv">$file</span><span class="p">));</span>
+        <span class="p">}</span>
+
+        <span class="c1">// Migrate the database quietly</span>
+        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">artisan</span><span class="o">-&gt;</span><span class="na">call</span><span class="p">(</span><span class="s1">&#39;migrate:fresh&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;--force&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">],</span> <span class="k">new</span> <span class="nx">NullOutput</span><span class="p">());</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The <code>$this-&gt;config</code>, <code>$this-&gt;process</code> and <code>$this-&gt;artisan</code> properties are injected instances of <code>Illuminate\Contracts\Config\Repository</code>, <code>Illuminate\Process\PendingProcess</code> and <code>Illuminate\Contracts\Console\Kernel</code>, respectively.</p>
+<p>The <code>PendingProcess</code> class comes from Laravel's <a href="https://laravel.com/docs/processes"><code>Process</code> component</a>, based on Symfony's and introduced in version 10.</p>
+<p><code>NullOutput</code> comes from Symfony's <a href="https://symfony.com/doc/current/components/console.html" title="The Console Component">Console Component</a> and ensures no output will be shown in the console.</p>
+<p>As for the rest, the comments should be self-explanatory.</p>
+<p>We now have the guarantee that the database file will always exist, meaning Dime is officially distribution-ready.</p>
+<p>Let's now go through the distribution channels it uses.</p>
+<h2 id="distribution-through-a-php-archive">Distribution through a PHP archive</h2>
+<p>Laravel Zero makes it <a href="https://laravel-zero.com/docs/build-a-standalone-application" title="Build a standalone application">super easy</a> to turn your application into a phar. In fact, in most cases you'll be able to do it out-of-the-box, with a single command that will generate an archive in the <code>builds</code> folder at the root of the application:</p>
+<div class="highlight"><pre><span></span>$ php &lt;your-app-name&gt; app:build &lt;your-build-name&gt;
+</pre></div>
+
+
+<p>In some cases, however, you will need to make a few changes to make the archive more user-friendly and streamline its distribution.</p>
+<h3 id="include-the-relevant-folders">Include the relevant folders</h3>
+<p>Laravel Zero uses the <a href="https://github.com/box-project/box">Box library</a> under the hood to build phars. It comes with a <code>box.json</code> configuration file that will work for most applications but that will require a few changes in some cases.</p>
+<p>For instance, Dime needs the <code>database</code> and <code>domain/src</code> folders to also be included in the build:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;chmod&quot;</span><span class="p">:</span> <span class="s2">&quot;0755&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;directories&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;app&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;bootstrap&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;config&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;database&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;domain/src&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;vendor&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>That's because using a database is optional in Laravel Zero and comes as an <a href="https://laravel-zero.com/docs/database" title="Database">add-on</a>, meaning the <code>database</code> folder is not included by default. And because Dime was developed following a DDD approach, it has an extra <code>domain</code> folder that needs including too.</p>
+<h3 id="self-update">Self-update</h3>
+<p>Another optional feature is the possibility for the phar to update itself by checking whether a new version is available.</p>
+<p>This also comes as an <a href="https://laravel-zero.com/docs/build-a-standalone-application#self-update" title="Self-update">add-on</a>:</p>
+<div class="highlight"><pre><span></span>$ php dime app:install self-update
+</pre></div>
+
+
+<p>Once installed, a new <code>self-update</code> command will appear in the application's menu.</p>
+<p>Different <a href="https://laravel-zero.com/docs/build-a-standalone-application#custom-update-strategies" title="Custom update strategies">strategies</a> can be used to download the latest archive from various sources, the default one being to look inside the <code>builds</code> folder on GitHub.</p>
+<p>I went for a <a href="https://github.com/osteel/dime/blob/main/app/Services/SelfUpdate/Strategy.php" title="Strategy.php">custom strategy</a> for Dime, which downloads the phar from the <a href="https://github.com/osteel/dime/releases" title="Releases">latest release</a>'s assets (I'll get back to this).</p>
+<p>To use it in place of the default one, you first need to publish the configuration file:</p>
+<div class="highlight"><pre><span></span>$ php dime vendor:publish --provider <span class="s2">&quot;LaravelZero\Framework\Components\Updater\Provider&quot;</span>
+</pre></div>
+
+
+<p>And then update the strategy in the <a href="https://github.com/osteel/dime/blob/main/config/updater.php" title="updater.php"><code>config/updater.php</code> file</a>:</p>
+<div class="highlight"><pre><span></span><span class="x">&#39;strategy&#39; =&gt; Strategy::class,</span>
+</pre></div>
+
+
+<h3 id="release-workflow">Release workflow</h3>
+<p>Dime's releases are tagged following the <a href="https://semver.org/">Semantic Versioning</a> scheme. Each release comes with an updated phar, to be downloaded from the release's assets.</p>
+<p>If we were to create a release manually, this is what we would do:</p>
+<ol>
+<li>Build and commit the phar;</li>
+<li>Create a new tag;</li>
+<li>Draft a new release;</li>
+<li>Upload the phar as a release asset; and</li>
+<li>Publish the release.</li>
+</ol>
+<p>All of these steps can be automated.</p>
+<p>Dime uses a <a href="https://github.com/osteel/dime/blob/main/.github/workflows/release.yml" title="release.yml">GitHub workflow</a> for this, simplified below:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Release</span>
+
+<span class="nt">on</span><span class="p">:</span>
+  <span class="nt">workflow_dispatch</span><span class="p">:</span>
+    <span class="nt">inputs</span><span class="p">:</span>
+      <span class="nt">version</span><span class="p">:</span>
+        <span class="nt">description</span><span class="p">:</span> <span class="s">&#39;Release</span><span class="nv"> </span><span class="s">version&#39;</span>
+        <span class="nt">type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">string</span>
+        <span class="nt">required</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+
+<span class="nt">env</span><span class="p">:</span>
+  <span class="nt">APP_ENV</span><span class="p">:</span> <span class="s">&quot;local&quot;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+
+  <span class="nt">phar</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Phar</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Validate tag</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">FidelusAleksander/gh-action-regex@v0.2.0</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">regex_pattern</span><span class="p">:</span> <span class="s">&quot;^v\\d+(\\.\\d+)?(\\.\\d+)?$&quot;</span>
+          <span class="nt">regex_match_type</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">match</span>
+          <span class="nt">text</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ github.event.inputs.version }}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout code</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Set up PHP</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">shivammathur/setup-php@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">php-version</span><span class="p">:</span> <span class="s">&quot;8.2&quot;</span>
+          <span class="nt">extensions</span><span class="p">:</span> <span class="s">&quot;bcmath&quot;</span>
+          <span class="nt">coverage</span><span class="p">:</span> <span class="s">&quot;none&quot;</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Install dependencies</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ramsey/composer-install@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Build archive</span>
+        <span class="nt">run</span><span class="p">:</span> <span class="s">&quot;php</span><span class="nv"> </span><span class="s">dime</span><span class="nv"> </span><span class="s">app:build</span><span class="nv"> </span><span class="s">dime</span><span class="nv"> </span><span class="s">--build-version=${{</span><span class="nv"> </span><span class="s">github.event.inputs.version</span><span class="nv"> </span><span class="s">}}&quot;</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Push changes</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">stefanzweifel/git-auto-commit-action@v4</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">branch</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">main</span>
+          <span class="nt">commit_message</span><span class="p">:</span> <span class="s">&quot;Updated</span><span class="nv"> </span><span class="s">phar&quot;</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Draft release</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">softprops/action-gh-release@v1</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ github.event.inputs.version }}</span>
+          <span class="nt">tag_name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ github.event.inputs.version }}</span>
+          <span class="nt">draft</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">files</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">./builds/dime</span>
+          <span class="nt">generate_release_notes</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+</pre></div>
+</td></tr></table>
+
+<p>The workflow is triggered manually from the repository's <em>Actions</em> tab and takes the release's version as input:</p>
+<p><img alt="Manual workflow trigger" src="/images/1/dime_02.png" title="Manual workflow trigger" /></p>
+<p>It only has one job, consisting of the following steps:</p>
+<ol>
+<li>Validate the tag using a regular expression;</li>
+<li>Check out the code;</li>
+<li>Set up PHP with the right version and extensions;</li>
+<li>Instal the Composer dependencies;</li>
+<li>Build the archive using the submitted value as the version; and</li>
+<li>Draft the release.</li>
+</ol>
+<p>That last step uses the submitted value as the release's name and also to tag the release, and automatically generates the release notes and uploads the phar as a release asset.</p>
+<p>Also note the presence of the <code>APP_ENV</code> environment variable at the top, set to <code>local</code>. Laravel Zero won't build the archive if the application is in production mode, which is the case by default because of a change we've made in a <a href="#dotenv-add-on">previous section</a>.</p>
+<p>Once the workflow completes, the new archive can be downloaded from the latest release and used straight away:</p>
+<div class="highlight"><pre><span></span>$ php dime
+</pre></div>
+
+
+<p>The recommended approach, however, is to make the file executable and to move it to a directory that's in the user's system path:</p>
+<div class="highlight"><pre><span></span>$ chmod +x dime
+$ mv dime /usr/local/bin/dime
+</pre></div>
+
+
+<p>After doing so, the application can be invoked from anywhere running <code>dime</code>.</p>
+<h2 id="distribution-through-composer">Distribution through Composer</h2>
+<p>If you've read some of my <a href="/posts/how-to-build-and-distribute-beautiful-command-line-applications-with-php-and-composer" title="How to build and distribute beautiful command-line applications with PHP and Composer">previous</a> <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">articles</a>, you may be familiar with distributing command-line tools and packages through Composer and Packagist.</p>
+<p>The gist of it is that, since we don't know much about the systems our work will be deployed on, it's worth making sure it is compatible with more than one dependency versions, to accommodate as many client systems as possible.</p>
+<p>The good news is that phars partially eliminate that need because they include (and isolate) the package's dependencies. In practice, this means we don't need to worry about another PHP application using a depencency version conflicting with ours.</p>
+<p>On the other hand, Phars still rely on the system's PHP version and installed extensions.</p>
+<p>The other good news is that Laravel Zero supports distributing phars through Packagist and Composer almost out-of-the-box, requiring just a few <a href="https://laravel-zero.com/docs/build-a-standalone-application#distribute-via-packagist" title="Distribute via Packagist">tweaks</a>.</p>
+<h3 id="composer-configuration">Composer configuration</h3>
+<p>A Laravel Zero's default Composer configuration isn't optimised to work with phars.</p>
+<p>The first thing to do is change the path to the binary in <code>composer.json</code> to point to the built archive:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;bin&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;builds/dime&quot;</span><span class="p">],</span>
+    <span class="nt">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The other change we need to make in <code>composer.json</code> is move all dependencies to <code>require-dev</code>, aside from the supported PHP versions and required extensions:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;require&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;php&quot;</span><span class="p">:</span> <span class="s2">&quot;^8.2&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;ext-bcmath&quot;</span><span class="p">:</span> <span class="s2">&quot;*&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;require-dev&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;brick/date-time&quot;</span><span class="p">:</span> <span class="s2">&quot;^0.4.2&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;eventsauce/eventsauce&quot;</span><span class="p">:</span> <span class="s2">&quot;^3.4&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;eventsauce/message-repository-for-illuminate&quot;</span><span class="p">:</span> <span class="s2">&quot;^0.4.2&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;eventsauce/object-hydrator&quot;</span><span class="p">:</span> <span class="s2">&quot;^1.3&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;eventsauce/pest-utilities&quot;</span><span class="p">:</span> <span class="s2">&quot;^3.4&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;fakerphp/faker&quot;</span><span class="p">:</span> <span class="s2">&quot;^1.21.0&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;illuminate/database&quot;</span><span class="p">:</span> <span class="s2">&quot;^10.13&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;intonate/tinker-zero&quot;</span><span class="p">:</span> <span class="s2">&quot;^1.2&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;laravel-zero/framework&quot;</span><span class="p">:</span> <span class="s2">&quot;^10.0&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;...&quot;</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The reason for this is that, since our application's dependencies are already included in the phar, we don't need Composer to instal them again on the client system. Moving the dependencies to <code>require-dev</code> is a way to ensure it won't.</p>
+<p>But how do we tell Box to include the development dependencies in the archive?</p>
+<h3 id="box-configuration">Box configuration</h3>
+<p>As mentioned earlier, Laravel Zero relies on <a href="https://github.com/box-project/box">Box</a> to generate phars from applications. We've already made a couple of changes in <code>box.json</code>, but we now also need to make sure development dependencies are included in the build, through the <code>exclude-dev-files</code> attribute:</p>
+<div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="nt">&quot;...&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;files&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;composer.json&quot;</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;exclude-composer-files&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;exclude-dev-files&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nt">&quot;...&quot;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The combination of moving all dependencies to <code>require-dev</code> and setting <code>exclude-dev-files</code> to <code>false</code> ensures that the phar includes all the necessary dependencies while avoiding Composer redundantly installing them as well.</p>
+<p>A downside to this approach is that actual development dependencies will also be included in the archive, however.</p>
+<h3 id="exclude-redundant-files">Exclude redundant files</h3>
+<p>When installing a PHP application through Packagist, Composer doesn't only instal the non-development dependencies – it also downloads all of the application's files. Just like the dependencies, however, these files are already included in the phar, so Composer doesn't need to download them again.</p>
+<p>To make sure it doesn't, create a <code>.gitattributes</code> file at the root of the application and list the content you wish to exclude.</p>
+<p>Here is <a href="https://github.com/osteel/dime/blob/main/.gitattributes" title=".gitattributes">Dime's</a>, for instance:</p>
+<div class="highlight"><pre><span></span>* text=auto eol=lf
+
+/.docker            export-ignore
+/.github            export-ignore
+/app                export-ignore
+/bootstrap          export-ignore
+/config             export-ignore
+/database           export-ignore
+/domain             export-ignore
+/tests              export-ignore
+/.editorconfig      export-ignore
+/.env.example       export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/box.json           export-ignore
+/composer.lock      export-ignore
+/dime               export-ignore
+/phpstan.neon.dist  export-ignore
+/phpunit.xml.dist   export-ignore
+/pint.json          export-ignore
+/rector.php         export-ignore
+</pre></div>
+
+
+<h3 id="hiding-the-self-update-command">Hiding the self-update command</h3>
+<p>The build process is currently set up in a way that Dime's binary always exposes a <code>self-update</code> command, although it should only be available when the archive is used directly and not through Packagist or Docker.</p>
+<p>The <code>self-update</code> command essentially replaces the archive with a newer version of itself, but when using another distribution channel we want that channel to be responsible for the update, and not the archive itself.</p>
+<p>How do we ensure that the <code>self-update</code> command is only available in the relevant context?</p>
+<p>The solution lies within the <code>config/commands.php</code> file again. Dime uses a <a href="https://github.com/osteel/dime/blob/main/app/Commands/Helpers.php" title="Helpers.php">helper class</a> returning the archive's current context, which allows for deciding whether to include the command or not:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">return</span> <span class="p">[</span>
+
+    <span class="c1">// ...</span>
+
+    <span class="s1">&#39;remove&#39;</span> <span class="o">=&gt;</span> <span class="nb">array_merge</span><span class="p">(</span>
+        <span class="p">[],</span>
+        <span class="nx">Phar</span><span class="o">::</span><span class="na">running</span><span class="p">()</span> <span class="o">?</span> <span class="p">[</span>
+            <span class="nx">Illuminate\Database\Console\Factories\FactoryMakeCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="nx">Illuminate\Database\Console\Seeds\SeedCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+            <span class="c1">// ...</span>
+        <span class="p">]</span> <span class="o">:</span> <span class="p">[],</span>
+        <span class="nx">Helpers</span><span class="o">::</span><span class="na">installedViaPhar</span><span class="p">()</span> <span class="o">===</span> <span class="k">false</span> <span class="o">?</span> <span class="p">[</span>
+            <span class="nx">LaravelZero\Framework\Components\Updater\SelfUpdateCommand</span><span class="o">::</span><span class="na">class</span><span class="p">,</span>
+        <span class="p">]</span> <span class="o">:</span> <span class="p">[],</span>
+    <span class="p">),</span>
+<span class="p">];</span>
+</pre></div>
+
+
+<p>The <code>Helpers::installedViaPhar</code> method essentially checks that the archive is not currently being used via Composer:</p>
+<div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
+
+<span class="c1">// ...</span>
+
+<span class="k">public</span> <span class="k">static</span> <span class="k">function</span> <span class="nf">installedViaPhar</span><span class="p">()</span><span class="o">:</span> <span class="nx">bool</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="nx">str_contains</span><span class="p">(</span><span class="no">__DIR__</span><span class="p">,</span> <span class="s1">&#39;.composer/vendor&#39;</span><span class="p">)</span> <span class="o">===</span> <span class="k">false</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="release-and-distribution">Release and distribution</h3>
+<p>At this stage, Dime is Composer-ready and, since the release workflow is already taking care of building the archive, all that's left to do is register the application on Packagist.</p>
+<p>Log into <a href="https://packagist.org/">packagist.org</a> (create an account if necessary) and head over to the <a href="https://packagist.org/packages/submit" title="Submit">submit</a> section of the website. Paste in the URL of your application's GitHub repository and give Packagist a couple of seconds to process it.</p>
+<p>You should now be able to instal the latest release:</p>
+<div class="highlight"><pre><span></span>$ composer global require osteel/dime
+</pre></div>
+
+
+<p>If the <code>~/.composer/vendor/bin</code> directory is already in your system's path, you can now invoke the binary from anywhere:</p>
+<div class="highlight"><pre><span></span>$ dime
+</pre></div>
+
+
+<h2 id="distribution-through-docker">Distribution through Docker</h2>
+<p>Phars can also be distributed through Docker images. With this method, Docker is the only dependency – no local versions of PHP or extensions are required.</p>
+<h3 id="building-the-image">Building the image</h3>
+<p>While the Laravel Zero documentation doesn't mention Docker images, the framework allows for building some indirectly, through its reliance on <a href="https://github.com/box-project/box">Box</a>:</p>
+<div class="highlight"><pre><span></span>$ ./vendor/laravel-zero/framework/bin/box docker builds/dime
+</pre></div>
+
+
+<p>This <a href="https://github.com/box-project/box/blob/main/doc/docker.md#docker-support" title="Docker support">command</a> reads the application's requirements from the archive's <code>composer.json</code> file and generates the corresponding <a href="https://github.com/osteel/dime/blob/main/.docker/Dockerfile" title="Dockerfile">Dockerfile</a>, including the right PHP version and extensions.</p>
+<p>While this is optional, I keep Dime's Dockerfile in a <code>.docker</code> folder at the root of the application.</p>
+<p>And this is how to build the image:</p>
+<div class="highlight"><pre><span></span>$ docker build -t ghcr.io/osteel/dime:latest -f .docker/Dockerfile .
+</pre></div>
+
+
+<p>The <code>-t</code> flag is to tag the image (<code>ghcr.io/osteel/dime:latest</code>) and the <code>-f</code> flag points to the Dockerfile's location.</p>
+<p>I don't bother keeping track of previous image versions for Dime, so any new version gets the <code>latest</code> tag and overwrites the previous one.</p>
+<h3 id="container-registry">Container registry</h3>
+<p>Once the image is built, we need to distribute it. A common way to do this is to push it to a registry – <a href="https://hub.docker.com/">Docker Hub</a> is a popular one, but I decided to stick to GitHub and to use its <a href="https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry" title="Working with the Container registry">Container Registry</a>.</p>
+<p>The first thing to do is to log into the platform using an <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens" title="Managing your personal access tokens">access token</a>. There are two types of tokens – <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#fine-grained-personal-access-tokens" title="Fine-grained personal access tokens">fine-grained personal access tokens</a> and <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#personal-access-tokens-classic" title="Personal access tokens">personal access tokens (PAT)</a>. The former are deemed more modern and secure, but at the time of writing they were still in beta and I couldn't get them to work with Dime's release workflow, so I went for a regular PAT instead.</p>
+<p>The latter can be obtained from the <a href="https://github.com/settings/tokens" title="Tokens">developer settings</a> and must be created with the following permissions: <code>write:packages</code>, <code>read:packages</code> and <code>delete:packages</code>.</p>
+<p>It's also possible to set an optional expiration date.</p>
+<p>The generated token is then used as the password when logging into the container registry (the command will prompt for it):</p>
+<div class="highlight"><pre><span></span>$ docker login ghcr.io -u &lt;USERNAME&gt;
+</pre></div>
+
+
+<p>And this is how I push the image to the registry:</p>
+<div class="highlight"><pre><span></span>$ docker push ghcr.io/osteel/dime:latest
+</pre></div>
+
+
+<p>Once pushed, your image will show up as a package in the <em>Packages</em> tab of your GitHub profile:</p>
+<p><img alt="Packages tab on GitHub" src="/images/1/dime_03.png" title="Packages tab on GitHub" /></p>
+<p>You can also link the package to the repository holding its source code from the package's settings, as well as change its visibility:</p>
+<p><img alt="Package's source repository" src="/images/1/dime_04.png" title="Package's source repository" /></p>
+<p>After which it will appear on the <a href="https://github.com/osteel/dime">repository's page</a>, under the <em>Releases</em> section on the right-hand side:</p>
+<p><img alt="Repository's packages section" src="/images/1/dime_05.png" title="Repository's packages section" /></p>
+<h3 id="release-workflow_1">Release workflow</h3>
+<p>Just like phars, any new release should come with an updated Docker image to be pulled from the container registry. And just like phars, this process can be automated.</p>
+<p>This takes the form of a new job in Dime's <a href="https://github.com/osteel/dime/blob/main/.github/workflows/release.yml" title="release.yml">release workflow</a>, but before I give you the details, let's see how to add the PAT as a GitHub secret so the workflow can use it.</p>
+<p>You need to head over to the repository's settings on GitHub, and to the <em>Secrets and variables</em> menu on the left-hand side. It's got an <em>Actions</em> submenu that will take you to this form:</p>
+<p><img alt="Repository actions secrets" src="/images/1/dime_06.png" title="Repository actions secrets" /></p>
+<p>Create a new repository secret (here named <code>GHCR_TOKEN</code>) and set the PAT as its value.</p>
+<p>The workflow will then be able to use it to log into the registry and push images.</p>
+<p>This is what the corresponding job looks like in Dime's workflow:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Release</span>
+
+<span class="c1"># ...</span>
+
+<span class="nt">env</span><span class="p">:</span>
+  <span class="nt">APP_ENV</span><span class="p">:</span> <span class="s">&quot;local&quot;</span>
+  <span class="nt">REGISTRY</span><span class="p">:</span> <span class="s">&quot;ghcr.io&quot;</span>
+
+<span class="nt">jobs</span><span class="p">:</span>
+
+  <span class="nt">phar</span><span class="p">:</span>
+    <span class="c1"># job details...</span>
+
+  <span class="nt">docker</span><span class="p">:</span>
+    <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Docker</span>
+    <span class="nt">needs</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">phar</span>
+    <span class="nt">runs-on</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span>
+
+    <span class="nt">steps</span><span class="p">:</span>
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Checkout code</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">actions/checkout@v3</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Log into registry</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/login-action@v2</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">registry</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ env.REGISTRY }}</span>
+          <span class="nt">username</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ github.repository_owner }}</span>
+          <span class="nt">password</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ secrets.GHCR_TOKEN }}</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Set up Buildx</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/setup-buildx-action@v2</span>
+
+      <span class="p p-Indicator">-</span> <span class="nt">name</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">Build and push</span>
+        <span class="nt">uses</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">docker/build-push-action@v4</span>
+        <span class="nt">with</span><span class="p">:</span>
+          <span class="nt">context</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">.</span>
+          <span class="nt">file</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">.docker/Dockerfile</span>
+          <span class="nt">push</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">true</span>
+          <span class="nt">platforms</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">linux/amd64,linux/arm64</span>
+          <span class="nt">tags</span><span class="p">:</span> <span class="l l-Scalar l-Scalar-Plain">${{ env.REGISTRY }}/${{ github.repository }}:latest</span>
+</pre></div>
+</td></tr></table>
+
+<p>First, note the presence of the <code>REGISTRY</code> environment variable at the top. A new <code>docker</code> job has also been added, after the one building and committing the phar. It has a <code>needs</code> key referring to the latter, ensuring that the <code>docker</code> job only starts once the new phar is available.</p>
+<p>The job consists of the following steps:</p>
+<ol>
+<li>Check out the code;</li>
+<li>Log into the container registry using the PAT as password and the <a href="https://docs.github.com/en/actions/learn-github-actions/contexts#github-context" title="GitHub context">repository owner's name</a> as username;</li>
+<li>Set up <a href="https://github.com/docker/buildx">Buildx</a> to enable multi-platform images; and</li>
+<li>Build and push the image.</li>
+</ol>
+<p>This last step also ensures the image is compatible with both AMD and ARM platforms and tags it by combining the registry name and <a href="https://docs.github.com/en/actions/learn-github-actions/contexts#github-context" title="GitHub context">repository name</a>.</p>
+<p>From there, any successful workflow run will update the <code>latest</code> image using the new phar and push it to the container registry for everyone to download and use:</p>
+<div class="highlight"><pre><span></span>$ docker run -it --rm ghcr.io/osteel/dime:latest <span class="nb">help</span>
+</pre></div>
+
+
+<p>This would download the image, start a container based on it and pass on the <code>help</code> command to the phar within the container.</p>
+<p>Once the command is executed, the container is destroyed (<code>--rm</code> flag).</p>
+<h3 id="shell-script">Shell script</h3>
+<p>While end users can run <code>docker</code> commands to use Dime, these are a bit verbose:</p>
+<div class="highlight"><pre><span></span>$ docker run -it --rm ghcr.io/osteel/dime:latest <span class="nb">help</span>
+</pre></div>
+
+
+<p>Things get worse when the transaction spreadsheet is involved and it needs to be transferred from the user's computer to the container. The ephemeral nature of the container is also a factor, as whatever data it contains is likely to be lost at some point, including the SQLite database.</p>
+<p>The solution to the above is to use <a href="https://docs.docker.com/storage/bind-mounts/" title="Bind mounts">bind mounts</a>, a way to import local files or directories to a container.</p>
+<p>Using this method, this is what running the <code>process</code> command would look like:</p>
+<div class="highlight"><pre><span></span>$ docker run -it --rm -v ~/.dime/database.sqlite:/root/.dime/database.sqlite -v transactions.csv:/tmp/transactions.csv ghcr.io/osteel/dime:latest process /tmp/transactions.csv
+</pre></div>
+
+
+<p>Two bind mounts are being used here – one for the database and one for the transaction spreadsheet. While this works, this is terrible user experience.</p>
+<p>The solution I came up with is to wrap these commands in a small <a href="https://github.com/osteel/dime/blob/main/.docker/dime.sh" title="dime.sh">shell script</a> that essentially converts regular Dime commands to Docker ones which, in turn, are converted back to Dime commands inside the container.</p>
+<p>Here is a simplified version of the script:</p>
+<table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/bin/sh</span>
+
+<span class="k">if</span> ! <span class="o">[</span> -f <span class="s2">&quot;~/.dime/database.sqlite&quot;</span> <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+    mkdir -p ~/.dime <span class="o">&amp;&amp;</span> touch ~/.dime/database.sqlite
+<span class="k">fi</span>
+
+<span class="nv">command</span><span class="o">=</span><span class="s2">&quot;docker run -it --rm -v ~/.dime/database.sqlite:/root/.dime/database.sqlite&quot;</span>
+
+<span class="k">if</span> <span class="o">[[</span> <span class="s2">&quot;</span><span class="nv">$1</span><span class="s2">&quot;</span> <span class="o">==</span> <span class="s2">&quot;process&quot;</span> <span class="o">&amp;&amp;</span> -n <span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span> <span class="o">&amp;&amp;</span> -f <span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then</span>
+    <span class="nv">filename</span><span class="o">=</span><span class="k">$(</span>basename <span class="s2">&quot;</span><span class="nv">$2</span><span class="s2">&quot;</span><span class="k">)</span>
+    <span class="nv">path</span><span class="o">=</span><span class="k">$(</span><span class="nb">cd</span> <span class="k">$(</span>dirname <span class="nv">$2</span><span class="k">)</span><span class="p">;</span> <span class="nb">pwd</span><span class="k">)</span>/<span class="nv">$filename</span>
+    <span class="nv">command</span><span class="o">+=</span><span class="s2">&quot; -v </span><span class="nv">$path</span><span class="s2">:/tmp/</span><span class="nv">$filename</span><span class="s2"> ghcr.io/osteel/dime:latest process /tmp/</span><span class="nv">$filename</span><span class="s2">&quot;</span>
+<span class="k">else</span>
+    <span class="nv">command</span><span class="o">+=</span><span class="s2">&quot; ghcr.io/osteel/dime:latest </span><span class="si">${</span><span class="p">@:</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">fi</span>
+
+<span class="nb">eval</span> <span class="s2">&quot;</span><span class="nv">$command</span><span class="s2">&quot;</span>
+</pre></div>
+</td></tr></table>
+
+<p>It first makes sure the database exists locally, and create it otherwise. It then starts putting together the Docker command, starting with mounting the database file onto the container, since we need it for every command.</p>
+<p>The rest of the script depends on the executed command – if it's <code>process</code>, it mounts the transaction spreadsheet inside the container's <code>tmp</code> folder using the spreadsheet's absolute local path.</p>
+<p>If it's another command, it simply passes it to the container along with any following arguments.</p>
+<p>Finally, once the <code>docker</code> command is complete, the script executes it with <code>eval</code>.</p>
+<p>End users can download the shell script and use it instead of running complicated Docker commands:</p>
+<div class="highlight"><pre><span></span>$ sh dime.sh
+</pre></div>
+
+
+<p>To further improve the user experience, the recommended approach is to make the file executable and to move it to a directory that's in the local system path:</p>
+<div class="highlight"><pre><span></span>$ chmod +x dime.sh
+$ mv dime.sh /usr/local/bin/dime
+</pre></div>
+
+
+<p>After which the application can be used from anywhere running <code>dime</code>.</p>
+<h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Distributing a PHP application can mean different things based on context.</p>
+<p>Most developers only need to target a specific PHP version and usually freeze the application's dependencies through the <code>composer.lock</code> file. The application is then deployed to some server and made available from there, over HTTP.</p>
+<p>Package maintainers often aim at supporting various PHP and dependency versions and build their continuous integration workflows <a href="/posts/a-github-workflow-to-check-the-compatibility-of-your-php-package-with-a-range-of-dependency-versions" title="A GitHub workflow to check the compatibility of your PHP package with a range of dependency versions">accordingly</a>.</p>
+<p>Building standalone command-line applications with PHP is a less common use case that poses a different set of questions when it comes to distribution: who am I targeting? On which platforms? Should I assume PHP will be available?</p>
+<p>PHP archives have been around for <a href="https://en.wikipedia.org/wiki/PHAR_(file_format)" title="Wikipedia">20 years</a> and, despite their portable nature and the fact that they solve most conflict issues out-of-the-box, as far as I can tell not many people are using them.</p>
+<p>Phars are very flexible and allow for a variety of distribution channels – they can be downloaded and used as-is or used through Composer or Docker, like this article illustrates. But they can also be distributed through <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-brew/" title="Distributing Laravel Zero apps with Brew">Homebrew</a>, <a href="https://voke.dev/blog/distributing-laravel-zero-apps-with-windows-package-managers/" title="Distributing Laravel Zero apps with Windows package managers">Scoop</a>, and soon as <a href="https://twitter.com/marcelpociot/status/1676585881795272709">native programs</a>.</p>
+<p>I've learnt a lot writing this series, but if I were to pick a single takeaway, it would be that PHP is way more versatile than I ever realised. And I've been working with this language for more than 15 years.</p>
+<p>This post concludes the Dime series – at least for now. I still have a fairly long list of improvements I'd like to make and it's possible some of them will constitute enough material to become blog posts.</p>
+<p>You can subscribe to email alerts below so you don't miss future articles, be they about Dime or about something else. You can also follow me on <a href="https://twitter.com/osteel">Twitter</a> where I share my content as soon as it is available.</p>
+
+    <div class="sharethis-inline-share-buttons"></div>
+
+    <section class="info">
+      <span class="title">Enjoying the content?</span>
+      <form action="https://osteel.us5.list-manage.com/subscribe/post?u=dda32a39af10ca5ed21d00084&amp;id=e1b6d5529d" method="post" id="subscribe-form" name="mc-embedded-subscribe-form" target="_blank" novalidate>
+        <label for="mce-EMAIL">Get notified of future posts by email:</label>
+        <input type="email" value="" name="EMAIL" id="mce-EMAIL" class="form-input" placeholder="email address" required>
+        <input type="submit" value="Sign up" name="subscribe" id="mc-embedded-subscribe" class="form-button">
+        <input type="checkbox" value="" name="group[23889][2]" style="display:none" checked>
+        <!-- real people should not fill this in and expect good things - do not remove this or risk form bot signups-->
+        <div style="position: absolute; left: -5000px;" aria-hidden="true"><input type="text" name="b_dda32a39af10ca5ed21d00084_e1b6d5529d" tabindex="-1" value=""></div>
+      </form>
+      <p>You can also subscribe to the <a href="https://tech.osteel.me/feeds/rss.xml" rel="subscribe-rss">RSS</a> or <a href="https://tech.osteel.me/feeds/atom.xml" rel="subscribe-atom">Atom</a> feed, or follow me on <a href="https://twitter.com/osteel">Twitter</a>.</p>
+    </section>
+
+    <p class="meta">
+      <small>
+        Last updated by osteel on
+          <time datetime="1970-01-01" pubdate>1970-01-01</time>
+          :: [
+          <a href="https://tech.osteel.me/tag/laravelzero">laravelzero</a>
+          <a href="https://tech.osteel.me/tag/github">github</a>
+          <a href="https://tech.osteel.me/tag/cicd">cicd</a>
+          <a href="https://tech.osteel.me/tag/phar">phar</a>
+          <a href="https://tech.osteel.me/tag/docker">docker</a>
+          <a href="https://tech.osteel.me/tag/composer">composer</a>
+          <a href="https://tech.osteel.me/tag/packagist">packagist</a>
+          ]
+      </small>
+    </p>
+
+  </div>
+</div>
+      </div>
+
+      <label for="sidebar-checkbox" class="sidebar-toggle"></label>
+
+      <script>
+        (function(document) {
+          var i = 0;
+          // snip empty header rows since markdown can't
+          var rows = document.querySelectorAll('tr');
+          for(i=0; i<rows.length; i++) {
+            var ths = rows[i].querySelectorAll('th');
+            var rowlen = rows[i].children.length;
+            if (ths.length > 0 && ths.length === rowlen) {
+              rows[i].remove();
+            }
+          }
+        })(document);
+      </script>
+
+      <script>
+        /* Lanyon & Poole are Copyright (c) 2014 Mark Otto. Adapted to Pelican 20141223 and extended a bit by @thomaswilley */
+        (function(document) {
+          var toggle = document.querySelector('.sidebar-toggle');
+          var sidebar = document.querySelector('#sidebar');
+          var checkbox = document.querySelector('#sidebar-checkbox');
+          document.addEventListener('click', function(e) {
+            var target = e.target;
+            if(!checkbox.checked ||
+            sidebar.contains(target) ||
+            (target === checkbox || target === toggle)) return;
+            checkbox.checked = false;
+            }, false);
+            })(document);
+      </script>
+
+      <script type="text/javascript">
+        var disqus_shortname = "osteel";
+              var disqus_identifier = "/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
+              var disqus_url = "https://tech.osteel.me/drafts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution";
+              var disqus_title = "Building a PHP CLI tool using DDD and Event Sourcing: distribution";
+        (function() {
+          var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+          dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+          (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+         })();
+      </script>
+
+<script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-53994673-2']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+    ga('create', 'UA-53994673-2');
+    ga('send', 'pageview');
+</script>
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1B7BNCQ79N"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1B7BNCQ79N');
+</script>
+
+     </div>
+  </body>
+</html>

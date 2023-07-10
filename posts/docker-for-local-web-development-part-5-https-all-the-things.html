@@ -150,7 +150,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2022-02-19 ::
+          Last updated: 2023-07-10 ::
         Published: 2020-04-27
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/docker-for-local-web-development-part-5-https-all-the-things.html">history</a> ]
       </small>
@@ -465,9 +465,7 @@ cert_install <span class="o">()</span> <span class="o">{</span>
 39
 40
 41
-42
-43
-44</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
+42</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="k">server</span> <span class="p">{</span>
     <span class="kn">listen</span>      <span class="mi">443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
     <span class="kn">listen</span>      <span class="s">[::]:443</span> <span class="s">ssl</span> <span class="s">http2</span><span class="p">;</span>
     <span class="kn">server_name</span> <span class="s">backend.demo.test</span><span class="p">;</span>
@@ -477,10 +475,9 @@ cert_install <span class="o">()</span> <span class="o">{</span>
     <span class="kn">ssl_certificate_key</span> <span class="s">/etc/nginx/certs/demo.test.key</span><span class="p">;</span>
 
     <span class="kn">add_header</span> <span class="s">X-Frame-Options</span> <span class="s">&quot;SAMEORIGIN&quot;</span><span class="p">;</span>
-    <span class="kn">add_header</span> <span class="s">X-XSS-Protection</span> <span class="s">&quot;1</span><span class="p">;</span> <span class="kn">mode=block&quot;</span><span class="p">;</span>
     <span class="kn">add_header</span> <span class="s">X-Content-Type-Options</span> <span class="s">&quot;nosniff&quot;</span><span class="p">;</span>
 
-    <span class="kn">index</span> <span class="s">index.html</span> <span class="s">index.htm</span> <span class="s">index.php</span><span class="p">;</span>
+    <span class="kn">index</span> <span class="s">index.php</span><span class="p">;</span>
 
     <span class="kn">charset</span> <span class="s">utf-8</span><span class="p">;</span>
 
@@ -495,7 +492,6 @@ cert_install <span class="o">()</span> <span class="o">{</span>
 
     <span class="kn">location</span> <span class="p">~</span> <span class="sr">\.php$</span> <span class="p">{</span>
         <span class="kn">fastcgi_pass</span>  <span class="n">backend</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
-        <span class="kn">fastcgi_index</span> <span class="s">index.php</span><span class="p">;</span>
         <span class="kn">fastcgi_param</span> <span class="s">SCRIPT_FILENAME</span> <span class="nv">$realpath_root$fastcgi_script_name</span><span class="p">;</span>
         <span class="kn">include</span>       <span class="s">fastcgi_params</span><span class="p">;</span>
     <span class="p">}</span>
@@ -599,8 +595,8 @@ cert_install <span class="o">()</span> <span class="o">{</span>
 
     <span class="kn">ssl_certificate</span>     <span class="s">/etc/nginx/certs/demo.test.crt</span><span class="p">;</span>
     <span class="kn">ssl_certificate_key</span> <span class="s">/etc/nginx/certs/demo.test.key</span><span class="p">;</span>
-    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
 
+    <span class="kn">location</span> <span class="p">~</span><span class="sr">*</span> <span class="s">\.php</span>$ <span class="p">{</span>
         <span class="kn">fastcgi_pass</span>   <span class="n">phpmyadmin</span><span class="p">:</span><span class="mi">9000</span><span class="p">;</span>
         <span class="kn">root</span>           <span class="s">/var/www/html</span><span class="p">;</span>
         <span class="kn">include</span>        <span class="s">fastcgi_params</span><span class="p">;</span>
@@ -890,7 +886,7 @@ cert_install () {
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2022-02-19" pubdate>2022-02-19</time>
+          <time datetime="2023-07-10" pubdate>2023-07-10</time>
           :: [
           <a href="https://tech.osteel.me/tag/tutorial">tutorial</a>
           <a href="https://tech.osteel.me/tag/docker">docker</a>

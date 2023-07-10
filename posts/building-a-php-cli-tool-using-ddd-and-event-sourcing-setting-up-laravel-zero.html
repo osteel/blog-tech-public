@@ -185,6 +185,7 @@ styles, `#sidebar-checkbox` for behavior. -->
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design" title="Building a PHP CLI tool using DDD and Event Sourcing: software design">Software design</a></li>
 <li>Setting up Laravel Zero <strong>⬅️ you are here</strong></li>
 <li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-getting-started-with-eventsauce" title="Building a PHP CLI tool using DDD and Event Sourcing: getting started with EventSauce">Getting started with EventSauce</a></li>
+<li><a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-distribution" title="Building a PHP CLI tool using DDD and Event Sourcing: distribution">Distribution</a></li>
 </ul>
 <h2 id="in-this-post">In this post</h2>
 <div class="toc">
@@ -583,25 +584,25 @@ $ git push -u origin main
 
 <h3 id="test-database">Test database</h3>
 <p>Some tests directly run against the database, so I need a separate one to avoid tampering with real data.</p>
-<p>Dime has two database connections in <a href="https://github.com/osteel/dime/blob/main/config/database.php" title="Dime – database.php"><code>config/database.php</code></a> – <code>production</code> and <code>testing</code>. The former is the default connection:</p>
+<p>Dime has two database connections in <a href="https://github.com/osteel/dime/blob/main/config/database.php" title="Dime – database.php"><code>config/database.php</code></a> – <code>local</code> and <code>testing</code>. The former is the default connection:</p>
 <div class="highlight"><pre><span></span><span class="cp">&lt;?php</span>
 
 <span class="c1">// ...</span>
 
 <span class="k">return</span> <span class="p">[</span>
 
-    <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_CONNECTION&#39;</span><span class="p">,</span> <span class="s1">&#39;production&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;default&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;APP_ENV&#39;</span><span class="p">,</span> <span class="s1">&#39;local&#39;</span><span class="p">),</span>
 
     <span class="c1">// ...</span>
 
     <span class="s1">&#39;connections&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
 
-        <span class="s1">&#39;production&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
+        <span class="s1">&#39;local&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
             <span class="s1">&#39;driver&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;sqlite&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;url&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DATABASE_URL&#39;</span><span class="p">),</span>
-            <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_DATABASE&#39;</span><span class="p">,</span> <span class="nx">database_path</span><span class="p">(</span><span class="s1">&#39;database.sqlite&#39;</span><span class="p">)),</span>
+            <span class="s1">&#39;url&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;database&#39;</span> <span class="o">=&gt;</span> <span class="nx">database_path</span><span class="p">(</span><span class="s1">&#39;database.sqlite&#39;</span><span class="p">),</span>
             <span class="s1">&#39;prefix&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-            <span class="s1">&#39;foreign_key_constraints&#39;</span> <span class="o">=&gt;</span> <span class="nx">env</span><span class="p">(</span><span class="s1">&#39;DB_FOREIGN_KEYS&#39;</span><span class="p">,</span> <span class="k">true</span><span class="p">),</span>
+            <span class="s1">&#39;foreign_key_constraints&#39;</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
         <span class="p">],</span>
 
         <span class="s1">&#39;testing&#39;</span> <span class="o">=&gt;</span> <span class="p">[</span>
@@ -617,14 +618,19 @@ $ git push -u origin main
 </pre></div>
 
 
-<p>Both are using the <code>sqlite</code> driver, but the test database is stored in memory for increased performance.</p>
-<p>The value of the <code>DB_CONNECTION</code> environment variable needs to change while running the tests, so the test database is picked up instead of the production one.</p>
+<p>Both are using the <code>sqlite</code> driver, but the test database is stored in memory for increased performance. Also note that I'm using the <code>APP_ENV</code> environment variable when available as the default database, instead of the usual <code>DB_CONNECTION</code>.</p>
+<p>Its value needs to change while running the tests, so the test database is picked up instead of the production one.</p>
 <p>This is done by adding the following section to the <code>&lt;phpunit&gt;</code> tag in <code>phpunit.xml.dist</code>:</p>
 <div class="highlight"><pre><span></span>...
 <span class="nt">&lt;php&gt;</span>
-    <span class="nt">&lt;server</span> <span class="na">name=</span><span class="s">&quot;DB_CONNECTION&quot;</span> <span class="na">value=</span><span class="s">&quot;testing&quot;</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;server</span> <span class="na">name=</span><span class="s">&quot;APP_ENV&quot;</span> <span class="na">value=</span><span class="s">&quot;testing&quot;</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/php&gt;</span>
 ...
+</pre></div>
+
+
+<p>If that's not already the case, also make sure that <code>env</code>'s default value in <code>config/app.php</code> is <code>local</code>:</p>
+<div class="highlight"><pre><span></span><span class="x">&#39;env&#39; =&gt; env(&#39;APP_ENV&#39;, &#39;local&#39;),</span>
 </pre></div>
 
 
