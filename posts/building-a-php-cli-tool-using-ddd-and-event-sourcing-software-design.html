@@ -149,7 +149,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     </h1>
     <span class="post-date">
       <small>
-          Last updated: 2023-07-10 ::
+          Last updated: 2023-08-21 ::
         Published: 2023-04-05
           :: [ <a href="https://github.com/osteel/blog-tech-public/commits/master/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-software-design.html">history</a> ]
       </small>
@@ -293,7 +293,6 @@ styles, `#sidebar-checkbox` for behavior. -->
 <p>Once done, the <code>Review</code> command will retrieve the results (the <a href="/posts/building-a-php-cli-tool-using-ddd-and-event-sourcing-the-model#ubiquitous-language" title="Ubiquitous language"><em>tax year summaries</em></a>) and display them in the console.</p>
 <p>Having a separate command for this means users won't have to process the whole file every time, allowing them to display the results from a previous run instead. The <code>Process</code> command will call <code>Review</code> once it's done though, to spare the user an extra step.</p>
 <p>The <code>Export</code> command will be responsible for outputting the results in different formats (e.g. CSV). The <code>Review</code> command will ask the user if they want to save the results to a file, and call the <code>Export</code> command if that is the case.</p>
-<p>Finally, a <code>Presenter</code> service will abstract away the code related to output formatting, to avoid cluttering the commands with the corresponding logic.</p>
 <h3 id="application-layer">Application layer</h3>
 <p>One level down is the application layer. The definition of the application layer is a little vague but we can see it as the glue between the other layers. Here, the application layer mostly consists of services and concrete repositories:</p>
 <p><img alt="Close-up of the application layer" src="/images/2023/04/05/dime_05.png" title="Application layer" />
@@ -441,7 +440,7 @@ styles, `#sidebar-checkbox` for behavior. -->
     <p class="meta">
       <small>
         Last updated by osteel on
-          <time datetime="2023-07-10" pubdate>2023-07-10</time>
+          <time datetime="2023-08-21" pubdate>2023-08-21</time>
           :: [
           <a href="https://tech.osteel.me/tag/ddd">ddd</a>
           <a href="https://tech.osteel.me/tag/eventsourcing">eventsourcing</a>
